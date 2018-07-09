@@ -1,0 +1,6 @@
+%div{ class:"col-md-8"}
+  %h3 Поиск синоптических телеграмм
+  #form_and_result
+  #search_params{ telegrams: @telegrams.to_json, stations: @stations.to_json, dateFrom: @date_from.to_json, dateTo: @date_to.to_json}
+  = javascript_pack_tag 'search_telegrams/search_synoptic_telegrams'
+%br

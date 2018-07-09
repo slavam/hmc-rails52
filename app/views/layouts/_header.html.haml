@@ -1,0 +1,178 @@
+- if current_user.present?
+  - provide(:logo, current_user.role == 'specialist' ? 'Контроль телеграмм' : "Гидрометцентр МЧС ДНР")
+- else
+  - provide(:logo, "")
+%header{ :class=>"navbar navbar-fixed-top navbar-inverse"}
+  %div{ :class=>"container"}
+    = link_to yield(:logo), "#", id: "logo"
+    %nav
+      %ul{ :class=>"nav navbar-nav navbar-right"}
+        - if logged_in?
+          - case current_user.role
+            - when 'synoptic'
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Телеграммы <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  /
+                    %li= link_to 'Телеграммы синоптические (старые)',  synoptics_path
+                  %li= link_to 'Телеграммы синоптические',  synoptic_observations_path
+                  %li= link_to 'Телеграммы штормовые',  storm_observations_path
+                  %li= link_to 'Телеграммы агрометеорологические',  agro_observations_path
+                  %li= link_to 'Телеграммы агрометеорологические декадные',  agro_dec_observations_path
+                  %li= link_to 'Телеграммы морские',  sea_observations_path
+                  %li= link_to 'Телеграммы синоптические (со штормовыми)',  '/synoptic_observations/synoptic_storm_telegrams'
+                  %li{ class: "divider"}
+                  %li= link_to 'Поиск синоптических телеграмм',  search_synoptic_telegrams_path
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Отчеты <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  %li= link_to 'ТСХ-1',  synoptics_tcx1_path 
+                  %li= link_to 'Тепло Донбасса',  synoptic_observations_heat_donbass_show_path
+                  /
+                    %li= link_to 'Бюллетень',  bulletins_path
+                  %li= link_to 'Бюллетени ежедневные', "/bulletins/list?bulletin_type=daily"
+                  %li= link_to 'Бюллетени морские', "/bulletins/list?bulletin_type=sea"
+                  %li= link_to 'Бюллетени выходного дня', "/bulletins/list?bulletin_type=holiday"
+                  %li= link_to 'Штормовые предупреждения', "/bulletins/list?bulletin_type=storm"
+                  %li= link_to 'Шторма на море', "/bulletins/list?bulletin_type=sea_storm"
+                  %li= link_to 'Радиация', "/bulletins/list?bulletin_type=radiation"
+                  %li= link_to 'Телевидение', "/bulletins/list?bulletin_type=tv"
+                  /
+                    %li= link_to 'Автодор',  synoptics_avtodor_path
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Карты, сайты <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  - active_meteo_links.each do |l|
+                    %li= link_to l.name,  l.address, target: :_blank
+            - when 'agro'
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Телеграммы <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  %li= link_to 'Ввод телеграмм', '/synoptic_observations/input_synoptic_telegrams?input_mode=normal'
+                  %li= link_to 'Ввод телеграмм с любой датой', '/synoptic_observations/input_synoptic_telegrams?input_mode=direct'
+                  %li= link_to 'Буфер', applicants_path
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Сервис <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  %li= link_to 'Телеграммы синоптические',  synoptic_observations_path
+                  %li= link_to 'Телеграммы штормовые',  storm_observations_path
+                  %li= link_to 'Телеграммы агрометеорологические',  agro_observations_path
+                  %li= link_to 'Телеграммы агрометеорологические декадные',  agro_dec_observations_path
+                  /
+                    %li= link_to 'Телеграммы морские',  sea_observations_path
+                    %li= link_to 'Телеграммы синоптические (со штормовыми)',  '/synoptic_observations/synoptic_storm_telegrams'
+                  %li{ class: "divider"}
+                  %li= link_to 'Поиск синоптических телеграмм',  search_synoptic_telegrams_path
+                  %li= link_to 'Поиск штормовых телеграмм',  '/storm_observations/search_storm_telegrams'
+                  %li= link_to 'Поиск агро телеграмм',  '/agro_observations/search_agro_telegrams'
+                  %li= link_to 'Поиск декадных агро телеграмм',  '/agro_dec_observations/search_agro_dec_telegrams'
+            - when 'technicist'
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Телеграммы <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  /
+                    %li= link_to 'Телеграммы синоптические (старые)',  synoptics_path
+                  %li= link_to 'Ввод телеграмм', '/synoptic_observations/input_synoptic_telegrams?input_mode=normal'
+                  %li= link_to 'Ввод телеграмм с любой датой', '/synoptic_observations/input_synoptic_telegrams?input_mode=direct'
+                  %li= link_to 'Поиск синоптических телеграмм',  search_synoptic_telegrams_path
+                  %li= link_to 'Поиск штормовых телеграмм',  '/storm_observations/search_storm_telegrams'
+                  %li= link_to 'Поиск агро телеграмм',  '/agro_observations/search_agro_telegrams'
+                  %li= link_to 'Поиск декадных агро телеграмм',  '/agro_dec_observations/search_agro_dec_telegrams'
+                  %li= link_to 'Буфер', applicants_path
+                  /
+                    %li= link_to 'Телеграммы синоптические', synoptic_observations_path
+                    %li= link_to 'Телеграммы штормовые', storm_observations_path
+                    %li= link_to 'Ежедневные агрометеорологические телеграммы', agro_observations_path
+                    %li= link_to 'Декадные агрометеорологические телеграммы', agro_dec_observations_path
+                    %li= link_to 'Телеграммы морские', sea_observations_path
+                    %li= link_to 'Телеграммы синоптические (со штормовыми)', '/synoptic_observations/synoptic_storm_telegrams'
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Отчеты <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  %li= link_to 'ТСХ-1',  synoptics_tcx1_path 
+                  %li= link_to 'Тепло Донбасса',  synoptic_observations_heat_donbass_show_path
+                  %li= link_to 'Бюллетени ежедневные', "/bulletins/list?bulletin_type=daily"
+                  %li= link_to 'Бюллетени морские', "/bulletins/list?bulletin_type=sea"
+                  %li= link_to 'Бюллетени выходного дня', "/bulletins/list?bulletin_type=holiday"
+                  %li= link_to 'Штормовые предупреждения', "/bulletins/list?bulletin_type=storm"
+                  %li= link_to 'Шторма на море', "/bulletins/list?bulletin_type=sea_storm"
+                  %li= link_to 'Радиация', "/bulletins/list?bulletin_type=radiation"
+                  %li= link_to 'Телевидение', "/bulletins/list?bulletin_type=tv"
+              %li= link_to 'Карты',  "http://suleiman.rshu.ru/gifmaps/", target: :_blank
+              /
+                %li
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Справочники <b class="caret"></b></a>
+                  %ul{class: "dropdown-menu"}
+                    %li= link_to 'Категории культур',  agro_crop_categories_path
+                    %li= link_to 'Сельскохозяйственные культуры и угодья',  agro_crops_path
+                    %li= link_to 'Группы культур со сходными фазами развития',  agro_phase_categories_path
+                    %li= link_to 'Фазы развития сельскохозяйственных культур',  agro_phases_path
+                    %li= link_to 'Повреждения сельскохозяйственных культур',  agro_damages_path
+                    %li= link_to 'Сельскохозяйственные работы',  agro_works_path
+            - when 'observer'
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Телеграммы<b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  %li= link_to 'Ввод телеграмм', '/synoptic_observations/input_synoptic_telegrams?input_mode=normal'
+                  %li= link_to 'Ввод телеграмм с любой датой', '/synoptic_observations/input_synoptic_telegrams?input_mode=direct'
+                  %li= link_to 'Телеграммы синоптические', synoptic_observations_path
+                  %li= link_to 'Телеграммы штормовые', storm_observations_path
+                  %li= link_to 'Ежедневные агрометеорологические телеграммы', agro_observations_path
+                  %li= link_to 'Декадные агрометеорологические телеграммы', agro_dec_observations_path
+                  %li= link_to 'Телеграммы морские', sea_observations_path
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Сервис <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  %li= link_to 'Поиск синоптических телеграмм',  search_synoptic_telegrams_path
+                  %li= link_to 'Метеостанции', stations_path
+            - when 'specialist'
+              %li= link_to 'Ввод телеграмм', '/synoptic_observations/input_synoptic_telegrams?input_mode=normal'
+            - when 'chemist'
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Измерения <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  %li= link_to 'Создать измерение', new_measurement_path
+                  %li= link_to 'Список', measurements_path 
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Справочники <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  %li= link_to 'Города',  cities_path 
+                  %li= link_to 'Посты',  posts_path
+                  %li= link_to 'Вещества',  materials_path
+                  %li= link_to 'Метеостанции', stations_path
+                  %li= link_to 'Коэффициенты', chem_coefficients_path
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Отчеты <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  %li= link_to 'Форма 1 (ТЗА)',  measurements_chem_forma1_tza_path
+                  /
+                    %li= link_to 'Форма 1 (АКИАМ)',  pollutions_chem_forma1_path
+                  %li= link_to 'Форма 2 по постам',  "/measurements/chem_forma2?region_type=post&place_id=5"
+                  %li= link_to 'Форма 2 по городам',  "/measurements/chem_forma2?region_type=city&place_id=1"
+                  %li= link_to 'Фоновые концентрации (AKIAM)', pollutions_background_concentration_path
+                  %li= link_to 'Метеопараметры', synoptic_observations_get_meteoparams_path
+                  %li= link_to 'Отчет о количестве наблюдений',  measurements_observations_quantity_path
+                  %li= link_to 'Роза ветров',  measurements_wind_rose_path
+                  %li= link_to 'Объем пробы при нормальных условиях',  measurements_calc_normal_volume_path
+                  /
+                    %li= link_to 'Конверсия из АКИАМ', measurements_get_convert_params_path
+                %li= link_to "Помощь", "/bulletins/help_show.pdf"
+            - when 'admin'
+              %li= link_to "Users", users_path
+              %li= link_to "Synoptic Links", meteo_links_path
+              %li= link_to "Audit", audits_path
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Сервис <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  %li= link_to 'Конвертор синоптических телеграмм', synoptic_observations_get_conversion_params_path
+                  %li= link_to 'Конвертор штормовых телеграмм', storm_observations_get_conversion_params_path
+                  %li= link_to 'Поиск синоптических телеграмм',  search_synoptic_telegrams_path
+          %li{ class: "dropdown"}
+          %li
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Сеанс <b class="caret"></b></a>
+            %ul{class: "dropdown-menu"}
+              %li= link_to "Профиль", current_user
+              %li{ class: "divider"}
+              %li= link_to "Выход", logout_path, method: "delete"
+        - else
+          %li= link_to "Войти", login_path

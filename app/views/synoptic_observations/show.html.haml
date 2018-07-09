@@ -1,0 +1,149 @@
+.container
+  %h3 Телеграмма синоптическая
+  %table{class: "table table-bordered"}
+    %tr
+      %th Дата ввода
+      %td= @synoptic_observation.created_at.to_s
+    %tr
+      %th Дата наблюдения
+      %td= @synoptic_observation.observed_at
+    %tr
+      %th Срок
+      %td= @synoptic_observation.term.to_s.rjust(2, '0')
+    %tr
+      %th Текст
+      %td= @synoptic_observation.telegram
+    %tr
+      %th Метеостанция
+      %td= @synoptic_observation.station.name
+    %tr
+      %th Направление ветра
+      %td= @synoptic_observation.wind_direction_to_s
+    %tr
+      %th Скорость ветра (м/с)
+      %td= @synoptic_observation.wind_speed_avg.to_s
+    %tr
+      %th Метеорологическая дальность видимости
+      %td= @synoptic_observation.visibility
+    %tr
+      %th Высота нижней границы самых низких облаков (м)
+      %td= @synoptic_observation.cloud_base_height_to_s
+    %tr
+      %th Общее количество облаков всех ярусов (баллы)
+      %td= @synoptic_observation.cloud_amount(@synoptic_observation.cloud_amount_1)
+    %tr
+      %th Температура воздуха (°С)
+      %td= @synoptic_observation.temperature
+    - if @synoptic_observation.temperature_dew_point.present?
+      %tr
+        %th Точка росы (°С)
+        %td= @synoptic_observation.temperature_dew_point
+    - if @synoptic_observation.pressure_at_station_level.present?
+      %tr
+        %th Давление воздуха на уровне станции (hPa)
+        %td= @synoptic_observation.pressure_at_station_level
+    - if @synoptic_observation.pressure_at_sea_level.present?
+      %tr
+        %th Давление воздуха, приведенное к уровню моря (hPa)
+        %td= @synoptic_observation.pressure_at_sea_level
+    - if @synoptic_observation.pressure_tendency_characteristic.present?
+      %tr
+        %th Характеристика барической тенденции
+        %td= @synoptic_observation.pressure_tendency_characteristic_to_s
+    - if @synoptic_observation.pressure_tendency.present?
+      %tr
+        %th Значение барической тенденции (hPa)
+        %td= @synoptic_observation.pressure_tendency.to_s
+    - if @synoptic_observation.precipitation_1.present?
+      %tr
+        %th Количество осадков (мм)
+        %td= @synoptic_observation.precipitation_to_s(@synoptic_observation.precipitation_1)
+    - if @synoptic_observation.precipitation_time_range_1.present?
+      %tr
+        %th Период времени, за который измерено количество осадков (час.)
+        %td= @synoptic_observation.precipitation_time_range_to_s(@synoptic_observation.precipitation_time_range_1)        
+    - if @synoptic_observation.cloud_amount_2.present?
+      %tr
+        %th Количество облаков CL или CM (баллы)
+        %td= @synoptic_observation.cloud_amount(@synoptic_observation.cloud_amount_2)
+      %tr
+        %th Облака вертикального развития (CL)
+        %td= @synoptic_observation.clouds_1_to_s
+      %tr
+        %th Облака среднего яруса (CM)
+        %td= @synoptic_observation.clouds_2_to_s
+      %tr
+        %th Облака верхнего яруса (CH)
+        %td= @synoptic_observation.clouds_3_to_s
+    - if @synoptic_observation.sunshine_duration.present?
+      %tr
+        %th Продолжительность солнечного сияния (часы)
+        %td= @synoptic_observation.sunshine_duration.to_s
+    - if @synoptic_observation.soil_surface_condition_1.present?
+      %tr
+        %th Состояние поверхности почвы
+        %td= @synoptic_observation.soil_surface_condition_1_to_s
+    - if @synoptic_observation.temperature_soil.present?
+      %tr
+        %th Температура поверхности почвы (°С)
+        %td= @synoptic_observation.temperature_soil.to_s
+    - if @synoptic_observation.weather_in_term.present?
+      %tr
+        %th Погода в срок наблюдений или в последний час
+        %td= SynopticObservation::WEATHER_IN_TERM[@synoptic_observation.weather_in_term]
+    - if @synoptic_observation.weather_past_1.present?
+      %tr
+        %th Прошедшая погода
+        %td= "#{SynopticObservation::WEATHER_PAST[@synoptic_observation.weather_past_1]} / #{SynopticObservation::WEATHER_PAST[@synoptic_observation.weather_past_2]}"
+    - if @synoptic_observation.temperature_dey_max.present?
+      %tr
+        %th Максимальная темперптура воздуха за день (°С)
+        %td= @synoptic_observation.temperature_dey_max.to_s
+    - if @synoptic_observation.temperature_night_min.present?
+      %tr
+        %th Минимальная темперптура воздуха за ночь (°С)
+        %td= @synoptic_observation.temperature_night_min.to_s
+    - if @synoptic_observation.underlying_surface_сondition.present?
+      %tr
+        %th Состояние подстилающей поверхности при наличии снежного покрова
+        %td= SynopticObservation::SURFACE_CONDITION[@synoptic_observation.underlying_surface_сondition]
+    - if @synoptic_observation.snow_cover_height.present?
+      %tr
+        %th Высота снежного покрова (см.)
+        %td= @synoptic_observation.snow_cover_height_to_s
+    - if @synoptic_observation.cloud_amount_3.present?
+      %tr
+        %th Количество облаков слоя
+        %td= @synoptic_observation.cloud_amount(@synoptic_observation.cloud_amount_3)
+    - if @synoptic_observation.cloud_form.present?
+      %tr
+        %th Форма облаков в слое
+        %td= @synoptic_observation.clouds_form_to_s
+    - if @synoptic_observation.soil_surface_condition_2.present?
+      %tr
+        %th Состояние поверхности почвы при отсутствии снежного покрова
+        %td= @synoptic_observation.soil_surface_condition_2_to_s
+    - if @synoptic_observation.temperature_soil_min.present?
+      %tr
+        %th Минимальная температура поверхности почвы за ночь
+        %td= @synoptic_observation.temperature_soil_min.to_s
+    - if @synoptic_observation.temperature_2cm_min.present?
+      %tr
+        %th Минимальная температура воздуха на высоте 2 см от поверхности почвы
+        %td= @synoptic_observation.temperature_2cm_min.to_s
+    - if @synoptic_observation.precipitation_2.present?
+      %tr
+        %th Количество осадков (мм)
+        %td= @synoptic_observation.precipitation_to_s(@synoptic_observation.precipitation_2)
+    - if @synoptic_observation.precipitation_time_range_2.present?
+      %tr
+        %th Период времени, за который измерено количество осадков (час.)
+        %td= @synoptic_observation.precipitation_time_range_to_s(@synoptic_observation.precipitation_time_range_2)
+  - if current_user.role == 'technicist'
+    = link_to 'Ввод телеграмм', '/synoptic_observations/input_synoptic_telegrams?input_mode=normal'
+    %br
+    = link_to "Список", synoptic_observations_path
+  - elsif current_user.role == 'specialist'
+    = link_to 'Возврат', '/synoptic_observations/input_synoptic_telegrams?input_mode=normal'
+  - else
+    = link_to "Список", synoptic_observations_path

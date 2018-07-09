@@ -1,0 +1,30 @@
+- if current_user.present?
+  - provide(:title, current_user.role == 'specialist' ? 'Контроль телеграмм' : 'ГМЦ МЧС ДНР')
+- else
+  - provide(:title, "")
+!!!
+%html
+  %head
+    %title= yield(:title)
+    %meta{ 'http-equiv' => 'Content-Type', :content => 'text/html; charset=UTF-8' }
+    -# <link rel="stylesheet" media="all" href="https://rawgit.com/arqex/react-datetime/master/css/react-datetime.css?body=1" data-turbolinks-track="true" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/classnames/2.1.5/index.min.js"></script>
+    -# <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
+    -# <script src="https://d3js.org/d3.v5.min.js"></script>
+    -# = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' 
+    = stylesheet_link_tag 'application'
+    = javascript_include_tag 'application'
+    = csrf_meta_tags
+    = render 'layouts/shim'
+
+  %body
+    = render 'layouts/header'
+
+    #main
+      - flash.each do |message_type, message| 
+        %div{ class: "alert alert-#{message_type}"}= message  
+      %div{'style' => "clear: both;"}
+      &nbsp;
+      = yield
+      = render 'layouts/footer'
+      = debug(params) if Rails.env.development?

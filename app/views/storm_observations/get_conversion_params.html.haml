@@ -1,0 +1,10 @@
+.container
+  %h3 Задайте диапазон времени для переноса штормовых телеграмм из БД 'meteo'
+  = form_for(:interval, url: storm_observations_converter_path) do |f| 
+    = f.label "Начальная дата"
+    = f.date_field :date_from, value: Time.now.strftime("%Y-%m-%d")
+
+    = f.label "Конечная дата"
+    = f.date_field :date_to, value: Time.now.strftime("%Y-%m-%d")
+
+    = f.submit "Начать", class: "btn btn-primary"
