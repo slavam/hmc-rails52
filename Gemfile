@@ -15,6 +15,9 @@ gem 'rails', '~> 5.2.0'
 
 gem 'haml'
 
+gem 'will_paginate', '~> 3.1', '>= 3.1.6'
+gem 'bootstrap-will_paginate', '~> 1.0'
+
 # gem 'mysql2', '~> 0.3.11'
 gem 'mysql2', '~> 0.5.1'
 

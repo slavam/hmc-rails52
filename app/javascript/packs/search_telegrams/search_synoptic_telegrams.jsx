@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SearchParamsForm from './search_params_form';
-// import AccountTable from './account_table';
+import FoundTelegrams from './found_telegrams';
 export default class SearchSynopticTelegrams extends React.Component{
   constructor(props) {
     super(props);
@@ -14,13 +14,14 @@ export default class SearchSynopticTelegrams extends React.Component{
 
   handleFormSubmit(params) {
     var that = this;
-    var term = params.term == '99' ? '' : "&term="+params.term;
-    var stationCode = params.stationCode == '0' ? '' : "&station_code="+params.stationCode;
-    var text = params.text.length > 1 ? "&text="+params.text : '';
+    let term = params.term == '99' ? '' : "&term="+params.term;
+    // var stationCode = params.stationCode == '0' ? '' : "&station_code="+params.stationCode;
+    let stationId = params.stationId == '0' ? '' : "&station_id="+params.stationId;
+    let text = params.text.length > 1 ? "&text="+params.text : '';
     $.ajax({
       type: 'GET',
       dataType: 'json',
-      url: "search_synoptic_telegrams?date_from="+params.dateFrom+"&date_to="+params.dateTo+term+stationCode+text
+      url: "search_synoptic_telegrams?date_from="+params.dateFrom+"&date_to="+params.dateTo+term+stationId+text
       }).done(function(data) {
         that.setState({telegrams: data.telegrams, errors: {}});
       }.bind(that))
@@ -35,7 +36,7 @@ export default class SearchSynopticTelegrams extends React.Component{
         <h3>Параметры поиска</h3>
         <SearchParamsForm onTelegramSubmit={this.handleFormSubmit} dateFrom={this.props.dateFrom} dateTo={this.props.dateTo} errors={this.state.errors} stations={this.props.stations} tlgText={this.state.tlgText}/>
         <h3>Найденные телеграммы ({this.state.telegrams.length})</h3>
-        {/*<FoundTelegrams telegrams={this.state.telegrams}/>*/}
+        <FoundTelegrams telegrams={this.state.telegrams}/>
       </div>
     );
   }

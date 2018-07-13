@@ -1,5 +1,26 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  post 'applicants/to_buffer', to: 'applicants#to_buffer'
+  get 'applicants/applicants_list', to: 'applicants#applicants_list'
+  resources :applicants
+  get 'agro_dec_observations/search_agro_dec_telegrams', to: 'agro_dec_observations#search_agro_dec_telegrams'
+  post 'agro_dec_observations/create_agro_dec_telegram', to: 'agro_dec_observations#create_agro_dec_telegram'
+  get 'agro_dec_observations/get_last_telegrams', to: 'agro_dec_observations#get_last_telegrams'
+  get 'agro_dec_observations/input_agro_dec_telegrams', to: 'agro_dec_observations#input_agro_dec_telegrams'
+  put 'agro_dec_observations/update_agro_dec_telegram', to: 'agro_dec_observations#update_agro_dec_telegram'
+  resources :agro_dec_observations
+  resources :agro_works
+  resources :agro_damages
+  resources :agro_phases
+  resources :agro_crops
+  resources :agro_crop_categories
+  resources :agro_phase_categories
+  get 'agro_observations/search_agro_telegrams', to: 'agro_observations#search_agro_telegrams'
+  post 'agro_observations/create_agro_telegram', to: 'agro_observations#create_agro_telegram'
+  get 'agro_observations/get_last_telegrams', to: 'agro_observations#get_last_telegrams'
+  get 'agro_observations/input_agro_telegrams', to: 'agro_observations#input_agro_telegrams'
+  put 'agro_observations/update_agro_telegram', to: 'agro_observations#update_agro_telegram'
+  resources :agro_observations
   resources :meteo_links
   get 'storm_observations/search_storm_telegrams', to: 'storm_observations#search_storm_telegrams'
   post 'storm_observations/create_storm_telegram', to: 'storm_observations#create_storm_telegram'
@@ -28,4 +49,5 @@ Rails.application.routes.draw do
   resources :users
   resources :audits
   root 'sessions#new'
+  mount ActionCable.server, at: '/cable'
 end

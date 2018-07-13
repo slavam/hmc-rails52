@@ -20,6 +20,10 @@ class User < ActiveRecord::Base
     self.role == 'admin'
   end
   
+  def User.technicians
+    User.where("role = 'technicist'")
+  end
+  
   # Returns the hash digest of the given string.
   def User.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :

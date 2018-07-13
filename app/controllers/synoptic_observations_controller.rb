@@ -98,15 +98,16 @@ class SynopticObservationsController < ApplicationController
     @date_from ||= params[:date_from].present? ? params[:date_from] : Time.now.strftime("%Y-%m-%d")
     @date_to ||= params[:date_to].present? ? params[:date_to] : Time.now.strftime("%Y-%m-%d")
     term = params[:term].present? ? " and term = #{params[:term]}" : ''
-    station_id = params[:station_code].present? ? Station.find_by_code(params[:station_code]).id : nil
-    station = station_id.present? ? " and station_id = #{station_id}" : ''
+    # station_id = params[:station_code].present? ? Station.find_by_code(params[:station_code]).id : nil
+    station = params[:station_id].present? ? " and station_id = "+ params[:station_id] : ''
+    # station = station_id.present? ? " and station_id = #{station_id}" : ''
     text = params[:text].present? ? " and telegram like '%#{params[:text]}%'" : ''
        
     sql = "select * from synoptic_observations where observed_at >= '#{@date_from}' and observed_at <= '#{@date_to} 23:59:59' #{term} #{station} #{text} order by observed_at desc;"
     tlgs = SynopticObservation.find_by_sql(sql)
-    @stations = Station.all.order(:name)
-    @stations.to_a << Station.new(id: 0, code: 0, name: 'Любая')
-    Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{@stations.inspect}")
+    stations = Station.all.order(:name)
+    @stations = [Station.new(id: 0, code: 0, name: 'Любая')] + stations.to_a
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{@stations.inspect}")
     @telegrams = fields_short_list(tlgs)
     respond_to do |format|
       format.html 
@@ -188,7 +189,6 @@ class SynopticObservationsController < ApplicationController
     @stations = Station.all.order(:name)
     @telegrams = SynopticObservation.short_last_50_telegrams(current_user)
     @term = (Time.now.utc.hour/3*3).to_s.rjust(2, '0')
-    # @term = term < 10 ? '0'+term.to_s : term.to_s
     @input_mode = params[:input_mode]
   end
   
