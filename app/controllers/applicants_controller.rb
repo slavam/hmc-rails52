@@ -1,5 +1,5 @@
 class ApplicantsController < ApplicationController
-  before_action :find_applicant, only: [:show, :edit, :update, :destroy]
+  before_action :find_applicant, only: [:show, :edit, :update, :destroy, :delete_applicant]
   
   def index
     @applicants = Applicant.all.order(:created_at).reverse_order
@@ -65,6 +65,12 @@ class ApplicantsController < ApplicationController
     else
       redirect_to applicants_path
     end
+  end
+  
+  def delete_applicant
+    @applicant.destroy
+    @applicants = Applicant.all.order(:created_at).reverse_order
+    render json: {applicants: @applicants}
   end
   
   def destroy

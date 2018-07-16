@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   post 'applicants/to_buffer', to: 'applicants#to_buffer'
   get 'applicants/applicants_list', to: 'applicants#applicants_list'
+  delete 'applicants/delete_applicant/:id', to: 'applicants#delete_applicant'
   resources :applicants
   get 'agro_dec_observations/search_agro_dec_telegrams', to: 'agro_dec_observations#search_agro_dec_telegrams'
   post 'agro_dec_observations/create_agro_dec_telegram', to: 'agro_dec_observations#create_agro_dec_telegram'
