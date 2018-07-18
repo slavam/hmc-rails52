@@ -8,7 +8,7 @@ export default class SearchParamsForm extends React.Component{
       dateFrom: this.props.dateFrom,
       dateTo: this.props.dateTo,
       term: '99',
-      // stationCode: '0',
+      type: '99',
       stationId: '0',
       text: '',
       errors: this.props.errors,
@@ -27,11 +27,13 @@ export default class SearchParamsForm extends React.Component{
     this.setState({dateTo: e.target.value});
   }
   handleStationSelected(value){
-    // this.state.stationCode = value;
     this.state.stationId = value;
   }
   handleTermSelected(value){
-    this.state.term = value;
+    if(this.props.tlgType == 'synoptic')
+      this.state.term = value;
+    else
+      this.state.type = value;
   }
   handleTextChange(e) {
     this.setState({text: e.target.value});
@@ -39,7 +41,7 @@ export default class SearchParamsForm extends React.Component{
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.onTelegramSubmit({dateFrom: this.state.dateFrom, dateTo: this.state.dateTo, stationId: this.state.stationId, term: this.state.term, text: this.state.text});
+    this.props.onTelegramSubmit({dateFrom: this.state.dateFrom, dateTo: this.state.dateTo, stationId: this.state.stationId, term: this.state.term, text: this.state.text, type: this.state.type});
   }
 
   render() {
@@ -54,6 +56,14 @@ export default class SearchParamsForm extends React.Component{
       { value: '18', label: '18' },
       { value: '21', label: '21' }
     ];
+    const types = [
+      { value: '99', label: 'Любой' },
+      { value: 'ЩЭОЗМ', label: 'ЩЭОЗМ' },
+      { value: 'ЩЭОЯЮ', label: 'ЩЭОЯЮ' },
+    ];
+    const optHead = this.props.tlgType == 'synoptic' ? <th>Срок</th> : (this.props.tlgType == 'storm' ? <th>Тип</th> : <td></td>);
+    const optInput = (this.props.tlgType == 'synoptic' || this.props.tlgType == 'storm') ?
+      <td><TermSynopticSelect options={this.props.tlgType == 'synoptic' ? terms : types} onUserInput={this.handleTermSelected} defaultValue="99"/></td> : <td></td>;
     return (
       <form className="telegramForm" onSubmit={this.handleSubmit}>
         <table className="table table-hover">
@@ -61,7 +71,7 @@ export default class SearchParamsForm extends React.Component{
             <tr>
               <th>Дата с</th>
               <th>Дата по</th>
-              <th>Срок</th>
+              {optHead}
               <th>Метеостанция</th>
               <th>Текст</th>
             </tr>
@@ -70,7 +80,7 @@ export default class SearchParamsForm extends React.Component{
             <tr>
               <td><input type="date" name="input-date-from" value={this.state.dateFrom} onChange={this.dateFromChange} required="true" autoComplete="on" /></td>
               <td><input type="date" name="input-date-to" value={this.state.dateTo} onChange={this.dateToChange} required="true" autoComplete="on" /></td>
-              <td><TermSynopticSelect options={terms} onUserInput={this.handleTermSelected} defaultValue="99"/></td>
+              {optInput}
               <td><StationSelect options={this.props.stations} onUserInput={this.handleStationSelected} defaultValue="0" /></td>
               <td><input type="text" value={this.state.text} onChange={this.handleTextChange}/></td>
             </tr>

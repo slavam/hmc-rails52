@@ -95,7 +95,7 @@ export default class TelegramRow extends React.Component{
     if(this.state.source == 'outside')
       this.state.tlgText = this.props.telegram.telegram;
     var desiredLink = "/"+this.props.tlgType+"_observations/"+this.props.telegram.id;
-    var term = this.props.tlgType == 'synoptic' ? <td>{this.props.telegram.term < 10 ? '0'+this.props.telegram.term : this.props.telegram.term}</td> : '';
+    var term = this.props.tlgType == 'synoptic' ? <td>{this.props.telegram.term < 10 ? '0'+this.props.telegram.term : this.props.telegram.term}</td> : <td></td>;
     
     return (
       <tr key = {this.props.telegram.id}>

@@ -39,7 +39,6 @@ export default class ApplicantsList extends React.Component{
   }
   
   render(){
-    // const that = this;
     App.candidate = App.cable.subscriptions.create({
         channel: "CandidateChannel", 
       },
@@ -73,12 +72,24 @@ export default class ApplicantsList extends React.Component{
   }
 }
 
-document.addEventListener('turbolinks:load', () => {
-  const node = document.getElementById('applicants');
-  const applicants = JSON.parse(node.getAttribute('applicants'));
-  
-  ReactDOM.render(
-    <ApplicantsList applicants={applicants}/>,
-    document.getElementById('applicants_list')
-  );
-});
+// jQuery.fn.ready = (fn) => {
+//   $(this).on('turbolinks:load'), fn
+// };
+// if (!Turbolinks)
+//   $(document).on('page:fetch', nil);
+//   // this.reload;
+// Turbolinks.dispatch("turbolinks:load");
+// document.addEventListener('turbolinks:load', () => {
+// $(document).on('page:fetch', function() {
+// $(document).ready(function () {
+$(function () {
+    const node = document.getElementById('applicants');
+    if (node) {
+      const applicants = JSON.parse(node.getAttribute('applicants'));
+      
+      ReactDOM.render(
+        <ApplicantsList applicants={applicants}/>,
+        document.getElementById('applicants_list')
+      );
+    }
+  });

@@ -5,14 +5,15 @@ export default class FoundTelegrams extends React.Component{
     var rows = [];
     this.props.telegrams.forEach(t => {
       t.date = t.date.replace(/T/,' ');
-      rows.push(<FoundTelegram telegram={t} key={t.id}/>);
+      rows.push(<FoundTelegram telegram={t} key={t.id} tlgType={this.props.tlgType}/>);
     });
+    const optHead = this.props.tlgType == 'synoptic' ? <th>Срок</th> : <td></td>;
     return (
       <table className="table table-hover">
         <thead>
           <tr>
             <th width = "200px">Дата</th>
-            <th>Срок</th>
+            {optHead}
             <th>Метеостанция</th>
             <th>Текст</th>
           </tr>

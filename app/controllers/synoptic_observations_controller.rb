@@ -105,8 +105,7 @@ class SynopticObservationsController < ApplicationController
        
     sql = "select * from synoptic_observations where observed_at >= '#{@date_from}' and observed_at <= '#{@date_to} 23:59:59' #{term} #{station} #{text} order by observed_at desc;"
     tlgs = SynopticObservation.find_by_sql(sql)
-    stations = Station.all.order(:name)
-    @stations = [Station.new(id: 0, code: 0, name: 'Любая')] + stations.to_a
+    @stations = Station.stations_array_with_any
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{@stations.inspect}")
     @telegrams = fields_short_list(tlgs)
     respond_to do |format|
@@ -125,6 +124,7 @@ class SynopticObservationsController < ApplicationController
   end
     
   def show
+    @actions = Audit.where("auditable_id = ? and auditable_type = 'SynopticObservation'", @synoptic_observation.id)
   end
   
   def new
@@ -156,6 +156,8 @@ class SynopticObservationsController < ApplicationController
       telegram.term = term.to_i
       # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{telegram.inspect}")
       if telegram.save
+        new_telegram = {id: telegram.id, date: telegram.observed_at, term: term, station_name: telegram.station.name, telegram: telegram.telegram}
+        ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'synoptic'
         last_telegrams = SynopticObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams, tlgType: 'synoptic', currDate: telegram.date, inputMode: params[:input_mode], errors: ["Телеграмма корректна"]}
       else

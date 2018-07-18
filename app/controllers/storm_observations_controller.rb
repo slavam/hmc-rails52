@@ -1,5 +1,5 @@
 class StormObservationsController < ApplicationController
-  before_filter :find_storm_observation, only: [:show, :edit, :update, :destroy, :update_storm_telegram]
+  before_action :find_storm_observation, only: [:show, :edit, :update, :destroy, :update_storm_telegram]
 
   def get_conversion_params
   end
@@ -61,8 +61,7 @@ class StormObservationsController < ApplicationController
        
     sql = "select * from storm_observations where telegram_date >= '#{@date_from}' and telegram_date <= '#{@date_to} 23:59:59' #{station} #{type} #{text} order by telegram_date desc;"
     tlgs = StormObservation.find_by_sql(sql)
-    @stations = Station.all.order(:name)
-    @stations << {code: 0, name: 'Любая'}
+    @stations = Station.stations_array_with_any
     @telegrams = storm_fields_short_list(tlgs)
     respond_to do |format|
       format.html 
@@ -82,6 +81,7 @@ class StormObservationsController < ApplicationController
   end
   
   def show
+    @actions = Audit.where("auditable_id = ? and auditable_type = 'StormObservation'", @storm_observation.id)
   end
   
   def new
@@ -137,6 +137,8 @@ class StormObservationsController < ApplicationController
       telegram = StormObservation.new(storm_observation_params)
       telegram.telegram_date = date_dev 
       if telegram.save
+        new_telegram = {id: telegram.id, date: telegram.telegram_date, station_name: telegram.station.name, telegram: telegram.telegram}
+        ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'storm'
         last_telegrams = StormObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams, 
                       tlgType: 'storm', 

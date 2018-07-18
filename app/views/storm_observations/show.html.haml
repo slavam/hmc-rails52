@@ -22,6 +22,22 @@
     %tr
       %th Время
       %td= @storm_observation.event_time
+  %h3 История операций
+  %table{class: "table table-bordered"}
+    %thead
+      %tr
+        %th Версия
+        %th ID пользователя
+        %th Операция
+        %th Дата
+    %tbody
+    - @actions.each do |a|
+      %tr
+        %td= a.version
+        %td= a.user.login
+        %td= a.action
+        %td= a.created_at
+
   - if current_user.role == 'technicist'
     = link_to 'Ввод телеграмм', '/storm_observations/input_storm_telegrams?input_mode=normal'
     %br

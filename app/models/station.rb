@@ -6,4 +6,9 @@ class Station < ActiveRecord::Base
     stations.each { |s| ret[s.code] = s.id }
     ret
   end
+  
+  def self.stations_array_with_any
+    stations = Station.all.order(:name)
+    return [Station.new(id: 0, code: 0, name: 'Любая')] + stations.to_a
+  end
 end
