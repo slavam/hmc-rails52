@@ -1,0 +1,18 @@
+= will_paginate
+%div{ class:"row"}
+  %div{ class: "col-md-6 col-md-offset-3"}
+    %h1 Audit records list
+    %table{class: "table table-hover"}
+      - for audit in @audits
+        %tr
+          %td
+            = audit.user.present? ? audit.user.login.capitalize : ''
+            = audit.action
+            = audit.auditable_type.downcase
+            with id 
+            = audit.auditable_id
+            %span.audit_time
+              = distance_of_time_in_words_to_now(audit.created_at)
+              ago.
+            = link_to 'Details', audit_path(audit)
+= will_paginate

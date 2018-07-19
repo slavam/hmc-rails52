@@ -178,7 +178,7 @@ class SynopticObservationsController < ApplicationController
   
   def heat_donbass_show
     @calc_date = params[:calc_date].present? ? params[:calc_date] : Time.now.strftime("%Y-%m-%d")
-    @temperatures = get_temperatures(@calc_date) # ("2017-10-08") 
+    @temperatures = get_temperatures(@calc_date) 
   end
   
   def get_temps

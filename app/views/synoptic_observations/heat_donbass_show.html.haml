@@ -1,0 +1,4 @@
+%div{ class:"row"}
+  #form_and_result
+  #calc_params{ temperatures: @temperatures.to_json, calcDate: @calc_date.to_json }
+  = javascript_pack_tag 'heat_donbass/heat_donbass'

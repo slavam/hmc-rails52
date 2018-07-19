@@ -1,8 +1,8 @@
 class AuditsController < ApplicationController
-  before_filter :require_admin
+  before_action :require_admin
 
   def index
-    @audits = Audit.all.order(:created_at).reverse_order
+    @audits = Audit.paginate(page: params[:page]).order(:created_at).reverse_order
   end
 
   def show

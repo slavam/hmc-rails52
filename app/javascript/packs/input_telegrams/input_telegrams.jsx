@@ -59,7 +59,7 @@ export default class InputTelegrams extends React.Component{
   }
   
   handleFormSubmit(telegram) {
-    var that = this;
+    // var that = this;
     var tlgData = {};
     var desiredLink = '';
     switch(telegram.tlgType) {
@@ -98,25 +98,24 @@ export default class InputTelegrams extends React.Component{
       data: tlgData, 
       url: desiredLink
       }).done((data) => {
-        that.setState({telegrams: data.telegrams, tlgType: data.tlgType, currDate: data.currDate, inputMode: data.inputMode, errors: data.errors});
+        this.setState({telegrams: data.telegrams, tlgType: data.tlgType, currDate: data.currDate, inputMode: data.inputMode, errors: data.errors});
         alert(this.state.errors[0]);
       }).fail((res) => {
-        that.setState({errors: ["Ошибка записи в базу"]});
+        this.setState({errors: ["Ошибка записи в базу"]});
       }); 
   }
   
   handleInBuffer(forBuffer){
-    var that = this;
     $.ajax({
       type: 'POST',
       dataType: 'json',
       data: forBuffer, 
       url: "/applicants/to_buffer"
       }).done((data) => {
-        that.setState({telegrams: data.telegrams, tlgType: data.tlgType, currDate: data.currDate, inputMode: "normal", errors: []});
+        this.setState({telegrams: data.telegrams, tlgType: data.tlgType, currDate: data.currDate, inputMode: "normal", errors: []});
         alert("Данные занесены в буфер");
       }).fail((res) => {
-        that.setState({errors: ["Ошибка записи в буфер"]});
+        this.setState({errors: ["Ошибка записи в буфер"]});
       }); 
   }
 
