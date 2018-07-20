@@ -1,0 +1,5 @@
+- if @bulletin.bulletin_type == 'storm'
+  %h1= "Создать штормовое предупреждение"
+- else
+  %h1= "Создать морское штормовое предупреждение"
+= render partial: 'storm_form'

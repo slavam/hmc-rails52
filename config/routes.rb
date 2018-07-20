@@ -49,6 +49,18 @@ Rails.application.routes.draw do
   delete '/logout',  to: 'sessions#destroy'
   resources :users
   resources :audits
+  
+  get 'bulletins/print_bulletin', to: 'bulletins#print_bulletin'
+  get 'bulletins/new_sea_bulletin', to: 'bulletins#new_sea_bulletin'
+  get 'bulletins/new_radiation_bulletin', to: 'bulletins#new_radiation_bulletin'
+  get 'bulletins/new_tv_bulletin', to: 'bulletins#new_tv_bulletin'
+  get 'bulletins/new_storm_bulletin', to: 'bulletins#new_storm_bulletin'
+  get 'bulletins/new_holiday_bulletin', to: 'bulletins#new_holiday_bulletin'
+  get 'bulletins/:id/bulletin_show', to: 'bulletins#bulletin_show'
+  get 'bulletins/list', to: 'bulletins#list'
+  get 'bulletins/help_show', to: 'bulletins#help_show'
+  resources :bulletins
+  
   root 'sessions#new'
   mount ActionCable.server, at: '/cable'
 end

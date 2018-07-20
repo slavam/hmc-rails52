@@ -1,0 +1,112 @@
+- I18n.locale = :ru
+.container
+  = form_for @bulletin do |form|
+    %table{class: "table table-hover"}
+      %tr
+        %th Отчетная дата
+        %td= form.text_field :report_date, size: 10
+      %tr
+        %th Номер бюллетеня
+        %td= form.text_field :curr_number, size: 8
+      %tr
+        %th Лето
+        %td= form.check_box :summer
+      %tr
+        %th Тип бюллетеня
+        %td= form.select :bulletin_type, options_for_select([["Ежедневный", "daily"], ["Море", "sea"], ["Выходного дня", "holiday"], ["Шторм", 'storm'], ["Радиация", 'radiation'], ["Телевидение", 'tv']], @bulletin.bulletin_type.present? ? @bulletin.bulletin_type : "daily")
+      /
+        %tr
+          %th Синоптик 2
+          %td= form.select :synoptic2, options_for_select([["Маренкова Н.В.", "Маренкова Н.В."], ["Осокина Л.Н.", "Осокина Л.Н."]], @bulletin.synoptic2.present? ? @bulletin.synoptic2 : "Маренкова Н.В.")
+      %tr
+        %th Шторм
+        %td= form.text_area :storm, cols: "30", rows: "5"
+      %tr
+        %th Прогноз погоды на сутки
+        %td= form.text_area :forecast_day, cols: "30", rows: "5"
+      %tr
+        %th Прогноз погоды на сутки по Донецку
+        %td= form.text_area :forecast_day_city, cols: "30", rows: "5"
+      %tr
+        %th Дежурный синоптик
+        %td= form.select :duty_synoptic, options_for_select(Bulletin.synoptic_list)
+      %tr
+        %th Периодный прогноз
+        %td= form.text_area :forecast_period, cols: "30", rows: "5"
+      %tr
+        %th Консультативный прогноз
+        %td= form.text_area :forecast_advice, cols: "30", rows: "5"
+      %tr
+        %th Ориентировочный прогноз
+        %td= form.text_area :forecast_orientation, cols: "30", rows: "5"
+      %tr
+        %th Синоптик
+        %td= form.select :synoptic1, options_for_select(Bulletin.synoptic_list)
+      %table{class: "table table-hover"}
+        - report_date_prev = (@bulletin.report_date - 1.day) 
+        -#.to_s(:custom_datetime)
+        %th Метеорологические данные
+        %td
+          %tr
+            %th= "Название метеостанции"
+            %th= "Максимальная вчера днем"
+            %th= "Минимальная сегодня ночью"
+            %th= "Средняя за сутки #{report_date_prev.day} #{I18n.l(report_date_prev, format: "%B")}"
+            %th= "В 9.00 часов сегодня"
+            %th= "Количество осадков за сутки (мм)"
+            -# %th= "Высота снежного покрова (см)"
+            %th= "Минимальная температура почвы"
+            -# %th= "Глубина промерзания (см)"
+            %th= "Минимальная относительная влажность воздуха (%)" 
+            %th= "Максимальная скорость ветра (м/с)"
+            %th= "Явления погоды"
+          - m_d = []
+          - m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
+          %tr
+            %td= "Донецк"
+            - (1..9).each do |i|
+              %td= text_field_tag "val_"+i.to_s, m_d[i-1].present? ? m_d[i-1] : '', size: 4
+          %tr
+            %td= "Дебальцево"
+            - (10..18).each do |i|
+              %td= text_field_tag "val_"+i.to_s, m_d[i-1].present? ? m_d[i-1] : '', size: 4
+          %tr
+            %td= "Амвросиевка"
+            - (19..27).each do |i|
+              %td= text_field_tag "val_"+i.to_s, m_d[i-1].present? ? m_d[i-1] : '', size: 4
+          %tr
+            %td= "Седово"
+            - (28..36).each do |i|
+              %td= text_field_tag "val_"+i.to_s, m_d[i-1].present? ? m_d[i-1] : '', size: 4
+      - c_d = []
+      - c_d = @bulletin.climate_data.split(";") if @bulletin.climate_data.present?
+    %table{class: "table table-hover"}
+      %tr
+        %th Обзор погоды
+        %td= form.text_area :agro_day_review, cols: "100", rows: "5"
+      %tr
+        %th Средняя за сутки температура воздуха #{report_date_prev.day} #{I18n.l(report_date_prev, format: "%B")}
+        %td= text_field_tag :avg_day_temp, c_d[0].present? ? c_d[0] : '', size: 5
+      %tr
+        %th Максимальная температура воздуха #{report_date_prev.day} #{I18n.l(report_date_prev, format: "%B")}
+        %td 
+          %tr
+            %th Значение
+            %td= text_field_tag :max_temp, c_d[1].present? ? c_d[1] : '', size: 5
+          %tr
+            %th Отмечалась в
+            %td= text_field_tag :max_temp_year, c_d[2].present? ? c_d[2] : '', size: 8
+      %tr
+        - report_date = @bulletin.report_date.to_s(:custom_datetime)
+        %th Минимальная температура воздуха #{@bulletin.report_date.day} #{I18n.l(@bulletin.report_date, format: "%B")}
+        %td 
+          %tr
+            %th Значение
+            %td= text_field_tag :min_temp, c_d[3].present? ? c_d[3] : '', size: 5
+          %tr
+            %th Отмечалась в
+            %td= text_field_tag :min_temp_year, c_d[4].present? ? c_d[4] : '', size: 8
+
+    %br
+    = submit_tag "Сохранить"
+= link_to "Список", "/bulletins/list?bulletin_type=daily"

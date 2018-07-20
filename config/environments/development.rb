@@ -61,6 +61,10 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
   
+  config.i18n.available_locales = [:en, :ru]
+  
+  config.i18n.default_locale = :ru
+  
   # config.action_cable.url = 'ws://localhost:3000/cable'
   config.action_cable.url = 'ws://localhost:3000/cable'
   # Add Cloud9 origin for Action Cable requests.
