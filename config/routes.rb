@@ -60,7 +60,33 @@ Rails.application.routes.draw do
   get 'bulletins/list', to: 'bulletins#list'
   get 'bulletins/help_show', to: 'bulletins#help_show'
   resources :bulletins
-  
+    delete 'pollution_values/delete_value/:id', to: 'pollution_values#delete_value'
+  resources :pollution_values
+  get 'measurements/chem_forma1_as_protocol', to: 'measurements#chem_forma1_as_protocol'
+  get 'measurements/weather_update', to: 'measurements#weather_update'
+  get 'measurements/get_weather_and_concentrations', to: 'measurements#get_weather_and_concentrations'
+  post 'measurements/save_pollutions', to: 'measurements#save_pollutions'
+  post 'measurements/create_or_update', to: 'measurements#create_or_update'
+  get 'measurements/get_convert_params', to: 'measurements#get_convert_params'
+  get 'measurements/chem_forma2', to: 'measurements#chem_forma2'
+  get 'measurements/chem_forma1_tza', to: 'measurements#chem_forma1_tza'
+  get 'measurements/get_chem_forma1_tza_data', to: 'measurements#get_chem_forma1_tza_data'
+  get 'measurements/print_forma1_tza', to: 'measurements#print_forma1_tza'
+  get 'measurements/get_chem_forma2_data', to: 'measurements#get_chem_forma2_data'
+  get 'measurements/print_forma2', to: 'measurements#print_forma2'
+  post 'measurements/convert_akiam', to: 'measurements#convert_akiam'
+  get 'measurements/observations_quantity', to: 'measurements#observations_quantity'
+  get 'measurements/wind_rose', to: 'measurements#wind_rose'
+  post 'measurements/print_wind_rose', to: 'measurements#print_wind_rose'
+  get 'measurements/print_wind_rose', to: 'measurements#print_wind_rose'
+  get 'measurements/calc_normal_volume', to: 'measurements#calc_normal_volume'
+  resources :measurements
+  resources :materials
+  resources :posts
+  resources :cities
+  resources :stations
+  resources :chem_coefficients
+  resources :laboratories
   root 'sessions#new'
   mount ActionCable.server, at: '/cable'
 end

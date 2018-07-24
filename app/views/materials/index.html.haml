@@ -1,0 +1,36 @@
+%div{ class:"row"}
+  %div{ class: "col-md-6 col-md-offset-3"}
+    %h1= "Вещества"
+    %table{class: "table table-hover"}
+      %thead
+        %tr
+          %th= "Id"
+          %th= "Название"
+          %th= "Единица измерения"
+          %th= "ПДК средняя"
+          %th= "ПДК макс."
+          %th= "vesmn"
+          %th= "Класс опасности"
+          %th= "imax"
+          %th= "v"
+          %th= "grad"
+          %th= "point"
+          %th= "Наблюдается?"
+          %th= "Действия"
+          
+      %tbody
+        - @materials.each do |m| 
+          %tr
+            %td= m.id
+            %td= m.name
+            %td= m.unit
+            %td= m.pdksr
+            %td= m.pdkmax
+            %td= m.vesmn
+            %td= m.klop
+            %td= m.imax
+            %td= m.v
+            %td= m.grad
+            %td= m.point
+            %td= m.active ? "Да" : "Нет"
+            %td= link_to "Изменить", edit_material_path(m)

@@ -2,4 +2,3 @@
   #form_and_last_telegrams
   #input_params{telegrams: @telegrams.to_json, currDate: Time.now.utc.strftime("%Y-%m-%d").to_json, tlgType: 'synoptic'.to_json, stations: @stations.to_json, term: @term.to_json, inputMode: @input_mode.to_json}
   = javascript_pack_tag 'input_telegrams/input_telegrams'
-%br

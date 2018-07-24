@@ -38,7 +38,9 @@ gem 'webpacker'
 # gem 'mini_racer', platforms: :ruby
 
 gem 'prawn-rails'
-gem 'prawn-table'
+gem 'prawn-table', :git => 'https://github.com/straydogstudio/prawn-table.git', ref: '759a27b6'
+# gem 'prawn-table', '~> 0.2.2'
+# gem 'prawn-table'
 
 # Use CoffeeScript for .coffee assets and views
 # gem 'coffee-rails', '~> 4.2'

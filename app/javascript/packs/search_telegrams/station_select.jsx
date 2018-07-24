@@ -11,7 +11,8 @@ export default class StationSelect extends React.Component{
     return <select onChange={this.handleOptionChange} defaultValue = {this.props.defaultValue}>
       {
         this.props.options.map(function(op) {
-          return <option key={op.id} value={op.id}>{op.name+' ('+op.code+')'}</option>;
+          let name = op.code ? op.name+' ('+op.code+')' : op.name;
+          return <option key={op.id} value={op.id}>{name}</option>;
         })
       }
     </select>;

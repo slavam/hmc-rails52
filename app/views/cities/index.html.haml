@@ -1,0 +1,9 @@
+.container
+  %h1= "Города"
+  %table{class: "table table-hover"}
+    %thead
+      %tr
+        %th= "Название"
+        %th= "Код"
+    %tbody
+      = render @cities

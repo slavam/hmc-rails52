@@ -1,0 +1,4 @@
+.container
+  #form_and_measurement
+  #input_params{date: @date_loc.to_json, term: @chem_term.to_s.rjust(2, '0').to_json, materials: @materials.to_json, posts: @posts.to_json, postId: @post_id.to_json, weather: @weather.to_json, concentrations: @concentrations.to_json, error: @error.to_json}
+  = javascript_pack_tag 'input_measurements/input_measurements'
