@@ -37,6 +37,8 @@ gem 'webpacker'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'mini_racer', platforms: :ruby
 
+gem 'descriptive_statistics', '~> 2.5', '>= 2.5.1'
+
 gem 'prawn-rails'
 gem 'prawn-table', :git => 'https://github.com/straydogstudio/prawn-table.git', ref: '759a27b6'
 # gem 'prawn-table', '~> 0.2.2'

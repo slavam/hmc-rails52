@@ -1,0 +1,4 @@
+.container
+  #form_and_report
+  #input_params{ dateFrom: @date_from[0,10].to_json, dateTo: @date_to[0,10].to_json, cityId: @city_id.to_json, cities: @cities.to_json, materials: @materials.to_json, posts: @posts.to_json, observations: @quantity.to_json, total: @total.to_json}
+  = javascript_pack_tag 'chem_reports/observations_quantity'

@@ -1,0 +1,4 @@
+.container
+  #form_and_report
+  #input_params{ meteoParams: @meteoparams.to_json, stations: @stations.to_json, year: @year.to_json, month: @month.to_json}
+  = javascript_pack_tag 'chem_reports/meteoparams'

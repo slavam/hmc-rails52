@@ -1,4 +1,3 @@
-# require 'descriptive_statistics'
 class MeasurementsController < ApplicationController
   before_action :require_chemist
   before_action :find_measurement, only: [:destroy]
@@ -528,7 +527,6 @@ class MeasurementsController < ApplicationController
   
   def create_or_update
     measurement = Measurement.find_by(date: params[:measurement][:date], term: params[:measurement][:term].to_i, post_id: params[:measurement][:post_id].to_i)
-    # measurement = Measurement.where("date = ? AND term = ? AND post_id = ?", params[:measurement][:date], params[:measurement][:term].to_i, params[:measurement][:post_id].to_i).first
     if measurement.nil?
       measurement = Measurement.new(measurement_params)
       measurement.rhumb = wind_direction_to_rhumb(measurement.wind_direction)
@@ -536,7 +534,6 @@ class MeasurementsController < ApplicationController
     end
     pollutions = params[:values]
     write_pollutions(measurement, pollutions)
-    # redirect_to new_measurement_path
     concentrations = measurement.get_density_and_concentration
     render :json => { :error => "Данные сохранены", concentrations: concentrations }
   end

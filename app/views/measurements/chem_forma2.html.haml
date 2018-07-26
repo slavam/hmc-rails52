@@ -1,0 +1,4 @@
+.container
+  #form_and_report
+  #input_params{ dateFrom: @date_from.to_json, dateTo: @date_to.to_json, regionType: @region_type.to_json, scopeName: @scope_name.to_json, placeId: @place_id.to_json, pollutions: @pollutions.to_json, posts: @region_type == 'post' ? @posts.to_json : @cities.to_json}
+  = javascript_pack_tag 'chem_reports/forma2'

@@ -163,16 +163,15 @@ export default class InputMeasurements extends React.Component{
       { value: '13', label: '13' },
       { value: '19', label: '19' }
       ];
-    var self = this;
     var ths = [<th key='1001'></th>];
     var tds = [<td key='1002'><b>Значение</b></td>];
     var tds2 = [<td key='1003'><b>Концентрация</b></td>];
-    this.props.materials.map(function(m) {
+    this.props.materials.map( m => {
       ths.push(<th key={m.id}>{m.name}</th>);
       tds.push(<td key={m.id}>
-      <input type="number" value={self.state.values[m.id] == null ? '' : self.state.values[m.id]} pattern="[0-9]+([,\.][0-9]+)?" onChange={self.handleValueChange} name={m.id} min="0.0" step="0.001"/>
+      <input type="number" value={this.state.values[m.id] == null ? '' : this.state.values[m.id]} pattern="[0-9]+([,\.][0-9]+)?" onChange={this.handleValueChange} name={m.id} min="0.0" step="0.001"/>
       </td>);
-      tds2.push(<td key={m.id}>{self.state.concs[m.id] == null ? '' : self.state.concs[m.id]}</td>);
+      tds2.push(<td key={m.id}>{this.state.concs[m.id] == null ? '' : this.state.concs[m.id]}</td>);
     });
     let pressure = (this.state.weather == null || this.state.weather.atmosphere_pressure == null) ? <td></td> : <td>{this.state.weather.atmosphere_pressure} / {(this.state.weather.atmosphere_pressure/1.334).toFixed()}</td>;
     let temperature = '';

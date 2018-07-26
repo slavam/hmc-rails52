@@ -1,0 +1,4 @@
+.container
+  #form_and_report_and_radars
+  #input_params{ matrix: @matrix.to_json, year: @year.to_json, cities: @cities.to_json, cityName: @city_name.to_json, maxJul: @max_jul.to_json, cityId: @city_id.to_json}
+  = javascript_pack_tag 'chem_reports/wind_rose'

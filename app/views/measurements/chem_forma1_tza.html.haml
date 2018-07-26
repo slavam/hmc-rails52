@@ -1,0 +1,4 @@
+.container
+  #form_and_report
+  #input_params{year: @year.to_json, month: @month.to_json, posts: @posts.to_json, substanceNum: @matrix[:substance_num].to_json, siteDescription: @matrix[:site_description].to_json, pollutions: @matrix[:pollutions].to_json, titles: @matrix[:substance_names].to_json, measureNum: @matrix[:measure_num].to_json, maxValues: @matrix[:max_values].to_json, avgValues: @matrix[:avg_values].to_json, postId: @post_id.to_json}
+  = javascript_pack_tag 'chem_reports/forma1_tza'
