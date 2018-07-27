@@ -4,8 +4,10 @@
   "dependencies": {
     "@rails/webpacker": "3.5",
     "babel-preset-react": "^6.24.1",
+    "chart.js": "^2.7.2",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
+    "react-chartjs-2": "^2.7.4",
     "react-dom": "^16.4.1"
   },
   "devDependencies": {

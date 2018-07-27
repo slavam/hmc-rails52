@@ -212,8 +212,6 @@ class MeasurementsController < ApplicationController
     end
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>роза_ветров: #{wind_by_month.inspect} , total-> #{total}, wind_total=>#{only_wind_total} ") 
     @matrix = Hash.new(0)
-    # @max_year = 0
-    # @max_jan = 0
     @max_jul = 0
     (0..8).each do |d|
       if wind_by_month.key?([0,d])
@@ -221,13 +219,11 @@ class MeasurementsController < ApplicationController
       else
         @matrix[[0,d]] = 0
       end
-      # @max_year = @matrix[[0,d]] if @matrix[[0,d]] > @max_year
       if wind_by_month.key?([1,d])
         @matrix[[1,d]] = wind_by_month[[1,d]]*100.0/(d == 8 ? total_01 : wind_01) 
       else
         @matrix[[1,d]] = 0
       end
-      # @max_jan = @matrix[[1,d]] if @matrix[[1,d]] > @max_jan
       if wind_by_month.key?([7,d])
         @matrix[[7,d]] = wind_by_month[[7,d]]*100.0/(d == 8 ? total_07 : wind_07) 
       else
@@ -235,7 +231,6 @@ class MeasurementsController < ApplicationController
       end
       @max_jul = @matrix[[7,d]] if @matrix[[7,d]] > @max_jul
     end
-    # @duble = wind_by_month
     
     respond_to do |format|
       format.html
