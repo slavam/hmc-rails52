@@ -1,0 +1,4 @@
+.container
+  #form_and_report
+  #input_params{dateFrom: @date_from.to_json, dateTo: @date_to.to_json, post: @post.to_json, posts: @posts.to_json, volumeTotal: @volume_total.round(4).to_json, volumeSampleDust: @volume_sample_dust.to_json, numberMeasurements: @number_measurements.to_json}
+  = javascript_pack_tag 'chem_reports/volume_normal'

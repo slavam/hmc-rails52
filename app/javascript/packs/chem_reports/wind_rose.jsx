@@ -83,17 +83,18 @@ export default class WindRose extends React.Component{
     $.ajax({
       type: 'POST',
       dataType: 'json',
-      data: {canvas_image: canvasImg}, 
-      url: "/measurements/print_wind_rose" 
+      // format: 'pdf',
+      data: {canvas_image: canvasImg, year: this.state.year, city_id: this.state.cityId}, 
+      url: "/measurements/print_wind_rose.pdf" 
       }).done((data) => {
-        // alert("График сохранен. Все готово для печати");
-        $.ajax({
-          type: 'GET',
-          dataType: 'json',
-          url: "/measurements/wind_rose.pdf?year="+this.state.year+"&city_id="+this.state.cityId
-        }).done(()=>{
-        }).fail(()=>{
-        });
+        alert("График сохранен. Все готово для печати");
+        // $.ajax({
+        //   type: 'GET',
+        //   dataType: 'json',
+        //   url: "/measurements/wind_rose.pdf?year="+this.state.year+"&city_id="+this.state.cityId
+        // }).done(()=>{
+        // }).fail(()=>{
+        // });
       }).fail((res) => {
         alert("Проблемы с сохранением графика");
       }); 
