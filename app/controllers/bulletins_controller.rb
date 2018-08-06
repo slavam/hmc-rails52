@@ -113,8 +113,8 @@ class BulletinsController < ApplicationController
   end
 
   def pdf_2_png
-    pdf = Magick::ImageList.new("app/assets/pdf_folder/#{@bulletin.pdf_filename(current_user.id)}")
-    # pdf = MiniMagick::Image.open("app/assets/pdf_folder/#{@bulletin.pdf_filename(current_user.id)}")
+    # pdf = Magick::ImageList.new("app/assets/pdf_folder/#{@bulletin.pdf_filename(current_user.id)}")
+    pdf = MiniMagick::Image.open("app/assets/pdf_folder/#{@bulletin.pdf_filename(current_user.id)}")
     
     if Rails.env.production?
       pdf.write("#{Rails.root}/public/images/#{@bulletin.png_filename(current_user.id)}")  # production only
