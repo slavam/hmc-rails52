@@ -9,9 +9,10 @@ export default class NewTelegramForm extends React.Component{
     super(props);
     this.observation = {};
     this.state = {
+      // minutes: this.props.minutes,
       currDate:  this.props.currDate,
       tlgType: this.props.tlgType,
-      tlgTerm: this.props.term,  
+      tlgTerm: this.props.tlgTerm,  
       tlgText: '',
       errors: [] 
     };
@@ -139,7 +140,7 @@ export default class NewTelegramForm extends React.Component{
     ];
 
     let tlgDate = this.props.inputMode == 'normal' ? <td>{this.state.currDate}</td> : <td><input type="date" name="input-date" value={this.state.currDate} onChange={this.dateChange} required="true" autoComplete="on" /></td>;
-    let term = this.state.tlgType == 'synoptic' ? <td>{this.state.tlgTerm}</td> : <td></td>;
+    let term = this.state.tlgType == 'synoptic' ? <td>{this.props.inputMode == 'normal' ? this.props.tlgTerm : this.state.tlgTerm}</td> : <td></td>;
     let termSelect = this.state.tlgType == 'synoptic' ? <td><TermSynopticSelect options={terms} onUserInput={this.handleTermSelected} defaultValue={this.state.tlgTerm} readOnly="readonly"/></td> : <td></td>;
     let inBuffer = this.state.errors[0] > '' && this.state.tlgText > '' ? <button style={{float: "right"}} type="button" id="in-buffer" onClick={(event) => this.inBufferClick(event)}>В буфер</button> : '';
     return (
@@ -151,6 +152,7 @@ export default class NewTelegramForm extends React.Component{
               <th>Дата</th>
               <th>Тип</th>
               {this.state.tlgType == 'synoptic' ? <th>Срок</th> : <th></th>}
+              {/*<th>Minutes</th>*/}
             </tr>
           </thead>
           <tbody>
@@ -158,6 +160,7 @@ export default class NewTelegramForm extends React.Component{
               {tlgDate}
               <td><TermSynopticSelect options={types} onUserInput={this.handleTypeSelected} defaultValue={this.state.tlgType}/></td>
               {this.props.inputMode == 'normal' ? term : termSelect}
+              {/*<td>{this.props.minutes} props.minutes=>{this.props.minutes} states.minutes=>{this.state.minutes}</td>*/}
             </tr>
           </tbody>
         </table>

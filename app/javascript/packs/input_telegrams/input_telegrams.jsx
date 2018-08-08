@@ -52,12 +52,13 @@ export default class InputTelegrams extends React.Component{
       let t = Math.floor(d.getUTCHours() / 3) * 3;
       // let m = d.getUTCMinutes();
       // if(this.state.minutes != m){
+      //   console.log(+this.state.tlgTerm+'; '+t);
       //   this.setState({minutes: m});
       //   // alert (t+'; tlgTerm=>'+(+this.state.tlgTerm))
       // }
         
       if (t != (+this.state.tlgTerm)){
-        console.log('t=>'+t+'; this.state.tlgTerm=>'+(+this.state.tlgTerm));
+        // console.log('Смена срока t=>'+t+'; this.state.tlgTerm=>'+(+this.state.tlgTerm));
         this.setState({ tlgTerm: ('0'+t).slice(-2), currDate: d.getUTCFullYear()+'-'+('0'+(d.getUTCMonth()+1)).slice(-2)+'-'+('0'+d.getUTCDate()).slice(-2)});
       }
     }
@@ -175,7 +176,7 @@ export default class InputTelegrams extends React.Component{
     return(
       <div>
         <h3>Новая телеграмма</h3>
-        <NewTelegramForm currDate={this.state.currDate} tlgType={this.state.tlgType} onTelegramTypeChange={this.handleTelegramTypeChanged} onFormSubmit={this.handleFormSubmit} stations={this.props.stations} term={this.state.tlgTerm} inputMode={this.props.inputMode} onInBuffer={this.handleInBuffer}/>
+        <NewTelegramForm currDate={this.state.currDate} tlgType={this.state.tlgType} onTelegramTypeChange={this.handleTelegramTypeChanged} onFormSubmit={this.handleFormSubmit} stations={this.props.stations} tlgTerm={this.state.tlgTerm} inputMode={this.props.inputMode} onInBuffer={this.handleInBuffer} minutes={this.state.minutes}/>
         {telegramTable}
       </div>
     );

@@ -58,6 +58,6 @@ test:
 
 production:
   <<: *default
-  database: hms_production
+  database: hmc_production
   username: db-admin
   
