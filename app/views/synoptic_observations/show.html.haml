@@ -154,6 +154,8 @@
         %td= a.user.login
         %td= a.action
         %td= a.created_at
+  = link_to 'Поиск', @search_link
+  %br
   - if current_user.role == 'technicist'
     = link_to 'Ввод телеграмм', '/synoptic_observations/input_synoptic_telegrams?input_mode=normal'
     %br

@@ -2,20 +2,6 @@ class SynopticObservationsController < ApplicationController
   # before_filter :require_observer_or_technicist
   before_action :find_synoptic_observation, only: [:show, :update_synoptic_telegram] 
   
-  # def arm_sin_files_from_a_directory
-  #       two_dimentional_array = []
-  #       combined = []
-  #       file_directory = "#{Rails.root}/tmp/2018_08"
-  #       Dir.glob("**/*.[a-z]")
-  #       files = Dir.glob(file_directory + "/*.{00,03,06,09,12,15,18,21}")
-  #       # .each.with_index do |item, index|
-  #           # @file_details = two_dimentional_array << create_array_of_data(item, combined)
-  #       # end
-  #   # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{files.inspect}") 
-  #   # Rails.logger.debug("++++++++++++++ #{file_directory.inspect}")
-  #   redirect_to synoptic_observations_arm_sin_files_list_path
-  # end
-  
   def download_arm_sin_file
     date = params[:date] 
     term = params[:term]
@@ -183,17 +169,33 @@ class SynopticObservationsController < ApplicationController
   def search_synoptic_telegrams
     @date_from ||= params[:date_from].present? ? params[:date_from] : Time.now.strftime("%Y-%m-%d")
     @date_to ||= params[:date_to].present? ? params[:date_to] : Time.now.strftime("%Y-%m-%d")
-    term = params[:term].present? ? " and term = #{params[:term]}" : ''
-    # station_id = params[:station_code].present? ? Station.find_by_code(params[:station_code]).id : nil
-    station = params[:station_id].present? ? " and station_id = "+ params[:station_id] : ''
-    # station = station_id.present? ? " and station_id = #{station_id}" : ''
-    text = params[:text].present? ? " and telegram like '%#{params[:text]}%'" : ''
+    if params[:term].present?
+      @term =  params[:term]
+      and_term = " and term = #{@term}"
+    else 
+      @term = '99'
+      and_term = ''
+    end
+    if params[:station_id].present?
+      @station_id = params[:station_id]
+      station = " and station_id = #{@station_id}"
+    else
+      @station_id = '0'
+      station = ''
+    end
+    if params[:text].present?
+      @text = params[:text]
+      and_text = " and telegram like '%#{@text}%'"
+    else
+      @text = ''
+      and_text = ''
+    end
        
-    sql = "select * from synoptic_observations where observed_at >= '#{@date_from}' and observed_at <= '#{@date_to} 23:59:59' #{term} #{station} #{text} order by observed_at desc;"
+    sql = "select * from synoptic_observations where observed_at >= '#{@date_from}' and observed_at <= '#{@date_to} 23:59:59' #{and_term} #{station} #{and_text} order by observed_at desc;"
     tlgs = SynopticObservation.find_by_sql(sql)
     @stations = Station.stations_array_with_any
-    # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{@stations.inspect}")
     @telegrams = fields_short_list(tlgs)
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{@telegrams.inspect}")
     respond_to do |format|
       format.html 
       format.json { render json: {telegrams: @telegrams} }
@@ -210,6 +212,13 @@ class SynopticObservationsController < ApplicationController
   end
     
   def show
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{params.inspect}")
+    date_from ||= params[:date_from].present? ? params[:date_from] : Time.now.strftime("%Y-%m-%d")
+    date_to ||= params[:date_to].present? ? params[:date_to] : Time.now.strftime("%Y-%m-%d")
+    term = params[:term].present? ? "&term=#{params[:term]}" : ''
+    station = params[:station_id].present? ? "&station_id=#{params[:station_id]}" : ''
+    text = params[:text].present? ? "&text=#{params[:text]}" : ''
+    @search_link = "/search_synoptic_telegrams?telegram_type=synoptic&date_from=#{date_from}&date_to=#{date_to}#{station}#{text}#{term}"
     @actions = Audit.where("auditable_id = ? and auditable_type = 'SynopticObservation'", @synoptic_observation.id)
   end
   

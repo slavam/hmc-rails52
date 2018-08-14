@@ -7,10 +7,10 @@ export default class SearchParamsForm extends React.Component{
     this.state = {
       dateFrom: this.props.dateFrom,
       dateTo: this.props.dateTo,
-      term: '99',
-      type: '99',
-      stationId: '0',
-      text: '',
+      term: this.props.tlgTerm,
+      type: this.props.tlgType,
+      stationId: this.props.stationId,
+      text: this.props.tlgText,
       errors: this.props.errors,
     };
     this.dateFromChange = this.dateFromChange.bind(this);
@@ -63,7 +63,7 @@ export default class SearchParamsForm extends React.Component{
     ];
     const optHead = this.props.tlgType == 'synoptic' ? <th>Срок</th> : (this.props.tlgType == 'storm' ? <th>Тип</th> : <td></td>);
     const optInput = (this.props.tlgType == 'synoptic' || this.props.tlgType == 'storm') ?
-      <td><TermSynopticSelect options={this.props.tlgType == 'synoptic' ? terms : types} onUserInput={this.handleTermSelected} defaultValue="99"/></td> : <td></td>;
+      <td><TermSynopticSelect options={this.props.tlgType == 'synoptic' ? terms : types} onUserInput={this.handleTermSelected} defaultValue={this.props.tlgTerm}/></td> : <td></td>;
     return (
       <form className="telegramForm" onSubmit={this.handleSubmit}>
         <table className="table table-hover">
@@ -81,7 +81,7 @@ export default class SearchParamsForm extends React.Component{
               <td><input type="date" name="input-date-from" value={this.state.dateFrom} onChange={this.dateFromChange} required="true" autoComplete="on" /></td>
               <td><input type="date" name="input-date-to" value={this.state.dateTo} onChange={this.dateToChange} required="true" autoComplete="on" /></td>
               {optInput}
-              <td><StationSelect options={this.props.stations} onUserInput={this.handleStationSelected} defaultValue="0" /></td>
+              <td><StationSelect options={this.props.stations} onUserInput={this.handleStationSelected} defaultValue={this.props.stationId} /></td>
               <td><input type="text" value={this.state.text} onChange={this.handleTextChange}/></td>
             </tr>
           </tbody>

@@ -7,18 +7,28 @@ export default class SearchSynopticTelegrams extends React.Component{
     super(props);
     this.state = {
       telegrams: this.props.telegrams,
+      dateFrom: this.props.dateFrom,
+      dateTo: this.props.dateTo,
+      tlgTerm: this.props.tlgTerm,
+      tlgText: this.props.tlgText,
+      stationId: this.props.stationId,
       errors: {}
     };
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
   }
 
   handleFormSubmit(params) {
+    this.state.dateFrom = params.dateFrom;
+    this.state.dateTo = params.dateTo;
+    this.state.tlgText = params.text;
+    this.state.stationId = params.stationId;
     var that = this;
     let url = '';
     let stationId = params.stationId == '0' ? '' : "&station_id="+params.stationId;
     let text = params.text.length > 1 ? "&text="+params.text : '';
     switch(this.props.tlgType) {
       case 'synoptic':
+        this.state.tlgTerm = params.term;
         let term = params.term == '99' ? '' : "&term="+params.term;
         url = "search_synoptic_telegrams?date_from="+params.dateFrom+"&date_to="+params.dateTo+term+stationId+text;
         break;
@@ -48,9 +58,9 @@ export default class SearchSynopticTelegrams extends React.Component{
     return (
       <div>
         <h3>Параметры поиска</h3>
-        <SearchParamsForm onTelegramSubmit={this.handleFormSubmit} dateFrom={this.props.dateFrom} dateTo={this.props.dateTo} errors={this.state.errors} stations={this.props.stations} tlgText={this.state.tlgText} tlgType={this.props.tlgType}/>
+        <SearchParamsForm onTelegramSubmit={this.handleFormSubmit} dateFrom={this.props.dateFrom} dateTo={this.props.dateTo} errors={this.state.errors} stations={this.props.stations} tlgText={this.state.tlgText} tlgType={this.props.tlgType} tlgTerm={this.state.tlgTerm}  tlgText={this.state.tlgText} stationId={this.state.stationId}/>
         <h3>Найденные телеграммы ({this.state.telegrams.length})</h3>
-        <FoundTelegrams telegrams={this.state.telegrams} tlgType={this.props.tlgType}/>
+        <FoundTelegrams telegrams={this.state.telegrams} tlgType={this.props.tlgType} dateFrom={this.state.dateFrom} dateTo={this.state.dateTo} tlgTerm={this.state.tlgTerm} tlgText={this.state.tlgText} stationId={this.state.stationId}/>
       </div>
     );
   }
@@ -66,9 +76,12 @@ $(function () {
     const dateFrom = JSON.parse(node.getAttribute('dateFrom'));
     const dateTo = JSON.parse(node.getAttribute('dateTo'));
     const tlgType = JSON.parse(node.getAttribute('tlgType'));
+    const tlgTerm = JSON.parse(node.getAttribute('tlgTerm'));
+    const tlgText = JSON.parse(node.getAttribute('tlgText'));
+    const stationId = JSON.parse(node.getAttribute('stationId'));
   
     ReactDOM.render(
-      <SearchSynopticTelegrams telegrams={telegrams} stations={stations} dateFrom={dateFrom} dateTo={dateTo} tlgType={tlgType}/>,
+      <SearchSynopticTelegrams telegrams={telegrams} stations={stations} dateFrom={dateFrom} dateTo={dateTo} tlgType={tlgType} tlgTerm={tlgTerm} tlgText={tlgText} stationId={stationId}/>,
       document.getElementById('form_and_result')
     );
   } 
