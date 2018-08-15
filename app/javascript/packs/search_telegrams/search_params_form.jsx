@@ -8,6 +8,7 @@ export default class SearchParamsForm extends React.Component{
       dateFrom: this.props.dateFrom,
       dateTo: this.props.dateTo,
       term: this.props.tlgTerm,
+      stormType: this.props.stormType,
       type: this.props.tlgType,
       stationId: this.props.stationId,
       text: this.props.tlgText,
@@ -33,7 +34,7 @@ export default class SearchParamsForm extends React.Component{
     if(this.props.tlgType == 'synoptic')
       this.state.term = value;
     else
-      this.state.type = value;
+      this.state.stormType = value;
   }
   handleTextChange(e) {
     this.setState({text: e.target.value});
@@ -41,7 +42,7 @@ export default class SearchParamsForm extends React.Component{
 
   handleSubmit(e) {
     e.preventDefault();
-    this.props.onTelegramSubmit({dateFrom: this.state.dateFrom, dateTo: this.state.dateTo, stationId: this.state.stationId, term: this.state.term, text: this.state.text, type: this.state.type});
+    this.props.onTelegramSubmit({dateFrom: this.state.dateFrom, dateTo: this.state.dateTo, stationId: this.state.stationId, term: this.state.term, text: this.state.text, type: this.state.type, stormType: this.state.stormType});
   }
 
   render() {
@@ -63,7 +64,7 @@ export default class SearchParamsForm extends React.Component{
     ];
     const optHead = this.props.tlgType == 'synoptic' ? <th>Срок</th> : (this.props.tlgType == 'storm' ? <th>Тип</th> : <td></td>);
     const optInput = (this.props.tlgType == 'synoptic' || this.props.tlgType == 'storm') ?
-      <td><TermSynopticSelect options={this.props.tlgType == 'synoptic' ? terms : types} onUserInput={this.handleTermSelected} defaultValue={this.props.tlgTerm}/></td> : <td></td>;
+      <td><TermSynopticSelect options={this.props.tlgType == 'synoptic' ? terms : types} onUserInput={this.handleTermSelected} defaultValue={this.props.tlgType == 'synoptic' ? this.props.tlgTerm : this.props.stormType}/></td> : <td></td>;
     return (
       <form className="telegramForm" onSubmit={this.handleSubmit}>
         <table className="table table-hover">

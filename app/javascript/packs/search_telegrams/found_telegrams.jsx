@@ -31,7 +31,7 @@ export default class FoundTelegrams extends React.Component{
       t.date = t.date.replace(/T/,' ');
       rows.push(<FoundTelegram telegram={t} key={t.id} tlgType={this.props.tlgType} dateFrom={this.props.dateFrom} dateTo={this.props.dateTo} tlgTerm={this.props.tlgTerm} tlgText={this.props.tlgText} stationId={this.props.stationId}/>);
     });
-    const optHead = this.props.tlgType == 'synoptic' ? <th>Срок</th> : <td></td>;
+    const optHead = this.props.tlgType == 'synoptic' ? <th>Срок</th> : this.props.tlgType == 'storm' ? <th>Тип</th> : <th></th>;
     return (
       <table className="table table-hover">
         <thead>

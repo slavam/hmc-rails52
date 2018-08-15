@@ -54,12 +54,32 @@ class StormObservationsController < ApplicationController
   def search_storm_telegrams
     @date_from ||= params[:date_from].present? ? params[:date_from] : Time.now.strftime("%Y-%m-%d")
     @date_to ||= params[:date_to].present? ? params[:date_to] : Time.now.strftime("%Y-%m-%d")
-    station_id = params[:station_code].present? ? Station.find_by_code(params[:station_code]).id : nil
-    station = station_id.present? ? " and station_id = #{station_id}" : ''
-    text = params[:text].present? ? " and telegram like '%#{params[:text]}%'" : ''
-    type = params[:type].present? ? " and telegram_type = '#{params[:type]}'" : ''
+    # station_id = params[:station_code].present? ? Station.find_by_code(params[:station_code]).id : nil
+    # station = station_id.present? ? " and station_id = #{station_id}" : ''
+    # text = params[:text].present? ? " and telegram like '%#{params[:text]}%'" : ''
+    if params[:storm_type].present?
+      and_storm_type = " and telegram_type = '#{params[:storm_type]}'"
+      @storm_type = params[:storm_type]
+    else
+      and_storm_type = ''
+      @storm_type = ''
+    end
+    if params[:station_id].present?
+      @station_id = params[:station_id]
+      station = " and station_id = #{@station_id}"
+    else
+      @station_id = '0'
+      station = ''
+    end
+    if params[:text].present?
+      @text = params[:text]
+      and_text = " and telegram like '%#{@text}%'"
+    else
+      @text = ''
+      and_text = ''
+    end
        
-    sql = "select * from storm_observations where telegram_date >= '#{@date_from}' and telegram_date <= '#{@date_to} 23:59:59' #{station} #{type} #{text} order by telegram_date desc;"
+    sql = "select * from storm_observations where telegram_date >= '#{@date_from}' and telegram_date <= '#{@date_to} 23:59:59' #{station} #{and_storm_type} #{and_text} order by telegram_date desc;"
     tlgs = StormObservation.find_by_sql(sql)
     @stations = Station.stations_array_with_any
     @telegrams = storm_fields_short_list(tlgs)
@@ -81,6 +101,12 @@ class StormObservationsController < ApplicationController
   end
   
   def show
+    date_from ||= params[:date_from].present? ? params[:date_from] : Time.now.strftime("%Y-%m-%d")
+    date_to ||= params[:date_to].present? ? params[:date_to] : Time.now.strftime("%Y-%m-%d")
+    add_param = params[:storm_type].present? ? "&term=#{params[:storm_type]}" : ''
+    station = params[:station_id].present? ? "&station_id=#{params[:station_id]}" : ''
+    text = params[:text].present? ? "&text=#{params[:text]}" : ''
+    @search_link = "/storm_observations/search_storm_telegrams?telegram_type=storm&date_from=#{date_from}&date_to=#{date_to}#{station}#{text}#{add_param}"
     @actions = Audit.where("auditable_id = ? and auditable_type = 'StormObservation'", @storm_observation.id)
   end
   
