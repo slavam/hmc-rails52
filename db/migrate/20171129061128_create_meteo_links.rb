@@ -1,4 +1,4 @@
-class CreateMeteoLinks < ActiveRecord::Migration[5.1]
+class CreateMeteoLinks < ActiveRecord::Migration[5.2]
   def change
     create_table :meteo_links do |t|
       t.string :name, null: false

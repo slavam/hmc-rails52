@@ -1,4 +1,4 @@
-class AddIndexWeatherToCropConditions < ActiveRecord::Migration[5.1]
+class AddIndexWeatherToCropConditions < ActiveRecord::Migration[5.2]
   def change
     add_column :crop_conditions, :index_weather_1, :integer # 3 92 6 1 Xr благоприятные погодные условия табл. 20
     add_column :crop_conditions, :index_weather_2, :integer # 3 92 6 2 Xr благоприятные погодные условия табл. 20

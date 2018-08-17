@@ -1,16 +1,16 @@
 class User < ActiveRecord::Base
-  belongs_to :station
+  ROLES = %w(admin vip technicist accountant synoptic agro hydro specialist user chemist observer)
   attr_accessor :remember_token
   validates :login, presence: true, length: { maximum: 50, minimum: 4 }, uniqueness: { case_sensitive: false }
   validates :last_name, presence: true, length: { maximum: 50 }
   validates :first_name, length: { maximum: 50 }
   validates :middle_name, length: { maximum: 50 }
+  validates :role, :inclusion=> { :in => ROLES }
   has_secure_password
   validates :password, presence: true, length: { minimum: 4 }, :on => :create
-  ROLES = [:admin, :vip, :technicist, :accountant, :synoptic, :agro, :hydro, :specialist, :user, :chemist, :observer]
   after_initialize :set_default_role, :if => :new_record?
+  
   audited except: [:password_digest, :remember_digest],  allow_mass_assignment: true
-  # attr_protected :logins, :audit_ids
 
   def set_default_role
     self.role ||= :user

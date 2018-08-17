@@ -2,27 +2,8 @@ class SynopticObservationsController < ApplicationController
   # before_filter :require_observer_or_technicist
   before_action :find_synoptic_observation, only: [:show, :update_synoptic_telegram] 
   
-  def download_arm_sin_file
-    date = params[:date] 
-    term = params[:term]
-    year = date[0, 4]
-    month = date[5,2]
-    day = date[8,2]
-    send_file("#{Rails.root}/tmp/#{year}_#{month}/#{day}_#{month}/AAXX.#{term}")
-    # redirect_to synoptic_observations_telegrams_4_download_path
-  end
-  
-  def arm_sin_files_list
-    date =  params[:download][:date] 
-    term = params[:download][:term]
-    @list = [{date: date, term: term}]
-  end
-  
   def telegrams_4_download
     @date = (Time.now-3.hours).utc.strftime("%Y-%m-%d") # предыдущий срок
-    # term = (Time.now-3.hours).utc.hour / 3 * 3
-    # @term = term.to_s.rjust(2, '0')
-    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{Time.now.to_s}") 
   end
   
   def arm_sin_data_fetch
@@ -70,8 +51,19 @@ class SynopticObservationsController < ApplicationController
     # render json: {total: total, ourTelegramsNum: our_telegrams_num, webTelegramsNum: our_telegrams_num}
   end
   
-  def make_row_4_download(day, term, telegram)
-    day+term+'1 '+telegram[6..-1].gsub(/ 333 /, " 33333 ").gsub(/ 555 /, " 55555 ")
+  def arm_sin_files_list
+    date = params[:download][:date] 
+    term = params[:download][:term]
+    @list = [{date: date, term: term}]
+  end
+  
+  def download_arm_sin_file
+    date = params[:date] 
+    term = params[:term]
+    year = date[0, 4]
+    month = date[5,2]
+    day = date[8,2]
+    send_file("#{Rails.root}/tmp/#{year}_#{month}/#{day}_#{month}/AAXX.#{term}")
   end
   
   def get_meteoparams
@@ -599,4 +591,10 @@ class SynopticObservationsController < ApplicationController
         {id: rec.id, date: rec.observed_at, term: rec.term, station_name: stations[rec.station_id-1].name, telegram: rec.telegram}
       end
     end
+    
+    def make_row_4_download(day, term, telegram)
+      day+term+'1 '+telegram[6..-1].gsub(/ 333 /, " 33333 ").gsub(/ 555 /, " 55555 ")
+    end
+  
+    
 end

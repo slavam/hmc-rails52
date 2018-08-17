@@ -1,4 +1,4 @@
-class AddFieldsToAgroObservations < ActiveRecord::Migration[5.1]
+class AddFieldsToAgroObservations < ActiveRecord::Migration[5.2]
   def change
     add_column :agro_observations, :temperature_max_12, :integer            # 3 90 TxTx максимальная температура воздуха за 12 дневных часов
     add_column :agro_observations, :temperature_avg_24, :decimal, precision: 5, scale: 1         # 3 90 1 T24T24T24 средняя за сутки температура воздуха табл. 2

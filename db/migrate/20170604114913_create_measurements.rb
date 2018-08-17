@@ -1,4 +1,4 @@
-class CreateMeasurements < ActiveRecord::Migration[5.1]
+class CreateMeasurements < ActiveRecord::Migration[5.2]
   def change
     create_table :measurements do |t|
       t.integer :post_id

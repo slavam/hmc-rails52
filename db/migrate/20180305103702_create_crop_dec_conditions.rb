@@ -1,4 +1,4 @@
-class CreateCropDecConditions < ActiveRecord::Migration[5.1]
+class CreateCropDecConditions < ActiveRecord::Migration[5.2]
   def change
     create_table :crop_dec_conditions do |t|
             # декадная агрометеорологическая информация 

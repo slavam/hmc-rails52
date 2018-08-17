@@ -1,4 +1,4 @@
-class CreateConcentrations < ActiveRecord::Migration[5.1]
+class CreateConcentrations < ActiveRecord::Migration[5.2]
   def change
     create_table :concentrations do |t|
       t.integer :city_id

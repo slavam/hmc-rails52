@@ -1,4 +1,4 @@
-class CreateAgroCrops < ActiveRecord::Migration[5.1]
+class CreateAgroCrops < ActiveRecord::Migration[5.2]
   def change
     create_table :agro_crops do |t|
       t.references :agro_crop_category, :null => false

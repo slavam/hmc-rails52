@@ -1,4 +1,4 @@
-class CreateChemCoefficients < ActiveRecord::Migration[5.1]
+class CreateChemCoefficients < ActiveRecord::Migration[5.2]
   def change
     create_table :chem_coefficients do |t|
       t.integer :material_id, null: false

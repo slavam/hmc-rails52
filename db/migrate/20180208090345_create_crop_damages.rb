@@ -1,4 +1,4 @@
-class CreateCropDamages < ActiveRecord::Migration[5.1]
+class CreateCropDamages < ActiveRecord::Migration[5.2]
   def change
     create_table :crop_damages do |t|
       t.integer :agro_observation_id

@@ -22,7 +22,7 @@
             %td= user.first_name
             %td= user.middle_name
             %td= user.position
-            %td= user.station.present? ? user.station.name : ''
+            %td= user.station_id.present? ? Station.find(user.station_id).name : ''
             %td= link_to 'Изменить', edit_user_path(user.id)
             %td= link_to 'Удалить', user, method: :delete, data: { confirm: 'Уверены?' }
     = link_to "Добавить пользователя", new_user_path

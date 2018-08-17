@@ -1,4 +1,4 @@
-class CreateAgroDecObservations < ActiveRecord::Migration[5.1]
+class CreateAgroDecObservations < ActiveRecord::Migration[5.2]
   def change
     create_table :agro_dec_observations do |t|
       t.date    :date_dev                                           # дата наблюдения

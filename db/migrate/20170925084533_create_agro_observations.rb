@@ -1,4 +1,4 @@
-class CreateAgroObservations < ActiveRecord::Migration[5.1]
+class CreateAgroObservations < ActiveRecord::Migration[5.2]
   def change
     create_table :agro_observations do |t|
       t.string :telegram_type, null: false, default: "ЩЭАГЯ"  # ЩЭАГЯ - ежедневная, ЩЭАГУ - декадная

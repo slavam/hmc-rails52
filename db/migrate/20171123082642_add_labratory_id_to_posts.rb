@@ -1,4 +1,4 @@
-class AddLabratoryIdToPosts < ActiveRecord::Migration[5.1]
+class AddLabratoryIdToPosts < ActiveRecord::Migration[5.2]
   def change
     add_column(:posts, :laboratory_id, :integer)
   end

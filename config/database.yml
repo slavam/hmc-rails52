@@ -29,7 +29,7 @@ development:
 
 test:
   <<: *default
-  database: meteo_test
+  database: hmc_test
 
 production:
   <<: *default

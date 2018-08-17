@@ -1,4 +1,4 @@
-class CreateSynopticObservations < ActiveRecord::Migration[5.1]
+class CreateSynopticObservations < ActiveRecord::Migration[5.2]
   def change
     create_table :synoptic_observations do |t|
       t.date :date  # дата наблюдения
