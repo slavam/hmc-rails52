@@ -5,10 +5,20 @@ class BulletinsController < ApplicationController
   # def index
   #   @bulletins = Bulletin.all.order(:created_at).reverse_order
   # end
+  def bulletins_select
+    @tab_titles = ['Бюллетени ежедневные', 'Бюллетени морские', 'Бюллетени выходного дня']
+    @bulletins = Bulletin.where(bulletin_type: 'daily').order(:created_at).reverse_order
+  end
 
   def list
-    @bulletin_type = params[:bulletin_type]
+    @bulletin_type = params[:bulletin_type] 
     @bulletins = Bulletin.where(bulletin_type: @bulletin_type).order(:created_at).reverse_order
+    respond_to do |format|
+      format.html 
+      format.json do
+        render json: {bulletins: @bulletins}
+      end
+    end
   end
   
   def new_holiday_bulletin

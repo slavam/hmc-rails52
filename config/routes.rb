@@ -64,6 +64,7 @@ Rails.application.routes.draw do
   get 'bulletins/:id/bulletin_show', to: 'bulletins#bulletin_show'
   get 'bulletins/list', to: 'bulletins#list'
   get 'bulletins/help_show', to: 'bulletins#help_show'
+  get 'bulletins/bulletins_select', to: 'bulletins#bulletins_select'
   resources :bulletins
     delete 'pollution_values/delete_value/:id', to: 'pollution_values#delete_value'
   resources :pollution_values
