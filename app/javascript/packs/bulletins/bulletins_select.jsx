@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import Tabs from '../tabs/components/Tabs';
 import Tab from '../tabs/components/Tab';
 import TabList from '../tabs/components/TabList';
-// import TabPanels from './tab_panels';
+import FillTabPanel from './fill_tab_panel';
 import TabPanel from '../tabs/components/TabPanel';
 
 export default class BulletinsSelect extends React.Component {
@@ -11,7 +11,6 @@ export default class BulletinsSelect extends React.Component {
     super(props);
     this.state = { 
       tabIndex: 0,
-      // tabTitles: this.props.tabTitles,
       tabContent: this.props.tabContent
     };
   }
@@ -33,8 +32,11 @@ export default class BulletinsSelect extends React.Component {
     this.props.tabTitles.forEach( (t, i) => {
       tabTitles.push(<Tab key={i}>{t}</Tab>);
     });
-    let panels = new Array(this.props.tabTitles.length).fill(<TabPanel></TabPanel>);
-    panels[this.state.tabIndex] = <TabPanel>{this.state.tabContent[0]['curr_number']}</TabPanel>;
+    // let panels = new Array(this.props.tabTitles.length).fill(<TabPanel></TabPanel>);
+    let panels = [];
+    for(var i=0; i<this.props.tabTitles.length; ++i) 
+      panels.push(<TabPanel key={i}></TabPanel>);
+    panels[this.state.tabIndex] = <TabPanel key={this.state.tabIndex}><FillTabPanel tabContent={this.state.tabContent}/></TabPanel>;
     return (
       <Tabs selectedIndex={this.state.tabIndex} onSelect={tabIndex => this.handleSelect(tabIndex)}>
         <TabList>
@@ -51,9 +53,9 @@ $(function(){
   if(node){
     const tabTitles = JSON.parse(node.getAttribute('tabTitles'));
     const tabContent = JSON.parse(node.getAttribute('tabContent'));
-  ReactDOM.render(
-    <BulletinsSelect tabTitles={tabTitles} tabContent={tabContent} />,
-    document.getElementById('tabs_and_result')
+    ReactDOM.render(
+      <BulletinsSelect tabTitles={tabTitles} tabContent={tabContent} />,
+      document.getElementById('tabs_and_result')
     );
   }
 })

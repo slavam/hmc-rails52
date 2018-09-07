@@ -67,6 +67,8 @@ Rails.application.routes.draw do
   get 'bulletins/bulletins_select', to: 'bulletins#bulletins_select'
   resources :bulletins
     delete 'pollution_values/delete_value/:id', to: 'pollution_values#delete_value'
+  get 'pollution_values/background_concentrations', to: 'pollution_values#background_concentrations'
+  # get 'pollution_values/get_chem_bc_data', to: 'pollution_values#get_chem_bc_data'
   resources :pollution_values
   get 'measurements/chem_forma1_as_protocol', to: 'measurements#chem_forma1_as_protocol'
   get 'measurements/weather_update', to: 'measurements#weather_update'

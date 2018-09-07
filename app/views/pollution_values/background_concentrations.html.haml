@@ -1,0 +1,6 @@
+-# %h1= @start_date.inspect
+.container
+  %h1 Промежуточный результат расчета фоновых концентраций
+  #form_and_report
+  #input_params{ startDate: @start_date.to_json, endDate: @end_date.to_json, posts: @posts.to_json, siteDescription: @site_description.to_json, substances: @materials.to_json, substance: @substance.to_json, concentrations: @concentrations.to_json}
+  = javascript_pack_tag 'chem_background_concentrations/chem_background_concentrations'
