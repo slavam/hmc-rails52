@@ -26,72 +26,69 @@ class BackgroundConcentrations < Prawn::Document
   end
   def concentrations_table
     table = []
-    # 
-    # (0..6).each do |j|
-      row = []
-      row[0] = "Число измерений"
-      row[1] = @concentrations[:calm].size
-      row[2] = @concentrations[:north].size
-      row[3] = @concentrations[:east].size
-      row[4] = @concentrations[:south].size
-      row[5] = @concentrations[:west].size
-      row[6] = @concentrations[:measurement_total]
-      table << row
-      row = []
-      row[0] = "Средняя концентрация за период"
-      row[1] = @concentrations[:avg_calm]
-      row[2] = @concentrations[:avg_north]
-      row[3] = @concentrations[:avg_east]
-      row[4] = @concentrations[:avg_south]
-      row[5] = @concentrations[:avg_west]
-      row[6] = @concentrations[:avg_total]
-      table << row
-      row = []
-      row[0] = "Среднеквадратичное отклонение"
-      row[1] = @concentrations[:standard_deviation_calm]
-      row[2] = @concentrations[:standard_deviation_north]
-      row[3] = @concentrations[:standard_deviation_east]
-      row[4] = @concentrations[:standard_deviation_south]
-      row[5] = @concentrations[:standard_deviation_west]
-      row[6] = @concentrations[:standard_deviation_total]
-      table << row
-      row = []
-      row[0] = "Коэффициент вариации"
-      row[1] = @concentrations[:variance_calm]
-      row[2] = @concentrations[:variance_north]
-      row[3] = @concentrations[:variance_east]
-      row[4] = @concentrations[:variance_south]
-      row[5] = @concentrations[:variance_west]
-      row[6] = @concentrations[:variance_total]
-      table << row
-      row = []
-      row[0] = "Функция перехода"
-      row[1] = @concentrations[:transition_function_calm]
-      row[2] = @concentrations[:transition_function_north]
-      row[3] = @concentrations[:transition_function_east]
-      row[4] = @concentrations[:transition_function_south]
-      row[5] = @concentrations[:transition_function_west]
-      row[6] = ''
-      table << row
-      row = []
-      row[0] = "Концентрация"
-      row[1] = @concentrations[:concentration_calm]
-      row[2] = @concentrations[:concentration_north]
-      row[3] = @concentrations[:concentration_east]
-      row[4] = @concentrations[:concentration_south]
-      row[5] = @concentrations[:concentration_west]
-      row[6] = @concentrations[:conc_bcg_avg5]
-      table << row
-      row = []
-      row[0] = "Фоновая концентрация"
-      row[1] = @concentrations[:background_concentration_calm]
-      row[2] = @concentrations[:background_concentration_north]
-      row[3] = @concentrations[:background_concentration_east]
-      row[4] = @concentrations[:background_concentration_south]
-      row[5] = @concentrations[:background_concentration_west]
-      row[6] = ''
-      table << row
-    # end
+    row = []
+    row[0] = "Число измерений"
+    row[1] = @concentrations[:calm].size
+    row[2] = @concentrations[:north].size
+    row[3] = @concentrations[:east].size
+    row[4] = @concentrations[:south].size
+    row[5] = @concentrations[:west].size
+    row[6] = @concentrations[:measurement_total]
+    table << row
+    row = []
+    row[0] = "Средняя концентрация за период"
+    row[1] = @concentrations[:avg_calm]
+    row[2] = @concentrations[:avg_north]
+    row[3] = @concentrations[:avg_east]
+    row[4] = @concentrations[:avg_south]
+    row[5] = @concentrations[:avg_west]
+    row[6] = @concentrations[:avg_total]
+    table << row
+    row = []
+    row[0] = "Среднеквадратичное отклонение"
+    row[1] = @concentrations[:standard_deviation_calm]
+    row[2] = @concentrations[:standard_deviation_north]
+    row[3] = @concentrations[:standard_deviation_east]
+    row[4] = @concentrations[:standard_deviation_south]
+    row[5] = @concentrations[:standard_deviation_west]
+    row[6] = @concentrations[:standard_deviation_total]
+    table << row
+    row = []
+    row[0] = "Коэффициент вариации"
+    row[1] = @concentrations[:variance_calm]
+    row[2] = @concentrations[:variance_north]
+    row[3] = @concentrations[:variance_east]
+    row[4] = @concentrations[:variance_south]
+    row[5] = @concentrations[:variance_west]
+    row[6] = @concentrations[:variance_total]
+    table << row
+    row = []
+    row[0] = "Функция перехода"
+    row[1] = @concentrations[:transition_function_calm]
+    row[2] = @concentrations[:transition_function_north]
+    row[3] = @concentrations[:transition_function_east]
+    row[4] = @concentrations[:transition_function_south]
+    row[5] = @concentrations[:transition_function_west]
+    row[6] = ''
+    table << row
+    row = []
+    row[0] = "Концентрация"
+    row[1] = @concentrations[:concentration_calm]
+    row[2] = @concentrations[:concentration_north]
+    row[3] = @concentrations[:concentration_east]
+    row[4] = @concentrations[:concentration_south]
+    row[5] = @concentrations[:concentration_west]
+    row[6] = @concentrations[:conc_bcg_avg5]
+    table << row
+    row = []
+    row[0] = "Фоновая концентрация"
+    row[1] = @concentrations[:background_concentration_calm]
+    row[2] = @concentrations[:background_concentration_north]
+    row[3] = @concentrations[:background_concentration_east]
+    row[4] = @concentrations[:background_concentration_south]
+    row[5] = @concentrations[:background_concentration_west]
+    row[6] = ''
+    table << row
     [
       ['', '<b>Ветер менее 3 м/с</b>','<b>Ветер северный</b>', '<b>Ветер восточный</b>', '<b>Ветер южный</b>', '<b>Ветер западный</b>', '<b>Всего</b>']
     ] + table
