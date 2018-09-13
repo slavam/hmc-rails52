@@ -112,6 +112,10 @@ export default class InputTelegrams extends React.Component{
         tlgData = {storm_observation: telegram.observation};
         desiredLink = "/storm_observations/create_storm_telegram?date="+telegram.currDate+"&input_mode="+this.state.inputMode;
         break;
+      case 'radiation':
+        tlgData = {radiation_observation: telegram.observation};
+        desiredLink = "/radiation_observations/create_radiation_telegram?date="+telegram.currDate+"&inputMode="+this.state.inputMode;
+        break;
       case 'sea':
         tlgData = {sea_observation: telegram.observation};
         desiredLink = "/sea_observations/create_sea_telegram?date="+telegram.currDate+"&input_mode="+this.state.inputMode;
@@ -157,7 +161,7 @@ export default class InputTelegrams extends React.Component{
   
   render(){
     this.timer = setInterval(this.tick, 1000);
-    console.log(new Date());
+    // console.log(new Date());
     App.candidate = App.cable.subscriptions.create({
         channel: "SynopticTelegramChannel", 
       },

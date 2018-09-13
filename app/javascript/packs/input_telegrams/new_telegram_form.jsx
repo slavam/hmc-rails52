@@ -3,6 +3,7 @@ import TermSynopticSelect from '../search_telegrams/term_synoptic_select';
 import { checkSynopticTelegram } from './check_synoptic_telegram';
 import { checkStormTelegram } from './check_storm_telegram';
 import { checkAgroTelegram } from './check_agro_telegram';
+import { checkRadiationTelegram } from './check_radiation_telegram';
 
 export default class NewTelegramForm extends React.Component{
   constructor(props) {
@@ -56,6 +57,12 @@ export default class NewTelegramForm extends React.Component{
         break;
       case 'storm':
         if (!checkStormTelegram(text, this.props.stations, errors, this.observation)){
+          this.setState({errors: errors});
+          return;
+        }
+        break;
+      case 'radiation':
+        if(!checkRadiationTelegram(text, this.props.stations, errors, this.observation)){
           this.setState({errors: errors});
           return;
         }
@@ -126,6 +133,7 @@ export default class NewTelegramForm extends React.Component{
       { value: 'agro',      label: 'Агро ежедневные' },
       { value: 'agro_dec',  label: 'Агро декадные' },
       { value: 'storm',     label: 'Штормовые' },
+      { value: 'radiation', label: 'Радиация' },
       // { value: 'sea',       label: 'Морские' },
     ];
     const terms = [

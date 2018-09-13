@@ -2,6 +2,7 @@ import React from 'react';
 import { checkSynopticTelegram } from './check_synoptic_telegram';
 import { checkStormTelegram } from './check_storm_telegram';
 import { checkAgroTelegram } from './check_agro_telegram';
+import { checkRadiationTelegram } from './check_radiation_telegram';
 import TextTelegramEditForm from './text_telegram_edit_form';
 
 
@@ -72,6 +73,14 @@ export default class TelegramRow extends React.Component{
         }
         tlgData = {storm_observation: observation};
         desiredLink = "/storm_observations/update_storm_telegram?id="+this.props.telegram.id+"&telegram="+tlgText;
+        break;
+      case 'radiation':
+        if(!checkRadiationTelegram(tlgText, this.props.stations, errors, observation)){
+          this.setState({errors: errors});
+          return;
+        }
+        tlgData = {radiation_observation: observation};
+        desiredLink = "/radiation_observations/update_radiation_telegram?id="+this.props.telegram.id+"&telegram="+tlgText;
         break;
       case 'sea':
         observation.day_obs = tlgText.substr(5,2);

@@ -1,0 +1,43 @@
+.container
+  %h3 Телеграмма о радиационной обстановке
+  %table{class: "table table-bordered"}
+    %tr
+      %th Дата ввода:
+      %td= @radiation_observation.created_at
+    %tr
+      %th Дата наблюдения:
+      %td= @radiation_observation.date_observation
+    %tr
+      %th Текст:
+      %td= @radiation_observation.telegram
+    %tr
+      %th Метеостанция:
+      %td= @radiation_observation.station.name
+    %tr
+      %th Час наблюдения (время местное)
+      %td= @radiation_observation.hour_observation
+  %h3 История операций
+  %table{class: "table table-bordered"}
+    %thead
+      %tr
+        %th Версия
+        %th ID пользователя
+        %th Операция
+        %th Дата
+    %tbody
+    - @actions.each do |a|
+      %tr
+        %td= a.version
+        %td= a.user.login
+        %td= a.action
+        %td= a.created_at
+  -#= link_to 'Поиск', @search_link
+  %br
+  - if current_user.role == 'technicist'
+    = link_to 'Ввод телеграмм', '/radiation_observations/input_radiation_telegrams?input_mode=normal'
+    %br
+    = link_to "Список", radiation_observations_path  
+  - elsif current_user.role == 'specialist'
+    = link_to 'Возврат', '/radiation_observations/input_radiation_telegrams?input_mode=normal'
+  - else
+    = link_to "Список", radiation_observations_path  

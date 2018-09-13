@@ -1,0 +1,16 @@
+.container
+  %h3 Телеграммы о радиационной обстановке
+  = will_paginate
+  %table{class: "table table-hover"}
+    %thead
+      %tr
+        %th Дата наблюдения
+        %th Метеостанция
+        %th Телеграмма
+    %tbody
+      - @radiation_observations.each do |r_o| 
+        %tr
+          %td= r_o.date_observation.strftime("%Y-%m-%d")
+          %td= r_o.station.name
+          %td= link_to r_o.telegram, radiation_observation_path(r_o)
+  = will_paginate

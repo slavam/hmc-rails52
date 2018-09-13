@@ -17,6 +17,7 @@
                   %li= link_to 'Телеграммы штормовые',  storm_observations_path
                   %li= link_to 'Телеграммы агрометеорологические',  agro_observations_path
                   %li= link_to 'Телеграммы агрометеорологические декадные',  agro_dec_observations_path
+                  %li= link_to 'Телеграммы о радиационной обстановке', radiation_observations_path
                   %li= link_to 'Телеграммы синоптические (со штормовыми)',  '/synoptic_observations/synoptic_storm_telegrams'
                   %li{ class: "divider"}
                   %li= link_to 'Поиск синоптических телеграмм',  search_synoptic_telegrams_path
@@ -71,7 +72,8 @@
                   %li= link_to 'Телеграммы штормовые', storm_observations_path
                   %li= link_to 'Ежедневные агрометеорологические телеграммы', agro_observations_path
                   %li= link_to 'Декадные агрометеорологические телеграммы', agro_dec_observations_path
-                  %li= link_to 'Телеграммы синоптические (со штормовыми)', '/synoptic_observations/synoptic_storm_telegrams'
+                  %li= link_to 'Телеграммы о радиационной обстановке', radiation_observations_path
+                  -#%li= link_to 'Телеграммы синоптические (со штормовыми)', '/synoptic_observations/synoptic_storm_telegrams'
                   %li{ class: "divider"}
                   %li= link_to 'Буфер', '/applicants/applicants_list'
                   %li= link_to 'Формирование данных для ARM_SIN', '/synoptic_observations/telegrams_4_download'
