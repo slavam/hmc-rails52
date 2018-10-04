@@ -3,6 +3,13 @@ import ReactDOM from 'react-dom';
 import NewTelegramForm from './new_telegram_form';
 import TelegramRow from './telegram_row';
 
+// import { Observable} from 'rxjs/Observable';
+// import { range } from 'rxjs/observable/range';
+
+import { Observable, range } from 'rxjs';
+import { of } from 'rxjs/observable/of';
+import { map, fromPromise } from 'rxjs/operators';
+
 const LastTelegramsTable = ({telegrams, tlgType, stations}) => {
   var rows = [];
   telegrams.forEach((t) => {
@@ -67,18 +74,20 @@ export default class InputTelegrams extends React.Component{
   }
 
   handleTelegramTypeChanged(tlgType, tlgTerm){
-    var that = this;
+    // var that = this;
     var desiredLink = "/"+tlgType+"_observations/get_last_telegrams";
     this.state.tlgTerm = tlgTerm;
     this.setState({tlgType: tlgType});
+    var result = Observable.fromPromise(fetch(desiredLink));
+    result.subscribe(x => console.log(x.telegrams.length), e => console.error(e));
     $.ajax({
       type: 'GET',
       dataType: 'json',
       url: desiredLink
       }).done((data) => {
-        that.setState({telegrams: data.telegrams, tlgType: data.tlgType, errors: []});
+        this.setState({telegrams: data.telegrams, tlgType: data.tlgType, errors: []});
       }).fail((res) => {
-        that.setState({errors: ["Проблемы с чтением данных из БД"]});
+        this.setState({errors: ["Проблемы с чтением данных из БД"]});
       }); 
   }
   
@@ -174,6 +183,13 @@ export default class InputTelegrams extends React.Component{
       }
     });
 
+    // var source = Observable.range(1, 5);
+    // var source = range(1, 5);
+    // var subscription = source.subscribe(
+    // 	function (x) { console.log('onNext: ' + x); },
+    // 	function (e) { console.log('onError: ' + e.message); },
+    // 	function () { console.log('onCompleted'); });
+    	
     let telegramTable = this.props.telegrams.length > 0 ? 
       <div>
         <h3>Телеграммы {this.state.tlgType}</h3> 

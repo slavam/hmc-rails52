@@ -18,8 +18,4 @@ class AgroDecObservation < ActiveRecord::Base
     end
   end
   
-  # def assessment_condition_to_s(value)
-  #   assessments = ["Полная гибель", "Очень плохое", "Плохое", "Удовлетворительное", "Хорошее", "Отличное"]
-  #   assessments[value]
-  # end
 end

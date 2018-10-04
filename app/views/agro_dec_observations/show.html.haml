@@ -207,6 +207,48 @@
                     %tr
                       %th Степень охвата растений повреждениями #{i}
                       %td= damage_volume_to_s(c_c['damage_volume_'+i.to_s])
+              - if c_c.damage_space_1.present?
+                - 1.upto(5) do |i|
+                  - if c_c['damage_space_'+i.to_s].present?
+                    %tr
+                      %th Площадь поля (в %), охваченная повреждениями
+                      %td= c_c['damage_space_'+i.to_s]
+              - if c_c.height_snow_cover.present?
+                %tr
+                  %th Средняя высота снежного покрова на последний день декады (см)
+                  %td= c_c.height_snow_cover_to_s
+              - if c_c.snow_cover.present?
+                %tr
+                  %th Характеристика залегания снежного покрова
+                  %td= c_c.snow_cover_to_s
+              - if c_c.snow_cover_density.present?
+                %tr
+                  %th Средняя плотность снежного покрова (г/см<sup>3</sup>)
+                  %td= c_c.snow_cover_density
+              - if c_c.number_measurements_0.present?
+                %tr
+                  %th Число промеров с высотой 0 см
+                  %td= c_c.number_measurements_to_s(c_c.number_measurements_0)
+              - if c_c.number_measurements_3.present?
+                %tr
+                  %th Число промеров с высотой 1-3 см
+                  %td= c_c.number_measurements_to_s(c_c.number_measurements_3)
+              - if c_c.number_measurements_30.present?
+                %tr
+                  %th Число промеров с высотой более 30 см
+                  %td= c_c.number_measurements_to_s(c_c.number_measurements_30)
+              - if c_c.depth_thawing_soil_2.present?
+                %tr
+                  %th Глубина оттаивания почвы (см)
+                  %td= c_c.depth_thawing_soil_2
+              - if c_c.depth_soil_freezing.present?
+                %tr
+                  %th Глубина промерзания почвы (см)
+                  %td= c_c.depth_soil_freezing
+              - if c_c.viable_method.present?
+                %tr
+                  %th Способ определения жизнеспособности зимующих культур
+                  %td= c_c.viable_method_to_s
 
   %h3 История операций
   %table{class: "table table-bordered"}

@@ -31,13 +31,15 @@ export function checkRadiationTelegram(tlg, stations, errors, observation){
       return false;
     }
   }
-  if(~tlg.indexOf(" 552"))
+  if(~tlg.indexOf(" 552")){
     if(/^5520[12345]$/.test(tlg.substr(pos_ov,5))){
+      pos_ov += 6;
     } else {
       errors.push("Ошибка в сведениях об ОВ/СДЯВ в воде");
       return false;
     }
-  if(tlg[pos_ov+5] == '=')
+  }
+  if(tlg[pos_ov-1] == '=')
     return true;
   else {
     errors.push("Ошибка в окончании телеграммы");

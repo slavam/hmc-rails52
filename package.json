@@ -9,7 +9,9 @@
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-chartjs-2": "^2.7.4",
-    "react-dom": "^16.4.1"
+    "react-dom": "^16.4.1",
+    "rxjs": "^6.3.2",
+    "rxjs-compat": "^6.3.2"
   },
   "devDependencies": {
     "webpack-dev-server": "2.11.2"
