@@ -57,7 +57,8 @@
                   %li= link_to 'Поиск агро телеграмм',  '/agro_observations/search_agro_telegrams'
                   %li= link_to 'Поиск декадных агро телеграмм',  '/agro_dec_observations/search_agro_dec_telegrams'
                   %li{ class: "divider"}
-                  %li= link_to 'Агро-метео данные',  '/agro_dec_observations/agro_meteo_data'
+                  %li= link_to 'Агро-метео данные (холодный период)',  '/agro_dec_observations/agro_meteo_data?period=cold'
+                  %li= link_to 'Агро-метео данные (теплый период)',  '/agro_dec_observations/agro_meteo_data?period=warm'
             - when 'technicist'
               %li
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Телеграммы <b class="caret"></b></a>

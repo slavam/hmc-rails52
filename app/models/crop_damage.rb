@@ -11,14 +11,4 @@ class CropDamage < ActiveRecord::Base
     end
   end
 
-  def thermometer_index_to_s
-    term = ["", "Коробка Низенькова",
-        "ЕДТУК",
-        "АМ-17",
-        "АМ-2М",
-        "ТЕТ-2",
-        "АМ-29А",
-        "Вытяжные термометры"]
-    term[self.thermometer_index]
-  end
 end

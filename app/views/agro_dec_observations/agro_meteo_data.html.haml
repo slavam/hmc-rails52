@@ -1,4 +1,4 @@
 .container
   #form_and_report
-  #input_params{telegrams: @telegrams.to_json, year: @year.to_json, month: @month.to_json, decade: @decade.to_json, stations: @stations.to_json}
+  #input_params{telegrams: @telegrams.to_json, year: @year.to_json, month: @month.to_json, decade: @decade.to_json, stations: @stations.to_json, period: @period.to_json, temperatureMonth: @temperature_avg_month.to_json, precipitationMonth: @precipitation_month.to_json}
   = javascript_pack_tag 'agro_reports/agro_meteo_data_dec'

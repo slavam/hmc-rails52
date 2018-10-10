@@ -243,7 +243,7 @@
             - if c_d.thermometer_index.present?
               %tr
                 %th Прибор для измерения температуры грунта
-                %td= c_d.thermometer_index_to_s
+                %td= thermometer_index_to_s(c_d.thermometer_index)
             %tr
               %th Температура грунта на глубине 3 см (°С)
               %td= c_d.temperature_dec_min_soil3.to_s

@@ -6,9 +6,9 @@ import TelegramRow from './telegram_row';
 // import { Observable} from 'rxjs/Observable';
 // import { range } from 'rxjs/observable/range';
 
-import { Observable, range } from 'rxjs';
-import { of } from 'rxjs/observable/of';
-import { map, fromPromise } from 'rxjs/operators';
+// import { Observable, range } from 'rxjs';
+// import { of } from 'rxjs/observable/of';
+// import { map, fromPromise } from 'rxjs/operators';
 
 const LastTelegramsTable = ({telegrams, tlgType, stations}) => {
   var rows = [];
@@ -78,8 +78,8 @@ export default class InputTelegrams extends React.Component{
     var desiredLink = "/"+tlgType+"_observations/get_last_telegrams";
     this.state.tlgTerm = tlgTerm;
     this.setState({tlgType: tlgType});
-    var result = Observable.fromPromise(fetch(desiredLink));
-    result.subscribe(x => console.log(x.telegrams.length), e => console.error(e));
+    // var result = Observable.fromPromise(fetch(desiredLink));
+    // result.subscribe(x => console.log(x.telegrams.length), e => console.error(e));
     $.ajax({
       type: 'GET',
       dataType: 'json',

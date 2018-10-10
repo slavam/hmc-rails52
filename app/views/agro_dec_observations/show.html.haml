@@ -245,6 +245,34 @@
                 %tr
                   %th Глубина промерзания почвы (см)
                   %td= c_c.depth_soil_freezing
+              - if c_c.thermometer_index.present?
+                %tr
+                  %th Прибор для измерения температуры почвы на глубине 3 см
+                  %td= thermometer_index_to_s(c_c.thermometer_index)
+              - if c_c.temperature_dec_min_soil3.present?
+                %tr
+                  %th Минимальная за декаду температура почвы на глубине 3 см (20 см в саду)
+                  %td= c_c.temperature_dec_min_soil3
+              - if c_c.height_snow_cover_rail.present?
+                %tr
+                  %th Высота снежного покрова по рейке (см)
+                  %td= c_c.height_snow_cover_rail
+              - if c_c.losses_1.present?
+                %tr
+                  %th Процент потерь в первом образце...
+                  %td= c_c.losses_1
+              - if c_c.losses_2.present?
+                %tr
+                  %th Процент потерь во втором образце...
+                  %td= c_c.losses_2
+              - if c_c.losses_3.present?
+                %tr
+                  %th Процент потерь в третьем образце...
+                  %td= c_c.losses_3
+              - if c_c.losses_4.present?
+                %tr
+                  %th Процент потерь в четвертом образце...
+                  %td= c_c.losses_4
               - if c_c.viable_method.present?
                 %tr
                   %th Способ определения жизнеспособности зимующих культур

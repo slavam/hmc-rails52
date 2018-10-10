@@ -12,11 +12,24 @@ class AgroObservationsController < ApplicationController
   def search_agro_telegrams
     @date_from ||= params[:date_from].present? ? params[:date_from] : Time.now.strftime("%Y-%m-%d")
     @date_to ||= params[:date_to].present? ? params[:date_to] : Time.now.strftime("%Y-%m-%d")
-    station_id = params[:station_code].present? ? Station.find_by_code(params[:station_code]).id : nil
-    station = station_id.present? ? " and station_id = #{station_id}" : ''
-    text = params[:text].present? ? " and telegram like '%#{params[:text]}%'" : ''
+    # station_id = params[:station_code].present? ? Station.find_by_code(params[:station_code]).id : nil
+    # station = station_id.present? ? " and station_id = #{station_id}" : ''
+    if params[:station_id].present?
+      @station_id = params[:station_id]
+      station = " and station_id = #{@station_id}"
+    else
+      @station_id = '0'
+      station = ''
+    end
+    if params[:text].present?
+      @text = params[:text]
+      and_text = " and telegram like '%#{@text}%'"
+    else
+      @text = ''
+      and_text = ''
+    end
        
-    sql = "select * from agro_observations where date_dev >= '#{@date_from}' and date_dev <= '#{@date_to} 23:59:59' #{station} #{text} order by date_dev desc;"
+    sql = "select * from agro_observations where date_dev >= '#{@date_from}' and date_dev <= '#{@date_to} 23:59:59' #{station} #{and_text} order by date_dev desc;"
     tlgs = AgroObservation.find_by_sql(sql)
     @stations = Station.stations_array_with_any
     @telegrams = agro_fields_short_list(tlgs)

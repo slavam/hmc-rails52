@@ -1,4 +1,5 @@
 class AgroDecObservationsController < ApplicationController
+  helper AgroObservationsHelper
   before_action :find_agro_dec_observation, only: [:show, :update_agro_dec_telegram]
   
   def index
@@ -9,11 +10,15 @@ class AgroDecObservationsController < ApplicationController
     @actions = Audit.where("auditable_id = ? and auditable_type = 'AgroDecObservation'", @agro_dec_observation.id)
   end
   
+  def agro_meteo_data_warm
+  end
+  
   def agro_meteo_data
+    @period = params[:period]
     @year = params[:year].present? ? params[:year] : Time.now.year
     @month = params[:month].present? ? params[:month] : Time.now.month
-    @decade = params[:decade].present? ? params[:decade] : 1
-    case @decade.to_i
+    @decade = params[:decade].present? ? params[:decade].to_i : 1
+    case @decade
       when 1
         dec = '= 10 '
       when 2
@@ -24,36 +29,49 @@ class AgroDecObservationsController < ApplicationController
     @stations = []
     Station.all.order(:id).each {|s| @stations[s.id] = s.name}
     
-    # @telegrams = AgroDecObservation.where("station_id not in (6, 9) and date_dev like '#{@year}%' and month_obs = ? and day_obs #{dec}", @month.to_i).order(:station_id)
-    observations = AgroDecObservation.where("station_id not in (6, 9) and date_dev like '#{@year}%' and month_obs = ? and day_obs #{dec}", @month.to_i).order(:station_id)
+    observations = AgroDecObservation.where("station_id not in (6, 9) and telegram_num=1 and date_dev like '#{@year}%' and month_obs = ? and day_obs #{dec}", @month.to_i).order(:station_id)
     telegrams = observations.as_json
-    # Rails.logger.debug("My object>>>>>>>>>>>>>>> #{@telegrams.inspect}") 
     @telegrams = []
     telegrams.each do |t|
-      crop_dec_condition = CropDecCondition.find_by_sql("select max(height_snow_cover) height_snow_cover, max(snow_cover) snow_cover, max(snow_cover_density) snow_cover_density, max(number_measurements_0) number_measurements_0, max(number_measurements_3) number_measurements_3, max(number_measurements_30) number_measurements_30, max(ice_crust) ice_crust, max(thickness_ice_cake) thickness_ice_cake, max(depth_thawing_soil_2) depth_thawing_soil_2, max(depth_soil_freezing) depth_soil_freezing, max(thermometer_index) thermometer_index, min(temperature_dec_min_soil3) temperature_dec_min_soil3, max(height_snow_cover_rail) height_snow_cover_rail from crop_dec_conditions where agro_dec_observation_id = #{t["id"]} ;")[0]
-      t[:height_snow_cover] = crop_dec_condition.height_snow_cover
-      t[:snow_cover] = crop_dec_condition.snow_cover
-      t[:snow_cover_density] = crop_dec_condition.snow_cover_density
-      t[:number_measurements_0] = crop_dec_condition.number_measurements_0
-      t[:number_measurements_3] = crop_dec_condition.number_measurements_3
-      t[:number_measurements_30] = crop_dec_condition.number_measurements_30
-      t[:ice_crust] = crop_dec_condition.ice_crust
-      t[:thickness_ice_cake] = crop_dec_condition.thickness_ice_cake
-      t[:depth_thawing_soil_2] = crop_dec_condition.depth_thawing_soil_2
-      t[:depth_soil_freezing] = crop_dec_condition.depth_soil_freezing
-      t[:thermometer_index] = crop_dec_condition.thermometer_index
-      t[:temperature_dec_min_soil3] = crop_dec_condition.temperature_dec_min_soil3
-      t[:height_snow_cover_rail] = crop_dec_condition.height_snow_cover_rail
+      if @period == 'cold'
+        crop_dec_condition = CropDecCondition.find_by_sql("select max(height_snow_cover) height_snow_cover, max(snow_cover) snow_cover, max(snow_cover_density) snow_cover_density, max(number_measurements_0) number_measurements_0, max(number_measurements_3) number_measurements_3, max(number_measurements_30) number_measurements_30, max(ice_crust) ice_crust, max(thickness_ice_cake) thickness_ice_cake, max(depth_thawing_soil_2) depth_thawing_soil_2, max(depth_soil_freezing) depth_soil_freezing, max(thermometer_index) thermometer_index, min(temperature_dec_min_soil3) temperature_dec_min_soil3, max(height_snow_cover_rail) height_snow_cover_rail from crop_dec_conditions where agro_dec_observation_id = #{t["id"]} ;")[0]
+        t["height_snow_cover"] = crop_dec_condition.height_snow_cover
+        t["snow_cover"] = crop_dec_condition.snow_cover
+        t["snow_cover_density"] = crop_dec_condition.snow_cover_density
+        t["number_measurements_0"] = crop_dec_condition.number_measurements_0
+        t["number_measurements_3"] = crop_dec_condition.number_measurements_3
+        t["number_measurements_30"] = crop_dec_condition.number_measurements_30
+        t["ice_crust"] = crop_dec_condition.ice_crust
+        t["thickness_ice_cake"] = crop_dec_condition.thickness_ice_cake
+        t["depth_thawing_soil_2"] = crop_dec_condition.depth_thawing_soil_2
+        t["depth_soil_freezing"] = crop_dec_condition.depth_soil_freezing
+        t["thermometer_index"] = crop_dec_condition.thermometer_index
+        t["temperature_dec_min_soil3"] = crop_dec_condition.temperature_dec_min_soil3
+        t["height_snow_cover_rail"] = crop_dec_condition.height_snow_cover_rail
+      end
       @telegrams << t
     end
-      # Rails.logger.debug("My object>>>>>>>>>>>>>>> #{@telegrams.inspect}") 
-    # @telegrams = observations.to_json
+    @temperature_avg_month = []
+    @precipitation_month = []
+    if (@decade == 3) and (@period == 'warm')
+      sql = " SELECT station_id, avg(temperature_avg_24) temperature_avg_24 
+              FROM agro_observations 
+              WHERE station_id not in (6, 9) AND date_dev like '#{@year}%' AND  month_obs=#{@month} AND telegram_num=1
+              GROUP BY station_id;"
+      AgroObservation.find_by_sql(sql).each {|t| @temperature_avg_month[t.station_id] = t.temperature_avg_24}
+      
+      sql = " SELECT station_id, sum(precipitation_dec) precipitation_dec 
+              FROM agro_dec_observations 
+              WHERE station_id not in (6, 9) AND date_dev like '#{@year}%' AND  month_obs=#{@month} AND telegram_num=1 AND precipitation_dec < 990 group by station_id;"
+      AgroDecObservation.find_by_sql(sql).each {|p| @precipitation_month[p.station_id] = p.precipitation_dec}
+    end
+# Rails.logger.debug("My object>>>>>>>>>>>>>>> #{@precipitation_month.inspect}") 
     
     respond_to do |format|
       format.html 
-      format.json { render json: {telegrams: @telegrams} }
+      format.json { render json: {telegrams: @telegrams, temperatureMonth: @temperature_avg_month, precipitationMonth: @precipitation_month} }
       format.pdf do
-        pdf = AgroDecMeteoData.new(@year, @month, @decade, @stations, @telegrams)
+        pdf = AgroDecMeteoData.new(@year, @month, @decade, @stations, @telegrams, @period, @temperature_avg_month, @precipitation_month)
         send_data pdf.render, filename: "agro_dec_meteo_data_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true
       end
     end
@@ -62,11 +80,23 @@ class AgroDecObservationsController < ApplicationController
   def search_agro_dec_telegrams
     @date_from ||= params[:date_from].present? ? params[:date_from] : Time.now.strftime("%Y-%m-%d")
     @date_to ||= params[:date_to].present? ? params[:date_to] : Time.now.strftime("%Y-%m-%d")
-    station_id = params[:station_code].present? ? Station.find_by_code(params[:station_code]).id : nil
-    station = station_id.present? ? " and station_id = #{station_id}" : ''
-    text = params[:text].present? ? " and telegram like '%#{params[:text]}%'" : ''
+    if params[:station_id].present?
+      @station_id = params[:station_id]
+      station = " and station_id = #{@station_id}"
+    else
+      @station_id = '0'
+      station = ''
+    end
+    if params[:text].present?
+      @text = params[:text]
+      and_text = " and telegram like '%#{@text}%'"
+    else
+      @text = ''
+      and_text = ''
+    end
+    
        
-    sql = "select * from agro_dec_observations where date_dev >= '#{@date_from}' and date_dev <= '#{@date_to} 23:59:59' #{station} #{text} order by date_dev desc;"
+    sql = "select * from agro_dec_observations where date_dev >= '#{@date_from}' and date_dev <= '#{@date_to} 23:59:59' #{station} #{and_text} order by date_dev desc;"
     tlgs = AgroDecObservation.find_by_sql(sql)
     @stations = Station.stations_array_with_any
     @telegrams = agro_fields_short_list(tlgs)

@@ -23,7 +23,7 @@ class SynopticObservationsController < ApplicationController
     our_telegrams_num = telegrams.size
 
     # csv_data = Net::HTTP.get(URI.parse('http://www.ogimet.com/cgi-bin/getsynop?begin=201704300300&end=201704300300&state=Ukr'))
-    url = "http://www.ogimet.com/cgi-bin/getsynop?begin="+year+month+day+term+'00&end='+year+month+day+term+'00&state=Ukr'
+    url = "http://www.ogimet.com/cgi-bin/getsynop?begin="+year+month+day+term+'00&end='+year+month+day+term+'00' #&state=Ukr' 20181004 directive Boyko
     csv_data = Net::HTTP.get(URI.parse(url))
     web_rows = csv_data.split("\n")
     rows = []
