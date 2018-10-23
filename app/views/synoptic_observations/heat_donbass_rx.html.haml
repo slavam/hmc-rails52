@@ -1,0 +1,6 @@
+.container
+  <h4 align="center">К договору №08_16-17_03 ГП Донбасстеплоэнерго тел. 304-74-24</h4>
+  <input type="date" id='input-date' required="true" autoComplete= "on" class="col-md-6 col-md-offset-3" align="center"/>
+  #form_and_result
+  #init_params{ temperatures: @temperatures.to_json, calcDate: @calc_date.to_json }
+  = javascript_pack_tag 'rx_heat_donbass/heat_donbass_rx'

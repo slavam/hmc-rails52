@@ -618,8 +618,8 @@ export function checkAgroTelegram(tlg, stations, errors, observation){
               return code = false;
             }
         }
-        if (/ 94/.test(t.substr(pos-1,3))){ // zone 94
-          if (/^94\d{3}$/.test(t.substr(pos,5))){
+        if (/ 94/.test(t.substr(pos-1,3))){ // zone 94 
+          if (/^94[0-9/]{3}$/.test(t.substr(pos,5))){ // 20181011 add / согласовано с В.И.
             state_crops.moisture_reserve_10 = t.substr(pos+2,3);
             pos += 6;
           }else {
@@ -627,7 +627,7 @@ export function checkAgroTelegram(tlg, stations, errors, observation){
             return code = false;
           }
           if (t[pos] == '1')
-            if (/^1\d{4}$/.test(t.substr(pos,5))){
+            if (/^1[0-9/]{3}\d$/.test(t.substr(pos,5))){  // 20181011 add / согласовано с В.И.
               state_crops.moisture_reserve_5 = t.substr(pos+1,3);
               state_crops.soil_index = t[pos+4];
               pos += 6;

@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   get '/search_synoptic_telegrams', to: 'synoptic_observations#search_synoptic_telegrams'
   get 'synoptic_observations/synoptic_storm_telegrams', to: 'synoptic_observations#synoptic_storm_telegrams'
   get 'synoptic_observations/heat_donbass_show', to: 'synoptic_observations#heat_donbass_show'
+  get 'synoptic_observations/heat_donbass_rx', to: 'synoptic_observations#heat_donbass_rx'
   get 'synoptic_observations/get_temps', to: 'synoptic_observations#get_temps'
   get 'synoptic_observations/input_synoptic_telegrams', to: 'synoptic_observations#input_synoptic_telegrams'
   get 'synoptic_observations/get_last_telegrams', to: 'synoptic_observations#get_last_telegrams'
