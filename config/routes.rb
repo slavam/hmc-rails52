@@ -36,6 +36,10 @@ Rails.application.routes.draw do
   put 'storm_observations/update_storm_telegram', to: 'storm_observations#update_storm_telegram'
   get 'storm_observations/get_conversion_params', to: 'storm_observations#get_conversion_params'
   post 'storm_observations/converter', to: 'storm_observations#converter'
+  get 'storm_observations/storms_4_download', to: 'storm_observations#storms_4_download'
+  post 'storm_observations/storm_to_arm_syn', to: 'storm_observations#storm_to_arm_syn'
+  get 'storm_observations/storms_4_arm_syn', to: 'storm_observations#storms_4_arm_syn'
+  get 'storm_observations/storms_download_2_arm_syn', to: 'storm_observations#storms_download_2_arm_syn'
   resources :storm_observations
   # get 'synoptic_observations/arm_sin_files_from_a_directory', to: 'synoptic_observations#arm_sin_files_from_a_directory'
   get 'synoptic_observations/download_arm_sin_file', to: 'synoptic_observations#download_arm_sin_file'

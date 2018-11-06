@@ -1,5 +1,61 @@
 class StormObservationsController < ApplicationController
   before_action :find_storm_observation, only: [:show, :edit, :update, :destroy, :update_storm_telegram]
+  
+  def storms_4_download
+    @init_date = Time.now.strftime("%Y-%m-%d")
+  end
+  
+  def storm_to_arm_syn
+    storm_date = params[:download][:storm_date] # .present? ? params[:storm_date] : Time.now.strftime("%Y-%m-%d")
+    telegrams = StormObservation.where("created_at LIKE ?", storm_date+'%').order(:id)
+    
+    total = telegrams.size
+    curr_time = Time.now.strftime("%H:%M")
+    File.open("tmp/Storm_#{storm_date}.txt",'w+') do |f|
+      telegrams.each do |t| # Lugansk? Синоптики помочь не могут 20181026
+        puts_storm(f, t, curr_time)
+      end
+    end
+    flash[:success] = "Дата: #{storm_date}; Преобразовано телеграмм из БД ГМЦ: #{total}"
+    redirect_to storm_observations_storms_4_arm_syn_path(request.parameters)
+  end
+  
+  def puts_storm(file, storm, curr_time)
+#     >>> 05:53 <<< 
+# 333  WWUR00 UKMS 092232
+# STORM 
+# WAREP 33705 0922251 40 70547//= 
+#     ============================
+    if storm.station_id == 1 # Donetsk
+      icao_code =  'UKCC' 
+      gild_code = '31'
+    else
+      icao_code = 'UKDC' 
+      gild_code = '40'
+    end
+    if storm.telegram_type == 'ЩЭОЗМ' # finish
+      sign_group = 'WOUR'+gild_code
+      start_stop = 'AVIA'
+    else
+      sign_group = 'WWUR'+gild_code
+      start_stop = 'STORM'
+    end
+    
+    file.puts "    >>> #{curr_time} <<<"
+    file.puts "333 #{sign_group} #{icao_code} #{storm.created_at.strftime("%d%H%M")}"
+    file.puts start_stop
+    file.puts storm.telegram[6..-1]
+    file.puts "    ============================"
+  end
+  
+  def storms_4_arm_syn
+    @storm_date = params[:download][:storm_date] 
+  end
+  
+  def storms_download_2_arm_syn
+    storm_date = params[:storm_date] 
+    send_file("#{Rails.root}/tmp/Storm_#{storm_date}.txt")
+  end
 
   def get_conversion_params
   end
@@ -101,6 +157,10 @@ class StormObservationsController < ApplicationController
   end
   
   def show
+    code_warep = @storm_observation.telegram[26,2].to_i
+    # case code_warep
+    #   when 11, 12, 17, 18, 19, 36, 78
+    # end
     date_from ||= params[:date_from].present? ? params[:date_from] : Time.now.strftime("%Y-%m-%d")
     date_to ||= params[:date_to].present? ? params[:date_to] : Time.now.strftime("%Y-%m-%d")
     add_param = params[:storm_type].present? ? "&term=#{params[:storm_type]}" : ''
@@ -117,6 +177,7 @@ class StormObservationsController < ApplicationController
   def input_storm_telegrams
     @stations = Station.all.order(:name)
     @telegrams = StormObservation.short_last_50_telegrams(current_user)
+    @input_mode = params[:input_mode]
   end
   
   def create
@@ -163,6 +224,7 @@ class StormObservationsController < ApplicationController
       telegram = StormObservation.new(storm_observation_params)
       telegram.telegram_date = date_dev 
       if telegram.save
+        storm_4_arm_syn(telegram)
         new_telegram = {id: telegram.id, date: telegram.telegram_date, station_name: telegram.station.name, telegram: telegram.telegram}
         ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'storm'
         last_telegrams = StormObservation.short_last_50_telegrams(current_user)
@@ -175,6 +237,22 @@ class StormObservationsController < ApplicationController
         render json: {errors: telegram.errors.messages}, status: :unprocessable_entity
       end
     end
+  end
+  
+  def storm_4_arm_syn storm
+    curr_time = Time.now.strftime("%H:%M")
+    storm_date = storm.telegram_date.strftime("%Y-%m-%d") # .present? ? params[:storm_date] : Time.now.strftime("%Y-%m-%d")
+    File.open("tmp/Storm_#{storm_date}.txt",'a+') do |f|
+      puts_storm(f, storm, curr_time)
+    end
+    # copy file to ARM_SYN
+    # require 'rubygems'
+    # require 'net/ssh'
+    # require 'net/scp'
+    
+    # Net::SSH.start("ip_address", "username",:password => "*********") do |session|
+    #   session.scp.download! "/home/logfiles/2-1-2012/login.xls", "/home/anil/Downloads"
+    # end
   end
   
   def get_last_telegrams

@@ -22,6 +22,32 @@
     %tr
       %th Время
       %td= @storm_observation.event_time
+    %tr
+      %th Вид телеграммы
+      %td Для метеорологических явлений
+    %tr
+      %th= "Тип опасного/стихийного гидрометеорологического явления"
+      %td= @storm_observation.code_warep_to_s(@storm_observation.code_warep)
+    - curr_pos = 29
+    - case @storm_observation.code_warep
+      - when 11, 12, 17, 18, 19, 36, 78
+        %tr
+          %th Направление ветра
+          %td= @storm_observation.wind_direction_to_s(@storm_observation.telegram[curr_pos+1,2].to_i)
+        %tr
+          %th Средняя скорость ветра, м/с
+          %td= @storm_observation.telegram[curr_pos+3,2].to_i
+        %tr
+          %th Максимальная скорость ветра (порыв), м/с
+          %td= @storm_observation.telegram[curr_pos+5,2].to_i
+      - when 91
+        - if @storm_observation.telegram[curr_pos] == '2'
+          %tr
+            %th Направление, в котором наблюдается гроза или смерч
+            %td= @storm_observation.wind_direction_to_s(@storm_observation.telegram[curr_pos+1,2].to_i)
+          %tr
+            %th Вид осадков
+            %td= @storm_observation.precipitation_type(@storm_observation.telegram[curr_pos+3,2].to_i)
   %h3 История операций
   %table{class: "table table-bordered"}
     %thead

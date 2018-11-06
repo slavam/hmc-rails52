@@ -1,0 +1,7 @@
+.container
+  %h3 Задайте дату выгрузки штормов для ARM_SIN
+  = form_for(:download, url: storm_observations_storm_to_arm_syn_path) do |f| 
+    = f.label "Дата"
+    = f.date_field :storm_date, value: @init_date
+
+    = f.submit "Начать", class: "btn btn-primary"
