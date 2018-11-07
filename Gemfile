@@ -61,7 +61,7 @@ gem 'redis', '~> 4.0'
 # Use ActiveStorage variant
 gem 'mini_magick', '~> 4.8'
 
-
+gem 'grim', '~> 1.3', '>= 1.3.3'
 # gem 'rmagick', '~> 2.16'
 
 # Use Capistrano for deployment

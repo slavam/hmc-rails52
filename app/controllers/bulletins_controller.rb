@@ -1,4 +1,3 @@
-# require 'RMagick'
 class BulletinsController < ApplicationController
   before_action :find_bulletin, :only => [:bulletin_show, :show, :destroy, :print_bulletin, :edit, :update]
   # after_filter :pdf_png_delete, :only => [:holiday_show]
@@ -123,29 +122,28 @@ class BulletinsController < ApplicationController
   end
 
   def pdf_2_png
-    # pdf = Magick::ImageList.new("app/assets/pdf_folder/#{@bulletin.pdf_filename(current_user.id)}")
-    doc = MiniMagick::Image.open("app/assets/pdf_folder/#{@bulletin.pdf_filename(current_user.id)}")
-    doc.format "png"
-    
-    if Rails.env.production?
-      doc.write("#{Rails.root}/public/images/#{@bulletin.png_filename(current_user.id)}")  # production only
+    doc   = Grim.reap("app/assets/pdf_folder/#{@bulletin.pdf_filename(current_user.id)}")
+    if doc.count == 1
+      if Rails.env.production?
+        doc[0].save("#{Rails.root}/public/images/#{@bulletin.png_filename(current_user.id)}")
+      else
+        doc[0].save("app/assets/pdf_folder/#{@bulletin.png_filename(current_user.id)}")
+      end
     else
-      doc.write("app/assets/pdf_folder/#{@bulletin.png_filename(current_user.id)}")
+      doc.each do |page|
+        if Rails.env.production?
+          doc[0].save("#{Rails.root}/public/images/#{@bulletin.png_page_filename(current_user.id, 0)}")
+          doc[1].save("#{Rails.root}/public/images/#{@bulletin.png_page_filename(current_user.id, 1)}")
+        else
+          doc[0].save("app/assets/pdf_folder/#{@bulletin.png_page_filename(current_user.id, 0)}")
+          doc[1].save("app/assets/pdf_folder/#{@bulletin.png_page_filename(current_user.id, 1)}")
+        end
+      end
     end
-    
     return true
   end
   
-  # def pdf_2_png_2
-  #   pdf = MiniMagick::Image.open("app/assets/pdf_folder/#{@bulletin.pdf_filename(current_user.id)}")
-  #   pdf.resize "200x200"
-  #   pdf.format "png"
-  #   pdf.write("app/assets/pdf_folder/#{@bulletin.png_filename(current_user.id)}")
-  #   return true
-  # end
-  
   def save_as_pdf(pdf)
-    # send_data pdf.render, filename: @bulletin.pdf_filename, type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
     filename = File.join(Rails.root, "app/assets/pdf_folder", @bulletin.pdf_filename(current_user.id))
     pdf.render_file(filename)
   end
@@ -155,8 +153,8 @@ class BulletinsController < ApplicationController
       case @bulletin.bulletin_type
         when 'daily'
           pdf = Daily.new(@bulletin)
-          @png_filename_page1 = @bulletin.png_page_filename(current_user.id, 0)
-          @png_filename_page2 = @bulletin.png_page_filename(current_user.id, 1)
+          @png_filename_page1 = "Bulletin_daily_#{current_user.id}-0.png" 
+          @png_filename_page2 = "Bulletin_daily_#{current_user.id}-1.png"
         when 'sea'
           pdf = Sea.new(@bulletin)
           @png_filename_page1 = @bulletin.png_page_filename(current_user.id, 0)
@@ -192,78 +190,7 @@ class BulletinsController < ApplicationController
       end
     end
   end
-  # def daily_show
-  #   respond_to do |format|
-  #     pdf = Daily.new(@bulletin)
-  #     format.html do
-  #       save_as_pdf(pdf)
-  #       pdf_2_png
-  #       @png_filename_page1 = @bulletin.png_page_filename(current_user.id, 0)
-  #       @png_filename_page2 = @bulletin.png_page_filename(current_user.id, 1)
-  #     end
-  #     format.pdf do
-  #       send_data pdf.render, filename: @bulletin.pdf_filename(current_user.id), type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
-  #     end
-  #   end
-  # end
 
-  # def holiday_show
-  #   respond_to do |format|
-  #     pdf = Holiday.new(@bulletin)
-  #     format.html do
-  #       save_as_pdf(pdf)
-  #       pdf_2_png
-  #       @png_filename = @bulletin.png_filename(current_user.id)
-  #       # filename = File.join(Rails.root, "app/assets/pdf_folder", @bulletin.png_filename)
-  #       # pdf = MiniMagick::Image.open("app/assets/pdf_folder/#{@bulletin.pdf_filename}")
-  #       # pdf.format "png"
-  #       # @img = Magick::Image.new(280, 100) { self.background_color = 'blue' }
-  #       # img_blob = pdf.to_blob
-  #       # send_data img_blob, filename: filename, disposition: 'inline', type: 'image/png'
-        
-  #       # File.open(filename, 'r') do |f|
-  #         # send_data @img_blob, filename: filename, disposition: 'inline', type: 'image/png'
-  #         # send_data f.read
-  #       # end
-  #       # File.delete(filename)
-  #     end
-  #     format.pdf do
-  #       send_data pdf.render, filename: @bulletin.pdf_filename(current_user.id), type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
-  #     end
-  #   end
-  # end
-  
-  # def sea_show
-  #   respond_to do |format|
-  #     pdf = Sea.new(@bulletin)
-  #     format.html do
-  #       save_as_pdf(pdf)
-  #       pdf_2_png
-  #       @png_filename_page1 = @bulletin.png_page_filename(current_user.id, 0)
-  #       @png_filename_page2 = @bulletin.png_page_filename(current_user.id, 1)
-  #     end
-  #     format.pdf do
-  #       send_data pdf.render, filename: @bulletin.pdf_filename(current_user.id), type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
-        
-  #       # send_data pdf.render, filename: "Bulletin #{@bulletin.curr_number}", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
-  #     end
-  #   end
-  # end
-
-  # def storm_show
-  #   respond_to do |format|
-  #     pdf = Storm.new(@bulletin)
-  #     format.html do
-  #       save_as_pdf(pdf)
-  #       pdf_2_png
-  #       @png_filename = @bulletin.png_filename(current_user.id)
-  #     end
-  #     format.pdf do
-  #       send_data pdf.render, filename: @bulletin.pdf_filename(current_user.id), type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
-  #     end
-  #   end
-  # end
-  
   private
   
     def bulletin_params
