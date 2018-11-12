@@ -6,8 +6,9 @@ class StormObservationsController < ApplicationController
   end
   
   def storm_to_arm_syn
-    storm_date = params[:download][:storm_date] # .present? ? params[:storm_date] : Time.now.strftime("%Y-%m-%d")
-    telegrams = StormObservation.where("created_at LIKE ?", storm_date+'%').order(:id)
+    storm_date = params[:download][:storm_date] 
+    # telegrams = StormObservation.where("created_at LIKE ?", storm_date+'%').order(:id)
+    telegrams = StormObservation.where("telegram_date LIKE ?", storm_date+'%').order(:id)
     
     total = telegrams.size
     curr_time = Time.now.strftime("%H:%M")
@@ -21,11 +22,6 @@ class StormObservationsController < ApplicationController
   end
   
   def puts_storm(file, storm, curr_time)
-#     >>> 05:53 <<< 
-# 333  WWUR00 UKMS 092232
-# STORM 
-# WAREP 33705 0922251 40 70547//= 
-#     ============================
     if storm.station_id == 1 # Donetsk
       icao_code =  'UKCC' 
       gild_code = '31'
@@ -157,7 +153,7 @@ class StormObservationsController < ApplicationController
   end
   
   def show
-    code_warep = @storm_observation.telegram[26,2].to_i
+    # code_warep = @storm_observation.telegram[26,2].to_i
     # case code_warep
     #   when 11, 12, 17, 18, 19, 36, 78
     # end
@@ -222,9 +218,10 @@ class StormObservationsController < ApplicationController
       end
     else
       telegram = StormObservation.new(storm_observation_params)
-      telegram.telegram_date = date_dev 
+      # telegram.telegram_date = date_dev 
+      telegram.telegram_date = get_event_date(telegram, date_dev)
       if telegram.save
-        storm_4_arm_syn(telegram)
+        # storm_4_arm_syn(telegram)
         new_telegram = {id: telegram.id, date: telegram.telegram_date, station_name: telegram.station.name, telegram: telegram.telegram}
         ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'storm'
         last_telegrams = StormObservation.short_last_50_telegrams(current_user)
@@ -239,25 +236,37 @@ class StormObservationsController < ApplicationController
     end
   end
   
+  def get_event_date(telegram, date_dev)
+    if date_dev.day == telegram.day_event
+      year = date_dev.year
+      month = date_dev.month
+      day = date_dev.day
+    else
+      prev_day = date_dev - 1.day # Согласовано с Ки... М.А 2018.11.08
+      year = prev_day.year
+      month = prev_day.month
+      day = prev_day.day
+    end
+    return Time.parse("#{year}-#{month}-#{day} #{telegram.hour_event}:#{telegram.minute_event}:00")
+  end
+  
   def storm_4_arm_syn storm
     curr_time = Time.now.strftime("%H:%M")
-    storm_date = storm.telegram_date.strftime("%Y-%m-%d") # .present? ? params[:storm_date] : Time.now.strftime("%Y-%m-%d")
+    storm_date = storm.telegram_date.strftime("%Y-%m-%d") 
+    year = storm_date[0,4]
+    month = storm_date[5,2]
+    day = storm_date[8,2]
     File.open("tmp/Storm_#{storm_date}.txt",'a+') do |f|
       puts_storm(f, storm, curr_time)
     end
     # copy file to ARM_SYN
-    # require 'rubygems'
-    # require 'net/ssh'
-    # require 'net/scp'
-    
-    # Net::SSH.start("ip_address", "username",:password => "*********") do |session|
-    #   session.scp.download! "/home/logfiles/2-1-2012/login.xls", "/home/anil/Downloads"
-    # end
+    Net::SSH.start("10.105.24.5", "admin") do |session|
+      # Net::SSH.start("10.105.24.5", "admin", :password => "") do |session|
+      session.scp.download! "/tmp/Storm_#{storm_date}.txt", "d:/DATA/ARM_SIN/INPUT/#{year}_#{month}/#{day}_#{month}/Storm_#{day}.txt"
+    end
   end
   
   def get_last_telegrams
-    # last_telegrams = StormObservation.last_50_telegrams
-    # telegrams = fields_short_list(last_telegrams)
     telegrams = StormObservation.short_last_50_telegrams(current_user)
     render json: {telegrams: telegrams, tlgType: 'storm'}
   end

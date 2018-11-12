@@ -7,9 +7,10 @@
     %tr
       %th Дата явления:
       %td= @storm_observation.telegram_date
+    - text = @storm_observation.telegram
     %tr
       %th Текст:
-      %td= @storm_observation.telegram
+      %td= text
     %tr
       %th Тип телеграммы
       %td= @storm_observation.telegram_type == 'ЩЭОЗМ' ? 'Окончание явления (ЩЭОЗМ)' : 'Начало/усиление явления (ЩЭОЯЮ)'
@@ -33,21 +34,33 @@
       - when 11, 12, 17, 18, 19, 36, 78
         %tr
           %th Направление ветра
-          %td= @storm_observation.wind_direction_to_s(@storm_observation.telegram[curr_pos+1,2].to_i)
+          %td= @storm_observation.wind_direction_to_s(text[curr_pos+1,2].to_i)
         %tr
           %th Средняя скорость ветра, м/с
-          %td= @storm_observation.telegram[curr_pos+3,2].to_i
+          %td= text[curr_pos+3,2].to_i
         %tr
           %th Максимальная скорость ветра (порыв), м/с
-          %td= @storm_observation.telegram[curr_pos+5,2].to_i
+          %td= text[curr_pos+5,2].to_i
+      - when 40, 41
+        - if text[curr_pos] == '7'
+          %tr
+            %th Метеорологическая дальность видимости, м
+            %td= text[curr_pos+1,2].to_i*100
+          %tr
+            %th Вид явления
+            %td= @storm_observation.weather_in_term(text[curr_pos+3,2].to_i)
+          - if text[curr_pos+5] != '/'
+            %tr
+              %th Продолжительность явления в часах
+              %td= text[curr_pos+5,2]
       - when 91
-        - if @storm_observation.telegram[curr_pos] == '2'
+        - if text[curr_pos] == '2'
           %tr
             %th Направление, в котором наблюдается гроза или смерч
-            %td= @storm_observation.wind_direction_to_s(@storm_observation.telegram[curr_pos+1,2].to_i)
+            %td= @storm_observation.wind_direction_to_s(text[curr_pos+1,2].to_i)
           %tr
             %th Вид осадков
-            %td= @storm_observation.precipitation_type(@storm_observation.telegram[curr_pos+3,2].to_i)
+            %td= @storm_observation.precipitation_type(text[curr_pos+3,2].to_i)
   %h3 История операций
   %table{class: "table table-bordered"}
     %thead

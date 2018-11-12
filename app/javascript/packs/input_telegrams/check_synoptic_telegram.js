@@ -62,24 +62,29 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
   
   group = tlg.substr(18,5);
   regex = state.group0.regex;
-  if (regex.test(group) && ((tlg[23] == ' ') || (tlg[23] == '='))) {
-    if ((+tlg[18]>=0) && (+tlg[18]<9))                                    // 20180405 по данным от Л.А.
-      if ((+tlg.substr(15,2)>93) && (+tlg.substr(15,2)<=99)){             // 20180615 по данным от Л.А. 99 - теперь правильное значение
-      }else{
-        errors.push("Дальность видимости не соответствует количеству облаков");
-        return false;
-      }
-    if ((tlg[18]=='/') || (+tlg[18]==9))                                    // 20180405 по данным от Л.А.
-      if ((+tlg.substr(15,2)>89) && (+tlg.substr(15,2)<94)){ 
-      }else{
-        errors.push("Дальность видимости не соответствует количеству облаков");
-        return false;
-      }
-    if (tlg[18] != '/') {
+  if (regex.test(group) && ((tlg[23] == ' ') || (tlg[23] == '='))) {      // ЩЭСИД 34524 41993 01102 10010 20010 40253 52004 74440 555 1/009=
+// нужно доработать критерии
+    // if ((+tlg[18]>=0) && (+tlg[18]<9))                                    // 20180405 по данным от Л.А.
+    //   if ((+tlg.substr(15,2)>93) && (+tlg.substr(15,2)<=99)){             // 20180615 по данным от Л.А. 99 - теперь правильное значение
+    //   }else 
+    //     if((+tlg.substr(15,2)>89) && (+tlg.substr(15,2)<94) && (/ 74[2468]/.test(tlg) )) // 20181109 по данным от Л.А. нужно анализировать группу 7
+    //     {
+    //       errors.push("Дальность видимости не соответствует количеству облаков");
+    //       return false;
+    //     }
+    // if ((tlg[18]=='/') || (+tlg[18]==9))                                    // 20180405 по данным от Л.А.
+    //   if ((+tlg.substr(15,2)>89) && (+tlg.substr(15,2)<94)){ 
+    //   }else{
+    //     errors.push("Дальность видимости не соответствует количеству облаков");
+    //     return false;
+    //   }
+    if (tlg[18] != '/') 
       observation.cloud_amount_1 = tlg[18];
+    if (tlg[19] != '/')
       observation.wind_direction = tlg.substr(19,2);
+    if (tlg[21] != '/')
       observation.wind_speed_avg = tlg.substr(21,2);
-    }
+    
   } else {
     errors.push(state.group0.errorMessage);
     return false;
