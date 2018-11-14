@@ -1,0 +1,10 @@
+%tr
+  %th Метеорологическая дальность видимости, м
+  %td= @text[@visibility_pos+1,2].to_i*100
+%tr
+  %th Вид явления
+  %td= @storm_observation.weather_in_term(@text[@visibility_pos+3,2].to_i)
+- if @text[@visibility_pos+5] != '/'
+  %tr
+    %th Продолжительность явления в часах
+    %td= @text[@visibility_pos+5,2]

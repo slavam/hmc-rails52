@@ -7,10 +7,10 @@
     %tr
       %th Дата явления:
       %td= @storm_observation.telegram_date
-    - text = @storm_observation.telegram
+    - @text = @storm_observation.telegram
     %tr
       %th Текст:
-      %td= text
+      %td= @text
     %tr
       %th Тип телеграммы
       %td= @storm_observation.telegram_type == 'ЩЭОЗМ' ? 'Окончание явления (ЩЭОЗМ)' : 'Начало/усиление явления (ЩЭОЯЮ)'
@@ -26,41 +26,53 @@
     %tr
       %th Вид телеграммы
       %td Для метеорологических явлений
-    %tr
-      %th= "Тип опасного/стихийного гидрометеорологического явления"
-      %td= @storm_observation.code_warep_to_s(@storm_observation.code_warep)
-    - curr_pos = 29
-    - case @storm_observation.code_warep
-      - when 11, 12, 17, 18, 19, 36, 78
-        %tr
-          %th Направление ветра
-          %td= @storm_observation.wind_direction_to_s(text[curr_pos+1,2].to_i)
-        %tr
-          %th Средняя скорость ветра, м/с
-          %td= text[curr_pos+3,2].to_i
-        %tr
-          %th Максимальная скорость ветра (порыв), м/с
-          %td= text[curr_pos+5,2].to_i
-      - when 40, 41
-        - if text[curr_pos] == '7'
+    - @code_warep_positions.each do |code_warep_pos|
+      %tr
+        %th= "Тип опасного/стихийного гидрометеорологического явления #{code_warep_pos}"
+        %td= @storm_observation.code_warep_to_s(@storm_observation.code_warep code_warep_pos)
+      - @curr_pos = code_warep_pos + 3
+      - case @storm_observation.code_warep code_warep_pos
+        - when 11, 12, 17, 18, 19, 36, 78
           %tr
-            %th Метеорологическая дальность видимости, м
-            %td= text[curr_pos+1,2].to_i*100
+            %th Направление ветра
+            %td= @storm_observation.wind_direction_to_s(@text[@curr_pos+1,2].to_i)
           %tr
-            %th Вид явления
-            %td= @storm_observation.weather_in_term(text[curr_pos+3,2].to_i)
-          - if text[curr_pos+5] != '/'
+            %th Средняя скорость ветра, м/с
+            %td= @text[@curr_pos+3,2].to_i
+          %tr
+            %th Максимальная скорость ветра (порыв), м/с
+            %td= @text[@curr_pos+5,2].to_i
+        - when 30
+          - @cloud_pos = @curr_pos
+          = render :partial => 'cloud_section'
+        - when 40, 41                     
+          - if @text[@curr_pos] == '7'
+            - @visibility_pos = @curr_pos
+            = render partial: 'visibility_section'
+            - if @text[@curr_pos+8] == '8'
+              - @cloud_pos = @curr_pos+8
+              = render :partial => 'cloud_section'
+        - when 50, 51
+          - if @text[@curr_pos-1] != '='
+            - if @text[@curr_pos] != '/'
+              %tr
+                %th Диаметр градин/гололедно-изморозевых отложений, мм
+                %td= @storm_observation.diameter_hail(@text[@curr_pos,2].to_i)
             %tr
-              %th Продолжительность явления в часах
-              %td= text[curr_pos+5,2]
-      - when 91
-        - if text[curr_pos] == '2'
-          %tr
-            %th Направление, в котором наблюдается гроза или смерч
-            %td= @storm_observation.wind_direction_to_s(text[curr_pos+1,2].to_i)
-          %tr
-            %th Вид осадков
-            %td= @storm_observation.precipitation_type(text[curr_pos+3,2].to_i)
+              %th Температура воздуха, °С
+              %td= "#{@text[@curr_pos+2] == '0'? '':'-'}#{@text[@curr_pos+3,2].to_i}"
+            %tr
+              %th Стадия явления
+              %td= @text[@curr_pos+5] == '1'? "Стадия нарастания" : "Стадия сохранения или завершения"
+              
+        - when 91
+          - if @text[@curr_pos] == '2'
+            %tr
+              %th Направление, в котором наблюдается гроза или смерч
+              %td= @storm_observation.wind_direction_to_s(@text[@curr_pos+1,2].to_i)
+            %tr
+              %th Вид осадков
+              %td= @storm_observation.precipitation_type(@text[@curr_pos+3,2].to_i)
   %h3 История операций
   %table{class: "table table-bordered"}
     %thead
@@ -73,7 +85,7 @@
     - @actions.each do |a|
       %tr
         %td= a.version
-        %td= a.user.login
+        %td= a.user.present? ? a.user.login : 'not user!'
         %td= a.action
         %td= a.created_at
   = link_to 'Поиск', @search_link

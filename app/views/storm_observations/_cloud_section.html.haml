@@ -1,0 +1,10 @@
+%tr
+  %th Количество облаков (баллы)
+  %td= cloud_amount(@text[@cloud_pos+1] == '/'? nil : @text[@cloud_pos+1].to_i)
+%tr
+  %th Форма облаков
+  %td= @storm_observation.clouds_form(@text[@cloud_pos+2] == '/'? nil : @text[@cloud_pos+2].to_i)
+- if @text[@cloud_pos+3] != '/'
+  %tr
+    %th Высота нижней границы облаков, м
+    %td= @storm_observation.clouds_height(@text[@cloud_pos+3,2].to_i)

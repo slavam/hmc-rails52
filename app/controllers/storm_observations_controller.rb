@@ -162,6 +162,10 @@ class StormObservationsController < ApplicationController
     add_param = params[:storm_type].present? ? "&term=#{params[:storm_type]}" : ''
     station = params[:station_id].present? ? "&station_id=#{params[:station_id]}" : ''
     text = params[:text].present? ? "&text=#{params[:text]}" : ''
+    @code_warep_positions = @storm_observation.telegram.gsub(/ \d\d /).map { Regexp.last_match.begin(0)+1 }
+    if @code_warep_positions.size == 0
+      @code_warep_positions[0] = 26
+    end
     @search_link = "/storm_observations/search_storm_telegrams?telegram_type=storm&date_from=#{date_from}&date_to=#{date_to}#{station}#{text}#{add_param}"
     @actions = Audit.where("auditable_id = ? and auditable_type = 'StormObservation'", @storm_observation.id)
   end
