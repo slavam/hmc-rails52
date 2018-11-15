@@ -108,13 +108,13 @@ export function checkAgroTelegram(tlg, stations, errors, observation){
         errors.push("Ошибка в группе 6 зоны 90 раздела 3");
         return false;
       }
-    if (tlg[currentPos] == '7') 
+    // if (tlg[currentPos] == '7')  // 20181115
       if (/^7\d{4}$/.test(tlg.substr(currentPos,5))){
         observation.wind_speed_max_24 = tlg.substr(currentPos+1,2);
         observation.saturation_deficit_max_24 = tlg.substr(currentPos+3,2);
         currentPos += 6;
       }else{
-        errors.push("Ошибка в группе 7 зоны 90 раздела 3");
+        errors.push("Ошибка в обязательной группе 7 зоны 90 раздела 3 =>"+tlg.substr(currentPos));
         return false;
       }
     if (tlg[currentPos] == '8') 
@@ -129,6 +129,10 @@ export function checkAgroTelegram(tlg, stations, errors, observation){
         errors.push("Ошибка в группе 8 зоны 90 раздела 3");
         return false;
       }
+    if (tlg[currentPos] != '9'){ // 20181115 fixed
+      errors.push("Ошибка в зоне 90 раздела 3 =>"+tlg.substr(currentPos));
+      return false;
+    }
     if (tlg.substr(currentPos, 2) == '91'){
       if (/^91[0-9/]{2}[0-6/]$/.test(tlg.substr(currentPos,5))){
         if (tlg.substr(currentPos+2,2) != '//')

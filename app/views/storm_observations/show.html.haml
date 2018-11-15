@@ -60,7 +60,11 @@
                 %td= @storm_observation.diameter_hail(@text[@curr_pos,2].to_i)
             %tr
               %th Температура воздуха, °С
-              %td= "#{@text[@curr_pos+2] == '0'? '':'-'}#{@text[@curr_pos+3,2].to_i}"
+              - if @text[@curr_pos+3,2] == '00'
+                - t = '0'
+              - else
+                - t = "#{@text[@curr_pos+2] == '0'? '':'-'}#{@text[@curr_pos+3,2].to_i}"
+              %td= t
             %tr
               %th Стадия явления
               %td= @text[@curr_pos+5] == '1'? "Стадия нарастания" : "Стадия сохранения или завершения"
