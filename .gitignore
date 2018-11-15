@@ -20,8 +20,8 @@
 # Ignore uploaded files in development
 /storage/*
 
-/node_modules
 /yarn-error.log
+/app/assets/pdf_folder
 
 /public/assets
 .byebug_history

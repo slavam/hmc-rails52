@@ -77,8 +77,9 @@ class BulletinsController < ApplicationController
       render :new
     else
       # MeteoMailer.welcome_email(current_user).deliver_now
-      # redirect_to "/bulletins/list?bulletin_type="+@bulletin.bulletin_type
-      redirect_to "/bulletins/#{@bulletin.id}/bulletin_show"
+      flash[:success] = "Бюллетень создан"
+      redirect_to "/bulletins/list?bulletin_type=#{@bulletin.bulletin_type}"
+      # redirect_to "/bulletins/#{@bulletin.id}/bulletin_show"
     end
   end
   
@@ -98,7 +99,9 @@ class BulletinsController < ApplicationController
     if not @bulletin.update_attributes bulletin_params
       render :action => :edit
     else
-      redirect_to "/bulletins/#{@bulletin.id}/bulletin_show"
+      # redirect_to "/bulletins/#{@bulletin.id}/bulletin_show"
+      flash[:success] = "Бюллетень изменен"
+      redirect_to "/bulletins/list?bulletin_type=#{@bulletin.bulletin_type}"
     end
   end
 
