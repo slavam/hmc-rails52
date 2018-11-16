@@ -88,7 +88,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Отчеты <b class="caret"></b></a>
                 %ul{class: "dropdown-menu"}
                   %li= link_to 'Тепло Донбасса',  synoptic_observations_heat_donbass_show_path
-                  %li= link_to 'HDRx', synoptic_observations_heat_donbass_rx_path
+                  -# %li= link_to 'HDRx', synoptic_observations_heat_donbass_rx_path
                   %li= link_to 'Бюллетени ежедневные', "/bulletins/list?bulletin_type=daily"
                   %li= link_to 'Бюллетени морские', "/bulletins/list?bulletin_type=sea"
                   %li= link_to 'Бюллетени выходного дня', "/bulletins/list?bulletin_type=holiday"
@@ -96,7 +96,7 @@
                   %li= link_to 'Шторма на море', "/bulletins/list?bulletin_type=sea_storm"
                   %li= link_to 'Радиация', "/bulletins/list?bulletin_type=radiation"
                   %li= link_to 'Телевидение', "/bulletins/list?bulletin_type=tv"
-                  %li= link_to 'Бюллетени', "/bulletins/bulletins_select"
+                  -# %li= link_to 'Бюллетени', "/bulletins/bulletins_select"
               %li= link_to 'Карты',  "http://suleiman.rshu.ru/gifmaps/", target: :_blank
               /
                 %li

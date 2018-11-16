@@ -28,7 +28,7 @@
       %td Для метеорологических явлений
     - @code_warep_positions.each do |code_warep_pos|
       %tr
-        %th= "Тип опасного/стихийного гидрометеорологического явления #{code_warep_pos}"
+        %th= "Тип опасного/стихийного гидрометеорологического явления"
         %td= @storm_observation.code_warep_to_s(@storm_observation.code_warep code_warep_pos)
       - @curr_pos = code_warep_pos + 3
       - case @storm_observation.code_warep code_warep_pos
