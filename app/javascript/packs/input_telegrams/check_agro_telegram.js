@@ -461,7 +461,7 @@ export function checkAgroTelegram(tlg, stations, errors, observation){
         state_crops.crop_code = t.substr(0, 3);
         let pos = 4;
         if (t[4] == '1')
-          if (/^1\d{3}[1-7]$/.test(t.substr(pos,5))){
+          if (/^1\d{3}[1-7/]$/.test(t.substr(pos,5))){ //20181119 / согласовано В.И.
             state_crops.plot_code = t.substr(pos+1,3);
             state_crops.agrotechnology = t[pos+4];
             pos += 6;
