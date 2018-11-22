@@ -29,7 +29,7 @@
         %td= form.text_area :forecast_day_city, cols: "30", rows: "5"
       %tr
         %th Дежурный синоптик
-        %td= form.select :duty_synoptic, options_for_select(Bulletin.synoptic_list)
+        %td= form.select :duty_synoptic, options_for_select(Bulletin.synoptic_list, @bulletin.duty_synoptic)
       %tr
         %th Периодный прогноз
         %td= form.text_area :forecast_period, cols: "30", rows: "5"
@@ -41,7 +41,7 @@
         %td= form.text_area :forecast_orientation, cols: "30", rows: "5"
       %tr
         %th Синоптик
-        %td= form.select :synoptic1, options_for_select(Bulletin.synoptic_list)
+        %td= form.select :synoptic1, options_for_select(Bulletin.synoptic_list, @bulletin.synoptic1)
       %table{class: "table table-hover"}
         - report_date_prev = (@bulletin.report_date - 1.day) 
         -#.to_s(:custom_datetime)

@@ -18,9 +18,11 @@ class ApplicantsController < ApplicationController
     if @applicant.save
       # technicians = User.technicians
       # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{@applicant.inspect}")
-      ActionCable.server.broadcast "candidate_channel",
-        telegram_type: @applicant.telegram_type, # 'synoptic', # 
-        message: @applicant.created_at # 'Hello!!!!!!!!!!!!!' #
+      # ActionCable.server.broadcast "candidate_channel",
+      #   telegram_type: @applicant.telegram_type, # 'synoptic', # 
+      #   current_user_role: current_user.role,
+      #   message: @applicant.created_at # 'Hello!!!!!!!!!!!!!' #
+      
       # technicians.each do |t|
       #   ActionCable.server.broadcast "candidate_channel_user_#{t.id}",
       #                             telegram_type:  @applicant.telegram_type,
@@ -39,7 +41,12 @@ class ApplicantsController < ApplicationController
     applicant.message = params[:message]
     applicant.telegram_type = params[:tlgType]
     if applicant.save
-      ActionCable.server.broadcast "candidate_channel", applicant: applicant
+      ActionCable.server.broadcast "candidate_channel", applicant: applicant #, currentRole: current_user.role
+      User.where(role: 'synoptic').each do |synoptic|
+        # Rails.logger.debug("My object>>>>>>>>>>>>>>>: Brodcast")
+        ActionCable.server.broadcast "candidate_channel_user_#{synoptic.id}", 
+          sound: true
+      end
       case params[:tlgType]
         when 'synoptic'
           last_telegrams = SynopticObservation.short_last_50_telegrams(current_user)

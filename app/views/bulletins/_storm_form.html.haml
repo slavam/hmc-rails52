@@ -21,7 +21,7 @@
         %td= form.text_area :storm, cols: "30", rows: "5"
       %tr
         %th Синоптик
-        %td= form.select :synoptic1, options_for_select(Bulletin.synoptic_list)
+        %td= form.select :synoptic1, options_for_select(Bulletin.synoptic_list, @bulletin.synoptic1)
     %br
     = submit_tag "Сохранить"
 - if @bulletin.bulletin_type == 'storm'

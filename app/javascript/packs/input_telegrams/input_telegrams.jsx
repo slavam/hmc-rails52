@@ -20,7 +20,7 @@ const LastTelegramsTable = ({telegrams, tlgType, stations}) => {
     <table className="table table-hover">
       <thead>
         <tr>
-          <th width = "200px">Дата</th>
+          <th width = "200px">Дата { tlgType == 'storm' ? 'явления' : ''}</th>
           { tlgType == 'synoptic' ? <th>Срок</th> : <th></th>}
           <th>Метеостанция</th>
           <th>Текст</th>

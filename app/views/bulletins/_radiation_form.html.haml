@@ -14,7 +14,7 @@
         %td= form.text_field :curr_number, size: 8
       %tr
         %th Синоптик
-        %td= form.select :synoptic1, options_for_select(Bulletin.synoptic_list)
+        %td= form.select :synoptic1, options_for_select(Bulletin.synoptic_list, @bulletin.synoptic1)
       %tr
         %th Данные о состоянии радиационного фона (мкР/ч):
       %tr
