@@ -1,0 +1,3 @@
+%tr
+  %th Начальник
+  %td= select :bulletin, :chief, options_for_select(Bulletin::CHIEFS, @bulletin.chief)

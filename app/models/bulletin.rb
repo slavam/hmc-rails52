@@ -11,6 +11,8 @@ class Bulletin < ActiveRecord::Base
   MONTH_NAME2 = %w{nil января февраля марта апреля мая июня июля августа сентября октября ноября декабря}
   TV_CITIES = ["Артемовск", "Славянск", "Красный Лиман", "Горловка", "Доброполье", "Константиновка", "Красноармейск", "Донецк", "Ясиноватая", "Макеевка", "Снежное", "Шахтерск", "Амвросиевка", "Волноваха", "Марьинка", "Старобешево", "Тельманово", "Мариуполь", "Новоазовск"]
   BULLETIN_TYPES = {'daily' => "Бюллетени ежедневные", 'sea' => "Бюллетени морские", 'holiday' => "Бюллетени выходного дня", 'storm' => "Штормовые предупреждения", 'sea_storm' => "Шторма на море", 'radiation' => "Радиация", 'tv' => "Телевидение"}
+  CHIEFS = {"Лукьяненко" => "М.Б. Лукьяненко", "Стец" => "Н.В. Стец"}
+  RESPONSIBLES = {"Бойко" => "Л.Н. Бойко", "Кияненко" => "М.А. Кияненко"}
 
   # mount_uploader :picture, PictureUploader
   def pdf_filename(user_id)
@@ -40,5 +42,30 @@ class Bulletin < ActiveRecord::Base
   def date_hour_minute
     report_date = self.report_date.to_s
     "#{report_date[8,2]}.#{report_date[5,2]}.#{report_date[0,4]} г. #{self.storm_hour} час. #{self.storm_minute == 0 ? '00' : self.storm_minute} мин."
+  end
+  
+  def chief_2_pdf
+    ret = {}
+    if self.chief == "М.Б. Лукьяненко"
+      ret[:position] = "Начальник"
+      ret[:image_name] = "./app/assets/images/chief.png"
+    else
+      ret[:position] = "Врио начальника"
+      ret[:image_name] = "./app/assets/images/stec.png"
+    end
+    ret[:name] = self.chief
+    ret
+  end
+  def responsible_2_pdf
+    ret = {}
+    if self.responsible == "Л.Н. Бойко"
+      ret[:position] = "Начальник отдела гидрометеорологического обеспечения и обслуживания"
+      ret[:image_name] = "./app/assets/images/head_of_dep.png"
+    else
+      ret[:position] = "Заместитель начальника отдела гидрометеорологического обеспечения и обслуживания"
+      ret[:image_name] = "./app/assets/images/kian.png"
+    end
+    ret[:name] = self.responsible
+    ret
   end
 end

@@ -46,7 +46,7 @@ class Radiation < Prawn::Document
     text "Средний радиационный фон по Республике #{avg} мкР/ч."
     bounding_box([0, 150], width: bounds.width) do
       text "Ответственный за выпуск:"
-      table [["Начальник отдела гидрометеорологического обеспечения и обслуживания", {image: "./app/assets/images/head_of_dep.png", scale: 0.6},"Л.Н. Бойко"]], width: bounds.width, column_widths:  [300, 100], cell_style: {overflow: :shrink_to_fit, inline_format: true } do |t|
+      table signatures, width: bounds.width, column_widths:  [300, 100], cell_style: {overflow: :shrink_to_fit, inline_format: true } do |t|
         t.cells.border_width = 0
       end
     end
@@ -57,5 +57,9 @@ class Radiation < Prawn::Document
     line_to 550, 15
     stroke_color '0000ff'
     stroke
+  end
+  def signatures
+    responsible_descr = @bulletin.responsible_2_pdf
+    [[responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6}, responsible_descr[:name]]]
   end
 end

@@ -32,7 +32,7 @@ class Storm < Prawn::Document
     text_box @bulletin.storm, :at => [0, cursor], :width => bounds.width, :height => 300, :overflow => :shrink_to_fit
     move_down 20
     bounding_box([0, 150], width: bounds.width) do
-      table [["<b>Начальник</b>", {image: "./app/assets/images/chief.png", scale: 0.6},"<b>М.Б. Лукьяненко</b>"]], width: bounds.width, column_widths:  [300, 100], cell_style: {overflow: :shrink_to_fit, inline_format: true } do |t|
+      table signatures, width: bounds.width, column_widths:  [300, 100], cell_style: {overflow: :shrink_to_fit, inline_format: true } do |t|
         t.cells.border_width = 0
       end
     end
@@ -44,4 +44,10 @@ class Storm < Prawn::Document
     stroke_color '0000ff'
     stroke
   end
+  def signatures
+	  chief_descr = @bulletin.chief_2_pdf
+    # [ [["<b>Начальник</b>", {image: "./app/assets/images/chief.png", scale: 0.6},"<b>М.Б. Лукьяненко</b>"]]
+      # [responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6}, responsible_descr[:name]],
+      [["<b>"+chief_descr[:position]+"</b>", {:image => chief_descr[:image_name], scale: 0.6}, chief_descr[:name]]]
+	end
 end

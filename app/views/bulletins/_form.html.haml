@@ -1,4 +1,3 @@
-- I18n.locale = :ru
 .container
   = form_for @bulletin do |form|
     %table{class: "table table-hover"}
@@ -14,10 +13,6 @@
       %tr
         %th Тип бюллетеня
         %td= form.select :bulletin_type, options_for_select([["Ежедневный", "daily"], ["Море", "sea"], ["Выходного дня", "holiday"], ["Шторм", 'storm'], ["Радиация", 'radiation'], ["Телевидение", 'tv']], @bulletin.bulletin_type.present? ? @bulletin.bulletin_type : "daily")
-      /
-        %tr
-          %th Синоптик 2
-          %td= form.select :synoptic2, options_for_select([["Маренкова Н.В.", "Маренкова Н.В."], ["Осокина Л.Н.", "Осокина Л.Н."]], @bulletin.synoptic2.present? ? @bulletin.synoptic2 : "Маренкова Н.В.")
       %tr
         %th Шторм
         %td= form.text_area :storm, cols: "30", rows: "5"
@@ -106,6 +101,8 @@
           %tr
             %th Отмечалась в
             %td= text_field_tag :min_temp_year, c_d[4].present? ? c_d[4] : '', size: 8
+      = render partial: 'chief'
+      = render partial: 'responsible'
 
     %br
     = submit_tag "Сохранить"

@@ -45,7 +45,8 @@ export default class ApplicantsList extends React.Component{
       },
       {received: data => {
         if (data.sound)
-          alert("Beep");
+          this.snd.play();
+          // alert("Beep");
         this.updateApplicantsState(data.applicant);
       }
     });

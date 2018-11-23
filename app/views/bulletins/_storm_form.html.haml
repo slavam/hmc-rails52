@@ -22,6 +22,7 @@
       %tr
         %th Синоптик
         %td= form.select :synoptic1, options_for_select(Bulletin.synoptic_list, @bulletin.synoptic1)
+      = render partial: 'chief'
     %br
     = submit_tag "Сохранить"
 - if @bulletin.bulletin_type == 'storm'

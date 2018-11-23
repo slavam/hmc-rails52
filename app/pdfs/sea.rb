@@ -122,11 +122,10 @@ class Sea < Prawn::Document
     ]
 	end
 	def signatures
-    image1 = "./app/assets/images/head_of_dep.png"
-    image2 = "./app/assets/images/chief.png"
+	  chief_descr = @bulletin.chief_2_pdf
+    responsible_descr = @bulletin.responsible_2_pdf
     [ ["Ответственный за выпуск:","",""],
-      ["Начальник отдела гидрометеорологического обеспечения и обслуживания", {image: image1, scale: 0.6}, "Л.Н. Бойко"],
-      ["<b>Начальник</b>", {image: image2, scale: 0.6},"<b>М.Б. Лукьяненко</b>"]
-    ]
+      [responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6}, responsible_descr[:name]],
+      [chief_descr[:position], {:image => chief_descr[:image_name], scale: 0.6}, chief_descr[:name]]]
 	end
 end

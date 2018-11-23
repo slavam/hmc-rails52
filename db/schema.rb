@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_12_072058) do
+ActiveRecord::Schema.define(version: 2018_11_22_111412) do
 
   create_table "agro_crop_categories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -174,6 +174,8 @@ ActiveRecord::Schema.define(version: 2018_09_12_072058) do
     t.integer "storm_hour", default: 0
     t.integer "storm_minute", default: 0
     t.string "picture"
+    t.string "chief"
+    t.string "responsible"
   end
 
   create_table "chem_coefficients", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

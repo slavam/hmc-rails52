@@ -81,6 +81,8 @@
       %tr
         %th Обзор состояния Азовского моря
         %td= form.text_area :forecast_sea_period, cols: "100", rows: "5"
+      = render partial: 'chief'
+      = render partial: 'responsible'
     %br
     = submit_tag "Сохранить"
 = link_to "Список", "/bulletins/list?bulletin_type=sea"
