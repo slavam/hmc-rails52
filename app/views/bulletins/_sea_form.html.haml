@@ -9,7 +9,8 @@
         %td= form.text_field :report_date, size: 10
       %tr
         %th Тип
-        %td= form.text_field :bulletin_type
+        %td= @bulletin.bulletin_type
+        -# %td= form.text_field :bulletin_type
       %tr
         %th Номер бюллетеня
         %td= form.text_field :curr_number, size: 8

@@ -1,3 +1,4 @@
+// where in production?
 var snd = new Audio("/assets/ring1.wav");
 App.candidate = App.cable.subscriptions.create({
         // channel: "CandidateChannel", 

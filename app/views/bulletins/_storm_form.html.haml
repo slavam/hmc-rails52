@@ -12,7 +12,8 @@
         %td= form.text_field :storm_minute
       %tr
         %th Тип
-        %td= form.text_field :bulletin_type
+        %td= @bulletin.bulletin_type
+        -# %td= form.text_field :bulletin_type
       %tr
         %th Номер
         %td= form.text_field :curr_number

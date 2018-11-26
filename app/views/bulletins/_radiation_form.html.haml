@@ -5,7 +5,8 @@
     %table{class: "table table-hover"}
       %tr
         %th Тип
-        %td= form.text_field :bulletin_type
+        %td= @bulletin.bulletin_type
+        -# %td= form.text_field :bulletin_type
       %tr
         %th Отчетная дата
         %td= form.text_field :report_date, size: 10
