@@ -2,6 +2,7 @@
   - provide(:logo, current_user.role == 'specialist' ? 'Контроль телеграмм' : "Гидрометцентр МЧС ДНР")
 - else
   - provide(:logo, "")
+
 %header{ :class=>"navbar navbar-fixed-top navbar-inverse"}
   %div{ :class=>"container"}
     = link_to yield(:logo), "#", id: "logo"
@@ -10,6 +11,7 @@
         - if logged_in?
           - case current_user.role
             - when 'synoptic'
+              = javascript_pack_tag 'beep-beep'
               %li
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Телеграммы <b class="caret"></b></a>
                 %ul{class: "dropdown-menu"}

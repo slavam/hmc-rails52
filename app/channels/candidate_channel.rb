@@ -1,8 +1,8 @@
 class CandidateChannel < ApplicationCable::Channel
   def subscribed
-    if connect_user.role == 'synoptic'
-      stream_from "candidate_channel_user_#{connect_user.id}"
-    end
+    # if connect_user.role == 'synoptic'
+    #   stream_from "candidate_channel_user_#{connect_user.id}"
+    # end
     stream_from "candidate_channel"
   end
 

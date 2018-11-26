@@ -42,11 +42,11 @@ class ApplicantsController < ApplicationController
     applicant.telegram_type = params[:tlgType]
     if applicant.save
       ActionCable.server.broadcast "candidate_channel", applicant: applicant #, currentRole: current_user.role
-      User.where(role: 'synoptic').each do |synoptic|
-        # Rails.logger.debug("My object>>>>>>>>>>>>>>>: Brodcast")
-        ActionCable.server.broadcast "candidate_channel_user_#{synoptic.id}", 
-          sound: true
-      end
+      # User.where(role: 'synoptic').each do |synoptic|
+      #   # Rails.logger.debug("My object>>>>>>>>>>>>>>>: Brodcast")
+      #   ActionCable.server.broadcast "candidate_channel_user_#{synoptic.id}", 
+      #     sound: true
+      # end
       case params[:tlgType]
         when 'synoptic'
           last_telegrams = SynopticObservation.short_last_50_telegrams(current_user)
