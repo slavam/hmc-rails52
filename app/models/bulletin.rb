@@ -33,7 +33,7 @@ class Bulletin < ActiveRecord::Base
   end
   
   def self.synoptic_list
-    synoptics = ["Деревянко Н.Н.", "Маренкова Н.В.", "Осокина Л.Н.", "Соколова Т.Е.", "Щербак Е.Д.", "Николаева А.Р."]
+    synoptics = ["Деревянко Н.Н.", "Маренкова Н.В.", "Осокина Л.Н.", "Соколова Т.Е.", "Щербак Е.Д.", "Томченко Т.В.", "Нифтуллаева О.В."]
     res = []
     synoptics.each {|s| res << [s, s]}
     return res
@@ -62,7 +62,7 @@ class Bulletin < ActiveRecord::Base
       ret[:position] = "Начальник отдела гидрометеорологического обеспечения и обслуживания"
       ret[:image_name] = "./app/assets/images/head_of_dep.png"
     else
-      ret[:position] = "Заместитель начальника отдела гидрометеорологического обеспечения и обслуживания"
+      ret[:position] = "Врио начальника отдела гидрометеорологического обеспечения и обслуживания"
       ret[:image_name] = "./app/assets/images/kian.png"
     end
     ret[:name] = self.responsible

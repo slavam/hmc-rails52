@@ -4,6 +4,7 @@ import { checkSynopticTelegram } from './check_synoptic_telegram';
 import { checkStormTelegram } from './check_storm_telegram';
 import { checkAgroTelegram } from './check_agro_telegram';
 import { checkRadiationTelegram } from './check_radiation_telegram';
+import { checkSeaTelegram } from './check_sea_telegram';
 
 export default class NewTelegramForm extends React.Component{
   constructor(props) {
@@ -88,8 +89,12 @@ export default class NewTelegramForm extends React.Component{
         }
         break;
       case 'sea':
-        this.observation.day_obs = text.substr(5,2);
-        this.observation.term = text.substr(7,2);
+        if (!checkSeaTelegram(text, this.props.stations, errors, this.observation, this.state.currDate)) {
+          this.setState({errors: errors});
+          return;
+        }
+        // this.observation.day_obs = text.substr(5,2);
+        // this.observation.term = text.substr(7,2);
         break;
     }
     this.props.onFormSubmit({observation: this.observation, currDate: date, tlgType: this.state.tlgType, tlgText: this.state.tlgText});
@@ -134,7 +139,7 @@ export default class NewTelegramForm extends React.Component{
       { value: 'agro_dec',  label: 'Агро декадные' },
       { value: 'storm',     label: 'Штормовые' },
       { value: 'radiation', label: 'Радиация' },
-      // { value: 'sea',       label: 'Морские' },
+      { value: 'sea',       label: 'Морские' },
     ];
     const terms = [
       { value: '00', label: '00' },

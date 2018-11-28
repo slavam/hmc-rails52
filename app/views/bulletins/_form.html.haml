@@ -8,11 +8,13 @@
         %th Номер бюллетеня
         %td= form.text_field :curr_number, size: 8
       %tr
-        %th Лето
-        %td= form.check_box :summer
+        %th Вариант
+        %td= @bulletin.summer ? "Лето" : "Зима"
+      = hidden_field_tag :summer, @bulletin.summer
       %tr
         %th Тип бюллетеня
-        %td= @bulletin.bulletin_type
+        %td= form.text_field :bulletin_type, readonly: true
+        -# %td= @bulletin.bulletin_type
         -# %td= form.select :bulletin_type, options_for_select([["Ежедневный", "daily"], ["Море", "sea"], ["Выходного дня", "holiday"], ["Шторм", 'storm'], ["Радиация", 'radiation'], ["Телевидение", 'tv']], @bulletin.bulletin_type.present? ? @bulletin.bulletin_type : "daily")
       %tr
         %th Шторм

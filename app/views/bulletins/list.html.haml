@@ -1,9 +1,13 @@
 .container
   - case @bulletin_type
     - when 'daily'
-      = link_to "Создать", new_bulletin_path  
+      = link_to "Создать (Лето)", "new_bulletin?variant=summer"
+      %br
+      = link_to "Создать (Зима)", "new_bulletin?variant=winter"
     -when 'sea'
-      = link_to "Создать", bulletins_new_sea_bulletin_path  
+      =link_to "Создать (Лето)", "new_sea_bulletin?variant=summer"
+      %br
+      =link_to "Создать (Зима)", "new_sea_bulletin?variant=winter"
     -when 'storm', 'sea_storm'
       = link_to "Создать", "new_storm_bulletin?bulletin_type="+@bulletin_type
     -when 'holiday'
@@ -11,7 +15,9 @@
     -when 'radiation'
       = link_to "Создать", bulletins_new_radiation_bulletin_path  
     -when 'tv'
-      = link_to "Создать", bulletins_new_tv_bulletin_path  
+      = link_to "Создать", bulletins_new_tv_bulletin_path
+    - when 'avtodor'
+      = link_to "Создать", bulletins_new_avtodor_bulletin_path
   %h3= Bulletin::BULLETIN_TYPES[@bulletin_type]
   .container
     %table{class: "table table-hover"}
@@ -25,9 +31,12 @@
           %th= ""
       %tbody
         - @bulletins.each do |b| 
+          - variant = ''
+          - if b.bulletin_type == 'sea'
+            - variant = b.summer ? ' (Лето)' : ' (Зима)'
           %tr
             %td= b.report_date.to_s
-            %td= b.curr_number
+            %td= b.curr_number + variant
             -# %td= link_to "Просмотреть", "#{b.id}/bulletin_show"
             %td= link_to "Просмотреть/Распечатать", "#{b.id}/bulletin_show.pdf"
             %td= link_to "Изменить", edit_bulletin_path(b.id)

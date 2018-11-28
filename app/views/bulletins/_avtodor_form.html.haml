@@ -1,0 +1,51 @@
+.container
+  = form_for @bulletin do |form|
+    %table{class: "table table-hover"}
+      %tr
+        %th Отчетная дата
+        %td= form.text_field :report_date
+      %tr
+        %th Номер бюллетеня
+        %td= form.text_field :curr_number
+      %tr
+        %th Тип бюллетеня
+        %td= form.text_field :bulletin_type, readonly: true
+      %tr
+        %th Шторм
+        %td= form.text_area :storm, cols: "30", rows: "5"
+      %tr
+        %th Прогноз погоды на сутки
+        %td= form.text_area :forecast_day, cols: "30", rows: "5"
+      %table{class: "table table-hover"}
+        - report_date_prev = (@bulletin.report_date - 1.day) 
+        %th= "Метеорологические данные за #{report_date_prev.strftime('%Y-%m-%d')}"
+        %td
+          %tr
+            %th= "Название метеостанции"
+            %th= "Средняя за сутки температура воздуха, °C"
+            %th= "Количество осадков за сутки, мм"
+            %th= "Вид осадков"
+            %th= "Скорость ветра, м/с"
+          - m_d = []
+          - m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
+          %tr
+            %td= "Донецк"
+            - (1..4).each do |i|
+              %td= text_field_tag "val_"+i.to_s, m_d[i-1].present? ? m_d[i-1] : '', size: 4
+          %tr
+            %td= "Дебальцево"
+            - (5..8).each do |i|
+              %td= text_field_tag "val_"+i.to_s, m_d[i-1].present? ? m_d[i-1] : '', size: 4
+          %tr
+            %td= "Амвросиевка"
+            - (9..12).each do |i|
+              %td= text_field_tag "val_"+i.to_s, m_d[i-1].present? ? m_d[i-1] : '', size: 4
+          %tr
+            %td= "Седово"
+            - (13..16).each do |i|
+              %td= text_field_tag "val_"+i.to_s, m_d[i-1].present? ? m_d[i-1] : '', size: 4
+      = render partial: 'chief'
+      = render partial: 'responsible'
+    %br
+    = submit_tag "Сохранить"
+= link_to "Список", "/bulletins/list?bulletin_type=daily"

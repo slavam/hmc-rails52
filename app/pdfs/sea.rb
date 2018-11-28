@@ -64,20 +64,36 @@ class Sea < Prawn::Document
     text "МЕТЕОРОЛОГИЧЕСКИЕ ДАННЫЕ И СВЕДЕНИЯ О СОСТОЯНИИ МОРЯ", align: :center, :color => "0000FF"
     move_down 10
     font "OpenSans"
+    
     table meteo_data, width: bounds.width, cell_style: {padding: 3, border_width: 0.3, border_color: "bbbbbb", :inline_format => true, size: 9} do |t|
       t.cells.padding = [1, 1]
       t.cells.align = :center
-      t.row(0).columns(0).width = 90
-      t.row(1).columns(7).width = 90
-      t.row(1).columns(1..6).rotate = 90
-      t.row(1).columns(8..13).rotate = 90
-      t.row(1).columns(1..13).height = 100
       t.row(0).column(0).valign = :center
-      t.row(1).column(7).valign = :center
-      t.row(5).align = :left
+      t.row(0).columns(0).width = 90
+      
+      t.row(1).columns(1..13).rotate = 90
+      if @bulletin.summer
+        spec_cell = 7
+        t.row(1).column(13).width = 40
+        t.row(1).column(9).width = 60
+      else
+        spec_cell = 8
+        t.row(1).column(10).width = 40
+        t.row(1).column(13).width = 90
+        t.row(1).column(13).rotate = -90
+        t.row(1).column(13).valign = :center
+      end
+      t.row(1).columns(spec_cell).rotate = -90
+      t.row(1).column(spec_cell).valign = :center
+      t.row(1).column(spec_cell).width = 90
+      
+      t.row(1).columns(1..13).height = 100
+      
       t.row(1).column(1).width = 40
       t.row(1).column(2).width = 40
       t.row(1).column(3).width = 40
+      
+      t.row(5).align = :left
     end
     move_down 10
     table signatures, width: bounds.width, :column_widths => [300, 100], cell_style: {:overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true } do |t|
@@ -90,14 +106,10 @@ class Sea < Prawn::Document
       [@bulletin.forecast_day, @bulletin.forecast_day_city]]
 	end
 	def meteo_data
-    m_d = []
-    m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
-    report_date_prev = (@bulletin.report_date - 1.day).to_s(:custom_datetime)
-	  [
-	    [{:content => "Название
-	    метеостанции", :rowspan => 2},{:content => "за период с 9.00 часов #{report_date_prev[8,2]} #{MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}",
-	    :colspan => 7},{:content => "в срок 9.00 часов #{@bulletin.report_date_as_str}", :colspan => 6}],
-	    [
+	  if @bulletin.summer
+	    colspan1 = 7
+	    colspan2 = 6
+	    head_row1 = [
 	    "<color rgb='ff0000'>Максимальная 
 	    температура воздуха
 	    вчера днем</color>", 
@@ -114,7 +126,39 @@ class Sea < Prawn::Document
 	    понижение (-) 
 	    уровня моря 
 	    за сутки (см)", "Температура воды", "Направление волн", "Высота волн (дм)", 
-	    "Видимость"],
+	    "Видимость"]
+    else
+	    colspan1 = 8
+	    colspan2 = 5
+	    head_row1 = [
+	    "<color rgb='ff0000'>Максимальная 
+	    температура воздуха
+	    вчера днем</color>", 
+	    "<color rgb='0000ff'>Минимальная 
+	    температура воздуха
+	    сегодня ночью</color>", 
+	    "Температура воздуха
+	    в 9.00 часов сегодня", 
+	    "Количество осадков 
+	    за сутки (мм)",
+	    "Высота снежного покрова (см)",
+	    "Направление ветра", "Максимальная скорость ветра (м/с)", "Явления погоды", 
+	    "Уровень моря
+	    над '0' поста (см)", 
+	    "Повышение (+) 
+	    понижение (-) 
+	    уровня моря 
+	    за сутки (см)", "Температура воды", 
+	    "Видимость", "Ледовое состояние"]
+	  end
+    m_d = []
+    m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
+    report_date_prev = (@bulletin.report_date - 1.day).to_s(:custom_datetime)
+	  [
+	    [{:content => "Название
+	    метеостанции", :rowspan => 2},{:content => "за период с 9.00 часов #{report_date_prev[8,2]} #{MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}",
+	    :colspan => colspan1},{:content => "в срок 9.00 часов #{@bulletin.report_date_as_str}", :colspan => colspan2}],
+	    head_row1,
 	    ['Седово', m_d[0], m_d[1], m_d[2], m_d[3], m_d[4], m_d[5], m_d[6], m_d[7], m_d[8], m_d[9], m_d[10], m_d[11], m_d[12]],
 	    [{:content => "за период с 9.00 часов #{report_date_prev[8,2]} #{MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}", :colspan => 14}],
 	    [{:content => "<color rgb='0000ff'>ОБЗОР ПОГОДЫ</color>", :colspan => 8},{:content => "<color rgb='0000ff'>ОБЗОР СОСТОЯНИЯ АЗОВСКОГО МОРЯ</color>", :colspan => 6}],

@@ -92,7 +92,6 @@ export default class InputTelegrams extends React.Component{
   }
   
   handleFormSubmit(telegram) {
-    // var that = this;
     var tlgData = {};
     var desiredLink = '';
     switch(telegram.tlgType) {
@@ -128,6 +127,7 @@ export default class InputTelegrams extends React.Component{
       case 'sea':
         tlgData = {sea_observation: telegram.observation};
         desiredLink = "/sea_observations/create_sea_telegram?date="+telegram.currDate+"&input_mode="+this.state.inputMode;
+        break;
     }
     $.ajax({
       type: 'POST',

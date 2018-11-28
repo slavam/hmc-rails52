@@ -29,9 +29,10 @@ class BulletinsController < ApplicationController
 
   def new_sea_bulletin
     @bulletin = Bulletin.new
-    @bulletin.report_date = Time.now.to_s(:custom_datetime)
+    @bulletin.report_date = Time.now.strftime("%Y-%m-%d") #.to_s(:custom_datetime)
     @bulletin.curr_number = Date.today.yday()
     @bulletin.bulletin_type = 'sea'
+    @bulletin.summer = params[:variant] == 'summer' ? true : false
   end
 
   def new_storm_bulletin
@@ -59,14 +60,22 @@ class BulletinsController < ApplicationController
     @bulletin.report_date = Time.now.to_s(:custom_datetime)
     @bulletin.curr_number = Date.today.yday()
   end
+  
+  def new_avtodor_bulletin
+    @bulletin = Bulletin.new
+    @bulletin.report_date = Time.now.strftime("%Y-%m-%d")
+    @bulletin.curr_number = Date.today.yday()
+    @bulletin.bulletin_type = 'avtodor'
+  end
 
   def create
     @bulletin = Bulletin.new(bulletin_params)
+    @bulletin.summer = params[:summer] if params[:summer].present?
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{@bulletin.inspect}")
     if params[:val_1].present?
       @bulletin.meteo_data = ''
       (1..n).each do |i|
-        @bulletin.meteo_data += params["val_#{i}"]+'; '
+        @bulletin.meteo_data += params["val_#{i}"].present? ? params["val_#{i}"]+'; ' : ';'
       end
     end
     if @bulletin.bulletin_type == 'daily'
@@ -90,7 +99,7 @@ class BulletinsController < ApplicationController
     if params[:val_1].present?
       @bulletin.meteo_data = ''
       (1..n).each do |i|
-        @bulletin.meteo_data += params["val_#{i}"].strip+'; '
+        @bulletin.meteo_data += params["val_#{i}"].present? ? params["val_#{i}"].strip+'; ' : ';'
       end
     end
     if @bulletin.bulletin_type == 'daily'
@@ -174,10 +183,12 @@ class BulletinsController < ApplicationController
         when 'tv'
           pdf = Tv.new(@bulletin)
           @png_filename = @bulletin.png_filename(current_user.id)
+        when 'avtodor'
+          pdf = Avtodor.new(@bulletin)
       end
       format.html do
         save_as_pdf(pdf)
-        pdf_2_png
+        # pdf_2_png
       end
       format.pdf do
         send_data pdf.render, filename: @bulletin.pdf_filename(current_user.id), type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
@@ -207,7 +218,7 @@ class BulletinsController < ApplicationController
     def n
       case @bulletin.bulletin_type
         when 'sea'
-          13
+          15
         when 'radiation'
           4
         when 'tv'

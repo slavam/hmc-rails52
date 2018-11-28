@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  get 'sea_observations/input_sea_telegrams', to: 'sea_observations#input_sea_telegrams'
+  post 'sea_observations/create_sea_telegram', to: 'sea_observations#create_sea_telegram'
+  get 'sea_observations/get_last_telegrams', to: 'sea_observations#get_last_telegrams'
+  put 'sea_observations/update_sea_telegram', to: 'sea_observations#update_sea_telegram'
+  resources :sea_observations
   get 'radiation_observations/input_radiation_telegrams', to: 'radiation_observations#input_radiation_telegrams'
   post 'radiation_observations/create_radiation_telegram', to: 'radiation_observations#create_radiation_telegram'
   get 'radiation_observations/get_last_telegrams', to: 'radiation_observations#get_last_telegrams'
@@ -72,6 +77,7 @@ Rails.application.routes.draw do
   get 'bulletins/new_tv_bulletin', to: 'bulletins#new_tv_bulletin'
   get 'bulletins/new_storm_bulletin', to: 'bulletins#new_storm_bulletin'
   get 'bulletins/new_holiday_bulletin', to: 'bulletins#new_holiday_bulletin'
+  get 'bulletins/new_avtodor_bulletin', to: 'bulletins#new_avtodor_bulletin'
   get 'bulletins/:id/bulletin_show', to: 'bulletins#bulletin_show'
   get 'bulletins/list', to: 'bulletins#list'
   get 'bulletins/help_show', to: 'bulletins#help_show'
