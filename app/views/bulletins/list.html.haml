@@ -1,9 +1,9 @@
 .container
   - case @bulletin_type
     - when 'daily'
-      = link_to "Создать (Лето)", "new_bulletin?variant=summer"
+      = link_to "Создать (Лето)", "new?variant=summer"
       %br
-      = link_to "Создать (Зима)", "new_bulletin?variant=winter"
+      = link_to "Создать (Зима)", "new?variant=winter"
     -when 'sea'
       =link_to "Создать (Лето)", "new_sea_bulletin?variant=summer"
       %br
@@ -32,7 +32,7 @@
       %tbody
         - @bulletins.each do |b| 
           - variant = ''
-          - if b.bulletin_type == 'sea'
+          - if (b.bulletin_type == 'sea') or (b.bulletin_type == 'daily')
             - variant = b.summer ? ' (Лето)' : ' (Зима)'
           %tr
             %td= b.report_date.to_s

@@ -106,6 +106,8 @@ class Sea < Prawn::Document
       [@bulletin.forecast_day, @bulletin.forecast_day_city]]
 	end
 	def meteo_data
+    m_d = []
+    m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
 	  if @bulletin.summer
 	    colspan1 = 7
 	    colspan2 = 6
@@ -127,6 +129,7 @@ class Sea < Prawn::Document
 	    уровня моря 
 	    за сутки (см)", "Температура воды", "Направление волн", "Высота волн (дм)", 
 	    "Видимость"]
+	    data_row = ['Седово', m_d[0], m_d[1], m_d[2], m_d[3], m_d[4], m_d[5], m_d[6], m_d[7], m_d[8], m_d[9], m_d[10], m_d[11], m_d[12]]
     else
 	    colspan1 = 8
 	    colspan2 = 5
@@ -150,16 +153,15 @@ class Sea < Prawn::Document
 	    уровня моря 
 	    за сутки (см)", "Температура воды", 
 	    "Видимость", "Ледовое состояние"]
+	    data_row = ['Седово', m_d[0], m_d[1], m_d[2], m_d[3], m_d[13], m_d[4], m_d[5], m_d[6], m_d[7], m_d[8], m_d[9], m_d[12], m_d[14]]
 	  end
-    m_d = []
-    m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
     report_date_prev = (@bulletin.report_date - 1.day).to_s(:custom_datetime)
 	  [
 	    [{:content => "Название
 	    метеостанции", :rowspan => 2},{:content => "за период с 9.00 часов #{report_date_prev[8,2]} #{MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}",
 	    :colspan => colspan1},{:content => "в срок 9.00 часов #{@bulletin.report_date_as_str}", :colspan => colspan2}],
 	    head_row1,
-	    ['Седово', m_d[0], m_d[1], m_d[2], m_d[3], m_d[4], m_d[5], m_d[6], m_d[7], m_d[8], m_d[9], m_d[10], m_d[11], m_d[12]],
+	    data_row,
 	    [{:content => "за период с 9.00 часов #{report_date_prev[8,2]} #{MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}", :colspan => 14}],
 	    [{:content => "<color rgb='0000ff'>ОБЗОР ПОГОДЫ</color>", :colspan => 8},{:content => "<color rgb='0000ff'>ОБЗОР СОСТОЯНИЯ АЗОВСКОГО МОРЯ</color>", :colspan => 6}],
 	    [{content: @bulletin.forecast_sea_day, colspan: 8},{content: @bulletin.forecast_sea_period, colspan: 6}]

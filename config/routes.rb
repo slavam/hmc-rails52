@@ -63,6 +63,7 @@ Rails.application.routes.draw do
   get 'synoptic_observations/get_conversion_params', to: 'synoptic_observations#get_conversion_params'
   post 'synoptic_observations/converter', to: 'synoptic_observations#converter'
   get 'synoptic_observations/get_meteoparams', to: 'synoptic_observations#get_meteoparams'
+  get 'synoptic_observations/teploenergo', to: 'synoptic_observations#teploenergo'
   resources :synoptic_observations
   get 'sessions/new'
   get    '/login',   to: 'sessions#new'

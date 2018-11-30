@@ -56,7 +56,7 @@ export default class HeatDonbass extends React.Component{
     this.inputDate.value = this.props.calcDate;
     this.calcDate$ = Rx.Observable.fromEvent(this.inputDate, 'change')
     .subscribe(() => {
-      this.handleDateSubmit(this.inputDate.value)
+      this.handleDateSubmit(this.inputDate.value);
     });
 	    
     this.handleDateSubmit = this.handleDateSubmit.bind(this);

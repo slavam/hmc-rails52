@@ -22,7 +22,7 @@ class BulletinsController < ApplicationController
   
   def new_holiday_bulletin
     @bulletin = Bulletin.new
-    @bulletin.report_date = Time.now.to_s(:custom_datetime)
+    @bulletin.report_date = Time.now.strftime("%Y-%m-%d") #.to_s(:custom_datetime)
     @bulletin.curr_number = Date.today.yday()
     @bulletin.bulletin_type = 'holiday'
   end
@@ -37,14 +37,14 @@ class BulletinsController < ApplicationController
 
   def new_storm_bulletin
     @bulletin = Bulletin.new
-    @bulletin.report_date = Time.now.to_s(:custom_datetime)
+    @bulletin.report_date = Time.now.strftime("%Y-%m-%d") #to_s(:custom_datetime)
     @bulletin.curr_number = Date.today.yday()
-    @bulletin.bulletin_type = params[:bulletin_type]
+    @bulletin.bulletin_type = 'storm' #params[:bulletin_type]
   end
   
   def new_radiation_bulletin
     @bulletin = Bulletin.new
-    @bulletin.report_date = Time.now.to_s(:custom_datetime)
+    @bulletin.report_date = Time.now.strftime("%Y-%m-%d") #.to_s(:custom_datetime)
     @bulletin.curr_number = Date.today.yday()
     @bulletin.bulletin_type = 'radiation'
   end
@@ -57,8 +57,10 @@ class BulletinsController < ApplicationController
   
   def new
     @bulletin = Bulletin.new
-    @bulletin.report_date = Time.now.to_s(:custom_datetime)
+    @bulletin.report_date = Time.now.strftime("%Y-%m-%d")
     @bulletin.curr_number = Date.today.yday()
+    @bulletin.bulletin_type = 'daily'
+    @bulletin.summer = params[:variant] == 'summer' ? true : false
   end
   
   def new_avtodor_bulletin

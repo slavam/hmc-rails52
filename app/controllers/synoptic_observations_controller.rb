@@ -1,6 +1,29 @@
 class SynopticObservationsController < ApplicationController
   # before_filter :require_observer_or_technicist
   before_action :find_synoptic_observation, only: [:show, :update_synoptic_telegram] 
+  def teploenergo
+    @year = params[:year].present? ? params[:year] : Time.now.utc.year.to_s
+    @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
+    sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date like '#{@year}-#{@month}%' and station_id in (1,2,3,4,5) group by date, station_id;"
+    db_temperatures = SynopticObservation.find_by_sql(sql)
+    @temperatures = {}
+    db_temperatures.each {|t|
+      key = t.date.day.to_s.rjust(2, '0')+'-'+t.station_id.to_s
+      @temperatures[key] = t.temperature
+    }
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@temperatures.inspect}") 
+    respond_to do |format|
+      format.html 
+      format.pdf do
+        # station_name = Station.find(params[:station_id]).name
+        pdf = Teploenergo.new(@temperatures, @year, @month)
+        send_data pdf.render, filename: "teploenergo_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      end
+      format.json do 
+        render json: {temperatures: @temperatures}
+      end
+    end
+  end
   
   def telegrams_4_download
     @date = (Time.now-3.hours).utc.strftime("%Y-%m-%d") # предыдущий срок

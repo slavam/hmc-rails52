@@ -6,7 +6,8 @@
     %table{class: "table table-hover"}
       %tr
         %th Отчетная дата
-        %td= form.text_field :report_date, size: 10
+        %td= form.date_field :report_date, value: @bulletin.report_date.strftime("%Y-%m-%d")
+        -# %td= form.text_field :report_date, size: 10
       %tr
         %th Тип
         %td= form.text_field :bulletin_type, readonly: true

@@ -3,7 +3,8 @@
     %table{class: "table table-hover"}
       %tr
         %th Отчетная дата
-        %td= form.text_field :report_date, size: 10
+        %td= form.date_field :report_date, value: @bulletin.report_date.strftime("%Y-%m-%d")
+        -# %td= form.text_field :report_date, size: 10
       %tr
         %th Номер бюллетеня
         %td= form.text_field :curr_number, size: 8
@@ -14,8 +15,6 @@
       %tr
         %th Тип бюллетеня
         %td= form.text_field :bulletin_type, readonly: true
-        -# %td= @bulletin.bulletin_type
-        -# %td= form.select :bulletin_type, options_for_select([["Ежедневный", "daily"], ["Море", "sea"], ["Выходного дня", "holiday"], ["Шторм", 'storm'], ["Радиация", 'radiation'], ["Телевидение", 'tv']], @bulletin.bulletin_type.present? ? @bulletin.bulletin_type : "daily")
       %tr
         %th Шторм
         %td= form.text_area :storm, cols: "30", rows: "5"
@@ -52,10 +51,8 @@
             %th= "Средняя за сутки #{report_date_prev.day} #{I18n.l(report_date_prev, format: "%B")}"
             %th= "В 9.00 часов сегодня"
             %th= "Количество осадков за сутки (мм)"
-            -# %th= "Высота снежного покрова (см)"
-            %th= "Минимальная температура почвы"
-            -# %th= "Глубина промерзания (см)"
-            %th= "Минимальная относительная влажность воздуха (%)" 
+            %th= @bulletin.summer ? "Минимальная температура почвы" : "Высота снежного покрова (см)"
+            %th= @bulletin.summer ? "Минимальная относительная влажность воздуха (%)" : "Глубина промерзания (см)"
             %th= "Максимальная скорость ветра (м/с)"
             %th= "Явления погоды"
           - m_d = []
