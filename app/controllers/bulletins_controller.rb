@@ -55,6 +55,13 @@ class BulletinsController < ApplicationController
     @bulletin.bulletin_type = 'tv'
   end
   
+  def new_bulletin
+    @bulletin = Bulletin.new
+    @bulletin.report_date = Time.now.strftime("%Y-%m-%d")
+    @bulletin.curr_number = Date.today.yday() #.to_s+'-РС'
+    @bulletin.bulletin_type = params[:bulletin_type] #'radio'
+  end
+  
   def new
     @bulletin = Bulletin.new
     @bulletin.report_date = Time.now.strftime("%Y-%m-%d")
@@ -187,6 +194,8 @@ class BulletinsController < ApplicationController
           @png_filename = @bulletin.png_filename(current_user.id)
         when 'avtodor'
           pdf = Avtodor.new(@bulletin)
+        when 'radio'
+          pdf = Radio.new(@bulletin)
       end
       format.html do
         save_as_pdf(pdf)
@@ -225,6 +234,8 @@ class BulletinsController < ApplicationController
           4
         when 'tv'
           38
+        when 'radio'
+          11
         else
           36        
       end

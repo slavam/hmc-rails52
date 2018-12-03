@@ -10,7 +10,7 @@
     %tbody
       - @agro_dec_observations.each do |a_o| 
         %tr
-          %td= a_o.date_dev
+          %td= a_o.date_dev.strftime("%d-%m-%Y")
           %td= a_o.station.name
           %td= link_to a_o.telegram, agro_dec_observation_path(a_o)
   = will_paginate

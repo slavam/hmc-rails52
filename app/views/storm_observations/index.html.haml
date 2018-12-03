@@ -14,7 +14,7 @@
     %tbody
       - @storm_observations.each do |s_o| 
         %tr
-          %td= s_o.telegram_date
+          %td= s_o.telegram_date.strftime("%d-%m-%Y %H:%M:%S UTC")
           %td= s_o.station.name
           %td= link_to s_o.telegram, storm_observation_path(s_o)
           /

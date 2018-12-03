@@ -10,7 +10,7 @@
     %tbody
       - @radiation_observations.each do |r_o| 
         %tr
-          %td= r_o.date_observation.strftime("%Y-%m-%d")
+          %td= r_o.date_observation.strftime("%d-%m-%Y")
           %td= r_o.station.name
           %td= link_to r_o.telegram, radiation_observation_path(r_o)
   = will_paginate

@@ -18,7 +18,9 @@
       = link_to "Создать", bulletins_new_tv_bulletin_path
     - when 'avtodor'
       = link_to "Создать", bulletins_new_avtodor_bulletin_path
-  %h3= Bulletin::BULLETIN_TYPES[@bulletin_type]
+    - when 'radio'
+      = link_to "Создать", "new_bulletin?bulletin_type=radio"
+  %h3= "Список бюллетеней (#{Bulletin::BULLETIN_TYPES[@bulletin_type]})"
   .container
     %table{class: "table table-hover"}
       %thead
@@ -35,7 +37,7 @@
           - if (b.bulletin_type == 'sea') or (b.bulletin_type == 'daily')
             - variant = b.summer ? ' (Лето)' : ' (Зима)'
           %tr
-            %td= b.report_date.to_s
+            %td= b.report_date.strftime("%d-%m-%Y")
             %td= b.curr_number + variant
             -# %td= link_to "Просмотреть", "#{b.id}/bulletin_show"
             %td= link_to "Просмотреть/Распечатать", "#{b.id}/bulletin_show.pdf"

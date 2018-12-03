@@ -79,6 +79,7 @@ Rails.application.routes.draw do
   get 'bulletins/new_storm_bulletin', to: 'bulletins#new_storm_bulletin'
   get 'bulletins/new_holiday_bulletin', to: 'bulletins#new_holiday_bulletin'
   get 'bulletins/new_avtodor_bulletin', to: 'bulletins#new_avtodor_bulletin'
+  get 'bulletins/new_bulletin', to: 'bulletins#new_bulletin'
   get 'bulletins/:id/bulletin_show', to: 'bulletins#bulletin_show'
   get 'bulletins/list', to: 'bulletins#list'
   get 'bulletins/help_show', to: 'bulletins#help_show'
