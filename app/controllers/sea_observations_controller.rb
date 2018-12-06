@@ -11,7 +11,7 @@ class SeaObservationsController < ApplicationController
   end
   
   def index
-    @sea_observations = SeaObservation.paginate(page: params[:page]).order(:date_observation, :created_at).reverse_order
+    @sea_observations = SeaObservation.paginate(page: params[:page]).order(:date_dev, :created_at).reverse_order
   end
   
   def input_sea_telegrams
@@ -23,7 +23,8 @@ class SeaObservationsController < ApplicationController
     date_dev = params[:input_mode] == 'direct' ? Time.parse(params[:date]+' 00:01:00 UTC') : Time.now.utc
     # sql = "select * from radiation_observations where station_id = #{params[:radiation_observation][:station_id]} and hour_observation = #{params[:radiation_observation][:hour_observation]} and date_observation = '#{left_time}' order by telegram_date desc"
     # telegram = StormObservation.find_by_sql(sql).first
-    telegram = SeaObservation.find_by(station_id: params[:sea_observation][:station_id], hour_observation: params[:sea_observation][:hour_observation], date_observation: params[:sea_observation][:date_observation])
+    # telegram = SeaObservation.find_by(station_id: params[:sea_observation][:station_id], hour_observation: params[:sea_observation][:hour_observation], date_observation: params[:sea_observation][:date_observation])
+    telegram = SeaObservation.find_by(station_id: params[:sea_observation][:station_id], term: params[:sea_observation][:term], date_dev: params[:sea_observation][:date_dev])
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{telegram.inspect}")
     if telegram.present?
       if telegram.update_attributes sea_observation_params
@@ -40,7 +41,8 @@ class SeaObservationsController < ApplicationController
       telegram = SeaObservation.new(sea_observation_params)
       # telegram.telegram_date = date_dev 
       if telegram.save
-        new_telegram = {id: telegram.id, date: telegram.date_observation, station_name: telegram.station.name, telegram: telegram.telegram}
+        # new_telegram = {id: telegram.id, date: telegram.date_observation, station_name: telegram.station.name, telegram: telegram.telegram}
+        new_telegram = {id: telegram.id, date: telegram.date_dev, station_name: telegram.station.name, telegram: telegram.telegram}
         ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'sea'
         last_telegrams = SeaObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams, 
@@ -73,6 +75,6 @@ class SeaObservationsController < ApplicationController
     end
     
     def sea_observation_params
-      params.require(:sea_observation).permit(:telegram, :station_id, :hour_observation, :date_observation)
+      params.require(:sea_observation).permit(:telegram, :station_id, :date_dev, :term, :day_obs) # :hour_observation, :date_observation)
     end
 end

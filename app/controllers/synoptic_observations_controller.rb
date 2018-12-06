@@ -71,7 +71,6 @@ class SynopticObservationsController < ApplicationController
     flash[:success] = "Дата: #{date}; срок: #{term}; телеграмм из БД ГМЦ: #{our_telegrams_num}; телеграмм из БД ogimet: #{web_telegrams_num}; записано телеграмм: #{total}"
     redirect_to synoptic_observations_arm_sin_files_list_path(request.parameters)
     
-    # render json: {total: total, ourTelegramsNum: our_telegrams_num, webTelegramsNum: our_telegrams_num}
   end
   
   def arm_sin_files_list
