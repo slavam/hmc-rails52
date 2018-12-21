@@ -1,3 +1,4 @@
+-# <meta name='turbolinks-visit-control' content='reload'>
 %div{ class:"container"}
   #form_and_last_telegrams
   #input_params{telegrams: @telegrams.to_json, currDate: Time.now.utc.strftime("%Y-%m-%d").to_json, tlgType: 'synoptic'.to_json, stations: @stations.to_json, term: @term.to_json, inputMode: @input_mode.to_json}

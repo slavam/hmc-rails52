@@ -6,7 +6,6 @@ import { checkRadiationTelegram } from './check_radiation_telegram';
 import { checkSeaTelegram } from './check_sea_telegram';
 import TextTelegramEditForm from './text_telegram_edit_form';
 
-
 export default class TelegramRow extends React.Component{
   constructor(props) {
     super(props);
@@ -88,10 +87,9 @@ export default class TelegramRow extends React.Component{
           this.setState({errors: errors});
           return;
         }
-        // observation.day_obs = tlgText.substr(5,2);
-        // observation.term = tlgText.substr(7,2);
         tlgData = {sea_observation: observation};
         desiredLink = "/sea_observations/update_sea_telegram?id="+this.props.telegram.id+"&telegram="+tlgText;
+        break;
     }
     observation.telegram = tlgText;
     this.setState({mode: "Изменить", tlgText: tlgText, source: 'inside'});

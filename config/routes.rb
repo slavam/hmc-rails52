@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  get 'hydro_observations/input_hydro_telegrams', to: 'hydro_observations#input_hydro_telegrams'
+  get 'hydro_observations/get_last_telegrams', to: 'hydro_observations#get_last_telegrams'
+  post 'hydro_observations/create_hydro_telegram', to: 'hydro_observations#create_hydro_telegram'
+  put 'hydro_observations/update_hydro_telegram', to: 'hydro_observations#update_hydro_telegram'
+  resources :hydro_observations
   get 'sea_observations/input_sea_telegrams', to: 'sea_observations#input_sea_telegrams'
   post 'sea_observations/create_sea_telegram', to: 'sea_observations#create_sea_telegram'
   get 'sea_observations/get_last_telegrams', to: 'sea_observations#get_last_telegrams'
@@ -110,6 +115,7 @@ Rails.application.routes.draw do
   resources :measurements
   resources :materials
   resources :posts
+  resources :hydro_posts
   resources :cities
   resources :stations
   resources :chem_coefficients

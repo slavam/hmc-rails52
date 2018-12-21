@@ -56,6 +56,8 @@ class ApplicantsController < ApplicationController
           last_telegrams = AgroDecObservation.short_last_50_telegrams(current_user)
         when 'storm'
           last_telegrams = StormObservation.short_last_50_telegrams(current_user)
+        else
+          last_telegrams = []
       end
       render json: {telegrams: last_telegrams, tlgType: params[:tlgType], currDate: Time.now.utc.strftime("%Y-%m-%d")}
     else

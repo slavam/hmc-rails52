@@ -36,7 +36,7 @@ export default class InputTelegrams extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      // minutes: 0,
+      minutes: 0,
       inputMode: this.props.inputMode,
       currDate: this.props.currDate,
       tlgType: this.props.tlgType,
@@ -74,7 +74,6 @@ export default class InputTelegrams extends React.Component{
   }
 
   handleTelegramTypeChanged(tlgType, tlgTerm){
-    // var that = this;
     var desiredLink = "/"+tlgType+"_observations/get_last_telegrams";
     this.state.tlgTerm = tlgTerm;
     this.setState({tlgType: tlgType});
@@ -128,6 +127,10 @@ export default class InputTelegrams extends React.Component{
         tlgData = {sea_observation: telegram.observation};
         desiredLink = "/sea_observations/create_sea_telegram?date="+telegram.currDate+"&input_mode="+this.state.inputMode;
         break;
+      // case 'hydro':
+      //   tlgData = {hydro_observation: telegram.observation};
+      //   desiredLink = "/hydro_observations/create_hydro_telegram?date="+telegram.currDate+"&input_mode="+this.state.inputMode;
+      //   break;
     }
     $.ajax({
       type: 'POST',

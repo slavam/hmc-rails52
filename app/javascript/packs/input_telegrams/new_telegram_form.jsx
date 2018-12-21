@@ -11,7 +11,6 @@ export default class NewTelegramForm extends React.Component{
     super(props);
     this.observation = {};
     this.state = {
-      // minutes: this.props.minutes,
       currDate:  this.props.currDate,
       tlgType: this.props.tlgType,
       tlgTerm: this.props.tlgTerm,  
@@ -93,9 +92,13 @@ export default class NewTelegramForm extends React.Component{
           this.setState({errors: errors});
           return;
         }
-        // this.observation.day_obs = text.substr(5,2);
-        // this.observation.term = text.substr(7,2);
         break;
+      // case 'hydro':
+      //   if (!checkHydroTelegram(text, this.props.stations, errors, this.observation, this.state.currDate)) {
+      //     this.setState({errors: errors});
+      //     return;
+      //   }
+      //   break;
     }
     this.props.onFormSubmit({observation: this.observation, currDate: date, tlgType: this.state.tlgType, tlgText: this.state.tlgText});
     this.setState({
@@ -122,7 +125,6 @@ export default class NewTelegramForm extends React.Component{
     this.setState({tlgTerm: value, errors: []});
   }
   
-
   handleTextChange(e) {
     this.setState({tlgText: e.target.value, errors: []});
   }
@@ -140,6 +142,7 @@ export default class NewTelegramForm extends React.Component{
       { value: 'storm',     label: 'Штормовые' },
       { value: 'radiation', label: 'Радиация' },
       { value: 'sea',       label: 'Морские' },
+      // { value: 'hydro',     label: 'Гидрологические' },
     ];
     const terms = [
       { value: '00', label: '00' },

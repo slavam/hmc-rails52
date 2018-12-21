@@ -1,0 +1,30 @@
+.container
+  %h3 Телеграмма о гидрологических наблюдениях
+  %table{class: "table table-bordered"}
+    %tr
+      %th Дата ввода:
+      %td= @hydro_observation.created_at
+    %tr
+      %th Дата наблюдения:
+      %td= @hydro_observation.date_observation
+    %tr
+      %th Текст:
+      %td= @hydro_observation.telegram
+    %tr
+      %th Пост:
+      %td= @hydro_observation.hydro_post.town
+    %tr
+      %th День наблюдения
+      %td= @hydro_observation.day_obs
+    %tr
+      %th Час наблюдения (время местное)
+      %td= @hydro_observation.hour_obs
+  %br
+  - if current_user.role == 'technicist'
+    = link_to 'Ввод телеграмм', '/hydro_observations/input_hydro_telegrams?input_mode=normal'
+    %br
+    = link_to "Список", hydro_observations_path  
+  - elsif current_user.role == 'specialist'
+    = link_to 'Возврат', '/hydro_observations/input_hydro_telegrams?input_mode=normal'
+  - else
+    = link_to "Список", hydro_observations_path  

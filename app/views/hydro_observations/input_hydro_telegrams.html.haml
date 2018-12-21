@@ -1,0 +1,5 @@
+-# <meta name='turbolinks-visit-control' content='reload'>
+.container
+  #form_and_last_telegrams
+  #init_params{telegrams: @telegrams.to_json, currDate: Time.now.utc.strftime("%Y-%m-%d").to_json, tlgType: 'hydro'.to_json, hydroPosts: @hydro_posts.to_json, inputMode: @input_mode.to_json}
+  = javascript_pack_tag 'input_hydro_telegrams/input_hydro_telegrams'

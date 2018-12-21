@@ -1,0 +1,2 @@
+module HydroObservationsHelper
+end

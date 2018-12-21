@@ -29,16 +29,7 @@
                   %li= link_to 'Поиск декадных агро телеграмм',  '/agro_dec_observations/search_agro_dec_telegrams'
                   %li= link_to 'Буфер', '/applicants/applicants_list'
               %li
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Отчеты <b class="caret"></b></a>
-                %ul{class: "dropdown-menu"}
-                  %li= link_to 'Тепло Донбасса',  synoptic_observations_heat_donbass_show_path
-                  %li= link_to 'Бюллетени ежедневные', "/bulletins/list?bulletin_type=daily"
-                  %li= link_to 'Бюллетени морские', "/bulletins/list?bulletin_type=sea"
-                  %li= link_to 'Бюллетени выходного дня', "/bulletins/list?bulletin_type=holiday"
-                  %li= link_to 'Штормовые предупреждения', "/bulletins/list?bulletin_type=storm"
-                  %li= link_to 'Шторма на море', "/bulletins/list?bulletin_type=sea_storm"
-                  %li= link_to 'Радиация', "/bulletins/list?bulletin_type=radiation"
-                  -# %li= link_to 'Телевидение', "/bulletins/list?bulletin_type=tv"
+                = render 'layouts/synoptic_reports'
               %li
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Карты, сайты <b class="caret"></b></a>
                 %ul{class: "dropdown-menu"}
@@ -72,6 +63,8 @@
                 %ul{class: "dropdown-menu"}
                   %li= link_to 'Ввод телеграмм', '/synoptic_observations/input_synoptic_telegrams?input_mode=normal'
                   %li= link_to 'Ввод телеграмм с любой датой', '/synoptic_observations/input_synoptic_telegrams?input_mode=direct'
+                  %li= link_to 'Ввод гидро-телеграмм', '/hydro_observations/input_hydro_telegrams?input_mode=normal'
+                  %li= link_to 'Ввод гидро-телеграмм с любой датой', '/hydro_observations/input_hydro_telegrams?input_mode=direct'
                   %li{ class: "divider"}
                   %li= link_to 'Поиск синоптических телеграмм',  search_synoptic_telegrams_path
                   %li= link_to 'Поиск штормовых телеграмм',  '/storm_observations/search_storm_telegrams'

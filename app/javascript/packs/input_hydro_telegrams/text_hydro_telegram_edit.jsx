@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class TextTelegramEditForm extends React.Component{
+export default class TextHydroTelegramEdit extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
