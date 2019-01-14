@@ -41,25 +41,27 @@ class ApplicantsController < ApplicationController
     applicant.message = params[:message]
     applicant.telegram_type = params[:tlgType]
     if applicant.save
-      ActionCable.server.broadcast "candidate_channel", applicant: applicant #, currentRole: current_user.role
+      # ActionCable.server.broadcast "candidate_channel", {id: applicant.id, telegram: applicant.telegram, created_at: applicant.created_at, message: applicant.message, telegram_type: applicant.telegram_type} #, currentRole: current_user.role
+      ActionCable.server.broadcast "candidate_channel", applicant: applicant, action: 'insert'
       # User.where(role: 'synoptic').each do |synoptic|
-      #   # Rails.logger.debug("My object>>>>>>>>>>>>>>>: Brodcast")
+        # Rails.logger.debug("My object>>>>>>>>>>>>>>>: Brodcast=>"+params[:tlgText])
       #   ActionCable.server.broadcast "candidate_channel_user_#{synoptic.id}", 
       #     sound: true
       # end
-      case params[:tlgType]
-        when 'synoptic'
-          last_telegrams = SynopticObservation.short_last_50_telegrams(current_user)
-        when 'agro'
-          last_telegrams = AgroObservation.short_last_50_telegrams(current_user)
-        when 'agro_dec'
-          last_telegrams = AgroDecObservation.short_last_50_telegrams(current_user)
-        when 'storm'
-          last_telegrams = StormObservation.short_last_50_telegrams(current_user)
-        else
-          last_telegrams = []
-      end
-      render json: {telegrams: last_telegrams, tlgType: params[:tlgType], currDate: Time.now.utc.strftime("%Y-%m-%d")}
+      # case params[:tlgType]
+      #   when 'synoptic'
+      #     last_telegrams = SynopticObservation.short_last_50_telegrams(current_user)
+      #   when 'agro'
+      #     last_telegrams = AgroObservation.short_last_50_telegrams(current_user)
+      #   when 'agro_dec'
+      #     last_telegrams = AgroDecObservation.short_last_50_telegrams(current_user)
+      #   when 'storm'
+      #     last_telegrams = StormObservation.short_last_50_telegrams(current_user)
+      #   else
+      #     last_telegrams = []
+      # end
+      # render json: {telegrams: last_telegrams, tlgType: params[:tlgType], currDate: Time.now.utc.strftime("%Y-%m-%d")}
+      render json: {errors: ["Данные занесены в буфер"]}
     else
       render json: {errors: applicant.errors.messages}, status: :unprocessable_entity
     end
@@ -77,9 +79,13 @@ class ApplicantsController < ApplicationController
   end
   
   def delete_applicant
-    @applicant.destroy
-    @applicants = Applicant.all.order(:created_at).reverse_order
-    render json: {applicants: @applicants}
+    if @applicant.destroy
+      ActionCable.server.broadcast "candidate_channel", applicant: @applicant, action: 'delete'
+      applicants = Applicant.all.order(:created_at).reverse_order
+      render json: {applicants: applicants, errors: ["Запись удалена из буфера с ID=#{@applicant.id}"]}
+    else
+      render json: {errors: @applicant.errors.messages}, status: :unprocessable_entity
+    end
   end
   
   def destroy

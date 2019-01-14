@@ -76,18 +76,19 @@ export default class InputTelegrams extends React.Component{
   handleTelegramTypeChanged(tlgType, tlgTerm){
     var desiredLink = "/"+tlgType+"_observations/get_last_telegrams";
     this.state.tlgTerm = tlgTerm;
-    this.setState({tlgType: tlgType});
+    // this.setState({tlgType: tlgType});
     // var result = Observable.fromPromise(fetch(desiredLink));
     // result.subscribe(x => console.log(x.telegrams.length), e => console.error(e));
     $.ajax({
       type: 'GET',
       dataType: 'json',
       url: desiredLink
-      }).done((data) => {
-        this.setState({telegrams: data.telegrams, tlgType: data.tlgType, errors: []});
-      }).fail((res) => {
-        this.setState({errors: ["Проблемы с чтением данных из БД"]});
-      }); 
+    }).done((data) => {
+        // this.setState({telegrams: data.telegrams, tlgType: data.tlgType, errors: []});
+      this.setState({telegrams: data.telegrams, tlgType: tlgType, errors: []});
+    }).fail((res) => {
+      this.setState({errors: ["Проблемы с чтением данных из БД"]});
+    }); 
   }
   
   handleFormSubmit(telegram) {
@@ -138,8 +139,11 @@ export default class InputTelegrams extends React.Component{
       data: tlgData, 
       url: desiredLink
       }).done((data) => {
+        // 2018.12.29
         this.setState({telegrams: data.telegrams, tlgType: data.tlgType, currDate: data.currDate, inputMode: data.inputMode, errors: data.errors});
         alert(this.state.errors[0]);
+        // this.setState({errors: ["Данные сохранены"]});
+        // alert(this.state.errors[0]);
       }).fail((res) => {
         this.setState({errors: ["Ошибка записи в базу"]});
       }); 
@@ -152,8 +156,10 @@ export default class InputTelegrams extends React.Component{
       data: forBuffer, 
       url: "/applicants/to_buffer"
       }).done((data) => {
-        this.setState({telegrams: data.telegrams, tlgType: data.tlgType, currDate: data.currDate, inputMode: "normal", errors: []});
-        alert("Данные занесены в буфер");
+        // this.setState({telegrams: data.telegrams, tlgType: data.tlgType, currDate: data.currDate, inputMode: "normal", errors: []});
+        // alert("Данные занесены в буфер");
+        alert(data.errors[0]);
+        this.setState({errors: []});
       }).fail((res) => {
         this.setState({errors: ["Ошибка записи в буфер"]});
       }); 

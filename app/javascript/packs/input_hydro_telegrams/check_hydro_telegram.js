@@ -183,10 +183,14 @@ export function checkHydroTelegram(tlgText, hydroPosts, errors, observation, dat
     }
     currPos = tlg.length;
   }
-  // if(tlg[currPos-1] == '=')
-    // return true;
-  errors.push("Debugging =>"+tlg.substr(currPos));
-  return false;
+  if(tlg[currPos-1] == '=')
+    return true;
+  else {
+    errors.push("Ошибка в окончании телеграммы =>"+tlg.substr(currPos));
+    return false;
+  }
+  // errors.push("Debugging =>"+tlg.substr(currPos));
+  // return false;
   
   function checkSection1(sectionId){
     if(/^1\d{4}$/.test(tlg.substr(currPos,5))){

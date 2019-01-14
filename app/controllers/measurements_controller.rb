@@ -210,7 +210,7 @@ class MeasurementsController < ApplicationController
         end
       end
     end
-    # Rails.logger.debug("My object>>>>>>>>>>>>>>>роза_ветров: #{wind_by_month.inspect} , total-> #{total}, wind_total=>#{only_wind_total} ") 
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>роза_ветров: #{wind_by_month.inspect} , total_07-> #{total_07}, wind_total=>#{only_wind_total} ") 
     @matrix = Hash.new(0)
     @max_jul = 0
     (0..8).each do |d|
@@ -231,6 +231,7 @@ class MeasurementsController < ApplicationController
       end
       @max_jul = @matrix[[7,d]] if @matrix[[7,d]] > @max_jul
     end
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>роза_ветров: #{@matrix.inspect} , max_jul-> #{@max_jul} ") 
     
     respond_to do |format|
       format.html
@@ -239,7 +240,7 @@ class MeasurementsController < ApplicationController
         send_data pdf.render, filename: "wind_rose_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
       end
       format.json do 
-        render json: {matrix: @matrix, cityName: @city_name, year: @year, maxValue: @max_value}
+        render json: {matrix: @matrix, cityName: @city_name, year: @year, maxJul: @max_jul}
       end
     end
   end

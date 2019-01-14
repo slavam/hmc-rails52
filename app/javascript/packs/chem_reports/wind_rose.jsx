@@ -59,7 +59,7 @@ export default class WindRose extends React.Component{
       dataType: 'json',
       url: "/measurements/wind_rose?year="+year+"&city_id="+cityId
       }).done((data) => {
-        this.setState({matrix: data.matrix, year: data.year, cityName: data.cityName, maxValue: data.maxValue});
+        this.setState({matrix: data.matrix, year: data.year, cityName: data.cityName, maxJul: data.maxJul});
       }).fail((res) => {
         this.setState({errors: ["Проблемы с чтением данных из БД"]});
       }); 
@@ -181,6 +181,7 @@ export default class WindRose extends React.Component{
             <tr>
               <td><Radar data={dataYear} height={280} options={options}/></td>
               <td><Radar data={dataJan} height={280} options={options}/></td> 
+              {/*<td><Radar data={dataJul} height={280} options={options}/></td>*/}
               <td>{this.state.maxJul > 0 ? <Radar data={dataJul} height={280} options={options}/> : ''}</td>
             </tr>
           </tbody>

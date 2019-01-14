@@ -1,4 +1,5 @@
 class SynopticObservationsController < ApplicationController
+  before_action :logged_user?
   # before_filter :require_observer_or_technicist
   before_action :find_synoptic_observation, only: [:show, :update_synoptic_telegram] 
   def teploenergo
@@ -249,6 +250,9 @@ class SynopticObservationsController < ApplicationController
     telegram = SynopticObservation.find_by(date: date, term: term, station_id: station_id)
     if telegram.present?
       if telegram.update_attributes observation_params
+        # new_telegram = {id: telegram.id, date: telegram.observed_at, term: term, station_name: telegram.station.name, telegram: telegram.telegram}
+        # ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'synoptic'
+        # 2018.12.29
         last_telegrams = SynopticObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams, 
                       tlgType: 'synoptic', 
@@ -623,5 +627,13 @@ class SynopticObservationsController < ApplicationController
       day+term+'1 '+telegram[6..-1].gsub(/ 333 /, " 33333 ").gsub(/ 555 /, " 55555 ")
     end
   
-    
+    def logged_user?
+      if current_user.present?
+        return true
+      else
+        flash[:danger] = 'Зарегистрируйтесь, пожалуйста'
+        redirect_to login_path
+        return false
+      end
+    end
 end
