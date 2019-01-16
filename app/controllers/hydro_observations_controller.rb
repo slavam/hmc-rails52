@@ -2,7 +2,7 @@ class HydroObservationsController < ApplicationController
   before_action :find_hydro_observation, only: [:show, :destroy, :update_hydro_telegram]
 
   def index
-    @Hydro_observations = HydroObservation.paginate(page: params[:page]).order(:date_observation, :created_at).reverse_order
+    @hydro_observations = HydroObservation.paginate(page: params[:page]).order(:date_observation, :created_at).reverse_order
   end
   
   def show

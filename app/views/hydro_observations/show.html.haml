@@ -10,6 +10,7 @@
     %tr
       %th Текст:
       %td= @hydro_observation.telegram
+      - text = @hydro_observation.telegram
     %tr
       %th Пост:
       %td= @hydro_observation.hydro_post.town
@@ -19,6 +20,18 @@
     %tr
       %th Час наблюдения (время местное)
       %td= @hydro_observation.hour_obs
+    - curr_pos = 18
+    - if text[curr_pos] == '1'
+      %tr
+        %th Отметка уровня воды над нулем поста, см.
+        %td= @hydro_observation.water_level(text[curr_pos+1,4].to_i)
+      - curr_pos += 6
+    - if text[curr_pos] == '2'
+      %tr
+        %th Изменение уровня воды, см.
+        %td= @hydro_observation.change_level(text[curr_pos+1,3].to_i, text[curr_pos+4])
+      - curr_pos += 6
+
   %br
   - if current_user.role == 'technicist'
     = link_to 'Ввод телеграмм', '/hydro_observations/input_hydro_telegrams?input_mode=normal'
