@@ -1,7 +1,7 @@
 export function checkHydroTelegram(tlgText, hydroPosts, errors, observation, dateObservation){
   let tlg = tlgText;
   let type = tlg.substr(0,6);
-  if((type == "ЩЭРЕХ ") || (type == "ЩЭРЕА ") || (type == 'ЩЭГОЛ ')){
+  if((type == "ЩЭРЕХ ") || (type == "ЩЭРЕА ") || (type == "ЩЭРЕИ ") || (type == 'ЩЭГОЛ ')){
     observation.hydro_type = type.trim();
   } else {
     errors.push("Ошибка в различительной группе");

@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  get 'snow_observations/input_snow_telegrams', to: 'snow_observations#input_snow_telegrams'
+  post 'snow_observations/create_snow_telegram', to: 'snow_observations#create_snow_telegram'
+  get 'snow_observations/get_last_telegrams', to: 'snow_observations#get_last_telegrams'
+  put 'snow_observations/update_snow_telegram', to: 'snow_observations#update_snow_telegram'
+  resources :snow_observations
+  resources :snow_points
   get 'hydro_observations/input_hydro_telegrams', to: 'hydro_observations#input_hydro_telegrams'
   get 'hydro_observations/get_last_telegrams', to: 'hydro_observations#get_last_telegrams'
   post 'hydro_observations/create_hydro_telegram', to: 'hydro_observations#create_hydro_telegram'

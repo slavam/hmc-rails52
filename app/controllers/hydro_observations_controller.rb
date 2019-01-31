@@ -37,8 +37,8 @@ class HydroObservationsController < ApplicationController
     else
       telegram = HydroObservation.new(hydro_observation_params)
       if telegram.save
-        new_telegram = {id: telegram.id, date: telegram.date_observation, station_name: telegram.hydro_post.town, telegram: telegram.telegram}
-        ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'hydro'
+        # new_telegram = {id: telegram.id, date: telegram.date_observation, station_name: telegram.hydro_post.town, telegram: telegram.telegram}
+        # ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'hydro'
         last_telegrams = HydroObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams, 
                       tlgType: 'hydro', 

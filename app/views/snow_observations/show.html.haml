@@ -1,0 +1,37 @@
+.container
+  %h3 Телеграмма о снегомерных съемках
+  %table{class: "table table-bordered"}
+    %tr
+      %th Дата ввода
+      %td= @snow_observation.created_at
+    %tr
+      %th Дата наблюдения
+      %td= @snow_observation.date_observation
+    %tr
+      %th Текст
+      %td= @snow_observation.telegram
+      - text = @snow_observation.telegram
+    %tr
+      %th Пункт снегосъемки
+      %td= @snow_observation.snow_point.name
+    %tr
+      %th День наблюдения
+      %td= @snow_observation.day_obs
+    %tr
+      %th Месяц наблюдения
+      %td= @snow_observation.month_obs
+    - curr_pos = 18
+    - if text[curr_pos] == '1'
+      %tr
+        %th Средняя высота снежного покрова на полевом маршруте, см.
+        %td= text[curr_pos+1,3].to_i
+      - curr_pos += 6
+%br
+  - if current_user.role == 'technicist'
+    = link_to 'Ввод телеграмм', '/snow_observations/input_snow_telegrams?input_mode=normal'
+    %br
+    = link_to "Список", snow_observations_path  
+  - elsif current_user.role == 'specialist'
+    = link_to 'Возврат', '/snow_observations/input_snow_telegrams?input_mode=normal'
+  - else
+    = link_to "Список", snow_observations_path      

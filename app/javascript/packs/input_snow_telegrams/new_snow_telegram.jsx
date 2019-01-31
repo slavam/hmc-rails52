@@ -1,8 +1,8 @@
 import React from 'react';
 import TermSynopticSelect from '../search_telegrams/term_synoptic_select';
-import { checkHydroTelegram } from './check_hydro_telegram';
+import { checkSnowTelegram } from './check_snow_telegram';
 
-export default class NewHydroTelegram extends React.Component{
+export default class NewSnowTelegram extends React.Component{
   constructor(props){
     super(props);
     this.state = {
@@ -46,8 +46,8 @@ export default class NewHydroTelegram extends React.Component{
     this.observation = {};
     
     switch (this.state.tlgType) {
-      case 'hydro': 
-        if (!checkHydroTelegram(text, this.props.hydroPosts, this.state.errors, this.observation, this.state.observationDate)) 
+      case 'snow': 
+        if (!checkSnowTelegram(text, this.props.snowPoints, this.state.errors, this.observation, this.state.observationDate)) 
           return;
         this.observation.telegram = text;
       break;
@@ -66,8 +66,8 @@ export default class NewHydroTelegram extends React.Component{
   
   render(){
     const types = [
-      { value: 'hydro',  label: 'Гидрологические' },
-      // { value: 'hydro_snow',      label: 'Снегосъемка' },
+      // { value: 'hydro',  label: 'Гидрологические' },
+      { value: 'snow',      label: 'Снегосъемка' },
     ];
     let inBuffer = this.state.errors[0] > '' && this.state.tlgText > '' ? <button style={{float: "right"}} type="button" id="in-buffer" onClick={(event) => this.inBufferClick(event)}>В буфер</button> : '';
     let obsDate = this.props.inputMode == 'normal' ? <td>{this.state.observationDate}</td> : <td><input type="date" name="input-date" value={this.state.observationDate} onChange={(event) => this.dateChange(event)} required="true" autoComplete="on" /></td>;

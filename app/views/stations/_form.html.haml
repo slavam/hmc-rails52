@@ -1,0 +1,19 @@
+%div{ class: "row"}
+  %div{ class: "col-md-6 col-md-offset-3"}
+    = form_for(@station) do |f| 
+      = f.label "Название"
+      = f.text_field :name
+      
+      = f.label "Код"
+      = f.text_field :code
+      
+      = f.label "Адрес"
+      = f.text_field :address
+      
+      = f.label "Широта"
+      = f.number_field :latitude, step: 0.0000001
+      
+      = f.label "Долгота"
+      = f.number_field :longitude, step: 0.0000001
+
+      = f.submit "Сохранить", class: "btn btn-primary"

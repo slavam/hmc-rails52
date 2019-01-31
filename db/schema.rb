@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_14_122729) do
+ActiveRecord::Schema.define(version: 2019_01_28_124051) do
 
   create_table "agro_crop_categories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -351,7 +351,7 @@ ActiveRecord::Schema.define(version: 2018_12_14_122729) do
   end
 
   create_table "hydro_observations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "type"
+    t.string "hydro_type"
     t.integer "hydro_post_id"
     t.integer "day_obs"
     t.integer "hour_obs"
@@ -468,9 +468,33 @@ ActiveRecord::Schema.define(version: 2018_12_14_122729) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "snow_observations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "snow_type"
+    t.integer "snow_point_id"
+    t.integer "day_obs"
+    t.integer "month_obs"
+    t.integer "last_digit_year_obs"
+    t.date "date_observation"
+    t.text "telegram"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "snow_points", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "code"
+    t.string "snow_point_type", null: false
+    t.boolean "is_active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "stations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.integer "code"
+    t.string "address"
+    t.decimal "latitude", precision: 13, scale: 9
+    t.decimal "longitude", precision: 13, scale: 9
   end
 
   create_table "storm_observations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

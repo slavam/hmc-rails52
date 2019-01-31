@@ -1,14 +1,16 @@
-%div{ class:"row"}
-  %div{ class: "col-md-6 col-md-offset-3"}
-    %h1= "Метеостанции"
-    .container
-      %table{class: "table table-hover"}
-        %thead
-          %tr
-            %th= "Название"
-            %th= "Код"
-        %tbody
-          = render @stations
-                                                                            
-    <iframe width="300" height="300" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCuWNxIfgOGZUJptUozzGCninrc4LU6lXw&q=Eiffel+Tower,Paris+France"  allowfullscreen></iframe>
+.container
+  %h1 Метеостанции
+  %table{class: "table table-hover"}
+    %thead
+      %tr
+        %th ID
+        %th Название
+        %th Код
+        %th Адрес
+        %th Широта
+        %th Долгота
+    %tbody
+      = render @stations
+  -# <iframe width='600' height='300' frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/view?center=48.0161457, 37.8057165&zoom=16&maptype=satellite&key="  allowfullscreen></iframe>                                                                            
+  <iframe width="600" height="300" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=#{Rails.application.credentials.google_maps_api_key}&q=Любавина+2,Донецк+Украина"  allowfullscreen></iframe>
 -# = image_tag google_map(center: [ 48.0161457, 37.8057165 ].join(','))          

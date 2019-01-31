@@ -1,0 +1,4 @@
+.container
+  #form_and_last_telegrams
+  #init_params{telegrams: @telegrams.to_json, currDate: Time.now.utc.strftime("%Y-%m-%d").to_json, tlgType: 'snow'.to_json, snowPoints: @snow_points.to_json, inputMode: @input_mode.to_json}
+  = javascript_pack_tag 'input_snow_telegrams/input_snow_telegrams'

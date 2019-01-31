@@ -1,0 +1,16 @@
+.row
+  %div{class: "col-md-6 col-md-offset-3"}
+    = form_for(@snow_point) do |f| 
+      = f.label "Название"
+      = f.text_field :name
+      
+      = f.label "Код"
+      = f.number_field :code
+      
+      = f.label "Тип пункта"
+      = select(:snow_point, :snow_point_type, [:meteo, :hydro], {:include_blank => false})
+      
+      = f.label "Актиен?"
+      = f.check_box :is_active
+      
+      = f.submit "Сохранить", class: "btn btn-primary"

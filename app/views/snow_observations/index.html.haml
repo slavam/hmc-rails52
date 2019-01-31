@@ -1,0 +1,16 @@
+.container
+  %h3 Телеграммы о снегомерных съемках
+  = will_paginate
+  %table{class: "table table-hover"}
+    %thead
+      %tr
+        %th Дата наблюдения
+        %th Пункт снегосъемки
+        %th Телеграмма
+    %tbody
+      - @snow_observations.each do |s_o| 
+        %tr
+          %td= s_o.date_observation.strftime("%d-%m-%Y")
+          %td= s_o.snow_point.name
+          %td= link_to s_o.telegram, snow_observation_path(s_o)
+  = will_paginate
