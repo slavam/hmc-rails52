@@ -45,9 +45,12 @@ const AgroMeteoTable = ({telegrams, stations, period, decade, temperatureMonth, 
                     <td>{t.dry_dec_day_num}</td>
                     <td>{t.temperature_dec_min_soil}</td>
                     <td>{t.cold_soil_dec_day_num}</td>
+                    <td>{t.temperature_dec_max_soil}</td>
                     <td>{t.precipitation_dec}</td>
                     <td>{t.precipitation_dec_percent}</td>
+                    <td>{t.percipitation_dec_max}</td>
                     <td>{t.wet_dec_day_num}</td>
+                    <td>{t.percipitation5_dec_day_num}</td>
                     <td>{t.wind_speed_dec_max}</td>
                     <td>{t.wind_speed_dec_max_day_num}</td>
                     <td>{t.duster_dec_day_num}</td>
@@ -107,10 +110,13 @@ const AgroMeteoTable = ({telegrams, stations, period, decade, temperatureMonth, 
       "Число дней с относительной влажностью воздуха 30% и менее",
       "Минимальная за декаду температура почвы,°С",
       "Число суток с температурой на поверхности почвы -20°С и ниже",
+      "Максимальная за декаду температура почвы,°С", // 1
       "Количество осадков за декаду (мм)",
       "Количество осадков за декаду в процентах от среднего многолетнего",
+      "Суточный максимум осадков за декаду (мм)", //2
       "Количество дней за декаду с количеством осадков за сутки 1 мм и более",
-      "Максимальная скорость ветра за декаду (м/с)",
+      "Количество дней за декаду с количеством осадков за сутки 5 мм и более", //3
+      "Максимальная скорость ветра за декаду (м/с)", 
       "Количество дней за декаду с максимальной скоростью ветра за сутки 15 м/с и более",
       "Количество дней за декаду с пылевыми бурями",
       "Средняя высота снежного покрова на последний день декады (см)",

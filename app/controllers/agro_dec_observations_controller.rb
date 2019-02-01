@@ -34,9 +34,9 @@ class AgroDecObservationsController < ApplicationController
     @telegrams = []
     telegrams.each do |t|
       if @period == 'cold'
-        crop_dec_condition = CropDecCondition.find_by_sql("select max(height_snow_cover) height_snow_cover, max(snow_cover) snow_cover, max(snow_cover_density) snow_cover_density, max(number_measurements_0) number_measurements_0, max(number_measurements_3) number_measurements_3, max(number_measurements_30) number_measurements_30, max(ice_crust) ice_crust, max(thickness_ice_cake) thickness_ice_cake, max(depth_thawing_soil_2) depth_thawing_soil_2, max(depth_soil_freezing) depth_soil_freezing, max(thermometer_index) thermometer_index, min(temperature_dec_min_soil3) temperature_dec_min_soil3, max(height_snow_cover_rail) height_snow_cover_rail from crop_dec_conditions where agro_dec_observation_id = #{t["id"]} ;")[0]
+        crop_dec_condition = CropDecCondition.find_by_sql("select max(height_snow_cover) height_snow_cover, max(snow_cover) snow_cover, max(snow_cover_density) snow_cover_density, max(number_measurements_0) number_measurements_0, max(number_measurements_3) number_measurements_3, max(number_measurements_30) number_measurements_30, max(ice_crust) ice_crust, max(thickness_ice_cake) thickness_ice_cake, max(depth_thawing_soil_2) depth_thawing_soil_2, max(depth_soil_freezing) depth_soil_freezing, min(thermometer_index) thermometer_index, min(temperature_dec_min_soil3) temperature_dec_min_soil3, max(height_snow_cover_rail) height_snow_cover_rail from crop_dec_conditions where agro_dec_observation_id = #{t["id"]} ;")[0]
         t["height_snow_cover"] = crop_dec_condition.height_snow_cover
-        t["snow_cover"] = crop_dec_condition.snow_cover
+        t["snow_cover"] = crop_dec_condition.snow_cover_to_s
         t["snow_cover_density"] = crop_dec_condition.snow_cover_density
         t["number_measurements_0"] = crop_dec_condition.number_measurements_0
         t["number_measurements_3"] = crop_dec_condition.number_measurements_3
@@ -45,7 +45,7 @@ class AgroDecObservationsController < ApplicationController
         t["thickness_ice_cake"] = crop_dec_condition.thickness_ice_cake
         t["depth_thawing_soil_2"] = crop_dec_condition.depth_thawing_soil_2
         t["depth_soil_freezing"] = crop_dec_condition.depth_soil_freezing
-        t["thermometer_index"] = crop_dec_condition.thermometer_index
+        t["thermometer_index"] = crop_dec_condition.thermometer #_index
         t["temperature_dec_min_soil3"] = crop_dec_condition.temperature_dec_min_soil3
         t["height_snow_cover_rail"] = crop_dec_condition.height_snow_cover_rail
       end

@@ -43,4 +43,8 @@ class CropDecCondition < ActiveRecord::Base
                 'Весеннее обследование плодовых культур']
     methods[self.viable_method]
   end
+  def thermometer
+    tmtr = ['', 'Коробка Низенькова', 'ЕДТУК', 'АМ-17', 'АМ-2М', 'ТЕТ-2', 'АМ-29А', 'Вытяжные термометры']
+    tmtr[self.thermometer_index]
+  end
 end
