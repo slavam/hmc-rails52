@@ -1,3 +1,25 @@
 - case @bulletin.bulletin_type
   - when 'radio'
+  %h1 Создать бюллетень для радио
   = render partial: 'radio_form'
+  - when 'radiation'
+  %h1 Создать бюллетень о радиационном фоне
+  = render partial: 'radiation_form'
+  - when 'avtodor'
+  %h1 Создать прогноз для АВТОДОРа
+  = render partial: 'avtodor_form'
+  - when 'storm'
+  %h1 Создать штормовое предупреждение
+  = render partial: 'storm_form'
+  - when 'sea_storm'
+  %h1 Создать морское штормовое предупреждение
+  = render partial: 'storm_form'
+  - when 'holiday'
+  %h1 Создать бюллетень выходного дня
+  = render :partial => 'holiday_form'
+  - when 'sea'
+  %h1 Создать морской бюллетень
+  = render :partial => 'sea_form'
+  - when 'daily'
+  %h1 Создать ежедневный бюллетень
+  = render :partial => 'form'

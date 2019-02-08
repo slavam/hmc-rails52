@@ -1,25 +1,11 @@
 .container
   - case @bulletin_type
-    - when 'daily'
-      = link_to "Создать (Лето)", "new?variant=summer"
+    - when 'sea', 'daily'
+      =link_to "Создать (Лето)", "new_bulletin?variant=summer&bulletin_type=#{@bulletin_type}"
       %br
-      = link_to "Создать (Зима)", "new?variant=winter"
-    -when 'sea'
-      =link_to "Создать (Лето)", "new_sea_bulletin?variant=summer"
-      %br
-      =link_to "Создать (Зима)", "new_sea_bulletin?variant=winter"
-    -when 'storm', 'sea_storm'
-      = link_to "Создать", "new_storm_bulletin?bulletin_type="+@bulletin_type
-    -when 'holiday'
-      = link_to "Создать", bulletins_new_holiday_bulletin_path  
-    -when 'radiation'
-      = link_to "Создать", bulletins_new_radiation_bulletin_path  
-    -when 'tv'
-      = link_to "Создать", bulletins_new_tv_bulletin_path
-    - when 'avtodor'
-      = link_to "Создать", bulletins_new_avtodor_bulletin_path
-    - when 'radio'
-      = link_to "Создать", "new_bulletin?bulletin_type=radio"
+      =link_to "Создать (Зима)", "new_bulletin?variant=winter&bulletin_type=#{@bulletin_type}"
+    - when 'radiation', 'radio', 'avtodor', 'storm', 'sea_storm', 'holiday'
+      = link_to "Создать", "new_bulletin?bulletin_type=#{@bulletin_type}"
   %h3= "Список бюллетеней (#{Bulletin::BULLETIN_TYPES[@bulletin_type]})"
   .container
     %table{class: "table table-hover"}

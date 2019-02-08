@@ -83,6 +83,8 @@
                 %ul{class: "dropdown-menu"}
                   %li= link_to 'Ввод телеграмм', '/synoptic_observations/input_synoptic_telegrams?input_mode=normal'
                   %li= link_to 'Ввод телеграмм с любой датой', '/synoptic_observations/input_synoptic_telegrams?input_mode=direct'
+                  %li= link_to 'Снегосъемка', '/snow_observations/input_snow_telegrams?input_mode=normal'
+                  %li= link_to 'Снегосъемка с любой датой', '/snow_observations/input_snow_telegrams?input_mode=direct'
                   %li{ class: "divider"}
                   = render 'layouts/list_telegrams'
               %li

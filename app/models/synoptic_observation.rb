@@ -459,4 +459,29 @@ class SynopticObservation < ActiveRecord::Base
         'Сухая чрезвычайно'
     end
   end
+  def self.max_day_temperatures(date)
+    ret = []
+    self.where(term: 18, date: date).select(:station_id, :temperature_dey_max).each{|tm| ret[tm.station_id] = tm.temperature_dey_max}
+    ret
+  end
+  def self.min_night_temperatures(date)
+    ret = []
+    self.where(term: 6, date: date).select(:station_id, :temperature_night_min).each{|tm| ret[tm.station_id] = tm.temperature_night_min}
+    ret
+  end
+  def self.current_temperatures(term, date)
+    ret = []
+    self.where(term: term, date: date).select(:station_id, :temperature).each{|tm| ret[tm.station_id] = tm.temperature}
+    ret
+  end
+  def self.precipitation(term, date)
+    ret = []
+    self.where(term: term, date: date).select(:station_id, :precipitation_1).each{|tm| ret[tm.station_id] = tm.precipitation_1}
+    ret
+  end
+  def self.snow_cover_height(date)
+    ret = []
+    self.where(term: 6, date: date).select(:station_id, :snow_cover_height).each{|tm| ret[tm.station_id] = tm.snow_cover_height}
+    ret
+  end
 end

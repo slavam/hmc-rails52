@@ -79,5 +79,24 @@ class AgroObservation < ActiveRecord::Base
         "Мерзлый. Смерзшийся"    
     end
   end
-  
+  def self.temperature_avg_24(date)
+    ret = []
+    self.where('date_dev LIKE ?', "#{date}%").select(:station_id, :temperature_avg_24).each{|tm| ret[tm.station_id] = tm.temperature_avg_24}
+    ret
+  end
+  def self.wind_speed_max_24(date)
+    ret = []
+    self.where('date_dev LIKE ?', "#{date}%").select(:station_id, :wind_speed_max_24).each{|tm| ret[tm.station_id] = tm.wind_speed_max_24}
+    ret
+  end
+  def self.depth_freezing(date)
+    ret = []
+    self.where('date_dev LIKE ?', "#{date}%").select(:station_id, :telegram).each do |tm| 
+      i = tm.telegram =~ / 924\d\d 95\d{3} 4/
+      if i.present?
+        ret[tm.station_id] = tm.telegram[i+14,3].to_i
+      end
+    end
+    ret
+  end
 end

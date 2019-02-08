@@ -106,14 +106,21 @@ class Daily < Prawn::Document
       h7 = "Высота снежного покрова (см)"
       h8 = "Глубина промерзания (см)"
     end
-    table_content = [["Название метеостанции", "<color rgb='ff0000'>Максимальная вчера днем</color>", "<color rgb='0000ff'>Минимальная сегодня ночью</color>", "Средняя за сутки #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", "В 9.00 часов сегодня", "Количество осадков за сутки (мм)", h7, h8, "Максимальная скорость ветра (м/с)", "Явления погоды"],
-                     ["Донецк",m_d[0], m_d[1], m_d[2], m_d[3], m_d[4], m_d[5], m_d[6], m_d[7], m_d[8]],
-                     ["Дебальцево", m_d[9].present? ? m_d[9].strip : '', m_d[10], m_d[11], m_d[12], m_d[13], m_d[14], m_d[15], m_d[16], m_d[17]],
-                     ["Амвросиевка", m_d[18].present? ? m_d[18].strip : '', m_d[19], m_d[20], m_d[21], m_d[22], m_d[23], m_d[24], m_d[25], m_d[26]],
-                     ["Седово", m_d[27], m_d[28], m_d[29], m_d[30], m_d[31], m_d[32], m_d[33], m_d[34], m_d[35]]]
+    stations = ["Донецк", "Дебальцево", "Амвросиевка", "Седово", "Красноармейск", "Волноваха", "Артемовск", "Мариуполь"]
+    table_content = [["Название метеостанции", "<color rgb='ff0000'>Максимальная вчера днем</color>", "<color rgb='0000ff'>Минимальная сегодня ночью</color>", "Средняя за сутки #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", "В 9.00 часов сегодня", "Количество осадков за сутки (мм)", h7, h8, "Максимальная скорость ветра (м/с)", "Явления погоды"]]
+    stations.each.with_index do |s, j|
+      a = [s]
+      (0..8).each {|i| a << m_d[j*9+i]}
+      table_content << a
+    end
+    # table_content = [["Название метеостанции", "<color rgb='ff0000'>Максимальная вчера днем</color>", "<color rgb='0000ff'>Минимальная сегодня ночью</color>", "Средняя за сутки #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", "В 9.00 часов сегодня", "Количество осадков за сутки (мм)", h7, h8, "Максимальная скорость ветра (м/с)", "Явления погоды"],
+    #                 ["Донецк",m_d[0], m_d[1], m_d[2], m_d[3], m_d[4], m_d[5], m_d[6], m_d[7], m_d[8]],
+    #                 ["Дебальцево", m_d[9].present? ? m_d[9].strip : '', m_d[10], m_d[11], m_d[12], m_d[13], m_d[14], m_d[15], m_d[16], m_d[17]],
+    #                 ["Амвросиевка", m_d[18].present? ? m_d[18].strip : '', m_d[19], m_d[20], m_d[21], m_d[22], m_d[23], m_d[24], m_d[25], m_d[26]],
+    #                 ["Седово", m_d[27], m_d[28], m_d[29], m_d[30], m_d[31], m_d[32], m_d[33], m_d[34], m_d[35]]]
   
     font "OpenSans"
-    table table_content, width: bounds.width, :column_widths => [90, 40, 40, 40, 40, 40, 40, 55, 40],:cell_style => { :inline_format => true } do |t|
+    table table_content, width: bounds.width, :column_widths => [95, 40, 40, 40, 40, 40, 40, 55, 40],:cell_style => { :inline_format => true } do |t|
       t.cells.padding = [1, 1]
       t.cells.align = :center
       t.row(0).columns(1..8).rotate = 90
@@ -157,13 +164,13 @@ class Daily < Prawn::Document
       t.cells.border_width = 0
     end
     
-    font "OpenSans", style: :bold
-    string = "Страница <page>"
+    # font "OpenSans", style: :bold
+    # string = "Страница <page>"
     # Green page numbers 1 to 7
-    options = { :at => [bounds.right - 150, 0],
-     :width => 150,
-     :align => :right,
-     :start_count_at => 1}
-    number_pages string, options
+    # options = { :at => [bounds.right - 150, 0],
+    # :width => 150,
+    # :align => :right,
+    # :start_count_at => 1}
+    # number_pages string, options
   end  
 end

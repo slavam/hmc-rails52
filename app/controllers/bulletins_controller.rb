@@ -20,62 +20,173 @@ class BulletinsController < ApplicationController
     end
   end
   
-  def new_holiday_bulletin
-    @bulletin = Bulletin.new
-    @bulletin.report_date = Time.now.strftime("%Y-%m-%d") #.to_s(:custom_datetime)
-    @bulletin.curr_number = Date.today.yday()
-    @bulletin.bulletin_type = 'holiday'
-  end
+  # def new_holiday_bulletin
+  #   @bulletin = Bulletin.new
+  #   @bulletin.report_date = Time.now.strftime("%Y-%m-%d") #.to_s(:custom_datetime)
+  #   @bulletin.curr_number = Date.today.yday()
+  #   @bulletin.bulletin_type = 'holiday'
+  # end
 
-  def new_sea_bulletin
-    @bulletin = Bulletin.new
-    @bulletin.report_date = Time.now.strftime("%Y-%m-%d") #.to_s(:custom_datetime)
-    @bulletin.curr_number = Date.today.yday()
-    @bulletin.bulletin_type = 'sea'
-    @bulletin.summer = params[:variant] == 'summer' ? true : false
-  end
+  # def new_sea_bulletin
+  #   @bulletin = Bulletin.new
+  #   @bulletin.report_date = Time.now.strftime("%Y-%m-%d") #.to_s(:custom_datetime)
+  #   @bulletin.curr_number = Date.today.yday()
+  #   @bulletin.bulletin_type = 'sea'
+  #   @bulletin.summer = params[:variant] == 'summer' ? true : false
+  # end
 
-  def new_storm_bulletin
-    @bulletin = Bulletin.new
-    @bulletin.report_date = Time.now.strftime("%Y-%m-%d") #to_s(:custom_datetime)
-    @bulletin.curr_number = Date.today.yday()
-    @bulletin.bulletin_type = 'storm' #params[:bulletin_type]
-  end
+  # def new_storm_bulletin
+  #   @bulletin = Bulletin.new
+  #   @bulletin.report_date = Time.now.strftime("%Y-%m-%d")
+  #   @bulletin.curr_number = Date.today.yday()
+  #   @bulletin.bulletin_type = 'storm' #params[:bulletin_type]
+  # end
   
-  def new_radiation_bulletin
-    @bulletin = Bulletin.new
-    @bulletin.report_date = Time.now.strftime("%Y-%m-%d") #.to_s(:custom_datetime)
-    @bulletin.curr_number = Date.today.yday()
-    @bulletin.bulletin_type = 'radiation'
-  end
+  # def new_radiation_bulletin
+  #   @bulletin = Bulletin.new
+  #   @bulletin.report_date = Time.now.strftime("%Y-%m-%d")
+  #   @bulletin.curr_number = Date.today.yday()
+  #   @bulletin.bulletin_type = 'radiation'
+  #   bulletin = Bulletin.last_this_type 'radiation'
+  #   @bulletin.meteo_data = bulletin.meteo_data
+  # end
 
-  def new_tv_bulletin
-    @bulletin = Bulletin.new
-    @bulletin.report_date = Time.now.to_s(:custom_datetime)
-    @bulletin.bulletin_type = 'tv'
-  end
+  # def new_tv_bulletin
+  #   @bulletin = Bulletin.new
+  #   @bulletin.report_date = Time.now.to_s(:custom_datetime)
+  #   @bulletin.bulletin_type = 'tv'
+  # end
   
   def new_bulletin
     @bulletin = Bulletin.new
     @bulletin.report_date = Time.now.strftime("%Y-%m-%d")
     @bulletin.curr_number = Date.today.yday() #.to_s+'-РС'
-    @bulletin.bulletin_type = params[:bulletin_type] #'radio'
+    @bulletin.bulletin_type = params[:bulletin_type] 
+    bulletin = Bulletin.last_this_type params[:bulletin_type]
+    case params[:bulletin_type]
+      when 'radio', 'radiation'
+        @bulletin.meteo_data = bulletin.meteo_data
+      when 'avtodor', 'storm', 'sea_storm'
+        @bulletin.meteo_data = bulletin.meteo_data
+        @bulletin.forecast_day = bulletin.forecast_day
+        @bulletin.storm = bulletin.storm
+      when 'holiday'
+        @bulletin.forecast_day = bulletin.forecast_day
+        @bulletin.storm = bulletin.storm
+        @bulletin.forecast_period = bulletin.forecast_period
+        @bulletin.forecast_day_city = bulletin.forecast_day_city
+      when 'sea'
+        @bulletin.summer = (params[:variant] == 'summer')
+        @bulletin.storm = bulletin.storm
+        @bulletin.forecast_day = bulletin.forecast_day
+        @bulletin.forecast_period = bulletin.forecast_period
+        @bulletin.forecast_sea_day = bulletin.forecast_sea_day
+        @bulletin.forecast_sea_period = bulletin.forecast_sea_period
+        @bulletin.meteo_data = bulletin.meteo_data
+        @bulletin.forecast_day_city = bulletin.forecast_day_city
+      when 'daily'
+        @bulletin.summer = (params[:variant] == 'summer')
+        @bulletin.storm = bulletin.storm
+        @bulletin.forecast_day = bulletin.forecast_day
+        @bulletin.forecast_period = bulletin.forecast_period
+        @bulletin.forecast_advice = bulletin.forecast_advice
+        @bulletin.forecast_orientation = bulletin.forecast_orientation
+        @bulletin.meteo_data = bulletin.meteo_data
+        @bulletin.agro_day_review = bulletin.agro_day_review
+        @bulletin.climate_data = bulletin.climate_data
+        @bulletin.forecast_day_city = bulletin.forecast_day_city
+        id_stations = [1,3,2,10,8,4,7,5]
+        m_d = @bulletin.meteo_data.split(";")
+        max_day = SynopticObservation.max_day_temperatures(@bulletin.report_date-1.day)
+        max_day.each.with_index do |v,i| 
+          if v.present?
+            row = id_stations.index(i)
+            m_d[row*9] = v.to_s
+          end
+        end
+        min_night = SynopticObservation.min_night_temperatures(@bulletin.report_date)
+        min_night.each.with_index do |v,i| 
+          if v.present?
+            row = id_stations.index(i)
+            m_d[row*9+1] = v.to_s
+          end
+        end
+        avg_24 = AgroObservation.temperature_avg_24(@bulletin.report_date.strftime("%Y-%m-%d"))
+        avg_24.each.with_index do |v,i| 
+          if v.present?
+            row = id_stations.index(i)
+            m_d[row*9+2] = v.to_s
+          end
+        end
+        at_9_o_clock = SynopticObservation.current_temperatures(6, @bulletin.report_date)
+        at_9_o_clock.each.with_index do |v,i| 
+          if v.present?
+            row = id_stations.index(i)
+            m_d[row*9+3] = v.to_s
+          end
+        end
+        precipitation_day = SynopticObservation.precipitation(18, @bulletin.report_date-1.day)
+        precipitation_night = SynopticObservation.precipitation(6, @bulletin.report_date)
+        precipitation = []
+        (1..10).each do |i| 
+          if precipitation_day[i].present?
+            precipitation[i] = precipitation_day[i]>989 ? (precipitation_day[i]-990)*0.1 : precipitation_day[i]
+          end
+          if precipitation_night[i].present?
+            precipitation[i] += precipitation_night[i]>989 ? (precipitation_night[i]-990)*0.1 : precipitation_night[i]
+          end
+        end
+        precipitation.each.with_index do |v,i|
+          if v.present?
+            row = id_stations.index(i)
+            m_d[row*9+4] = v.to_s
+          end
+        end
+        if @bulletin.summer
+        else
+          snow_height = SynopticObservation.snow_cover_height(@bulletin.report_date)
+          snow_height.each.with_index do |v,i|
+            if v.present?
+              row = id_stations.index(i)
+              m_d[row*9+5] = v.to_s
+            end
+          end
+          depth_freezing = AgroObservation.depth_freezing(@bulletin.report_date.strftime("%Y-%m-%d"))
+          depth_freezing.each.with_index do |v,i| 
+            if v.present?
+              row = id_stations.index(i)
+              m_d[row*9+6] = v.to_s
+            end
+          end
+        end
+        wind_speed_max = AgroObservation.wind_speed_max_24(@bulletin.report_date.strftime("%Y-%m-%d"))
+        wind_speed_max.each.with_index do |v,i| 
+          if v.present?
+            row = id_stations.index(i)
+            m_d[row*9+7] = v.to_s
+          end
+        end
+        @bulletin.meteo_data = ''
+        m_d.each do |v|
+          @bulletin.meteo_data += v.present? ? "#{v};" : ';'
+        end
+    end
   end
   
-  def new
-    @bulletin = Bulletin.new
-    @bulletin.report_date = Time.now.strftime("%Y-%m-%d")
-    @bulletin.curr_number = Date.today.yday()
-    @bulletin.bulletin_type = 'daily'
-    @bulletin.summer = params[:variant] == 'summer' ? true : false
-  end
+  # def new
+  #   @bulletin = Bulletin.new
+  #   @bulletin.report_date = Time.now.strftime("%Y-%m-%d")
+  #   @bulletin.curr_number = Date.today.yday()
+  #   @bulletin.bulletin_type = 'daily'
+  #   @bulletin.summer = params[:variant] == 'summer' ? true : false
+  # end
   
-  def new_avtodor_bulletin
-    @bulletin = Bulletin.new
-    @bulletin.report_date = Time.now.strftime("%Y-%m-%d")
-    @bulletin.curr_number = Date.today.yday()
-    @bulletin.bulletin_type = 'avtodor'
-  end
+  # def new_avtodor_bulletin
+  #   @bulletin = Bulletin.new
+  #   @bulletin.report_date = Time.now.strftime("%Y-%m-%d")
+  #   @bulletin.curr_number = Date.today.yday()
+  #   @bulletin.bulletin_type = 'avtodor'
+  # end
 
   def create
     @bulletin = Bulletin.new(bulletin_params)
@@ -126,6 +237,7 @@ class BulletinsController < ApplicationController
   def destroy
     bulletin_type = @bulletin.bulletin_type
     @bulletin.destroy
+    flash[:success] = "Бюллетень удален"
     redirect_to "/bulletins/list?bulletin_type="+bulletin_type
   end
   
@@ -232,12 +344,14 @@ class BulletinsController < ApplicationController
           15
         when 'radiation'
           4
-        when 'tv'
-          38
+        # when 'tv'
+          # 38
         when 'radio'
-          11
+          22
+        when 'avtodor'
+          16
         else
-          36        
+          72        
       end
     end
 end
