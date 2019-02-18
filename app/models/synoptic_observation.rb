@@ -399,8 +399,10 @@ class SynopticObservation < ActiveRecord::Base
   
   def snow_cover_height_to_s
     case self.snow_cover_height
-      when 1..997
+      when 1..996
         self.snow_cover_height.to_s
+      when 997
+        '<0.5'
       when 998
         "Снежный покров отсутствует"
       when 999
@@ -481,7 +483,9 @@ class SynopticObservation < ActiveRecord::Base
   end
   def self.snow_cover_height(date)
     ret = []
-    self.where(term: 6, date: date).select(:station_id, :snow_cover_height).each{|tm| ret[tm.station_id] = tm.snow_cover_height}
+    self.where(term: 6, date: date).select(:station_id, :snow_cover_height).each do |tm| 
+      ret[tm.station_id] = tm.snow_cover_height<997 ? tm.snow_cover_height : (tm.snow_cover_height == 997 ? '<0.5' : (tm.snow_cover_height==998 ? 'Снежный покров отсутствует':'Измерить невозможно'))
+    end
     ret
   end
 end

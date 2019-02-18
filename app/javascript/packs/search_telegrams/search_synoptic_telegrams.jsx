@@ -77,9 +77,9 @@ export default class SearchSynopticTelegrams extends React.Component{
       <div>
         <h3>Параметры поиска</h3>
         <SearchParamsForm onTelegramSubmit={this.handleFormSubmit} dateFrom={this.props.dateFrom} dateTo={this.props.dateTo} errors={this.state.errors} stations={this.props.stations} tlgText={this.state.tlgText} tlgType={this.props.tlgType} tlgTerm={this.state.tlgTerm}  tlgText={this.state.tlgText} stationId={this.state.stationId} stormType={this.state.stormType}/>
-        <div id='map'>
+        {/*<div id='map'>
           {map}
-        </div>
+        </div>*/}
         <h3>Найденные телеграммы ({this.state.telegrams.length})</h3>
         <FoundTelegrams telegrams={this.state.telegrams} tlgType={this.props.tlgType} dateFrom={this.state.dateFrom} dateTo={this.state.dateTo} tlgTerm={this.state.tlgTerm} tlgText={this.state.tlgText} stationId={this.state.stationId}/>
       </div>

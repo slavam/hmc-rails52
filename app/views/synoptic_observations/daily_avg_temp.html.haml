@@ -1,0 +1,5 @@
+-# = @temperatures_utc.inspect
+.container
+  #form_and_report
+  #init_params{ temperaturesUtc: @temperatures_utc.to_json, temperaturesLocal: @temperatures_local.to_json, calcDate: @calc_date.to_json}
+  = javascript_pack_tag 'heat_donbass/daily_avg_temperatures'

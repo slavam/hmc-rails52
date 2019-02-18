@@ -1,3 +1,4 @@
+= render 'synoptic_observations/tabs'
 .container
   %h3 Телеграммы синоптические
   = will_paginate
@@ -12,11 +13,12 @@
           %th= ""
           %th= ""
     %tbody
+      - name_stations = Station.name_stations_as_array
       - @synoptic_observations.each do |s_o| 
         %tr
           %td= s_o.observed_at.strftime("%d-%m-%Y %H:%M:%S UTC")
           %td= s_o.term.to_s.rjust(2, '0')
-          %td= s_o.station.name
+          %td= name_stations[s_o.station_id]
           %td= link_to s_o.telegram, synoptic_observation_path(s_o)
           /
             %td= link_to "Изменить", edit_synoptic_observation_path(s_o.id)

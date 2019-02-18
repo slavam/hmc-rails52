@@ -2,6 +2,7 @@ class SynopticObservationsController < ApplicationController
   before_action :logged_user?
   # before_filter :require_observer_or_technicist
   before_action :find_synoptic_observation, only: [:show, :update_synoptic_telegram] 
+  
   def teploenergo
     @year = params[:year].present? ? params[:year] : Time.now.utc.year.to_s
     @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
@@ -217,6 +218,9 @@ class SynopticObservationsController < ApplicationController
     end
   end
 
+  # def index_on_tab
+  # end
+  
   def index
     @synoptic_observations = SynopticObservation.paginate(page: params[:page]).order(:observed_at, :term).reverse_order
   end
@@ -287,6 +291,41 @@ class SynopticObservationsController < ApplicationController
     end
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{@synoptic_observation.inspect}")
     # Rails.logger.debug("My object+++++++++++++++: #{params[:observation].inspect}")
+  end
+  
+  def daily_avg_temp
+    @calc_date = params[:calc_date].present? ? params[:calc_date] : Time.now.strftime("%Y-%m-%d")
+    temperatures = get_avg_temperatures(@calc_date)
+    @temperatures_utc = temperatures[:utc]
+    @temperatures_local = temperatures[:local]
+    respond_to do |format|
+      format.html 
+      # format.pdf do
+      #   pdf = Teploenergo.new(@temperatures, @year, @month)
+      #   send_data pdf.render, filename: "teploenergo_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      # end
+      format.json do 
+        render json: {temperaturesUtc: @temperatures_utc, temperaturesLocal: @temperatures_local, calcDate: @calc_date}
+      end
+    end
+  end
+  def get_avg_temperatures(date)
+    date_prev = ((date.to_date) - 1.day).strftime("%Y-%m-%d")+' 21'
+    temp_local = SynopticObservation.select(:station_id, :term, :temperature).
+      where("observed_at > ? and observed_at < ? and station_id not in (6,9)", date_prev, date+' 20').order(:station_id, :date, :term)
+    a = Hash.new(nil)
+    temp_local.each {|hd|
+      a[[hd.station_id, hd.term]] = hd.temperature
+    }
+    ret = {}
+    ret[:local] = a
+    temp_utc = SynopticObservation.select(:station_id, :term, :temperature).where("date = ? and station_id not in (6,9)", date).order(:station_id, :term)
+    a = Hash.new(nil)
+    temp_utc.each {|hd|
+      a[[hd.station_id, hd.term]] = hd.temperature
+    }
+    ret[:utc] =a
+    ret    
   end
   
   def heat_donbass_show

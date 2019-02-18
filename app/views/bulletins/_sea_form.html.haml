@@ -2,7 +2,8 @@
 - m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
 - report_date_prev = (@bulletin.report_date - 1.day).to_s(:custom_datetime)
 .container
-  = form_for @bulletin do |form|
+  <input id="daily-submit" type="submit" value="Сохранить" form="daily-form">
+  = form_for @bulletin, html: {id: "daily-form"} do |form|
     %table{class: "table table-hover"}
       %tr
         %th Отчетная дата
@@ -95,5 +96,4 @@
       = render partial: 'responsible'
       = render partial: 'chief'
     %br
-    = submit_tag "Сохранить"
 = link_to "Список", "/bulletins/list?bulletin_type=sea"

@@ -1,3 +1,4 @@
+= render 'synoptic_observations/tabs'
 .container
   %h3 Телеграммы о прибрежных наблюдениях МОРЕ
   = will_paginate
@@ -8,9 +9,10 @@
         %th Метеостанция
         %th Телеграмма
     %tbody
+      - name_stations = Station.name_stations_as_array
       - @sea_observations.each do |s_o| 
         %tr
           %td= s_o.date_dev.strftime("%d-%m-%Y")
-          %td= s_o.station.name
+          %td= name_stations[s_o.station_id]
           %td= link_to s_o.telegram, sea_observation_path(s_o)
   = will_paginate

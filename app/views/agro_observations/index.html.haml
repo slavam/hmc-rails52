@@ -1,3 +1,4 @@
+= render 'synoptic_observations/tabs'
 .container
   %h3 Телеграммы агрометеорологические
   = will_paginate
@@ -12,10 +13,11 @@
           %th= ""
           %th= ""
     %tbody
+      - name_stations = Station.name_stations_as_array
       - @agro_observations.each do |a_o| 
         %tr
           %td= a_o.date_dev.strftime("%d-%m-%Y %H:%M:%S UTC")
-          %td= a_o.station.name
+          %td= name_stations[a_o.station_id]
           %td= link_to a_o.telegram, agro_observation_path(a_o)
           /
             %td= link_to "Просмотр", agro_observation_path(a_o)

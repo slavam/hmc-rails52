@@ -1,5 +1,6 @@
 class AgroDecObservationsController < ApplicationController
-  helper AgroObservationsHelper
+  include AgroObservationsHelper
+  # helper AgroObservationsHelper
   before_action :find_agro_dec_observation, only: [:show, :update_agro_dec_telegram]
   
   def index
@@ -33,10 +34,12 @@ class AgroDecObservationsController < ApplicationController
     telegrams = observations.as_json
     @telegrams = []
     telegrams.each do |t|
+      t['precipitation_dec'] = precipitation_to_s(t['precipitation_dec'])
+      t['percipitation_dec_max'] = precipitation_to_s(t['percipitation_dec_max'])
       if @period == 'cold'
         crop_dec_condition = CropDecCondition.find_by_sql("select max(height_snow_cover) height_snow_cover, max(snow_cover) snow_cover, max(snow_cover_density) snow_cover_density, max(number_measurements_0) number_measurements_0, max(number_measurements_3) number_measurements_3, max(number_measurements_30) number_measurements_30, max(ice_crust) ice_crust, max(thickness_ice_cake) thickness_ice_cake, max(depth_thawing_soil_2) depth_thawing_soil_2, max(depth_soil_freezing) depth_soil_freezing, min(thermometer_index) thermometer_index, min(temperature_dec_min_soil3) temperature_dec_min_soil3, max(height_snow_cover_rail) height_snow_cover_rail from crop_dec_conditions where agro_dec_observation_id = #{t["id"]} ;")[0]
         t["height_snow_cover"] = crop_dec_condition.height_snow_cover
-        t["snow_cover"] = crop_dec_condition.snow_cover_to_s
+        t["snow_cover"] = crop_dec_condition.snow_cover_to_s # if crop_dec_condition.snow_cover.present?
         t["snow_cover_density"] = crop_dec_condition.snow_cover_density
         t["number_measurements_0"] = crop_dec_condition.number_measurements_0
         t["number_measurements_3"] = crop_dec_condition.number_measurements_3
@@ -45,12 +48,13 @@ class AgroDecObservationsController < ApplicationController
         t["thickness_ice_cake"] = crop_dec_condition.thickness_ice_cake
         t["depth_thawing_soil_2"] = crop_dec_condition.depth_thawing_soil_2
         t["depth_soil_freezing"] = crop_dec_condition.depth_soil_freezing
-        t["thermometer_index"] = crop_dec_condition.thermometer #_index
+        t["thermometer_index"] = crop_dec_condition.thermometer # if crop_dec_condition.thermometer_index.present?
         t["temperature_dec_min_soil3"] = crop_dec_condition.temperature_dec_min_soil3
         t["height_snow_cover_rail"] = crop_dec_condition.height_snow_cover_rail
       end
       @telegrams << t
     end
+# Rails.logger.debug("My object>>>>>>>>>>>>>>> #{@telegrams.inspect}") 
     @temperature_avg_month = []
     @precipitation_month = []
     if (@decade == 3) and (@period == 'warm')
@@ -65,7 +69,7 @@ class AgroDecObservationsController < ApplicationController
               WHERE station_id not in (6, 9) AND date_dev like '#{@year}%' AND  month_obs=#{@month} AND telegram_num=1 AND precipitation_dec < 990 group by station_id;"
       AgroDecObservation.find_by_sql(sql).each {|p| @precipitation_month[p.station_id] = p.precipitation_dec}
     end
-# Rails.logger.debug("My object>>>>>>>>>>>>>>> #{@precipitation_month.inspect}") 
+
     
     respond_to do |format|
       format.html 

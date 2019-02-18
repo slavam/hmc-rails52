@@ -26,7 +26,7 @@ export default class DNRMap extends React.Component{
         this.state.info[codeStation] = [];
         let location = this.props.markerCoords[codeStation];
         let marker = new google.maps.Marker({position: location, map: map, label: codeStation});
-        let markerClickStream = Rx.Observable.fromEvent(marker, 'click')
+        // let markerClickStream = Rx.Observable.fromEvent(marker, 'click')
           // .subscribe(() => {alert(marker.label)}) ;
         this.state.markers.push(marker);
       }
@@ -45,7 +45,8 @@ export default class DNRMap extends React.Component{
     
     return(
       <div> 
-        <iframe width="100%" height="300" frameBorder="0" style={{border:0}} src="https://www.google.com/maps/embed/v1/place?key=&q=Любавина+2,Донецк,Донецкая+область" allowFullScreen></iframe>
+        <h1>Map</h1>
+        {/*<iframe width="100%" height="300" frameBorder="0" style={{border:0}} src="https://www.google.com/maps/embed/v1/place?key=&q=Любавина+2,Донецк,Донецкая+область" allowFullScreen></iframe>*/}
       </div>
     );
   }

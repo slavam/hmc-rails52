@@ -11,4 +11,10 @@ class Station < ActiveRecord::Base
     stations = Station.all.order(:name)
     return [Station.new(id: 0, code: 0, name: 'Любая')] + stations.to_a
   end
+  def self.name_stations_as_array
+    stations = Station.all.order(:id)
+    ret = []
+    stations.each {|s| ret[s.id] = s.name}
+    ret
+  end
 end

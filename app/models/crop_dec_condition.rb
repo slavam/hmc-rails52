@@ -17,6 +17,9 @@ class CropDecCondition < ActiveRecord::Base
   end
   
   def snow_cover_to_s
+    if self.snow_cover.nil?
+      return ''
+    end
     s_c = ['На полях снега нет', 
             'Поля на 3/4 площади (70-80%) оголены вследствие выдувания снега', 
             'Поля на 1/2 площади (40-60%) оголены вследствие выдувания снега', 
@@ -44,6 +47,9 @@ class CropDecCondition < ActiveRecord::Base
     methods[self.viable_method]
   end
   def thermometer
+    if self.thermometer_index.nil? 
+      return ''
+    end
     tmtr = ['', 'Коробка Низенькова', 'ЕДТУК', 'АМ-17', 'АМ-2М', 'ТЕТ-2', 'АМ-29А', 'Вытяжные термометры']
     tmtr[self.thermometer_index]
   end
