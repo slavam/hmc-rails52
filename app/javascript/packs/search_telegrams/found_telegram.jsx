@@ -1,16 +1,48 @@
 import React from 'react';
+
+// const Popup = ({text, closePopup}) => {
+//   return (
+//     <td>
+//       <div className='popup-bubble'>
+//         <div >
+//           <p>{text}</p>
+//           <button onClick={closePopup} style={{float: "right"}}>Закрыть</button>
+//         </div>
+//       </div>
+//     </td>
+//   );
+// };
 export default class FoundTelegram extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      color: 'red'
+      // showPopup: false,
+      info: ''
+      // color: '#337ab7'
     };
   }
   inControl(event){
-    this.setState({color: 'blue'});
+    let fact = {
+      11: "Ветер",
+      12: "Сильный ветер",
+      17: "Шквал",
+      18: "Шквал",
+      19: "Смерч",
+      30: "Низкая облачность",
+      40: "Видимость",
+      50: "Гололед",
+      51: "Сложные отложения",
+      52: "Налипание мокрого снега",
+      71: "Сильный снег",
+      91: "Гроза"
+    };
+    let t = this.props.telegram;
+    let info = t.date.substr(0,16)+'; '+t.station_name+'; '+(t.telegram[3] == 'Я'? 'Начало/усиление; ':'Завершение; ')+fact[t.telegram.substr(26,2)];
+    // this.setState({showPopup: true, info: info});
+    this.setState({info: info});
   }
   outControl(event){
-    this.setState({color: 'red'});
+    // this.setState({showPopup: false});
   }
   render() {
     let add_td = <td></td>;
@@ -34,8 +66,16 @@ export default class FoundTelegram extends React.Component{
         <td>{this.props.telegram.date.substr(0, 19)+' UTC'}</td>
         {add_td}
         <td>{this.props.telegram.station_name}</td>
-        {/*<td><a href={desiredLink} style={{color: this.state.color}} onMouseOut={event => this.inControl(event)} onMouseOver={(event) => this.outControl(event)}>{this.props.telegram.telegram}</a></td>*/}
-        <td><a href={desiredLink} onMouseOut={event => this.inControl(event)} onMouseOver={(event) => this.outControl(event)}>{this.props.telegram.telegram}</a></td>
+        {/*<td><a href={desiredLink} style={{color: this.state.color}} onMouseOver={(event) => this.inControl(event)}>{this.props.telegram.telegram}</a></td>*/}
+        <td><a href={desiredLink} title={this.state.info} onMouseOver={(event) => this.inControl(event)}>{this.props.telegram.telegram}</a></td>
+        {/*this.state.showPopup ? 
+          <Popup
+            text={this.state.info}
+            closePopup={this.outControl.bind(this)}
+          />
+          : null
+        */}       
+        {/*<td><a href={desiredLink} onMouseOut={event => this.inControl(event)} onMouseOver={(event) => this.outControl(event)}>{this.props.telegram.telegram}</a></td>*/}
       </tr>
     );
   }

@@ -1,4 +1,4 @@
-%div{ class:"container"}
+.container
   %h3 Поиск штормовых телеграмм
   #form_and_result
   #search_params{ telegrams: @telegrams.to_json, stations: @stations.to_json, dateFrom: @date_from.to_json, dateTo: @date_to.to_json, tlgType: 'storm'.to_json, stormType: @storm_type.to_json, stationId: @station_id.to_json, tlgText: @text.to_json }

@@ -484,7 +484,7 @@ class SynopticObservation < ActiveRecord::Base
   def self.snow_cover_height(date)
     ret = []
     self.where(term: 6, date: date).select(:station_id, :snow_cover_height).each do |tm| 
-      ret[tm.station_id] = tm.snow_cover_height<997 ? tm.snow_cover_height : (tm.snow_cover_height == 997 ? '<0.5' : (tm.snow_cover_height==998 ? 'Снежный покров отсутствует':'Измерить невозможно'))
+      ret[tm.station_id] = tm.snow_cover_height<997 ? tm.snow_cover_height : (tm.snow_cover_height == 997 ? '<0.5' : (tm.snow_cover_height==998 ? 'Снежный покров отсутствует':'Измерить невозможно')) if tm.snow_cover_height.present?
     end
     ret
   end

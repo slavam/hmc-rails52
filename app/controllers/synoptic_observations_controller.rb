@@ -295,7 +295,8 @@ class SynopticObservationsController < ApplicationController
   
   def daily_avg_temp
     @calc_date = params[:calc_date].present? ? params[:calc_date] : Time.now.strftime("%Y-%m-%d")
-    temperatures = get_avg_temperatures(@calc_date)
+    temperatures = get_daily_avg_temperatures(@calc_date)
+    # temperatures = get_avg_temperatures(@calc_date)
     @temperatures_utc = temperatures[:utc]
     @temperatures_local = temperatures[:local]
     respond_to do |format|
@@ -308,6 +309,57 @@ class SynopticObservationsController < ApplicationController
         render json: {temperaturesUtc: @temperatures_utc, temperaturesLocal: @temperatures_local, calcDate: @calc_date}
       end
     end
+  end
+  def get_daily_avg_temperatures(date)
+    date_prev = ((date.to_date) - 1.day).strftime("%Y-%m-%d")+' 21'
+    temp_local = SynopticObservation.select(:station_id, :term, :temperature).
+      where("observed_at > ? and observed_at < ? and station_id not in (6,9)", date_prev, date+' 20').order(:station_id, :date, :term)
+    local = calc_daily_avg_temps(temp_local)
+    ret = {}
+    ret[:local] = local
+    temp_utc = SynopticObservation.select(:station_id, :term, :temperature).where("date = ? and station_id not in (6,9)", date).order(:station_id, :term)
+    utc = calc_daily_avg_temps(temp_utc)
+    ret[:utc] = utc
+    ret
+  end
+  def calc_daily_avg_temps(observations)
+    a = [] 
+    observations.each {|tl|
+      s=tl.station_id
+      a[s] ||= []
+      t=tl.term
+      a[s][t] = tl.temperature
+    }
+    a[11] = [] 
+    a[12] = [] 
+    nt = [] 
+    nr = [] 
+    (1..10).each do |s|
+      if a[s].present?
+        arr = a[s].compact
+        a[s][22] = (arr.reduce(:+) / arr.size.to_f).round(1) if arr.size > 0
+        [21,0,3,6,9,12,15,18,22].each do |t|
+          if a[s][t].present?
+            a[11][t] ||=0
+            a[11][t] += a[s][t]
+            nt[t] ||=0
+            nt[t] += 1
+            if [1,2,3,10].include?(s)
+              a[12][t] ||=0
+              a[12][t] += a[s][t]
+              nr[t] ||=0
+              nr[t] += 1
+            end
+          end
+        end
+      end
+    end
+    [21,0,3,6,9,12,15,18,22].each do |t|
+      a[11][t] = (a[11][t] / nt[t]).round(1) if nt[t].present? and nt[t]>0
+      a[12][t] = (a[12][t] / nr[t]).round(1) if nr[t].present? and nr[t]>0
+    end
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{a.inspect}")
+    a
   end
   def get_avg_temperatures(date)
     date_prev = ((date.to_date) - 1.day).strftime("%Y-%m-%d")+' 21'
@@ -326,6 +378,109 @@ class SynopticObservationsController < ApplicationController
     }
     ret[:utc] =a
     ret    
+  end
+  
+  def month_avg_temp
+    @year = params[:year].present? ? params[:year] : Time.now.year.to_s
+    @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
+    @temperatures = get_month_avg_temp(@year, @month)
+    respond_to do |format|
+      format.html 
+      # format.pdf do
+      #   pdf = Teploenergo.new(@temperatures, @year, @month)
+      #   send_data pdf.render, filename: "teploenergo_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      # end
+      format.json do 
+        render json: {temperatures: @temperatures}
+      end
+    end
+  end
+  def get_month_avg_temp(year, month)
+    ret = []
+    fd = (year+'-'+month+'-01').to_date
+    (fd.day..fd.end_of_month.day).each do|d|
+      curr_date = year+'-'+month+'-'+(d>9? d.to_s : '0'+d.to_s)
+      ret[d] = avg_temps(curr_date)
+    end
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{ret.inspect}")
+    num_days = fd.end_of_month.day
+    im = Array.new(11,0)
+    i1 = Array.new(11,0)
+    i2 = Array.new(11,0)
+    i3 = Array.new(11,0)
+    ret[num_days+1] = Array.new(11,0)
+    ret[num_days+1][0] = nil
+    ret[num_days+2] = Array.new(11,0)
+    ret[num_days+2][0] = nil
+    ret[num_days+3] = Array.new(11,0)
+    ret[num_days+3][0] = nil
+    ret[num_days+4] = Array.new(11,0)
+    ret[num_days+4][0] = nil
+    
+    (1..num_days).each do |d|
+      arr = ret[d].compact
+      ret[d][11] = (arr.reduce(:+) / arr.size.to_f).round(1) if arr.size > 0
+      arr = []
+      arr << ret[d][1] << ret[d][2] << ret[d][3] << ret[d][10]
+      arr = arr.compact
+      ret[d][12] = (arr.reduce(:+) / arr.size.to_f).round(1) if arr.size > 0
+      (1..10).each do |s|
+        if ret[d][s].present?
+          ret[num_days+4][s] += ret[d][s] # month
+          im[s] += 1
+          if d<11
+            ret[num_days+1][s] += ret[d][s] # 1D
+            i1[s] += 1
+          elsif d<21
+            ret[num_days+2][s] += ret[d][s] # 2D
+            i2[s] += 1
+          else
+            ret[num_days+3][s] += ret[d][s] # 3D
+            i3[s] += 1
+          end  
+        end
+      end
+    end
+    (1..10).each do |s|
+      if i1[s] > 0
+        ret[num_days+1][s] = (ret[num_days+1][s]/i1[s]).round(1)
+      else
+        ret[num_days+1][s] = nil
+      end
+      if i2[s] > 0
+        ret[num_days+2][s] = (ret[num_days+2][s]/i2[s]).round(1)
+      else
+        ret[num_days+2][s] = nil
+      end
+      if i3[s] > 0
+        ret[num_days+3][s] = (ret[num_days+3][s]/i3[s]).round(1)
+      else
+        ret[num_days+3][s] = nil
+      end
+      if im[s]>0
+        ret[num_days+4][s] = (ret[num_days+4][s]/im[s]).round(1)
+      else
+        ret[num_days+4][s] = nil
+      end
+    end
+    (1..4).each do |i|
+      arr = ret[num_days+i].compact
+      ret[num_days+i][11] = (arr.reduce(:+) / arr.size.to_f).round(1) if arr.size > 0
+      arr = []
+      arr << ret[num_days+i][1] << ret[num_days+i][2] << ret[num_days+i][3] << ret[num_days+i][10]
+      arr = arr.compact
+      ret[num_days+i][12] = (arr.reduce(:+) / arr.size.to_f).round(1) if arr.size > 0
+    end
+    ret
+  end
+  def avg_temps(curr_date)
+    prev_date = curr_date.to_date - 1.day
+    rows = SynopticObservation.select("station_id, avg(temperature) temperature").
+      where("observed_at > ? AND observed_at < ? AND station_id NOT IN (6,9)", prev_date.strftime("%Y-%m-%d")+' 20', curr_date+' 19').group(:station_id)
+    ret = []
+    rows.each {|r| ret[r.station_id] = r.temperature}
+    ret
+    # select station_id, avg(temperature) from synoptic_observations where station_id not in (6,9) and observed_at > '2017-02-17 20' and observed_at < '2017-02-18 19' group  by  station_id;
   end
   
   def heat_donbass_show

@@ -1,0 +1,5 @@
+-# = @temperatures.inspect
+.container
+  #form_and_report
+  #init_params{ temperatures: @temperatures.to_json, year: @year.to_json, month: @month.to_json}
+  = javascript_pack_tag 'heat_donbass/month_avg_temperatures'
