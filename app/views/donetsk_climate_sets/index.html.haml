@@ -1,0 +1,17 @@
+.container
+  %h3 Климатические данные по г. Донецку (с 1945г. по 2019г.)
+  %table{class: "table table-hover"}
+    %thead
+      %tr
+        %th Месяц
+        %th День
+        %th Средняя за сутки
+        %th Максимальная за сутки
+        %th Год 
+        %th Минимальная за сутки
+        %th Год
+        %th 
+    %tbody
+      = render @donetsk_climate_sets
+  %br
+  = link_to "Создать", new_donetsk_climate_set_path

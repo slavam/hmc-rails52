@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_28_124051) do
+ActiveRecord::Schema.define(version: 2019_03_01_072410) do
 
   create_table "agro_crop_categories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -348,6 +348,19 @@ ActiveRecord::Schema.define(version: 2019_01_28_124051) do
     t.integer "temperature_dead50"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "donetsk_climate_sets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "mm", null: false
+    t.integer "dd", null: false
+    t.decimal "t_avg", precision: 5, scale: 1
+    t.decimal "t_max", precision: 5, scale: 1
+    t.integer "year_max"
+    t.decimal "t_min", precision: 5, scale: 1
+    t.integer "year_min"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["mm", "dd"], name: "index_donetsk_climate_sets_on_mm_and_dd", unique: true
   end
 
   create_table "hydro_observations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

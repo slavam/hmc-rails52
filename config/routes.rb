@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :donetsk_climate_sets
   get 'snow_observations/input_snow_telegrams', to: 'snow_observations#input_snow_telegrams'
   post 'snow_observations/create_snow_telegram', to: 'snow_observations#create_snow_telegram'
   get 'snow_observations/get_last_telegrams', to: 'snow_observations#get_last_telegrams'

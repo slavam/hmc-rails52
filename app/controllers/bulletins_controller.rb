@@ -57,7 +57,13 @@ class BulletinsController < ApplicationController
         @bulletin.forecast_orientation = bulletin.forecast_orientation
         @bulletin.meteo_data = '' #[] #bulletin.meteo_data # 20190212 согласовано с синоптиками
         @bulletin.agro_day_review = bulletin.agro_day_review
-        @bulletin.climate_data = bulletin.climate_data
+        # @bulletin.climate_data = bulletin.climate_data
+        prev_date = @bulletin.report_date-1.day
+        prev_set = DonetskClimateSet.find_by(mm: prev_date.month, dd: prev_date.day)
+        curr_set = DonetskClimateSet.find_by(mm: @bulletin.report_date.month, dd: @bulletin.report_date.day)
+        @bulletin.climate_data = (prev_set.present? ? prev_set.t_avg.to_s : '') + '; ' +
+          (prev_set.present? ? prev_set.t_max.to_s : '') + '; ' + (prev_set.present? ? prev_set.year_max.to_s : '') + '; '+
+          (curr_set.present? ? curr_set.t_min.to_s : '') + '; ' + (curr_set.present? ? curr_set.year_min.to_s : '') + ';'
         @bulletin.forecast_day_city = bulletin.forecast_day_city
         
         @m_d = @bulletin.meteo_data.split(";")

@@ -1,0 +1,19 @@
+%div{ class: "row"}
+  %div{ class: "col-md-6 col-md-offset-3"}
+    = form_for(@donetsk_climate_set) do |f| 
+      = f.label "Номер месяца"
+      = f.number_field :mm, min: 1, max: 12
+      = f.label "Номер дня"
+      = f.number_field :dd, min: 1, max: 31
+      = f.label "Средняя за сутки температура воздуха (норма)"
+      = f.number_field :t_avg, min: -40.0, max: 50.0, step: 0.1
+      = f.label "Максимальная температура воздуха"
+      = f.number_field :t_max, min: -40.0, max: 50.0, step: 0.1
+      = f.label "Год максимума"
+      = f.number_field :year_max, min: 1945, max: 2030
+      = f.label "Минимальная температура воздуха"
+      = f.number_field :t_min, min: -40.0, max: 50.0, step: 0.1
+      = f.label "Год минимума"
+      = f.number_field :year_min, min: 1945, max: 2030
+      
+      = f.submit "Сохранить", class: "btn btn-primary"

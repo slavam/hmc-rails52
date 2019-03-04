@@ -110,7 +110,7 @@ class Daily < Prawn::Document
     table_content = [["Название метеостанции", "<color rgb='ff0000'>Максимальная вчера днем</color>", "<color rgb='0000ff'>Минимальная сегодня ночью</color>", "Средняя за сутки #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", "В 9.00 часов сегодня", "Количество осадков за сутки (мм)", h7, h8, "Максимальная скорость ветра (м/с)", "Явления погоды"]]
     stations.each.with_index do |s, j|
       a = [s]
-      (0..8).each {|i| a << m_d[j*9+i]}
+      (0..8).each {|i| a << ((i!=2 and i!=5 and i!=8 and m_d[j*9+i].present?) ? m_d[j*9+i].to_f.round : m_d[j*9+i])}
       table_content << a
     end
     # table_content = [["Название метеостанции", "<color rgb='ff0000'>Максимальная вчера днем</color>", "<color rgb='0000ff'>Минимальная сегодня ночью</color>", "Средняя за сутки #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", "В 9.00 часов сегодня", "Количество осадков за сутки (мм)", h7, h8, "Максимальная скорость ветра (м/с)", "Явления погоды"],
