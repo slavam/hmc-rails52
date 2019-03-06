@@ -1,9 +1,12 @@
-.container
-  %h3 Климатические данные по г. Донецку (с 1945г. по 2019г.)
+- mns = ['',"Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"]
+%div{ :class=>"container"}
+  %ul{ :class=>"nav nav-tabs"}
+    - (1..12).each do |m| 
+      %li= link_to mns[m], "/donetsk_climate_sets/?mm=#{m}"
+  %h3 Климатические данные по г. Донецку (с 1945г. по 2019г.). #{mns[@month.to_i]} месяц
   %table{class: "table table-hover"}
     %thead
       %tr
-        %th Месяц
         %th День
         %th Средняя за сутки
         %th Максимальная за сутки
@@ -14,4 +17,5 @@
     %tbody
       = render @donetsk_climate_sets
   %br
-  = link_to "Создать", new_donetsk_climate_set_path
+  - if @num_days < ('2020-'+@month.to_s+'-1').to_date.end_of_month.day
+    = link_to "Создать", "/donetsk_climate_sets/new?mm=#{@month}"

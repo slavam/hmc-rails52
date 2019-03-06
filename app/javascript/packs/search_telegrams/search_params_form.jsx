@@ -47,7 +47,7 @@ export default class SearchParamsForm extends React.Component{
 
   render() {
     const terms = [
-      { value: '99', label: 'Любой' },
+      { value: '99', label: 'Все' },
       { value: '00', label: '00' },
       { value: '03', label: '03' },
       { value: '06', label: '06' },
@@ -58,7 +58,7 @@ export default class SearchParamsForm extends React.Component{
       { value: '21', label: '21' }
     ];
     const types = [
-      { value: '99', label: 'Любой' },
+      { value: '99', label: 'Все' },
       { value: 'ЩЭОЗМ', label: 'ЩЭОЗМ' },
       { value: 'ЩЭОЯЮ', label: 'ЩЭОЯЮ' },
     ];

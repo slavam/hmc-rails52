@@ -5,7 +5,7 @@ import DateForm from './date_form';
 const DailyTemperaturesTable = ({temperaturesLocal, temperaturesUtc}) => {
   var rows = [];
   var stations = ["", "Донецк", "Амвросиевка", "Дебальцево", "Волноваха", "Мариуполь", '', "Артемовск", "Красноармейск", '', "Седово", "По территории", "По ДНР"];
-
+  let n = 0;
   [1, 3, 2, 10, 8, 4, 7, 5, 11,12].forEach( s => {
     let tdsl = [];
     let tdsu = [];
@@ -19,9 +19,9 @@ const DailyTemperaturesTable = ({temperaturesLocal, temperaturesUtc}) => {
             val = <b>{temperaturesLocal[s][t]}</b>;
           else
             val = temperaturesLocal[s][t];
-        tdsl.push(<td key={t+'l'}>{val}</td>);
+        tdsl.push(<td style={{borderLeft: 'solid 1px #ddd'}} key={t+'l'}>{val}</td>);
       }else
-        tdsl.push(<td key={t+'l'}></td>);
+        tdsl.push(<td style={{borderLeft: 'solid 1px #ddd'}} key={t+'l'}></td>);
     });
     [0, 3, 6,9, 12, 15, 18, 21,22].forEach( t =>{
       if(temperaturesUtc[s] != null && temperaturesUtc[s][t] != null){
@@ -32,11 +32,12 @@ const DailyTemperaturesTable = ({temperaturesLocal, temperaturesUtc}) => {
             val = <b>{temperaturesUtc[s][t]}</b>;
           else
             val = temperaturesUtc[s][t];
-        tdsu.push(<td key={t+'l'}>{val}</td>);
+        tdsu.push(<td style={{borderLeft: 'solid 1px #ddd'}} key={t+'l'}>{val}</td>);
       }else
-        tdsu.push(<td key={t+'l'}></td>);
+        tdsu.push(<td style={{borderLeft: 'solid 1px #ddd'}} key={t+'l'}></td>);
     });
-    rows.push(<tr key={s}><td>{stations[s]}</td>{tdsl}{tdsu}</tr>);
+    rows.push(<tr style={{background: n % 2 == 0? '#fff' : '#eee'}} key={s}><td>{stations[s]}</td>{tdsl}{tdsu}</tr>);
+    n++;
   });
   return (
     <table className = "table table-hover">

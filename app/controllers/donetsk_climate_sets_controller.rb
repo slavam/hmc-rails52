@@ -1,19 +1,21 @@
 class DonetskClimateSetsController < ApplicationController
   before_action :find_donetsk_climate_set, only: [:edit, :update] 
   def index
-    @donetsk_climate_sets = DonetskClimateSet.all.order(:mm, :dd)
+    @month = params[:mm].present? ? params[:mm] : 1
+    @donetsk_climate_sets = DonetskClimateSet.where(mm: @month).order(:mm, :dd)
+    @num_days = @donetsk_climate_sets.size
   end
   def new
     @donetsk_climate_set = DonetskClimateSet.new
-    @donetsk_climate_set.mm = 1
-    @donetsk_climate_set.dd = 1
+    @donetsk_climate_set.mm = params[:mm].present? ? params[:mm] : 1
+    # @donetsk_climate_set.dd = 1
   end
   
   def create
     @donetsk_climate_set = DonetskClimateSet.new(donetsk_climate_set_params)
     if @donetsk_climate_set.save
       flash[:success] = "Создан набор данных"
-      redirect_to donetsk_climate_sets_path
+      redirect_to "/donetsk_climate_sets/?mm=#{@donetsk_climate_set.mm}"
     else
       render 'new'
     end
@@ -27,7 +29,7 @@ class DonetskClimateSetsController < ApplicationController
       render :action => :edit
     else
       flash[:success] = "Набор изменен"
-      redirect_to donetsk_climate_sets_path
+      redirect_to "/donetsk_climate_sets/?mm=#{@donetsk_climate_set.mm}"
     end
   end
   private
