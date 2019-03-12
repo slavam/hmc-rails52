@@ -28,6 +28,8 @@
                     %li= link_to l.name,  l.address, target: :_blank
                   %li{ class: "divider"}
                   %li= link_to 'Климатические данные по Донецку', donetsk_climate_sets_path
+              %li
+                = render 'layouts/synoptic_links'
             - when 'agro'
               %li
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Телеграммы <b class="caret"></b></a>

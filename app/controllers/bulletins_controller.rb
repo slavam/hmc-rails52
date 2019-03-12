@@ -31,10 +31,13 @@ class BulletinsController < ApplicationController
         @bulletin.meteo_data = bulletin.meteo_data if bulletin.present?
       when 'avtodor', 'storm', 'sea_storm'
         @bulletin.curr_number = '' if params[:bulletin_type] != 'avtodor'
-        @bulletin.meteo_data = bulletin.meteo_data
-        @bulletin.forecast_day = bulletin.forecast_day
-        @bulletin.storm = bulletin.storm
+        if bulletin.present?
+          @bulletin.meteo_data = bulletin.meteo_data 
+          @bulletin.forecast_day = bulletin.forecast_day
+          @bulletin.storm = bulletin.storm
+        end
       when 'holiday'
+        bulletin = Bulletin.last_this_type 'daily' # ОН 20190307 
         @bulletin.forecast_day = bulletin.forecast_day
         @bulletin.storm = bulletin.storm
         @bulletin.forecast_period = bulletin.forecast_period
@@ -46,7 +49,12 @@ class BulletinsController < ApplicationController
         @bulletin.forecast_period = bulletin.forecast_period
         @bulletin.forecast_sea_day = bulletin.forecast_sea_day
         @bulletin.forecast_sea_period = bulletin.forecast_sea_period
-        @bulletin.meteo_data = bulletin.meteo_data
+        # @bulletin.meteo_data = bulletin.meteo_data
+        @m_d = fill_sea_meteo_data(@bulletin.report_date)
+        @bulletin.meteo_data = ''
+        @m_d.each do |v|
+          @bulletin.meteo_data += v.present? ? "#{v};" : ';'
+        end
         @bulletin.forecast_day_city = bulletin.forecast_day_city
       when 'daily'
         @bulletin.summer = (params[:variant] == 'summer')
@@ -57,7 +65,6 @@ class BulletinsController < ApplicationController
         @bulletin.forecast_orientation = bulletin.forecast_orientation
         @bulletin.meteo_data = '' #[] #bulletin.meteo_data # 20190212 согласовано с синоптиками
         @bulletin.agro_day_review = bulletin.agro_day_review
-        # @bulletin.climate_data = bulletin.climate_data
         prev_date = @bulletin.report_date-1.day
         prev_set = DonetskClimateSet.find_by(mm: prev_date.month, dd: prev_date.day)
         curr_set = DonetskClimateSet.find_by(mm: @bulletin.report_date.month, dd: @bulletin.report_date.day)
@@ -65,38 +72,7 @@ class BulletinsController < ApplicationController
           (prev_set.present? ? prev_set.t_max.to_s : '') + '; ' + (prev_set.present? ? prev_set.year_max.to_s : '') + '; '+
           (curr_set.present? ? curr_set.t_min.to_s : '') + '; ' + (curr_set.present? ? curr_set.year_min.to_s : '') + ';'
         @bulletin.forecast_day_city = bulletin.forecast_day_city
-        
-        @m_d = @bulletin.meteo_data.split(";")
-        max_day = SynopticObservation.max_day_temperatures(@bulletin.report_date-1.day)
-        push_in_m_d(max_day,0)
-        min_night = SynopticObservation.min_night_temperatures(@bulletin.report_date)
-        push_in_m_d(min_night,1)
-        avg_24 = AgroObservation.temperature_avg_24(@bulletin.report_date.strftime("%Y-%m-%d"))
-        push_in_m_d(avg_24,2)
-        at_9_o_clock = SynopticObservation.current_temperatures(6, @bulletin.report_date)
-        push_in_m_d(at_9_o_clock,3)
-        precipitation_day = SynopticObservation.precipitation(18, @bulletin.report_date-1.day)
-        precipitation_night = SynopticObservation.precipitation(6, @bulletin.report_date)
-        precipitation = []
-        (1..10).each do |i| 
-          if precipitation_day[i].present?
-            precipitation[i] = precipitation_day[i]>989 ? ((precipitation_day[i]-990)*0.1).round(1) : precipitation_day[i]
-          end
-          if precipitation_night[i].present?
-            precipitation[i] ||= 0
-            precipitation[i] += precipitation_night[i]>989 ? ((precipitation_night[i]-990)*0.1).round(1) : precipitation_night[i]
-          end
-        end
-        push_in_m_d(precipitation,4)
-        if @bulletin.summer
-        else
-          snow_height = SynopticObservation.snow_cover_height(@bulletin.report_date)
-          push_in_m_d(snow_height,5)
-          depth_freezing = AgroObservation.depth_freezing(@bulletin.report_date.strftime("%Y-%m-%d"))
-          push_in_m_d(depth_freezing,6)
-        end
-        wind_speed_max = AgroObservation.wind_speed_max_24(@bulletin.report_date.strftime("%Y-%m-%d"))
-        push_in_m_d(wind_speed_max,7)
+        @m_d = fill_meteo_data(@bulletin.report_date)        
         @bulletin.meteo_data = ''
         @m_d.each do |v|
           @bulletin.meteo_data += v.present? ? "#{v};" : ';'
@@ -129,6 +105,19 @@ class BulletinsController < ApplicationController
   end
   
   def edit
+    case @bulletin.bulletin_type
+      when 'daily', 'sea'
+        # ОН 20190307 выбирать данные из базы каждый раз
+        if @bulletin.bulletin_type == 'daily'
+          @m_d = fill_meteo_data(@bulletin.report_date)
+        else
+          @m_d = fill_sea_meteo_data(@bulletin.report_date)
+        end
+        @bulletin.meteo_data = ''
+        @m_d.each do |v|
+          @bulletin.meteo_data += v.present? ? "#{v};" : ';'
+        end
+    end
   end
 
   def update
@@ -271,13 +260,85 @@ class BulletinsController < ApplicationController
       end
     end
     
-    def push_in_m_d(data, offset)
+    def push_in_m_d(m_d, data, offset)
       id_stations = [1,3,2,10,8,4,7,5]
       data.each.with_index do |v,i| 
         if v.present?
           row = id_stations.index(i)
-          @m_d[row*9+offset] = v.to_s if row.present?
+          m_d[row*9+offset] = v.to_s if row.present?
         end
       end
+    end
+
+    def fill_sea_meteo_data(report_date)
+      sedovo_id = 10
+      m_d = []
+      m_d[0] = SynopticObservation.max_day_temperatures(report_date-1.day)[sedovo_id]
+      m_d[1] = SynopticObservation.min_night_temperatures(report_date)[sedovo_id]
+      m_d[2] = SynopticObservation.current_temperatures(6, report_date)[sedovo_id]
+      m_d[3] = precipitation_daily[sedovo_id]
+      if @bulletin.summer
+      else
+        m_d[13] = SynopticObservation.snow_cover_height(report_date)[sedovo_id]
+      end
+      m_d[7] = SeaObservation.sea_level(report_date)
+      level_yesterday = SeaObservation.sea_level(report_date-1.day)
+      if m_d[7].present? and level_yesterday.present?
+        m_d[8] = m_d[7].to_i - level_yesterday.to_i
+      end
+      m_d[9] = SeaObservation.water_temperature(report_date)
+      m_d[12] = SynopticObservation.find_by(station_id: 10, term: 6, date: report_date).visibility
+      m_d
+    end
+    
+    def fill_meteo_data(report_date)
+      m_d = []
+      max_day = SynopticObservation.max_day_temperatures(report_date-1.day)
+      push_in_m_d(m_d, max_day,0)
+      min_night = SynopticObservation.min_night_temperatures(@bulletin.report_date)
+      push_in_m_d(m_d, min_night,1)
+      avg_24 = AgroObservation.temperature_avg_24(@bulletin.report_date.strftime("%Y-%m-%d"))
+      push_in_m_d(m_d, avg_24,2)
+      at_9_o_clock = SynopticObservation.current_temperatures(6, @bulletin.report_date)
+      push_in_m_d(m_d, at_9_o_clock,3)
+      # precipitation = []
+      # precipitation_day = SynopticObservation.precipitation(18, @bulletin.report_date-1.day)
+      # precipitation_night = SynopticObservation.precipitation(6, @bulletin.report_date)
+      # (1..10).each do |i| 
+      #   if precipitation_day[i].present?
+      #     precipitation[i] = precipitation_day[i]>989 ? ((precipitation_day[i]-990)*0.1).round(1) : precipitation_day[i]
+      #   end
+      #   if precipitation_night[i].present?
+      #     precipitation[i] ||= 0
+      #     precipitation[i] += precipitation_night[i]>989 ? ((precipitation_night[i]-990)*0.1).round(1) : precipitation_night[i]
+      #   end
+      # end
+      precipitation = precipitation_daily
+      push_in_m_d(m_d, precipitation,4)
+      if @bulletin.summer
+      else
+        snow_height = SynopticObservation.snow_cover_height(@bulletin.report_date)
+        push_in_m_d(m_d, snow_height,5)
+        depth_freezing = AgroObservation.depth_freezing(@bulletin.report_date.strftime("%Y-%m-%d"))
+        push_in_m_d(m_d, depth_freezing,6)
+      end
+      wind_speed_max = AgroObservation.wind_speed_max_24(@bulletin.report_date.strftime("%Y-%m-%d"))
+      push_in_m_d(m_d, wind_speed_max,7)
+      m_d
+    end
+    def precipitation_daily
+      precipitation = []
+      precipitation_day = SynopticObservation.precipitation(18, @bulletin.report_date-1.day)
+      precipitation_night = SynopticObservation.precipitation(6, @bulletin.report_date)
+      (1..10).each do |i| 
+        if precipitation_day[i].present?
+          precipitation[i] = precipitation_day[i]>989 ? ((precipitation_day[i]-990)*0.1).round(1) : precipitation_day[i]
+        end
+        if precipitation_night[i].present?
+          precipitation[i] ||= 0
+          precipitation[i] += precipitation_night[i]>989 ? ((precipitation_night[i]-990)*0.1).round(1) : precipitation_night[i]
+        end
+      end
+      precipitation
     end
 end

@@ -13,4 +13,22 @@ class SeaObservation < ApplicationRecord
       {id: rec.id, date: rec.date_dev, station_name: stations[rec.station_id-1].name, telegram: rec.telegram}
     end
   end
+  def self.sea_level(report_date)
+      # s_o = SeaObservation.find_by(station_id: 10, term: 9, date_dev: @bulletin.report_date)
+    s_o = self.where("station_id=10 and term=9 and date_dev like ?","#{report_date}%")[0]
+    if s_o.present?
+      g3 = s_o.telegram =~ / 3.... /
+      return g3.present? ? s_o.telegram[g3+3,3] : nil
+    else
+      return nil
+    end
+  end
+  def self.water_temperature(report_date)
+    s_o = self.where("station_id=10 and term=9 and date_dev like ?","#{report_date}%")[0]
+    if s_o.present?
+      return (s_o.telegram[22,2]+'.'+s_o.telegram[24]).to_f
+    else
+      return nil
+    end
+  end
 end
