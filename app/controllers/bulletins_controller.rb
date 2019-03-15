@@ -23,25 +23,46 @@ class BulletinsController < ApplicationController
   def new_bulletin
     @bulletin = Bulletin.new
     @bulletin.report_date = Time.now.strftime("%Y-%m-%d")
-    @bulletin.curr_number = Date.today.yday() #.to_s+'-РС'
+    @bulletin.curr_number = Date.today.yday()
     @bulletin.bulletin_type = params[:bulletin_type] 
     bulletin = Bulletin.last_this_type params[:bulletin_type]
+    last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307 
     case params[:bulletin_type]
-      when 'radio', 'radiation'
+      when 'dte'
+        @bulletin.forecast_day = last_daily_bulletin.forecast_day
+      when 'radio'
+        @bulletin.forecast_day = last_daily_bulletin.forecast_day
         @bulletin.meteo_data = bulletin.meteo_data if bulletin.present?
-      when 'avtodor', 'storm', 'sea_storm'
-        @bulletin.curr_number = '' if params[:bulletin_type] != 'avtodor'
+      when 'radiation'
+        # @bulletin.meteo_data = bulletin.meteo_data if bulletin.present?
+        @m_d = fill_radiation_meteo_data(@bulletin.report_date)
+        @bulletin.meteo_data = ''
+        @m_d.each do |v|
+          @bulletin.meteo_data += v.present? ? "#{v};" : ';'
+        end
+      when 'storm', 'sea_storm'
+        @bulletin.curr_number = ''
         if bulletin.present?
           @bulletin.meteo_data = bulletin.meteo_data 
           @bulletin.forecast_day = bulletin.forecast_day
           @bulletin.storm = bulletin.storm
         end
+      when 'avtodor'
+        if last_daily_bulletin.present?
+          # @bulletin.meteo_data = bulletin.meteo_data 
+          @bulletin.forecast_day = last_daily_bulletin.forecast_day
+          @bulletin.storm = last_daily_bulletin.storm
+        end
+        @m_d = fill_avtodor_meteo_data(@bulletin.report_date)
+        @bulletin.meteo_data = ''
+        @m_d.each do |v|
+          @bulletin.meteo_data += v.present? ? "#{v};" : ';'
+        end
       when 'holiday'
-        bulletin = Bulletin.last_this_type 'daily' # ОН 20190307 
-        @bulletin.forecast_day = bulletin.forecast_day
-        @bulletin.storm = bulletin.storm
-        @bulletin.forecast_period = bulletin.forecast_period
-        @bulletin.forecast_day_city = bulletin.forecast_day_city
+        @bulletin.forecast_day = last_daily_bulletin.forecast_day
+        @bulletin.storm = last_daily_bulletin.storm
+        @bulletin.forecast_period = last_daily_bulletin.forecast_period
+        @bulletin.forecast_day_city = last_daily_bulletin.forecast_day_city
       when 'sea'
         @bulletin.summer = (params[:variant] == 'summer')
         @bulletin.storm = bulletin.storm
@@ -49,7 +70,6 @@ class BulletinsController < ApplicationController
         @bulletin.forecast_period = bulletin.forecast_period
         @bulletin.forecast_sea_day = bulletin.forecast_sea_day
         @bulletin.forecast_sea_period = bulletin.forecast_sea_period
-        # @bulletin.meteo_data = bulletin.meteo_data
         @m_d = fill_sea_meteo_data(@bulletin.report_date)
         @bulletin.meteo_data = ''
         @m_d.each do |v|
@@ -84,7 +104,7 @@ class BulletinsController < ApplicationController
     @bulletin = Bulletin.new(bulletin_params)
     @bulletin.summer = params[:summer] if params[:summer].present?
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{@bulletin.inspect}")
-    if params[:val_1].present?
+    if !params[:val_1].nil?
       @bulletin.meteo_data = ''
       (1..n).each do |i|
         @bulletin.meteo_data += params["val_#{i}"].present? ? params["val_#{i}"]+'; ' : ';'
@@ -106,27 +126,32 @@ class BulletinsController < ApplicationController
   
   def edit
     case @bulletin.bulletin_type
-      when 'daily', 'sea'
+      when 'daily'
         # ОН 20190307 выбирать данные из базы каждый раз
-        if @bulletin.bulletin_type == 'daily'
-          @m_d = fill_meteo_data(@bulletin.report_date)
-        else
-          @m_d = fill_sea_meteo_data(@bulletin.report_date)
-        end
-        @bulletin.meteo_data = ''
-        @m_d.each do |v|
-          @bulletin.meteo_data += v.present? ? "#{v};" : ';'
-        end
+        @m_d = fill_meteo_data(@bulletin.report_date)
+      when 'sea'
+        @m_d = fill_sea_meteo_data(@bulletin.report_date)
+      when 'radiation'
+        @m_d = fill_radiation_meteo_data(@bulletin.report_date)
+      when 'avtodor'
+        @m_d = fill_avtodor_meteo_data(@bulletin.report_date)
+      else
+        @m_d = []
+    end
+    @bulletin.meteo_data = ''
+    @m_d.each do |v|
+      @bulletin.meteo_data += v.present? ? "#{v};" : ';'
     end
   end
 
   def update
-    if params[:val_1].present?
+    if !params[:val_1].nil?
       @bulletin.meteo_data = ''
       (1..n).each do |i|
         @bulletin.meteo_data += params["val_#{i}"].present? ? params["val_#{i}"].strip+'; ' : ';'
       end
     end
+    
     if @bulletin.bulletin_type == 'daily'
       @bulletin.climate_data = params[:avg_day_temp] + '; ' + params[:max_temp] + '; '+ params[:max_temp_year] + '; ' + params[:min_temp] + '; '+ params[:min_temp_year] + '; '
     end
@@ -134,6 +159,7 @@ class BulletinsController < ApplicationController
       render :action => :edit
     else
       # redirect_to "/bulletins/#{@bulletin.id}/bulletin_show"
+      Rails.logger.debug("My object+++++++++++++++++: #{@bulletin.meteo_data.inspect}")
       flash[:success] = "Бюллетень изменен"
       redirect_to "/bulletins/list?bulletin_type=#{@bulletin.bulletin_type}"
     end
@@ -213,6 +239,8 @@ class BulletinsController < ApplicationController
           pdf = Avtodor.new(@bulletin)
         when 'radio'
           pdf = Radio.new(@bulletin)
+        when 'dte'
+          pdf = Dte.new(@bulletin)
       end
       format.html do
         save_as_pdf(pdf)
@@ -273,26 +301,58 @@ class BulletinsController < ApplicationController
     def fill_sea_meteo_data(report_date)
       sedovo_id = 10
       m_d = []
-      m_d[0] = SynopticObservation.max_day_temperatures(report_date-1.day)[sedovo_id]
-      m_d[1] = SynopticObservation.min_night_temperatures(report_date)[sedovo_id]
-      m_d[2] = SynopticObservation.current_temperatures(6, report_date)[sedovo_id]
-      m_d[3] = precipitation_daily[sedovo_id]
+      m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
+      value = SynopticObservation.max_day_temperatures(report_date-1.day)[sedovo_id]
+      m_d[0] = value if value.present?
+      value = SynopticObservation.min_night_temperatures(report_date)[sedovo_id]
+      m_d[1] = value if value.present?
+      value = SynopticObservation.current_temperatures(6, report_date)[sedovo_id]
+      m_d[2] = value if value.present?
+      value = precipitation_daily(report_date, false)[sedovo_id]
+      m_d[3] = value if value.present?
       if @bulletin.summer
       else
-        m_d[13] = SynopticObservation.snow_cover_height(report_date)[sedovo_id]
+        value = SynopticObservation.snow_cover_height(report_date)[sedovo_id]
+        m_d[13] = value if value.present?
       end
-      m_d[7] = SeaObservation.sea_level(report_date)
+      value = SeaObservation.sea_level(report_date)
+      m_d[7] = value if value.present?
       level_yesterday = SeaObservation.sea_level(report_date-1.day)
       if m_d[7].present? and level_yesterday.present?
         m_d[8] = m_d[7].to_i - level_yesterday.to_i
       end
-      m_d[9] = SeaObservation.water_temperature(report_date)
-      m_d[12] = SynopticObservation.find_by(station_id: 10, term: 6, date: report_date).visibility
+      value = SeaObservation.water_temperature(report_date)
+      m_d[9] = value if value.present?
+      value = SynopticObservation.find_by(station_id: 10, term: 6, date: report_date).visibility
+      m_d[12] = value if value.present? 
       m_d
+    end
+    def fill_radiation_meteo_data(report_date)
+      m_d = []
+      m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
+      radiations = AgroObservation.radiations(report_date)
+      [1,3,2,10].each_with_index {|v,i| m_d[i] = radiations[v] if radiations[v].present?}
+      m_d
+    end
+    
+    def fill_avtodor_meteo_data(report_date)
+      m_d = []
+      m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
+      avg_24 = AgroObservation.temperature_avg_24(report_date-1.day) #.strftime("%Y-%m-%d"))
+      wind_speed = AgroObservation.wind_speed_max_24(report_date-1.day)
+      precipitations = precipitation_daily(report_date-1.day, true)
+      [1,3,2,10].each_with_index do |v,i| 
+        m_d[i*4] = avg_24[v] if avg_24[v].present?
+        m_d[i*4+1] = precipitations[v] if precipitations[v].present?
+        m_d[i*4+3] = wind_speed[v] if wind_speed[v].present?
+      end
+      m_d
+      # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{m_d.inspect}")
     end
     
     def fill_meteo_data(report_date)
       m_d = []
+      m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
       max_day = SynopticObservation.max_day_temperatures(report_date-1.day)
       push_in_m_d(m_d, max_day,0)
       min_night = SynopticObservation.min_night_temperatures(@bulletin.report_date)
@@ -313,7 +373,7 @@ class BulletinsController < ApplicationController
       #     precipitation[i] += precipitation_night[i]>989 ? ((precipitation_night[i]-990)*0.1).round(1) : precipitation_night[i]
       #   end
       # end
-      precipitation = precipitation_daily
+      precipitation = precipitation_daily(report_date, false)
       push_in_m_d(m_d, precipitation,4)
       if @bulletin.summer
       else
@@ -326,10 +386,16 @@ class BulletinsController < ApplicationController
       push_in_m_d(m_d, wind_speed_max,7)
       m_d
     end
-    def precipitation_daily
+    def precipitation_daily(report_date, one_day)
+      # one_day - телеграммы за 6 и 18 из одних суток
       precipitation = []
-      precipitation_day = SynopticObservation.precipitation(18, @bulletin.report_date-1.day)
-      precipitation_night = SynopticObservation.precipitation(6, @bulletin.report_date)
+      if one_day
+        date_18_clock = report_date
+      else
+        date_18_clock = report_date-1.day
+      end
+      precipitation_day = SynopticObservation.precipitation(18, date_18_clock)
+      precipitation_night = SynopticObservation.precipitation(6, report_date)
       (1..10).each do |i| 
         if precipitation_day[i].present?
           precipitation[i] = precipitation_day[i]>989 ? ((precipitation_day[i]-990)*0.1).round(1) : precipitation_day[i]

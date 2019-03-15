@@ -15,10 +15,10 @@ class SeaObservation < ApplicationRecord
   end
   def self.sea_level(report_date)
       # s_o = SeaObservation.find_by(station_id: 10, term: 9, date_dev: @bulletin.report_date)
-    s_o = self.where("station_id=10 and term=9 and date_dev like ?","#{report_date}%")[0]
-    if s_o.present?
-      g3 = s_o.telegram =~ / 3.... /
-      return g3.present? ? s_o.telegram[g3+3,3] : nil
+    short_telegram = self.where("station_id=10 and term=9 and date_dev like ?","#{report_date}%")[0].telegram[16..-1] # пропустить группу ветра
+    if short_telegram.present?
+      g3 = short_telegram =~ / 3[3489].../
+      return g3.present? ? short_telegram[g3+3,3] : nil
     else
       return nil
     end

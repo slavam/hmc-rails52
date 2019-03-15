@@ -20,6 +20,8 @@
                   = render 'layouts/search_telegrams'
                   -# %li= link_to 'Буфер', '/applicants/applicants_list'
               %li
+                = render 'layouts/bulletins'
+              %li
                 = render 'layouts/synoptic_reports'
               %li
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Карты, сайты, справочники <b class="caret"></b></a>
@@ -67,6 +69,8 @@
                   = render 'layouts/search_telegrams'
                   %li{ class: "divider"}
                   = render 'layouts/list_telegrams'
+              %li
+                = render 'layouts/bulletins'
               %li
                 = render 'layouts/synoptic_reports'
               %li= link_to 'Карты',  "http://suleiman.rshu.ru/gifmaps/", target: :_blank

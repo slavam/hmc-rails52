@@ -1,4 +1,7 @@
 - case @bulletin.bulletin_type
+  - when 'dte'
+  %h3{align: :center} Создать прогноз для Донбасстеплоэнерго
+  = render partial: 'dte_form'
   - when 'radio'
   %h3{align: :center} Создать бюллетень для радио
   = render partial: 'radio_form'

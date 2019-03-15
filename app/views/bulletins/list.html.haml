@@ -1,31 +1,30 @@
+= render 'bulletins/tabs'
 .container
+  %h3= "#{Bulletin::BULLETIN_TYPES[@bulletin_type]}"
   - case @bulletin_type
     - when 'sea', 'daily'
       =link_to "Создать (Лето)", "new_bulletin?variant=summer&bulletin_type=#{@bulletin_type}"
-      %br
-      =link_to "Создать (Зима)", "new_bulletin?variant=winter&bulletin_type=#{@bulletin_type}"
-    - when 'radiation', 'radio', 'avtodor', 'storm', 'sea_storm', 'holiday'
+      =link_to "  Создать (Зима)", "new_bulletin?variant=winter&bulletin_type=#{@bulletin_type}"
+    - when 'radiation', 'radio', 'avtodor', 'storm', 'sea_storm', 'holiday', 'dte'
       = link_to "Создать", "new_bulletin?bulletin_type=#{@bulletin_type}"
-  %h3= "Список бюллетеней (#{Bulletin::BULLETIN_TYPES[@bulletin_type]})"
-  .container
-    %table{class: "table table-hover"}
-      %thead
+  %table{class: "table table-hover"}
+    %thead
+      %tr
+        %th= "Дата"
+        %th= "Номер"
+        -#%th= ""
+        %th= ""
+        %th= ""
+        %th= ""
+    %tbody
+      - @bulletins.each do |b| 
+        - variant = ''
+        - if (b.bulletin_type == 'sea') or (b.bulletin_type == 'daily')
+          - variant = b.summer ? ' (Лето)' : ' (Зима)'
         %tr
-          %th= "Дата"
-          %th= "Номер"
-          -#%th= ""
-          %th= ""
-          %th= ""
-          %th= ""
-      %tbody
-        - @bulletins.each do |b| 
-          - variant = ''
-          - if (b.bulletin_type == 'sea') or (b.bulletin_type == 'daily')
-            - variant = b.summer ? ' (Лето)' : ' (Зима)'
-          %tr
-            %td= b.report_date.strftime("%d-%m-%Y")
-            %td= b.curr_number + variant
-            -# %td= link_to "Просмотреть", "#{b.id}/bulletin_show"
-            %td= link_to "Просмотреть/Распечатать", "#{b.id}/bulletin_show.pdf"
-            %td= link_to "Изменить", edit_bulletin_path(b.id)
-            %td= link_to 'Удалить', b, method: :delete, data: { confirm: 'Вы уверены?' }
+          %td= b.report_date.strftime("%d-%m-%Y")
+          %td= b.curr_number + variant
+          -# %td= link_to "Просмотреть", "#{b.id}/bulletin_show"
+          %td= link_to "Просмотреть/Распечатать", "#{b.id}/bulletin_show.pdf"
+          %td= link_to "Изменить", edit_bulletin_path(b.id)
+          %td= link_to 'Удалить', b, method: :delete, data: { confirm: 'Вы уверены?' }

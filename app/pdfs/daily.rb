@@ -110,14 +110,14 @@ class Daily < Prawn::Document
     table_content = [["Название метеостанции", "<color rgb='ff0000'>Максимальная вчера днем</color>", "<color rgb='0000ff'>Минимальная сегодня ночью</color>", "Средняя за сутки #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", "В 9.00 часов сегодня", "Количество осадков за сутки (мм)", h7, h8, "Максимальная скорость ветра (м/с)", "Явления погоды"]]
     stations.each.with_index do |s, j|
       a = [s]
-      (0..8).each {|i| a << ((i!=2 and i!=5 and i!=8 and m_d[j*9+i].present?) ? m_d[j*9+i].to_f.round : m_d[j*9+i])}
+      (0..8).each do |i| 
+        if i==4 and m_d[j*9+i].present? and m_d[j*9+i].to_f>1
+          m_d[j*9+i] = m_d[j*9+i].to_f.round
+        end
+        a << ((i!=2 and i!=4 and i!=5 and i!=8 and m_d[j*9+i].present?) ? ((m_d[j*9+i].to_f<0 and m_d[j*9+i].to_f>-0.5) ? '-0' : m_d[j*9+i].to_f.round) : m_d[j*9+i])
+      end
       table_content << a
     end
-    # table_content = [["Название метеостанции", "<color rgb='ff0000'>Максимальная вчера днем</color>", "<color rgb='0000ff'>Минимальная сегодня ночью</color>", "Средняя за сутки #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", "В 9.00 часов сегодня", "Количество осадков за сутки (мм)", h7, h8, "Максимальная скорость ветра (м/с)", "Явления погоды"],
-    #                 ["Донецк",m_d[0], m_d[1], m_d[2], m_d[3], m_d[4], m_d[5], m_d[6], m_d[7], m_d[8]],
-    #                 ["Дебальцево", m_d[9].present? ? m_d[9].strip : '', m_d[10], m_d[11], m_d[12], m_d[13], m_d[14], m_d[15], m_d[16], m_d[17]],
-    #                 ["Амвросиевка", m_d[18].present? ? m_d[18].strip : '', m_d[19], m_d[20], m_d[21], m_d[22], m_d[23], m_d[24], m_d[25], m_d[26]],
-    #                 ["Седово", m_d[27], m_d[28], m_d[29], m_d[30], m_d[31], m_d[32], m_d[33], m_d[34], m_d[35]]]
   
     font "OpenSans"
     table table_content, width: bounds.width, :column_widths => [95, 40, 40, 40, 40, 40, 40, 55, 40],:cell_style => { :inline_format => true } do |t|

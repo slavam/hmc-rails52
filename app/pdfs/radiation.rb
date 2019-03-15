@@ -42,7 +42,16 @@ class Radiation < Prawn::Document
     table [["Метеорологическая станция",	"Донецк", "Дебальцево",	"Амвросиевка",	"Седово"],
             ["мкР/ч", m_d[0], m_d[1], m_d[2], m_d[3]]], width: bounds.width,:cell_style => { :align => :center, :inline_format => true}
     move_down 20
-    avg = (m_d[0].to_i+m_d[1].to_i+m_d[2].to_i+m_d[3].to_i) / 4
+    # avg = (m_d[0].to_i+m_d[1].to_i+m_d[2].to_i+m_d[3].to_i) / 4
+    avg = 0
+    n = 0
+    m_d.each do |md| 
+      if md.present?
+        avg += md.to_i
+        n += 1
+      end
+    end
+    avg = (avg / n.to_f).to_f.round if n > 0
     text "Средний радиационный фон по Республике #{avg} мкР/ч."
     bounding_box([0, 150], width: bounds.width) do
       text "Ответственный за выпуск:"
