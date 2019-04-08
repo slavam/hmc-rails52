@@ -285,7 +285,15 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
         errors.push(state[name].errorMessage);
         return false;
       }
-      section = section.substr(6).trim();
+      if(section.length>6) // 20190408 
+        if(section[0] < section[6])
+          section = section.substr(6).trim();
+        else{
+          errors.push("Нарушена последовательность групп в разделе 1 => "+section);
+          return false;  
+        }
+      else
+        return true;
     } else {
       errors.push("Ошибка в разделе 1 => "+section);
       return false;
