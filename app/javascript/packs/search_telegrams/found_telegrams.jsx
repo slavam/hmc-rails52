@@ -47,4 +47,3 @@ export default class FoundTelegrams extends React.Component{
     );
   }
 }
-

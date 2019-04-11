@@ -11,6 +11,9 @@ Rails.application.routes.draw do
   post 'hydro_observations/create_hydro_telegram', to: 'hydro_observations#create_hydro_telegram'
   put 'hydro_observations/update_hydro_telegram', to: 'hydro_observations#update_hydro_telegram'
   resources :hydro_observations
+  get 'sea_observations/conversion_log_download', to: 'sea_observations#conversion_log_download'
+  get 'sea_observations/get_conversion_interval', to: 'sea_observations#get_conversion_interval'
+  post 'sea_observations/converter', to: 'sea_observations#converter'
   get 'sea_observations/input_sea_telegrams', to: 'sea_observations#input_sea_telegrams'
   post 'sea_observations/create_sea_telegram', to: 'sea_observations#create_sea_telegram'
   get 'sea_observations/get_last_telegrams', to: 'sea_observations#get_last_telegrams'

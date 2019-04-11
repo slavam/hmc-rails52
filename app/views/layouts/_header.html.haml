@@ -143,7 +143,9 @@
               %li
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Сервис <b class="caret"></b></a>
                 %ul{class: "dropdown-menu"}
-                  = render 'layouts/list_telegrams'                  
+                  = render 'layouts/list_telegrams'   
+                  %li{ class: "divider"}
+                  %li= link_to 'Конвертор телеграмм МОРЕ', '/sea_observations/get_conversion_interval'
             - when 'admin'
               %li= link_to "Users", users_path
               %li= link_to "Synoptic Links", meteo_links_path

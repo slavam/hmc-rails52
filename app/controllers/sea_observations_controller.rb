@@ -1,6 +1,58 @@
 class SeaObservationsController < ApplicationController
   before_action :find_sea_observation, only: [:show, :destroy, :update_sea_telegram]
   
+  def get_conversion_interval
+    @sea_old_count = OldHydroTelegram.where("Телеграмма like '%МОРЕ%'").count
+    @min_date_old = OldHydroTelegram.where("Телеграмма like '%МОРЕ%'").select('min(Дата) as Дата')[0]["Дата"]
+    @sea_new_count = SeaObservation.count
+  end
+  
+  def converter
+    date_from = params[:interval][:date_from].tr("-", ".")+' 00:00:00'
+    date_to = params[:interval][:date_to].tr("-", ".")+' 23:59:59'
+    old_telegrams = OldHydroTelegram.where("Дата >= ? and Дата <= ? and Телеграмма like 'МОРЕ %'", date_from, date_to).order("Дата")
+    selected_telegrams = old_telegrams.size
+    skiped_telegrams = 0
+    wrong_telegrams = 0
+    created_telegrams = 0
+    # File.open("app/assets/pdf_folder/sea_conversion.txt",'w') do |mylog|
+    File.open("tmp/sea_conversion_protocol.txt",'w') do |mylog|
+      mylog.puts "Конверсия телеграмм МОРЕ за период с #{date_from} по #{date_to}"
+      old_telegrams.each do |t|
+        date_dev = t["Дата"][0,10].tr(".","-")
+        term = t["Телеграмма"][7,2]
+        observation = SeaObservation.where("date_dev like '#{date_dev}%' and term = ?", term)
+        if observation.present? # and observation.size>0
+          mylog.puts "Дата: #{date_dev}; Срок: #{term}. Уже имеется. Old =>#{t["Телеграмма"]}; New =>#{observation[0].telegram};"
+          skiped_telegrams += 1
+        else
+          errors = []
+          telegram = convert_sea_telegram(t, errors)
+          if telegram.present?
+            if telegram.save
+              created_telegrams += 1
+            else
+              mylog.puts "Ошибка при записи в базу. #{telegram.telegram}"
+            end
+          else
+            mylog.puts errors[0]+' => '+t["Дата"]+'->'+t["Телеграмма"]
+            wrong_telegrams += 1
+          end
+        end
+      end
+      mylog.puts '='*80
+      mylog.puts "Всего поступило телеграмм - #{selected_telegrams}"
+      mylog.puts "Создано - #{created_telegrams}; пропущено - #{skiped_telegrams}"
+      mylog.puts "Ошибочных телеграмм - #{wrong_telegrams}"
+    end
+    flash[:success] = "Входных телеграмм - #{selected_telegrams}. Создано - #{created_telegrams}. Пропущено - #{skiped_telegrams}. Ошибочных телеграмм - #{wrong_telegrams}."
+    redirect_to sea_observations_get_conversion_interval_path
+  end
+
+  def conversion_log_download
+    send_file("#{Rails.root}/tmp/sea_conversion_protocol.txt")
+  end
+  
   def show
     # date_from ||= params[:date_from].present? ? params[:date_from] : Time.now.strftime("%Y-%m-%d")
     # date_to ||= params[:date_to].present? ? params[:date_to] : Time.now.strftime("%Y-%m-%d")
@@ -76,5 +128,108 @@ class SeaObservationsController < ApplicationController
     
     def sea_observation_params
       params.require(:sea_observation).permit(:telegram, :station_id, :date_dev, :term, :day_obs) # :hour_observation, :date_observation)
+    end
+    
+    def convert_sea_telegram(old_telegram, errors)
+      text_telegram = old_telegram["Телеграмма"].gsub(/\s+/, ' ')
+      # groups = old_telegram["Телеграмма"].gsub(/\s+/, ' ').tr('=', '').split(' ')
+      new_telegram = SeaObservation.new
+      new_telegram.date_dev = (old_telegram["Дата"].tr('.', '-')).to_date
+      new_telegram.telegram = text_telegram
+      
+      if text_telegram[0,5] != "МОРЕ "
+        errors.push("Ошибка в различительной группе");
+        return nil;
+      end
+      if text_telegram[10,5] == '99023'
+        new_telegram.station_id = 10
+      else
+        errors << "Ошибка в коде станции - <#{text_telegram[10,5]}>"
+        return nil
+      end
+      if old_telegram["Дата"][8,2] == text_telegram[5,2]
+        new_telegram.day_obs = text_telegram[5,2].to_i
+      else 
+        errors << "Число месяца не соответствует дню даты наблюдения" # 20181126 А.O.A.
+        return nil;
+      end
+      if [3,9,15,21].include?(text_telegram[7,2].to_i)
+        new_telegram.term = text_telegram[7,2].to_i
+      else
+        errors << "Ошибка в сроке"
+        return nil;
+      end
+      if (text_telegram[16,5] =~ /[01239]\d{4}/).present?
+      else 
+        errors << "Ошибка в группе ветер-видимость"
+        return nil
+      end
+      if (text_telegram[22,5] =~ /\d{5}/).present?
+      else
+        errors << "Ошибка в группе температуры"
+        return nil
+      end
+      curr_pos = 28
+      if text_telegram[curr_pos,2] == '90'
+        if (text_telegram[curr_pos,5] =~ /90\d{3}/).present?
+          curr_pos += 6
+        else 
+          errors << "Ошибка в группе 90"
+          return nil
+        end
+      end
+      if text_telegram[curr_pos,2] == '91'
+        if (text_telegram[curr_pos,5] =~ /91\d{3}/).present?
+          curr_pos += 6
+        else 
+          errors << "Ошибка в группе 91"
+          return nil
+        end
+      end
+      if text_telegram[curr_pos] == '3'
+        if(text_telegram[curr_pos,5] =~ /^3[3489]\d{3}$/).present?
+          curr_pos += 6
+        else 
+          errors << "Ошибка в группе 3"
+          return nil
+        end
+      end
+      if text_telegram[curr_pos] == '4'
+        if (text_telegram[curr_pos,5] =~ /^40[0-6][0-9\/]\d$/).present?
+          curr_pos += 6
+        else 
+          errors << "Ошибка в группе 4"
+          return nil
+        end
+      end
+      if (text_telegram[curr_pos] =~ /[125]/).present?
+        if (text_telegram[curr_pos,5] =~ /^[125]\d{4}$/).present?
+          curr_pos += 6
+        else
+          errors << "Ошибка в группе 5"
+          return nil
+        end
+      end
+      if text_telegram[curr_pos] == '6'
+        if(text_telegram[curr_pos,5] =~ /^6\d[0-7]\d{2}$/).present?
+          curr_pos += 6
+        else 
+          errors << "Ошибка в группе 6"
+          return nil
+        end
+      end
+      if text_telegram[curr_pos] == '7'
+        i = 1;
+        while (curr_pos < text_telegram.size) do
+          if (text_telegram[curr_pos,5] =~ /^7\d{2}[0-9\/]{2}$/).present?
+            curr_pos +=6
+          else
+            errors << "Ошибка в группе 7[#{i}]"
+            return nil
+          end
+          i += 1
+        end
+      end
+      new_telegram
     end
 end

@@ -1,0 +1,14 @@
+.container
+  %h4 Количество телеграмм в БД 'meteo': #{@sea_old_count} начиная с #{@min_date_old}
+  %h4 Количество телеграмм в БД 'hmc_production': #{@sea_new_count}
+  %h3 Задайте диапазон времени для переноса телеграмм МОРЕ из БД 'meteo'
+  = form_for(:interval, url: sea_observations_converter_path) do |f| 
+    = f.label "Начальная дата"
+    = f.date_field :date_from, value: Time.now.strftime("%Y-%m-%d")
+
+    = f.label "Конечная дата"
+    = f.date_field :date_to, value: Time.now.strftime("%Y-%m-%d")
+
+    = f.submit "Начать", class: "btn btn-primary"
+  %br
+  = link_to "Загрузить протокол", sea_observations_conversion_log_download_path, 'data-turbolinks' => "false"

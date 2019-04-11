@@ -51,6 +51,15 @@ class AgroDecObservationsController < ApplicationController
         t["thermometer_index"] = crop_dec_condition.thermometer # if crop_dec_condition.thermometer_index.present?
         t["temperature_dec_min_soil3"] = crop_dec_condition.temperature_dec_min_soil3
         t["height_snow_cover_rail"] = crop_dec_condition.height_snow_cover_rail
+      else
+        if t['freezing_dec_day_num'] == 0
+          if @decade == 3
+            fd = (@year.to_s+'-'+@month.to_s+'-1').to_date
+            t['freezing_dec_day_num'] = fd.end_of_month.day == 30 ? '10':'11'
+          else
+            t['freezing_dec_day_num'] = '10'
+          end
+        end
       end
       @telegrams << t
     end
@@ -58,9 +67,17 @@ class AgroDecObservationsController < ApplicationController
     @temperature_avg_month = []
     @precipitation_month = []
     if (@decade == 3) and (@period == 'warm')
+      # ! в телеграмме за первое число содержится средняя температура за предыдущие сутки, т.е. за последний день предыдущего месяца
+      # sql = " SELECT station_id, avg(temperature_avg_24) temperature_avg_24 
+      #         FROM agro_observations 
+      #         WHERE station_id not in (6, 9) AND date_dev like '#{@year}%' AND  month_obs=#{@month} AND telegram_num=1
+              # GROUP BY station_id;"
+      start = @year.to_s+'-'+@month.to_s+'-2%'
+      finish = ((@year.to_s+'-'+@month.to_s+'-2').to_date+1.month).strftime("%Y-%m-%d")
       sql = " SELECT station_id, avg(temperature_avg_24) temperature_avg_24 
               FROM agro_observations 
-              WHERE station_id not in (6, 9) AND date_dev like '#{@year}%' AND  month_obs=#{@month} AND telegram_num=1
+              WHERE station_id not in (6, 9) AND telegram_num=1
+              AND date_dev > '#{start}' AND date_dev < '#{finish}'
               GROUP BY station_id;"
       AgroObservation.find_by_sql(sql).each {|t| @temperature_avg_month[t.station_id] = t.temperature_avg_24}
       

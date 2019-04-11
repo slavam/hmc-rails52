@@ -20,6 +20,10 @@ chemist:
   database: akiam
   # database: chemical # Gorlovka
 
+meteo2017:
+  <<: *default
+  database: meteo2017
+  
 development:
   <<: *default
   database: hmc_development

@@ -37,8 +37,18 @@ export default class FoundTelegram extends React.Component{
       91: "Гроза"
     };
     let t = this.props.telegram;
-    let info = t.date.substr(0,16)+'; '+t.station_name+'; '+(t.telegram[3] == 'Я'? 'Начало/усиление; ':'Завершение; ')+fact[t.telegram.substr(26,2)];
-    // this.setState({showPopup: true, info: info});
+    let info = '';
+    switch(this.props.tlgType) {
+      case 'storm':
+        info = t.date.substr(0,16)+'; '+t.station_name+'; '+(t.telegram[3] == 'Я'? 'Начало/усиление; ':'Завершение; ')+fact[t.telegram.substr(26,2)];
+        break;
+      case 'synoptic':
+        info = t.date.substr(0,10)+'; '+t.term+'; '+t.station_name+'; ';
+        break;
+      default:
+        info = '';
+    }
+    
     this.setState({info: info});
   }
   outControl(event){
