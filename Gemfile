@@ -12,6 +12,7 @@ gem 'sprockets-rails', '~> 3.2', '>= 3.2.1'
 gem 'rails', '~> 5.2.0'
 # Use sqlite3 as the database for Active Record
 # gem 'sqlite3'
+# gem "actionview", ">= 5.2.2.1"
 
 gem 'haml'
 
