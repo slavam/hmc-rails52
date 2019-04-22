@@ -145,9 +145,11 @@ export function checkAgroTelegram(tlg, stations, errors, observation){
         return false;
       }      
       if (tlg[currentPos] == '1') 
-        if (/^1\d{4}$/.test(tlg.substr(currentPos,5))){
-          observation.temperature_field_5_16 = tlg.substr(currentPos+1,2);
-          observation.temperature_field_10_16 = tlg.substr(currentPos+3,2);
+        if (/^1[0-9/]{4}$/.test(tlg.substr(currentPos,5))){ //20190419 возможны //// В.И.
+          if (tlg[currentPos+1] != '/')
+            observation.temperature_field_5_16 = tlg.substr(currentPos+1,2);
+          if (tlg[currentPos+3] != '/')
+            observation.temperature_field_10_16 = tlg.substr(currentPos+3,2);
           currentPos += 6;
         } else {
           errors.push("Ошибка в группе 1 зоны 91 раздела 3");
@@ -205,7 +207,8 @@ export function checkAgroTelegram(tlg, stations, errors, observation){
         while (t.indexOf(' 1', pos-1)>0){
           if((j<6) && (/^1\d{2}[0-5/]\/$/.test(t.substr(pos,5)))){ // 20180405 В.И. на позиции 4 допустима /
             state_crops["development_phase_"+j] = t.substr(pos+1,2);
-            state_crops["assessment_condition_"+j] = t[pos+3];
+            if(t[pos+3] != '/')
+              state_crops["assessment_condition_"+j] = t[pos+3];
             j += 1;
             pos += 6;
           }else {

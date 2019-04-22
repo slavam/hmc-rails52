@@ -153,7 +153,7 @@ class AgroObservationsController < ApplicationController
   end
   
   def update_agro_telegram
-# Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{params[:agro_observation][:telegram].inspect}") 
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{params[:agro_observation][:telegram].inspect}") 
     if @agro_observation.update_attributes agro_observation_params
       params[:crop_conditions].each do |k, v|
           c_c = CropCondition.find_by(agro_observation_id: @agro_observation.id, crop_code: v[:crop_code].to_i)
@@ -177,8 +177,95 @@ class AgroObservationsController < ApplicationController
     end
   end
   
+  def agro_month_data
+    @year = params[:year].present? ? params[:year] : Time.now.year.to_s
+    @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
+    @factor = params[:factor].present? ? params[:factor] : 'air_avg_temp'
+    @agro_data = get_agro_month_data(@year, @month, @factor)
+    respond_to do |format|
+      format.html do
+      end
+      
+      format.json do 
+        render json: {observations: @agro_data}
+      end
+    end
+  end
+  
   private
-
+    def get_agro_month_data(year, month, factor)
+      start_date = (year.to_s+'-'+month.to_s+'-1 00:00:00').to_date
+      end_date = start_date+1.month+1.day
+      sql = "SELECT * FROM agro_observations WHERE station_id in (1,2,3,4,7,8) AND telegram_num=1 AND date_dev>'#{start_date} 00:00:00' AND date_dev<'#{end_date} 00:00:00'"
+      observations = AgroObservation.find_by_sql(sql)
+      
+      ret = []
+      (0..start_date.end_of_month.day).each {|d| ret[d] = Array.new(9)}
+      observations.each do |o|
+        i = 0
+        case factor
+          when 'air_avg_temp', 'air_max_temp', 'percipitation_24', 'wind_speed_max', 'relative_humidity_min', 'saturation_deficit_avg'
+            # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{o.id}")
+            if o.day_obs == 1
+              if o.month_obs == month.to_i
+              else
+                i = start_date.end_of_month.day
+              end
+            else
+              i = o.day_obs-1
+            end
+            case factor
+              when 'wind_speed_max'
+                ret[i][o.station_id] = o.wind_speed_max_24
+              when 'air_avg_temp'
+                ret[i][o.station_id] = o.temperature_avg_24
+              when 'air_max_temp'
+                ret[i][o.station_id] = o.temperature_max_12 
+              when 'percipitation_24'
+                ret[i][o.station_id] = percipitation_value(o.percipitation_24)
+              when 'relative_humidity_min'
+                ret[i][o.station_id] = o.relative_humidity_min_24
+              when 'saturation_deficit_avg'
+                ret[i][o.station_id] = o.saturation_deficit_avg_24
+            end
+          when 'air_min_temp', 'soil_min_temp', 'percipitation_night', 'saturation_deficit_max'
+            if o.day_obs == 1
+                if o.month_obs != month.to_i
+                else
+                  i = 1
+                end
+            else
+              i = o.day_obs
+            end
+            case factor
+              when 'percipitation_night'
+                ret[i][o.station_id] = percipitation_value(o.percipitation_12)
+              when 'air_min_temp'
+                ret[i][o.station_id] = o.temperature_min_24
+              when 'soil_min_temp'
+                ret[i][o.station_id] = o.temperature_min_soil_24
+              when 'saturation_deficit_max'
+                ret[i][o.station_id] = o.saturation_deficit_max_24
+            end
+        end
+      end
+      # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{ret.inspect}")
+      
+      ret
+    end
+    
+    def percipitation_value(value)
+      case value
+        when 990
+          ret = 0.01
+        when 0..989
+          ret = value
+        when 991..999
+          ret =  ((value - 990)*0.1).round(2)
+      end
+      ret
+    end
+    
     def crop_conditions_params(crop_condition)
       crop_condition.permit(:crop_code, :development_phase_1, :development_phase_2, :development_phase_3, 
         :development_phase_4, :development_phase_5, :assessment_condition_1, :assessment_condition_2, :assessment_condition_3, 

@@ -1,0 +1,6 @@
+-# = @agro_data.inspect 
+.container
+  %h3 Данные из ежедневных агротелеграмм
+  #form_and_result
+  #init_params{ observations: @agro_data.to_json, year: @year.to_json, month: @month.to_json, factor: @factor.to_json}
+  = javascript_pack_tag 'agro_reports/agro_month_data'

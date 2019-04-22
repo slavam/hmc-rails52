@@ -11,6 +11,10 @@ class CropCondition < ActiveRecord::Base
     indexes[value]
   end
   
+  def crop_name
+    AgroCrop.find_by(code: self.crop_code).name
+  end
+  
   # def damage_volume_to_s(value)
   #   volumes = ["", "Повреждены отдельные растения (до 10%)", "Повреждено немного растений (11-20%)", 
   #     "Повреждено много растений (21-50%)", "Повреждено большинство растений (51-80%)", "Повреждены все растения (81-100%)"]

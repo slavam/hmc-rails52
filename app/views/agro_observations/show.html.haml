@@ -104,7 +104,7 @@
             - @agro_observation.crop_conditions.each do |c_c|
               %tr
                 %th Культура/Угодья
-                %td= c_c.crop_code.to_s
+                %td= c_c.crop_name
               - if c_c.development_phase_1.present?
                 %tr 
                   %th I фаза развития культуры

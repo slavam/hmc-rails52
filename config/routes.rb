@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   get 'agro_observations/get_last_telegrams', to: 'agro_observations#get_last_telegrams'
   get 'agro_observations/input_agro_telegrams', to: 'agro_observations#input_agro_telegrams'
   put 'agro_observations/update_agro_telegram', to: 'agro_observations#update_agro_telegram'
+  get 'agro_observations/agro_month_data', to: 'agro_observations#agro_month_data'
   resources :agro_observations
   resources :meteo_links
   get 'storm_observations/search_storm_telegrams', to: 'storm_observations#search_storm_telegrams'
