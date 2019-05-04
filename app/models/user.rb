@@ -11,6 +11,14 @@ class User < ActiveRecord::Base
   after_initialize :set_default_role, :if => :new_record?
   
   audited except: [:password_digest, :remember_digest],  allow_mass_assignment: true
+  
+  def code_station
+    if self.station_id.present? 
+      return Station.find(self.station_id).code_station
+    # else
+      # return 34519
+    end
+  end
 
   def set_default_role
     self.role ||= :user

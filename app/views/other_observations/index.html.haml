@@ -1,0 +1,22 @@
+= render 'synoptic_observations/tabs'
+.container
+  %h3 Дополнительные данные
+  = will_paginate
+  %table{class: "table table-hover"}
+    %thead
+      %tr
+        %th Категория
+        %th Дата наблюдения
+        %th Станция/пост
+        %th Значение
+        %th Комментарий
+    %tbody
+      - name_posts = HydroPost.hydro_post_names_as_array
+      - @other_observations.each do |o_o| 
+        %tr
+          %td= OtherObservation::OTHER_TYPES[o_o.data_type]
+          %td= o_o.obs_date.strftime("%d-%m-%Y")+(o_o.data_type == 'perc' ? (o_o.period == 'day' ? '/День' : '/Ночь') : '')
+          %td= o_o.data_type == 'perc' ? o_o.source : o_o.station.name
+          %td= o_o.value
+          %td= o_o.description
+  = will_paginate

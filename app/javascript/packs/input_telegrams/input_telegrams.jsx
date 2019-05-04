@@ -37,6 +37,7 @@ export default class InputTelegrams extends React.Component{
     super(props);
     this.state = {
       minutes: 0,
+      codeStation: this.props.codeStation ? this.props.codeStation : 'XXXXX', // HES 20190504
       inputMode: this.props.inputMode,
       currDate: this.props.currDate,
       tlgType: this.props.tlgType,
@@ -74,7 +75,11 @@ export default class InputTelegrams extends React.Component{
   }
 
   handleTelegramTypeChanged(tlgType, tlgTerm){
-    var desiredLink = "/"+tlgType+"_observations/get_last_telegrams";
+    var desiredLink = '';
+    if(tlgType == 'radiation_daily')
+      desiredLink = "/radiation_observations/get_last_telegrams?factor=daily";
+    else
+      desiredLink = "/"+tlgType+"_observations/get_last_telegrams";
     this.state.tlgTerm = tlgTerm;
     // this.setState({tlgType: tlgType});
     // var result = Observable.fromPromise(fetch(desiredLink));
@@ -85,7 +90,7 @@ export default class InputTelegrams extends React.Component{
       url: desiredLink
     }).done((data) => {
         // this.setState({telegrams: data.telegrams, tlgType: data.tlgType, errors: []});
-      this.setState({telegrams: data.telegrams, tlgType: tlgType, errors: []});
+      this.setState({telegrams: data.telegrams, tlgType: tlgType, codeStation: data.codeStation, errors: []});
     }).fail((res) => {
       this.setState({errors: ["Проблемы с чтением данных из БД"]});
     }); 
@@ -123,6 +128,10 @@ export default class InputTelegrams extends React.Component{
       case 'radiation':
         tlgData = {radiation_observation: telegram.observation};
         desiredLink = "/radiation_observations/create_radiation_telegram?date="+telegram.currDate+"&inputMode="+this.state.inputMode;
+        break;
+      case 'radiation_daily':
+        tlgData = {radiation_observation: telegram.observation};
+        desiredLink = "/radiation_observations/create_radiation_telegram?date="+telegram.currDate+"&inputMode="+this.state.inputMode+"&factor=daily";
         break;
       case 'sea':
         tlgData = {sea_observation: telegram.observation};
@@ -207,7 +216,7 @@ export default class InputTelegrams extends React.Component{
     return(
       <div>
         <h3>Новая телеграмма</h3>
-        <NewTelegramForm currDate={this.state.currDate} tlgType={this.state.tlgType} onTelegramTypeChange={this.handleTelegramTypeChanged} onFormSubmit={this.handleFormSubmit} stations={this.props.stations} tlgTerm={this.state.tlgTerm} inputMode={this.props.inputMode} onInBuffer={this.handleInBuffer} minutes={this.state.minutes}/>
+        <NewTelegramForm codeStation={this.state.codeStation} currDate={this.state.currDate} tlgType={this.state.tlgType} onTelegramTypeChange={this.handleTelegramTypeChanged} onFormSubmit={this.handleFormSubmit} stations={this.props.stations} tlgTerm={this.state.tlgTerm} inputMode={this.props.inputMode} onInBuffer={this.handleInBuffer} minutes={this.state.minutes}/>
         {telegramTable}
       </div>
     );
@@ -224,9 +233,10 @@ $(function () {
     const stations = JSON.parse(node.getAttribute('stations'));
     const term = JSON.parse(node.getAttribute('term'));
     const inputMode = JSON.parse(node.getAttribute('inputMode'));
+    const codeStation = JSON.parse(node.getAttribute('codeStation'));
     
     ReactDOM.render(
-      <InputTelegrams telegrams={telegrams} stations={stations} currDate={currDate} tlgType={tlgType} term={term} inputMode={inputMode}/>,
+      <InputTelegrams telegrams={telegrams} stations={stations} currDate={currDate} tlgType={tlgType} term={term} inputMode={inputMode} codeStation={codeStation}/>,
       document.getElementById('form_and_last_telegrams')
     );
   }

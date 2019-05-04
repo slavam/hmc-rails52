@@ -75,12 +75,16 @@ export default class TelegramRow extends React.Component{
         desiredLink = "/storm_observations/update_storm_telegram?id="+this.props.telegram.id+"&telegram="+tlgText;
         break;
       case 'radiation':
-        if(!checkRadiationTelegram(tlgText, this.props.stations, errors, observation)){
+      case 'radiation_daily':
+        if(!checkRadiationTelegram(tlgText, this.props.stations, errors, observation, this.props.telegram.date)){
           this.setState({errors: errors});
           return;
         }
         tlgData = {radiation_observation: observation};
-        desiredLink = "/radiation_observations/update_radiation_telegram?id="+this.props.telegram.id+"&telegram="+tlgText;
+        if(this.props.tlgType == 'radiation')
+          desiredLink = "/radiation_observations/update_radiation_telegram?id="+this.props.telegram.id+"&telegram="+tlgText;
+        else
+          desiredLink = "/radiation_observations/update_radiation_telegram?id="+this.props.telegram.id+"&telegram="+tlgText+"&factor=daily";
         break;
       case 'sea':
         if (!checkSeaTelegram(tlgText, this.props.stations, errors, observation, this.props.telegram.date)) {

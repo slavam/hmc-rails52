@@ -1,4 +1,8 @@
 class OtherObservationsController < ApplicationController
+  def index
+    @other_observations = OtherObservation.paginate(page: params[:page]).order(:obs_date, :id).reverse_order
+  end
+  
   def input_other_telegrams
     @stations =  Station.all.order(:name)
     @observations = OtherObservation.last_50_telegrams('temp') #.to_json
@@ -27,9 +31,6 @@ class OtherObservationsController < ApplicationController
       if observation.update_attributes other_observation_params
         last_telegrams = OtherObservation.last_50_telegrams(params[:other_observation][:data_type])
         render json: {observations: last_telegrams, 
-                      # tlgType: 'snow', 
-                      # inputMode: params[:input_mode],
-                      # observationDate: date_dev, 
                       errors: ["Данные изменены"]}
       else
         render json: {errors: telegram.errors.messages}, status: :unprocessable_entity

@@ -11,18 +11,30 @@ export default class NewTelegramForm extends React.Component{
     super(props);
     this.observation = {};
     this.state = {
+      codeStation: this.props.codeStation,
       currDate:  this.props.currDate,
       tlgType: this.props.tlgType,
       tlgTerm: this.props.tlgTerm,  
-      tlgText: '',
+      tlgText: this.initText(this.props.tlgType),
       errors: [] 
     };
     this.handleTermSelected = this.handleTermSelected.bind(this);
     this.handleTypeSelected = this.handleTypeSelected.bind(this);
     this.dateChange = this.dateChange.bind(this);
     this.inBufferClick = this.inBufferClick.bind(this);
+    this.initText = this.initText.bind(this);
   }
   
+  initText(tlgType){
+    switch (tlgType){
+      case 'radiation_daily':
+        let cd = this.state.currDate[3]+this.state.currDate.substr(5,2)+this.state.currDate.substr(8,2);
+        return 'ЩЭРДЦ '+this.state.codeStation+' '+cd+' 80000=';
+      default:
+        return '';
+    }
+    
+  }
   handleSubmit(e) {
     e.preventDefault();
     if(this.props.inputMode == 'normal'){
@@ -62,7 +74,8 @@ export default class NewTelegramForm extends React.Component{
         }
         break;
       case 'radiation':
-        if(!checkRadiationTelegram(text, this.props.stations, errors, this.observation)){
+      case 'radiation_daily':
+        if(!checkRadiationTelegram(text, this.props.stations, errors, this.observation, this.state.currDate)){
           this.setState({errors: errors});
           return;
         }
@@ -102,7 +115,7 @@ export default class NewTelegramForm extends React.Component{
     }
     this.props.onFormSubmit({observation: this.observation, currDate: date, tlgType: this.state.tlgType, tlgText: this.state.tlgText});
     this.setState({
-      tlgText: '',
+      tlgText: this.initText(this.props.tlgType),
       errors: []
     });
   }
@@ -118,7 +131,7 @@ export default class NewTelegramForm extends React.Component{
     }
     this.state.tlgType = value;
     this.props.onTelegramTypeChange(value, this.state.tlgTerm);
-    this.setState({tlgType: value, errors: []});
+    this.setState({tlgType: value, tlgText: this.initText(value), errors: []});
   }
   
   handleTermSelected(value){
@@ -131,7 +144,7 @@ export default class NewTelegramForm extends React.Component{
   
   inBufferClick(e){
     this.props.onInBuffer({tlgText: this.state.tlgText, message: this.state.errors[0], tlgType: this.state.tlgType});
-    this.setState({tlgText: '', errors: []});
+    this.setState({tlgText: this.initText(this.state.tlgType), errors: []});
   }
 
   render() {
@@ -141,6 +154,7 @@ export default class NewTelegramForm extends React.Component{
       { value: 'agro_dec',  label: 'Агро декадные' },
       { value: 'storm',     label: 'Штормовые' },
       { value: 'radiation', label: 'Радиация' },
+      { value: 'radiation_daily', label: 'Радиация ежедневная' },
       { value: 'sea',       label: 'Морские' },
       // { value: 'hydro',     label: 'Гидрологические' },
     ];

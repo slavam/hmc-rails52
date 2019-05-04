@@ -16,7 +16,8 @@ class RadiationObservationsController < ApplicationController
   
   def input_radiation_telegrams
     @stations = Station.all.order(:name)
-    @telegrams = RadiationObservation.short_last_50_telegrams(current_user)
+    factor = params[:factor].present? ? params[:factor] : 'monthly'
+    @telegrams = RadiationObservation.short_last_50_telegrams(current_user, factor)
   end
   
   def create_radiation_telegram
@@ -25,9 +26,10 @@ class RadiationObservationsController < ApplicationController
     # telegram = StormObservation.find_by_sql(sql).first
     telegram = RadiationObservation.find_by(station_id: params[:radiation_observation][:station_id], hour_observation: params[:radiation_observation][:hour_observation], date_observation: params[:radiation_observation][:date_observation])
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{telegram.inspect}")
+    factor = params[:factor].present? ? params[:factor] : 'monthly'
     if telegram.present?
       if telegram.update_attributes radiation_observation_params
-        last_telegrams = RadiationObservation.short_last_50_telegrams(current_user)
+        last_telegrams = RadiationObservation.short_last_50_telegrams(current_user,factor)
         render json: {telegrams: last_telegrams, 
                       tlgType: 'radiation', 
                       inputMode: params[:input_mode],
@@ -42,7 +44,7 @@ class RadiationObservationsController < ApplicationController
       if telegram.save
         new_telegram = {id: telegram.id, date: telegram.date_observation, station_name: telegram.station.name, telegram: telegram.telegram}
         ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'radiation'
-        last_telegrams = RadiationObservation.short_last_50_telegrams(current_user)
+        last_telegrams = RadiationObservation.short_last_50_telegrams(current_user, factor)
         render json: {telegrams: last_telegrams, 
                       tlgType: 'radiation', 
                       inputMode: params[:input_mode],
@@ -55,8 +57,9 @@ class RadiationObservationsController < ApplicationController
   end
   
   def get_last_telegrams
-    telegrams = RadiationObservation.short_last_50_telegrams(current_user)
-    render json: {telegrams: telegrams, tlgType: 'radiation'}
+    factor = params[:factor].present? ? params[:factor] : 'monthly'
+    telegrams = RadiationObservation.short_last_50_telegrams(current_user, factor)
+    render json: {telegrams: telegrams, tlgType: (factor == 'daily' ? 'radiation_daily':'radiation'), codeStation: current_user.code_station}
   end
   
   def update_radiation_telegram
