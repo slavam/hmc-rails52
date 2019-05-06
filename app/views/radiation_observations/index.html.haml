@@ -1,6 +1,11 @@
 = render 'synoptic_observations/tabs'
+- period = @factor == 'daily' ? 'ежедневные' : 'месячные'
 .container
-  %h3 Телеграммы о радиационной обстановке
+  %ul{ :class=>"nav nav-tabs"}
+    %li= link_to 'Радиация ежедневная', '/radiation_observations?factor=daily'
+    %li= link_to 'Радиация месячная', radiation_observations_path
+    
+  %h3 Телеграммы о радиационной обстановке (#{period})
   = will_paginate
   %table{class: "table table-hover"}
     %thead

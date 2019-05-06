@@ -1,6 +1,7 @@
 class OtherObservationsController < ApplicationController
   def index
-    @other_observations = OtherObservation.paginate(page: params[:page]).order(:obs_date, :id).reverse_order
+    @factor = params[:factor]
+    @other_observations = OtherObservation.where('data_type = ?', @factor).paginate(page: params[:page]).order(:obs_date, :id).reverse_order
   end
   
   def input_other_telegrams

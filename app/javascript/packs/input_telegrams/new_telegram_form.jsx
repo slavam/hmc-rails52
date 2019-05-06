@@ -121,7 +121,8 @@ export default class NewTelegramForm extends React.Component{
   }
 
   dateChange(e){
-    this.setState({currDate: e.target.value});
+    this.state.currDate = e.target.value;
+    this.setState({tlgText: this.initText(this.state.tlgType)});
   }
 
   handleTypeSelected(value){

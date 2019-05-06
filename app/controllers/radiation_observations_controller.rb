@@ -11,7 +11,12 @@ class RadiationObservationsController < ApplicationController
   end
   
   def index
-    @radiation_observations = RadiationObservation.paginate(page: params[:page]).order(:date_observation, :created_at).reverse_order
+    @factor = params[:factor]
+    if @factor == 'daily'
+      @radiation_observations = RadiationObservation.where('hour_observation = 0').paginate(page: params[:page]).order(:date_observation, :created_at).reverse_order
+    else
+      @radiation_observations = RadiationObservation.where('hour_observation > 0').paginate(page: params[:page]).order(:date_observation, :created_at).reverse_order
+    end
   end
   
   def input_radiation_telegrams
