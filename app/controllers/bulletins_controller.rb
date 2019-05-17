@@ -323,8 +323,8 @@ class BulletinsController < ApplicationController
       end
       value = SeaObservation.water_temperature(report_date)
       m_d[9] = value if value.present?
-      value = SynopticObservation.find_by(station_id: 10, term: 6, date: report_date).visibility
-      m_d[12] = value if value.present? 
+      syn_o = SynopticObservation.find_by(station_id: 10, term: 6, date: report_date)
+      m_d[12] = syn_o.visibility if syn_o.present? 
       m_d
     end
     def fill_radiation_meteo_data(report_date)

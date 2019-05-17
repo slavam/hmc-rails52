@@ -67,21 +67,35 @@ export default class SearchSynopticTelegrams extends React.Component{
     return retHash;
   }
   render(){
-    let map = <br/>;
+    let fact = {
+      11: "Ветер",
+      12: "Сильный ветер",
+      17: "Шквал",
+      18: "Шквал",
+      19: "Смерч",
+      30: "Низкая облачность",
+      40: "Видимость",
+      50: "Гололед",
+      51: "Сложные отложения",
+      52: "Налипание мокрого снега",
+      71: "Сильный снег",
+      91: "Гроза"
+    };
+    let map;
     if(this.state.tlgType == 'storm'){
       // let markerCoords = {};
       // wating card data
-      // map = <DNRMap telegrams={this.state.telegrams} stations={this.props.stations} markerCoords={this.stationCoords()}/>;
+      map = <DNRMap fact={fact} googleKey={this.props.googleKey} telegrams={this.state.telegrams} stations={this.props.stations} markerCoords={this.stationCoords()}/>;
     }
     return (
       <div>
         <h3>Параметры поиска</h3>
         <SearchParamsForm onTelegramSubmit={this.handleFormSubmit} dateFrom={this.props.dateFrom} dateTo={this.props.dateTo} errors={this.state.errors} stations={this.props.stations} tlgText={this.state.tlgText} tlgType={this.props.tlgType} tlgTerm={this.state.tlgTerm}  tlgText={this.state.tlgText} stationId={this.state.stationId} stormType={this.state.stormType}/>
-        {/*<div id='map'>
+        <div id='map'>
           {map}
-        </div>*/}
+        </div>
         <h3>Найденные телеграммы ({this.state.telegrams.length})</h3>
-        <FoundTelegrams telegrams={this.state.telegrams} tlgType={this.props.tlgType} dateFrom={this.state.dateFrom} dateTo={this.state.dateTo} tlgTerm={this.state.tlgTerm} tlgText={this.state.tlgText} stationId={this.state.stationId}/>
+        <FoundTelegrams fact={fact} telegrams={this.state.telegrams} tlgType={this.props.tlgType} dateFrom={this.state.dateFrom} dateTo={this.state.dateTo} tlgTerm={this.state.tlgTerm} tlgText={this.state.tlgText} stationId={this.state.stationId}/>
       </div>
     );
   }
@@ -101,9 +115,10 @@ $(function () {
     const tlgText = JSON.parse(node.getAttribute('tlgText'));
     const stormType = JSON.parse(node.getAttribute('stormType'));
     const stationId = JSON.parse(node.getAttribute('stationId'));
+    const googleKey = JSON.parse(node.getAttribute('key'));
   
     ReactDOM.render(
-      <SearchSynopticTelegrams telegrams={telegrams} stations={stations} dateFrom={dateFrom} dateTo={dateTo} tlgType={tlgType} tlgTerm={tlgTerm} tlgText={tlgText} stationId={stationId} stormType={stormType}/>,
+      <SearchSynopticTelegrams telegrams={telegrams} stations={stations} dateFrom={dateFrom} dateTo={dateTo} tlgType={tlgType} tlgTerm={tlgTerm} tlgText={tlgText} stationId={stationId} stormType={stormType} googleKey={googleKey}/>,
       document.getElementById('form_and_result')
     );
   } 

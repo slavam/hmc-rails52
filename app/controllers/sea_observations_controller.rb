@@ -121,6 +121,12 @@ class SeaObservationsController < ApplicationController
     end
   end
   
+  def destroy
+    @sea_observation.destroy
+    flash[:success] = "Телеграмма удалена"
+    redirect_to sea_observations_path
+  end
+  
   private
     def find_sea_observation
       @sea_observation = SeaObservation.find(params[:id])

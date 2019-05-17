@@ -1,5 +1,5 @@
 class OtherObservation < ApplicationRecord
-  belongs_to :station
+  # belongs_to :station
   audited
   OTHER_TYPES = {
     'temp' => "Температура",

@@ -22,25 +22,12 @@ export default class FoundTelegram extends React.Component{
     };
   }
   inControl(event){
-    let fact = {
-      11: "Ветер",
-      12: "Сильный ветер",
-      17: "Шквал",
-      18: "Шквал",
-      19: "Смерч",
-      30: "Низкая облачность",
-      40: "Видимость",
-      50: "Гололед",
-      51: "Сложные отложения",
-      52: "Налипание мокрого снега",
-      71: "Сильный снег",
-      91: "Гроза"
-    };
+    
     let t = this.props.telegram;
     let info = '';
     switch(this.props.tlgType) {
       case 'storm':
-        info = t.date.substr(0,16)+'; '+t.station_name+'; '+(t.telegram[3] == 'Я'? 'Начало/усиление; ':'Завершение; ')+fact[t.telegram.substr(26,2)];
+        info = t.date.substr(0,16)+'; '+t.station_name+'; '+(t.telegram[3] == 'Я'? 'Начало/усиление; ':'Завершение; ')+this.props.fact[t.telegram.substr(26,2)];
         break;
       case 'synoptic':
         info = t.date.substr(0,10)+'; '+t.term+'; '+t.station_name+'; ';

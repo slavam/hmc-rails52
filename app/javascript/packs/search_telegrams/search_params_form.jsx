@@ -1,6 +1,7 @@
 import React from 'react';
 import TermSynopticSelect from './term_synoptic_select';
 import StationSelect from './station_select';
+// import Select from 'react-select';
 export default class SearchParamsForm extends React.Component{
   constructor(props) {
     super(props);
@@ -11,6 +12,7 @@ export default class SearchParamsForm extends React.Component{
       stormType: this.props.stormType,
       type: this.props.tlgType,
       stationId: this.props.stationId,
+      // station: { value: '1',  label: 'Донецк' },
       text: this.props.tlgText,
       errors: this.props.errors,
     };
@@ -29,6 +31,7 @@ export default class SearchParamsForm extends React.Component{
   }
   handleStationSelected(value){
     this.state.stationId = value;
+    // this.state.station = value;
   }
   handleTermSelected(value){
     if(this.props.tlgType == 'synoptic')
@@ -83,6 +86,7 @@ export default class SearchParamsForm extends React.Component{
               <td><input type="date" name="input-date-to" value={this.state.dateTo} onChange={this.dateToChange} required="true" autoComplete="on" /></td>
               {optInput}
               <td><StationSelect options={this.props.stations} onUserInput={this.handleStationSelected} defaultValue={this.props.stationId} /></td>
+              {/*<td><Select value={this.state.station} onChange={this.handleStationSelected} options={this.props.stations}/></td>*/}
               <td><input type="text" value={this.state.text} onChange={this.handleTextChange}/></td>
             </tr>
           </tbody>

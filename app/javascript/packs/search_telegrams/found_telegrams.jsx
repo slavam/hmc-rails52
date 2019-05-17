@@ -29,7 +29,7 @@ export default class FoundTelegrams extends React.Component{
     var rows = [];
     this.props.telegrams.forEach(t => {
       t.date = t.date.replace(/T/,' ');
-      rows.push(<FoundTelegram telegram={t} key={t.id} tlgType={this.props.tlgType} dateFrom={this.props.dateFrom} dateTo={this.props.dateTo} tlgTerm={this.props.tlgTerm} tlgText={this.props.tlgText} stationId={this.props.stationId}/>);
+      rows.push(<FoundTelegram fact={this.props.fact} telegram={t} key={t.id} tlgType={this.props.tlgType} dateFrom={this.props.dateFrom} dateTo={this.props.dateTo} tlgTerm={this.props.tlgTerm} tlgText={this.props.tlgText} stationId={this.props.stationId}/>);
     });
     const optHead = this.props.tlgType == 'synoptic' ? <th>Срок</th> : this.props.tlgType == 'storm' ? <th>Тип</th> : <th></th>;
     return (

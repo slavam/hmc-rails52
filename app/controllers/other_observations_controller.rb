@@ -34,7 +34,7 @@ class OtherObservationsController < ApplicationController
         render json: {observations: last_telegrams, 
                       errors: ["Данные изменены"]}
       else
-        render json: {errors: telegram.errors.messages}, status: :unprocessable_entity
+        render json: {errors: observation.errors.messages}, status: :unprocessable_entity
       end
     else
       observation = OtherObservation.new(other_observation_params)
@@ -48,7 +48,8 @@ class OtherObservationsController < ApplicationController
                       # observationDate: date_dev,
                       errors: ["Данные сохранены"]}
       else
-        render json: {errors: telegram.errors.messages}, status: :unprocessable_entity
+        # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{observation.errors.messages.inspect}")
+        render json: {errors: observation.errors.messages}, status: :unprocessable_entity
       end
     end
   end

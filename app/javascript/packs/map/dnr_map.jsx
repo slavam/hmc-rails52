@@ -1,4 +1,5 @@
 import React from 'react';
+// import { Observable } from "rxjs/Rx";
 export default class DNRMap extends React.Component{
   constructor(props){
     super(props);
@@ -9,28 +10,41 @@ export default class DNRMap extends React.Component{
     this.stationInfo = this.stationInfo.bind(this);
   }
   stationInfo(date, telegram){
-    // let codeStation = telegram.substr(12,5);
     let codeWAREP = telegram.substr(26,2);
     let phase = telegram[3] == 'Я'? 'Старт/Рост' : 'Конец';
-    return date.substr(0,16)+' '+codeWAREP+' '+phase;
+    return date.substr(0,16).replace(/T/,' ')+' '+this.props.fact[codeWAREP]+' '+phase+'<br/>';
   }
   render(){
     let firstCoords = new google.maps.LatLng(48.0161457, 37.8057165); // Donetsk
-    let mapOptions = {center: firstCoords, zoom: 14};
-    let map = null; //new google.maps.Map(document.getElementById('map'), mapOptions);
-    
-    // let info = {};
+    let mapOptions = {center: firstCoords, zoom: 7};
+    let map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    var info = {};
     this.props.telegrams.map((t) => {
       let codeStation = t.telegram.substr(12,5);
-      if(!this.state.info[codeStation]){
-        this.state.info[codeStation] = [];
+      
+      if(!info[codeStation]){
+        info[codeStation] = '<b>'+t.station_name+'</b><br/>';
         let location = this.props.markerCoords[codeStation];
         let marker = new google.maps.Marker({position: location, map: map, label: codeStation});
-        // let markerClickStream = Rx.Observable.fromEvent(marker, 'click')
+        // let markerClickStream = Observable.fromEvent(marker, 'click')
           // .subscribe(() => {alert(marker.label)}) ;
+        // this.state.info[codeStation] = this.stationInfo(t.date, t.telegram);
+        // var infowindow = new google.maps.InfoWindow({content: this.state.info[codeStation]});
+        // info = this.state.info[codeStation];
+        // info[codeStation] = '';
+        // marker.addListener('click', function() {
+        //   infowindow.setContent(info[codeStation]);
+        //   infowindow.open(map, marker);
+        // });
         this.state.markers.push(marker);
       }
-      this.state.info[codeStation].push(this.stationInfo(t.date, t.telegram));
+      info[codeStation] += this.stationInfo(t.date, t.telegram);
+    });
+    this.state.markers.map( m => {
+      var infowindow = new google.maps.InfoWindow({content: info[m.label]});
+      m.addListener('click', function() {
+        infowindow.open(map, m);
+      });
     });
       // let location = new google.maps.LatLng(this.props.markerCoords[codeStation][0], this.props.markerCoords[codeStation][1]);
       // let location = this.props.markerCoords[codeStation];
@@ -42,11 +56,9 @@ export default class DNRMap extends React.Component{
 		// 	}) ;
         // .subscribe(() => {alert(marker.label)}) ;
       // this.state.markers.push(marker);
-    
+      // let src = "https://www.google.com/maps/embed/v1/place?key="+this.props.googleKey+"&q=Любавина+2,Донецк,Донецкая+область";
     return(
       <div> 
-        <h1>Map</h1>
-        {/*<iframe width="100%" height="300" frameBorder="0" style={{border:0}} src="https://www.google.com/maps/embed/v1/place?key=&q=Любавина+2,Донецк,Донецкая+область" allowFullScreen></iframe>*/}
       </div>
     );
   }

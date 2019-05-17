@@ -18,7 +18,7 @@ const LastData = ({observations, tlgType, stations, onClickDelete}) => {
           <th>Пост</th>
           <th>Период</th>
           <th>Значение</th>
-          <th>Дополнение</th>
+          <th>Описание</th>
           <th>Действия</th>
         </tr>;
   else
