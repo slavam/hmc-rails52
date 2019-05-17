@@ -72,7 +72,8 @@ class SeaObservationsController < ApplicationController
   end
   
   def create_sea_telegram
-    date_dev = params[:input_mode] == 'direct' ? Time.parse(params[:date]+' 00:01:00 UTC') : Time.now.utc
+    # date_dev = params[:input_mode] == 'direct' ? Time.parse(params[:date]+' 00:01:00 UTC') : Time.now.utc 20190517 mwm
+    date_dev = params[:input_mode] == 'direct' ? params[:date]+' 04:01:00' : Time.now.strftime("%Y-%m-%d 04:00:00")
     # sql = "select * from radiation_observations where station_id = #{params[:radiation_observation][:station_id]} and hour_observation = #{params[:radiation_observation][:hour_observation]} and date_observation = '#{left_time}' order by telegram_date desc"
     # telegram = StormObservation.find_by_sql(sql).first
     # telegram = SeaObservation.find_by(station_id: params[:sea_observation][:station_id], hour_observation: params[:sea_observation][:hour_observation], date_observation: params[:sea_observation][:date_observation])
@@ -91,7 +92,7 @@ class SeaObservationsController < ApplicationController
       end
     else
       telegram = SeaObservation.new(sea_observation_params)
-      # telegram.telegram_date = date_dev 
+      telegram.date_dev = date_dev # 20190517 дата наблюдения - локальная
       if telegram.save
         # new_telegram = {id: telegram.id, date: telegram.date_observation, station_name: telegram.station.name, telegram: telegram.telegram}
         new_telegram = {id: telegram.id, date: telegram.date_dev, station_name: telegram.station.name, telegram: telegram.telegram}

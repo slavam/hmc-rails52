@@ -6,7 +6,8 @@ class SeaObservation < ApplicationRecord
     if user.role == 'specialist'
       all_fields = SeaObservation.where("station_id = ?", user.station_id).limit(50).order(:date_dev, :updated_at).reverse_order
     else
-      all_fields = SeaObservation.all.limit(50).order(:date_dev, :updated_at).reverse_order
+      # all_fields = SeaObservation.all.limit(50).order(:date_dev, :updated_at).reverse_order
+      all_fields = SeaObservation.all.limit(50).order(:date_dev, :term).reverse_order
     end
     stations = Station.all.order(:id)
     all_fields.map do |rec|
