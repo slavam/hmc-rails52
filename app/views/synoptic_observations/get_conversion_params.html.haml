@@ -8,3 +8,5 @@
     = f.date_field :date_to, value: Time.now.strftime("%Y-%m-%d")
 
     = f.submit "Начать", class: "btn btn-primary"
+  %br
+  = link_to "Загрузить протокол", synoptic_observations_conversion_log_download_path, 'data-turbolinks' => "false"    

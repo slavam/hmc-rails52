@@ -3,10 +3,10 @@ import React from 'react';
 export default class DNRMap extends React.Component{
   constructor(props){
     super(props);
-    this.state={
-      info: {},
-      markers: []
-    };
+    // this.state={
+      // info: {},
+      // markers: []
+    // };
     this.stationInfo = this.stationInfo.bind(this);
   }
   stationInfo(date, telegram){
@@ -18,7 +18,8 @@ export default class DNRMap extends React.Component{
     let firstCoords = new google.maps.LatLng(48.0161457, 37.8057165); // Donetsk
     let mapOptions = {center: firstCoords, zoom: 7};
     let map = new google.maps.Map(document.getElementById('map'), mapOptions);
-    var info = {};
+    let markers = [];
+    let info = {};
     this.props.telegrams.map((t) => {
       let codeStation = t.telegram.substr(12,5);
       
@@ -36,11 +37,11 @@ export default class DNRMap extends React.Component{
         //   infowindow.setContent(info[codeStation]);
         //   infowindow.open(map, marker);
         // });
-        this.state.markers.push(marker);
+        markers.push(marker);
       }
       info[codeStation] += this.stationInfo(t.date, t.telegram);
     });
-    this.state.markers.map( m => {
+    markers.map( m => {
       var infowindow = new google.maps.InfoWindow({content: info[m.label]});
       m.addListener('click', function() {
         infowindow.open(map, m);

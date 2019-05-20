@@ -146,7 +146,8 @@ class SynopticObservationsController < ApplicationController
     created_telegrams = 0
     updated_telegrams = 0
     skiped_telegrams = 0
-    File.open("app/assets/pdf_folder/conversion.txt",'w') do |mylog|
+    # File.open("app/assets/pdf_folder/conversion.txt",'w') do |mylog|
+    File.open("tmp/synoptic_conversion_protocol.txt",'w') do |mylog|
       mylog.puts "Конверсия данных синоптических телеграмм за период с #{date_from} по #{date_to}"
       old_telegrams.each do |t|
         errors = []
@@ -180,6 +181,10 @@ class SynopticObservationsController < ApplicationController
     end
     flash[:success] = "Входных телеграмм - #{selected_telegrams}. Корректных телеграмм - #{correct_telegrams} (создано - #{created_telegrams}; обновлено - #{updated_telegrams}; пропущено - #{skiped_telegrams}). Ошибочных телеграмм - #{wrong_telegrams}."
     redirect_to synoptic_observations_get_conversion_params_path
+  end
+  
+  def conversion_log_download
+    send_file("#{Rails.root}/tmp/synoptic_conversion_protocol.txt")
   end
   
   def search_synoptic_telegrams
