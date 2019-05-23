@@ -77,6 +77,7 @@ class BulletinsController < ApplicationController
         end
         @bulletin.forecast_day_city = bulletin.forecast_day_city
       when 'daily'
+        @bulletin.review_start_date = Date.yesterday
         @bulletin.summer = (params[:variant] == 'summer')
         @bulletin.storm = bulletin.storm
         @bulletin.forecast_day = bulletin.forecast_day
@@ -217,8 +218,8 @@ class BulletinsController < ApplicationController
       case @bulletin.bulletin_type
         when 'daily'
           pdf = Daily.new(@bulletin)
-          @png_filename_page1 = "Bulletin_daily_#{current_user.id}-0.png" 
-          @png_filename_page2 = "Bulletin_daily_#{current_user.id}-1.png"
+          # @png_filename_page1 = "Bulletin_daily_#{current_user.id}-0.png" 
+          # @png_filename_page2 = "Bulletin_daily_#{current_user.id}-1.png"
         when 'sea'
           pdf = Sea.new(@bulletin)
           @png_filename_page1 = @bulletin.png_page_filename(current_user.id, 0)
@@ -264,7 +265,7 @@ class BulletinsController < ApplicationController
   private
   
     def bulletin_params
-      params.require(:bulletin).permit(:report_date, :curr_number, :duty_synoptic, :synoptic1, :synoptic2, :storm, :forecast_day, :forecast_day_city, :forecast_period, :forecast_advice, :forecast_orientation, :forecast_sea_day, :forecast_sea_period, :meteo_data, :agro_day_review, :climate_data, :summer, :bulletin_type, :storm_hour, :storm_minute, :picture, :chief, :responsible)
+      params.require(:bulletin).permit(:report_date, :curr_number, :duty_synoptic, :synoptic1, :synoptic2, :storm, :forecast_day, :forecast_day_city, :forecast_period, :forecast_advice, :forecast_orientation, :forecast_sea_day, :forecast_sea_period, :meteo_data, :agro_day_review, :climate_data, :summer, :bulletin_type, :storm_hour, :storm_minute, :picture, :chief, :responsible, :review_start_date)
     end
     
     def find_bulletin
@@ -376,6 +377,10 @@ class BulletinsController < ApplicationController
       precipitation = precipitation_daily(report_date, false)
       push_in_m_d(m_d, precipitation,4)
       if @bulletin.summer
+        temperature_min_soil = AgroObservation.temperature_min_soil_24(@bulletin.report_date)
+        push_in_m_d(m_d, temperature_min_soil,5)
+        relative_humidity_min = AgroObservation.relative_humidity_min_24(@bulletin.report_date)
+        push_in_m_d(m_d, relative_humidity_min,6)
       else
         snow_height = SynopticObservation.snow_cover_height(@bulletin.report_date)
         push_in_m_d(m_d, snow_height,5)

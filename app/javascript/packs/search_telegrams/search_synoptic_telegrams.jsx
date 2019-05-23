@@ -85,7 +85,7 @@ export default class SearchSynopticTelegrams extends React.Component{
     if(this.state.tlgType == 'storm'){
       // let markerCoords = {};
       // wating card data
-      map = <DNRMap fact={fact} googleKey={this.props.googleKey} telegrams={this.state.telegrams} stations={this.props.stations} markerCoords={this.stationCoords()}/>;
+      map = <DNRMap fact={fact} telegrams={this.state.telegrams} stations={this.props.stations} markerCoords={this.stationCoords()}/>;
     }
     return (
       <div>
@@ -115,10 +115,10 @@ $(function () {
     const tlgText = JSON.parse(node.getAttribute('tlgText'));
     const stormType = JSON.parse(node.getAttribute('stormType'));
     const stationId = JSON.parse(node.getAttribute('stationId'));
-    const googleKey = JSON.parse(node.getAttribute('key'));
+    // const googleKey = JSON.parse(node.getAttribute('key'));
   
     ReactDOM.render(
-      <SearchSynopticTelegrams telegrams={telegrams} stations={stations} dateFrom={dateFrom} dateTo={dateTo} tlgType={tlgType} tlgTerm={tlgTerm} tlgText={tlgText} stationId={stationId} stormType={stormType} googleKey={googleKey}/>,
+      <SearchSynopticTelegrams telegrams={telegrams} stations={stations} dateFrom={dateFrom} dateTo={dateTo} tlgType={tlgType} tlgTerm={tlgTerm} tlgText={tlgText} stationId={stationId} stormType={stormType} />,
       document.getElementById('form_and_result')
     );
   } 

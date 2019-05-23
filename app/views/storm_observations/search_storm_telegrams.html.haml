@@ -2,6 +2,6 @@
   %h3 Поиск штормовых телеграмм
   #map{:style => "height: 300px"}
   #form_and_result
-  #search_params{ telegrams: @telegrams.to_json, stations: @stations.to_json, dateFrom: @date_from.to_json, dateTo: @date_to.to_json, tlgType: 'storm'.to_json, stormType: @storm_type.to_json, stationId: @station_id.to_json, tlgText: @text.to_json, key: Rails.application.credentials.google_maps_api_key.to_json }
+  #search_params{ telegrams: @telegrams.to_json, stations: @stations.to_json, dateFrom: @date_from.to_json, dateTo: @date_to.to_json, tlgType: 'storm'.to_json, stormType: @storm_type.to_json, stationId: @station_id.to_json, tlgText: @text.to_json }
   = javascript_pack_tag 'search_telegrams/search_synoptic_telegrams'
   

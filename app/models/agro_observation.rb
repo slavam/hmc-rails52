@@ -84,6 +84,16 @@ class AgroObservation < ActiveRecord::Base
     self.where('date_dev LIKE ?', "#{date}%").select(:station_id, :temperature_avg_24).each{|tm| ret[tm.station_id] = tm.temperature_avg_24}
     ret
   end
+  def self.relative_humidity_min_24(date)
+    ret = []
+    self.where('date_dev LIKE ?', "#{date}%").select(:station_id, :relative_humidity_min_24).each{|tm| ret[tm.station_id] = tm.relative_humidity_min_24}
+    ret
+  end
+  def self.temperature_min_soil_24(date)
+    ret = []
+    self.where('date_dev LIKE ?', "#{date}%").select(:station_id, :temperature_min_soil_24).each{|tm| ret[tm.station_id] = tm.temperature_min_soil_24}
+    ret
+  end
   def self.wind_speed_max_24(date)
     ret = []
     self.where('date_dev LIKE ?', "#{date}%").select(:station_id, :wind_speed_max_24).each{|tm| ret[tm.station_id] = tm.wind_speed_max_24}
@@ -106,6 +116,11 @@ class AgroObservation < ActiveRecord::Base
       if i.present?
         ret[tm.station_id] = tm.telegram[i+4,2].to_i
       end
+    end
+    # Sedovo
+    r_o = RadiationObservation.find_by(date_observation: report_date, hour_observation: 0, station_id: 10)
+    if r_o.present?
+      ret[10] = r_o.telegram[20,3].to_i
     end
     ret
   end

@@ -67,7 +67,11 @@
       - c_d = @bulletin.climate_data.split(";") if @bulletin.climate_data.present?
     %table{class: "table table-hover"}
       %tr
-        %th Обзор погоды
+        %tr
+          %th{:style => "width: 300px"} Обзор погоды c
+          %th= form.date_field :review_start_date, value: @bulletin.review_start_date
+          -# %th= date_field_tag(:review_start_date, @bulletin.report_date-1.day)
+        %td
         %td= form.text_area :agro_day_review, cols: "100", rows: "5"
       %tr
         %th Средняя за сутки температура воздуха #{report_date_prev.day} #{I18n.l(report_date_prev, format: "%B")}

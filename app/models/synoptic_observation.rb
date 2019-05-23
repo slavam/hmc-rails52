@@ -489,4 +489,15 @@ class SynopticObservation < ActiveRecord::Base
     end
     ret
   end
+  def title
+    ret = ''
+    ret += "VV: #{visibility}; "
+    ret += "h: #{cloud_base_height_to_s}; "
+    ret += "dd: #{wind_direction_to_s}; "
+    ret += "ff: #{wind_speed_avg}; "
+    ret += "T: #{temperature}; "
+    ret += "Td: #{temperature_dew_point}; "
+    ret += "P0: #{(pressure_at_station_level/1.334).round(1)}; " if pressure_at_station_level.present?
+    ret
+  end
 end

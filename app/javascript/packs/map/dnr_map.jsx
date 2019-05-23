@@ -3,10 +3,6 @@ import React from 'react';
 export default class DNRMap extends React.Component{
   constructor(props){
     super(props);
-    // this.state={
-      // info: {},
-      // markers: []
-    // };
     this.stationInfo = this.stationInfo.bind(this);
   }
   stationInfo(date, telegram){
@@ -29,14 +25,6 @@ export default class DNRMap extends React.Component{
         let marker = new google.maps.Marker({position: location, map: map, label: codeStation});
         // let markerClickStream = Observable.fromEvent(marker, 'click')
           // .subscribe(() => {alert(marker.label)}) ;
-        // this.state.info[codeStation] = this.stationInfo(t.date, t.telegram);
-        // var infowindow = new google.maps.InfoWindow({content: this.state.info[codeStation]});
-        // info = this.state.info[codeStation];
-        // info[codeStation] = '';
-        // marker.addListener('click', function() {
-        //   infowindow.setContent(info[codeStation]);
-        //   infowindow.open(map, marker);
-        // });
         markers.push(marker);
       }
       info[codeStation] += this.stationInfo(t.date, t.telegram);
