@@ -6,7 +6,7 @@
       %td= @synoptic_observation.created_at.to_s
     %tr
       %th Дата наблюдения
-      %td= @synoptic_observation.observed_at
+      %td= @synoptic_observation.observed_at.utc.strftime("%Y-%m-%d %H:%M:%S UTC")
     %tr
       %th Срок
       %td= @synoptic_observation.term.to_s.rjust(2, '0')

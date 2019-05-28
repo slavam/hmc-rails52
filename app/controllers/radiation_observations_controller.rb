@@ -11,7 +11,7 @@ class RadiationObservationsController < ApplicationController
   end
   
   def index
-    @factor = params[:factor]
+    @factor = params[:factor].present? ? params[:factor] : 'monthly'
     if @factor == 'daily'
       @radiation_observations = RadiationObservation.where('hour_observation = 0').paginate(page: params[:page]).order(:date_observation, :created_at).reverse_order
     else
@@ -22,6 +22,7 @@ class RadiationObservationsController < ApplicationController
   def input_radiation_telegrams
     @stations = Station.all.order(:name)
     factor = params[:factor].present? ? params[:factor] : 'monthly'
+    @telegram_type = (factor == 'daily' ? 'radiation_daily' : 'radiation')
     @telegrams = RadiationObservation.short_last_50_telegrams(current_user, factor)
   end
   

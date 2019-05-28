@@ -15,18 +15,32 @@ export default class NewTelegramForm extends React.Component{
       currDate:  this.props.currDate,
       tlgType: this.props.tlgType,
       tlgTerm: this.props.tlgTerm,  
-      tlgText: this.initText(this.props.tlgType),
+      tlgText: '',
       errors: [] 
     };
+    
     this.handleTermSelected = this.handleTermSelected.bind(this);
     this.handleTypeSelected = this.handleTypeSelected.bind(this);
     this.dateChange = this.dateChange.bind(this);
     this.inBufferClick = this.inBufferClick.bind(this);
-    this.initText = this.initText.bind(this);
+    this.state.tlgText = this.initText(this.props.tlgType);
   }
   
   initText(tlgType){
     switch (tlgType){
+      case 'sea':
+        return "МОРЕ =";
+      case 'radiation':
+        return "ЩЭРБХ "+this.state.codeStation+' =';
+      case 'agro_dec':
+        return "ЩЭАГУ "+this.state.codeStation+' =';
+      case 'agro':
+        return "ЩЭАГЯ "+this.state.codeStation+' =';
+      case 'storm':
+        return "ЩЭОЯЮ WAREP "+this.state.codeStation+' =';
+      case 'synoptic':
+        let hdr = this.state.tlgTerm % 2 == 0 ? "ЩЭСМЮ " : "ЩЭСИД ";
+        return hdr+this.state.codeStation+' =';
       case 'radiation_daily':
         let cd = this.state.currDate[3]+this.state.currDate.substr(5,2)+this.state.currDate.substr(8,2);
         return 'ЩЭРДЦ '+this.state.codeStation+' '+cd+' 80000=';
@@ -106,12 +120,6 @@ export default class NewTelegramForm extends React.Component{
           return;
         }
         break;
-      // case 'hydro':
-      //   if (!checkHydroTelegram(text, this.props.stations, errors, this.observation, this.state.currDate)) {
-      //     this.setState({errors: errors});
-      //     return;
-      //   }
-      //   break;
     }
     this.props.onFormSubmit({observation: this.observation, currDate: date, tlgType: this.state.tlgType, tlgText: this.state.tlgText});
     this.setState({
@@ -136,7 +144,9 @@ export default class NewTelegramForm extends React.Component{
   }
   
   handleTermSelected(value){
-    this.setState({tlgTerm: value, errors: []});
+    this.state.tlgTerm = value;
+    this.state.tlgText = this.initText(this.state.tlgType);
+    this.setState({errors: []});
   }
   
   handleTextChange(e) {
@@ -150,14 +160,13 @@ export default class NewTelegramForm extends React.Component{
 
   render() {
     const types = [
-      { value: 'synoptic',  label: 'Синоптические' },
-      { value: 'agro',      label: 'Агро ежедневные' },
-      { value: 'agro_dec',  label: 'Агро декадные' },
-      { value: 'storm',     label: 'Штормовые' },
-      { value: 'radiation', label: 'Радиация' },
+      { value: 'synoptic',        label: 'Синоптические' },
+      { value: 'agro',            label: 'Агро ежедневные' },
+      { value: 'agro_dec',        label: 'Агро декадные' },
+      { value: 'storm',           label: 'Штормовые' },
+      { value: 'radiation',       label: 'Радиация' },
       { value: 'radiation_daily', label: 'Радиация ежедневная' },
-      { value: 'sea',       label: 'Морские' },
-      // { value: 'hydro',     label: 'Гидрологические' },
+      { value: 'sea',             label: 'Морские' },
     ];
     const terms = [
       { value: '00', label: '00' },
@@ -169,7 +178,7 @@ export default class NewTelegramForm extends React.Component{
       { value: '18', label: '18' },
       { value: '21', label: '21' }
     ];
-
+    
     let tlgDate = this.props.inputMode == 'normal' ? <td>{this.state.currDate}</td> : <td><input type="date" name="input-date" value={this.state.currDate} onChange={this.dateChange} required="true" autoComplete="on" /></td>;
     let term = this.state.tlgType == 'synoptic' ? <td>{this.props.inputMode == 'normal' ? this.props.tlgTerm : this.state.tlgTerm}</td> : <td></td>;
     let termSelect = this.state.tlgType == 'synoptic' ? <td><TermSynopticSelect options={terms} onUserInput={this.handleTermSelected} defaultValue={this.state.tlgTerm} readOnly="readonly"/></td> : <td></td>;
@@ -183,7 +192,6 @@ export default class NewTelegramForm extends React.Component{
               <th>Дата</th>
               <th>Тип</th>
               {this.state.tlgType == 'synoptic' ? <th>Срок</th> : <th></th>}
-              {/*<th>Minutes</th>*/}
             </tr>
           </thead>
           <tbody>
@@ -191,7 +199,6 @@ export default class NewTelegramForm extends React.Component{
               {tlgDate}
               <td><TermSynopticSelect options={types} onUserInput={this.handleTypeSelected} defaultValue={this.state.tlgType}/></td>
               {this.props.inputMode == 'normal' ? term : termSelect}
-              {/*<td>{this.props.minutes} props.minutes=>{this.props.minutes} states.minutes=>{this.state.minutes}</td>*/}
             </tr>
           </tbody>
         </table>

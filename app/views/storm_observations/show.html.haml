@@ -5,8 +5,8 @@
       %th Дата ввода:
       %td= @storm_observation.created_at
     %tr
-      %th Дата явления:
-      %td= @storm_observation.telegram_date
+      %th Дата/время(UTC) явления:
+      %td= @storm_observation.telegram_date.utc.strftime("%d-%m-%Y %H:%M:%S UTC")
     - @text = @storm_observation.telegram
     %tr
       %th Текст:
@@ -21,7 +21,7 @@
       %th День месяца
       %td= @storm_observation.day_event
     %tr
-      %th Время
+      %th Время(UTC)
       %td= @storm_observation.event_time
     %tr
       %th Вид телеграммы

@@ -110,12 +110,12 @@ export default class TelegramRow extends React.Component{
   render() {
     if(this.state.source == 'outside')
       this.state.tlgText = this.props.telegram.telegram;
-    var desiredLink = "/"+this.props.tlgType+"_observations/"+this.props.telegram.id;
+    var desiredLink = "/"+(this.props.tlgType == 'radiation_daily' ? 'radiation' : this.props.tlgType)+"_observations/"+this.props.telegram.id;
     var term = this.props.tlgType == 'synoptic' ? <td>{this.props.telegram.term < 10 ? '0'+this.props.telegram.term : this.props.telegram.term}</td> : <td></td>;
     
     return (
       <tr key = {this.props.telegram.id}>
-        <td>{this.props.telegram.date.substr(0, 19)+' UTC'}</td>
+        <td>{this.props.telegram.date.substr(0, 19)}</td>
         {term}
         <td>{this.props.telegram.station_name}</td>
         {this.state.mode == 'Изменить' ? <td><a href={desiredLink}>{this.state.tlgText}</a></td> : <td><TextTelegramEditForm tlgText={this.state.tlgText} onTelegramEditSubmit={this.handleEditTelegramSubmit} errors = {this.state.errors}/></td> }

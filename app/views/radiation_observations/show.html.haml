@@ -34,9 +34,9 @@
   -#= link_to 'Поиск', @search_link
   %br
   - if current_user.role == 'technicist'
-    = link_to 'Ввод телеграмм', '/radiation_observations/input_radiation_telegrams?input_mode=normal'
+    = link_to 'Ввод телеграмм', '/radiation_observations/input_radiation_telegrams?input_mode=normal'+(@radiation_observation.hour_observation == 0 ? '&factor=daily' : '')
     %br
-    = link_to "Список", radiation_observations_path  
+    = link_to "Список", '/radiation_observations'+(@radiation_observation.hour_observation == 0 ? '?factor=daily' : '')
   - elsif current_user.role == 'specialist'
     = link_to 'Возврат', '/radiation_observations/input_radiation_telegrams?input_mode=normal'
   - else

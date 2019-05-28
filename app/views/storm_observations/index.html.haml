@@ -5,7 +5,7 @@
   %table{class: "table table-hover"}
     %thead
       %tr
-        %th Дата
+        %th Дата/время(UTC) явления 
         %th Метеостанция
         %th Телеграмма
         /
@@ -16,7 +16,7 @@
       - name_stations = Station.name_stations_as_array
       - @storm_observations.each do |s_o| 
         %tr
-          %td= s_o.telegram_date.strftime("%d-%m-%Y %H:%M:%S UTC")
+          %td= s_o.telegram_date.utc.strftime("%d-%m-%Y %H:%M:%S UTC")
           %td= name_stations[s_o.station_id]
           %td= link_to s_o.telegram, storm_observation_path(s_o)
           /
