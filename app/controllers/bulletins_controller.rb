@@ -93,7 +93,7 @@ class BulletinsController < ApplicationController
           (prev_set.present? ? prev_set.t_max.to_s : '') + '; ' + (prev_set.present? ? prev_set.year_max.to_s : '') + '; '+
           (curr_set.present? ? curr_set.t_min.to_s : '') + '; ' + (curr_set.present? ? curr_set.year_min.to_s : '') + ';'
         @bulletin.forecast_day_city = bulletin.forecast_day_city
-        @m_d = fill_meteo_data(@bulletin.report_date)        
+        @m_d = fill_meteo_data(@bulletin.report_date)      
         @bulletin.meteo_data = ''
         @m_d.each do |v|
           @bulletin.meteo_data += v.present? ? "#{v};" : ';'
@@ -362,18 +362,6 @@ class BulletinsController < ApplicationController
       push_in_m_d(m_d, avg_24,2)
       at_9_o_clock = SynopticObservation.current_temperatures(6, @bulletin.report_date)
       push_in_m_d(m_d, at_9_o_clock,3)
-      # precipitation = []
-      # precipitation_day = SynopticObservation.precipitation(18, @bulletin.report_date-1.day)
-      # precipitation_night = SynopticObservation.precipitation(6, @bulletin.report_date)
-      # (1..10).each do |i| 
-      #   if precipitation_day[i].present?
-      #     precipitation[i] = precipitation_day[i]>989 ? ((precipitation_day[i]-990)*0.1).round(1) : precipitation_day[i]
-      #   end
-      #   if precipitation_night[i].present?
-      #     precipitation[i] ||= 0
-      #     precipitation[i] += precipitation_night[i]>989 ? ((precipitation_night[i]-990)*0.1).round(1) : precipitation_night[i]
-      #   end
-      # end
       precipitation = precipitation_daily(report_date, false)
       push_in_m_d(m_d, precipitation,4)
       if @bulletin.summer
@@ -381,6 +369,8 @@ class BulletinsController < ApplicationController
         push_in_m_d(m_d, temperature_min_soil,5)
         relative_humidity_min = AgroObservation.relative_humidity_min_24(@bulletin.report_date)
         push_in_m_d(m_d, relative_humidity_min,6)
+        o_o = OtherObservation.find_by(data_type: 'min_hum', station_id: 10, obs_date: @bulletin.report_date)
+        m_d[3*9+6] = o_o.value if o_o.present? # мин влажность по Седово 20190529
       else
         snow_height = SynopticObservation.snow_cover_height(@bulletin.report_date)
         push_in_m_d(m_d, snow_height,5)
