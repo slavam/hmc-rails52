@@ -36,8 +36,8 @@ export default class NewTelegramForm extends React.Component{
         return "ЩЭАГУ "+this.state.codeStation+' =';
       case 'agro':
         return "ЩЭАГЯ "+this.state.codeStation+' =';
-      case 'storm':
-        return "ЩЭОЯЮ WAREP "+this.state.codeStation+' =';
+      // case 'storm':
+      //   return "ЩЭОЯЮ WAREP "+this.state.codeStation+' =';
       case 'synoptic':
         let hdr = this.state.tlgTerm % 2 == 0 ? "ЩЭСМЮ " : "ЩЭСИД ";
         return hdr+this.state.codeStation+' =';
