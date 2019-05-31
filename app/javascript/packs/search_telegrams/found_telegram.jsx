@@ -16,9 +16,7 @@ export default class FoundTelegram extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      // showPopup: false,
       info: ''
-      // color: '#337ab7'
     };
   }
   inControl(event){
@@ -38,9 +36,6 @@ export default class FoundTelegram extends React.Component{
     
     this.setState({info: info});
   }
-  outControl(event){
-    // this.setState({showPopup: false});
-  }
   render() {
     let add_td = <td></td>;
     let add_param = '';
@@ -53,26 +48,16 @@ export default class FoundTelegram extends React.Component{
       else if (this.props.tlgType == 'storm' && this.props.stormType != '99') 
         add_param = '&storm_type='+this.props.stormType;
     }
-    // let rightButton = document.querySelector('.button-right');
-    // let leftClickStream = Rx.Observable.fromEvent(leftButton, 'click')
-    // 	.subscribe(() => {page = page > 0 ? (--page) : (page); renderPhotos()}) ;
 
     const desiredLink = "/"+this.props.tlgType+"_observations/"+this.props.telegram.id+'?telegram_type='+this.props.tlgType+'&date_from='+this.props.dateFrom+'&date_to='+this.props.dateTo+stationId+add_param+text;
     return (
       <tr>
-        <td>{this.props.telegram.date.substr(0, 19)+' UTC'}</td>
+        {/*<td>{this.props.telegram.date.substr(0, 19)+' UTC'}</td> 20190531*/}
+        <td>{this.props.telegram.date.substr(0, 19)}</td>
         {add_td}
         <td>{this.props.telegram.station_name}</td>
         {/*<td><a href={desiredLink} style={{color: this.state.color}} onMouseOver={(event) => this.inControl(event)}>{this.props.telegram.telegram}</a></td>*/}
         <td><a href={desiredLink} title={this.state.info} onMouseOver={(event) => this.inControl(event)}>{this.props.telegram.telegram}</a></td>
-        {/*this.state.showPopup ? 
-          <Popup
-            text={this.state.info}
-            closePopup={this.outControl.bind(this)}
-          />
-          : null
-        */}       
-        {/*<td><a href={desiredLink} onMouseOut={event => this.inControl(event)} onMouseOver={(event) => this.outControl(event)}>{this.props.telegram.telegram}</a></td>*/}
       </tr>
     );
   }

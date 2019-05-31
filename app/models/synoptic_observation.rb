@@ -196,35 +196,35 @@ class SynopticObservation < ActiveRecord::Base
     return "Видимость не определена" if self.visibility_range.nil?
     case self.visibility_range
       when 0
-        "< 0,1 км."
+        "< 0,1 км"
       when 1..50
-        "до 5 км."
+        "до 5 км"
       when 56..80
-        "от 6 км. до 30 км."
+        "от 6 км до 30 км"
       when 81..88
-        "от 35 км. до 70 км."
+        "от 35 км до 70 км"
       when 89
-        "> 70 км."
+        "> 70 км"
       when 90
-        " менее 50 м."
+        " менее 50 м"
       when 91
-        " 50 м."
+        " 50 м"
       when 92
-        " 200 м."
+        " 200 м"
       when 93
-        " 500 м."
+        " 500 м"
       when 94 
-        " 1 км."
+        " 1 км"
       when 95 
-        " 2 км."
+        " 2 км"
       when 96
-        " 4 км."
+        " 4 км"
       when 97
-        " 10 км."
+        " 10 км"
       when 98
-        " 20 км."
+        " 20 км"
       when 99
-        " более 50 км."
+        " более 50 км"
       else
         self.visibility_range.to_s
     end
@@ -497,7 +497,8 @@ class SynopticObservation < ActiveRecord::Base
     ret += "ff: #{wind_speed_avg}; "
     ret += "T: #{temperature}; "
     ret += "Td: #{temperature_dew_point}; "
-    ret += "P0: #{(pressure_at_station_level/1.334).round(1)}; " if pressure_at_station_level.present?
+    # ret += "P0: #{(pressure_at_station_level/1.334).round(1)}; " if pressure_at_station_level.present? 20190531 O.N.
+    ret += "P0: #{(pressure_at_station_level * 0.75).round(1)}; " if pressure_at_station_level.present?
     ret
   end
 end

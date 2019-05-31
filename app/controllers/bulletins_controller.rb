@@ -304,11 +304,11 @@ class BulletinsController < ApplicationController
       m_d = []
       m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
       value = SynopticObservation.max_day_temperatures(report_date-1.day)[sedovo_id]
-      m_d[0] = value if value.present?
+      m_d[0] = value.round() if value.present?
       value = SynopticObservation.min_night_temperatures(report_date)[sedovo_id]
-      m_d[1] = value if value.present?
+      m_d[1] = value.round() if value.present?
       value = SynopticObservation.current_temperatures(6, report_date)[sedovo_id]
-      m_d[2] = value if value.present?
+      m_d[2] = value.round() if value.present?
       value = precipitation_daily(report_date, false)[sedovo_id]
       m_d[3] = value if value.present?
       if @bulletin.summer
@@ -323,7 +323,7 @@ class BulletinsController < ApplicationController
         m_d[8] = m_d[7].to_i - level_yesterday.to_i
       end
       value = SeaObservation.water_temperature(report_date)
-      m_d[9] = value if value.present?
+      m_d[9] = value.round() if value.present?
       syn_o = SynopticObservation.find_by(station_id: 10, term: 6, date: report_date)
       m_d[12] = syn_o.visibility if syn_o.present? 
       m_d
