@@ -6,7 +6,7 @@
       %td= @storm_observation.created_at
     %tr
       %th Дата/время(UTC) явления:
-      %td= @storm_observation.telegram_date.utc.strftime("%d-%m-%Y %H:%M:%S UTC")
+      %td= @storm_observation.telegram_date.utc.strftime("%Y-%m-%d %H:%M:%S UTC")
     - @text = @storm_observation.telegram
     %tr
       %th Текст:

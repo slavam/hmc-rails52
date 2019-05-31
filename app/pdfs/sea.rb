@@ -2,7 +2,7 @@ require 'prawn'
 class Sea < Prawn::Document
   MONTH_NAME2 = %w{nil января февраля марта апреля мая июня июля августа сентября октября ноября декабря}
 	def initialize(bulletin)
-		super(top_margin: 40)		
+		super(top_margin: 30)		
 		@bulletin = bulletin
     font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),
@@ -12,18 +12,19 @@ class Sea < Prawn::Document
     })
     y_pos = cursor
     image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.25
-    font "./app/assets/fonts/OpenSans/OpenSans-Bold.ttf"
+    # font "./app/assets/fonts/OpenSans/OpenSans-Bold.ttf"
+    font "OpenSans"
     bounding_box([50, y_pos], :width => 470) do
-        text Bulletin::HEAD, align: :center
+        text Bulletin::HEAD, align: :center, size: 11
     end
     move_down 20
     font "./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"
     bounding_box([50, cursor], :width => 470) do
-        text Bulletin::ADDRESS, align: :center, size: 10
+        text Bulletin::ADDRESS, align: :center, size: 9
     end
     report_date = @bulletin.report_date.to_s(:custom_datetime)
     font "./app/assets/fonts/DejaVu/DejaVuSansCondensed-Bold.ttf"
-    move_down 20
+    move_down 40
     bounding_box([50, cursor], :width => 470) do
       text "МОРСКОЙ ГИДРОМЕТЕОРОЛОГИЧЕСКИЙ БЮЛЛЕТЕНЬ № #{@bulletin.curr_number} 
       #{@bulletin.report_date_as_str}", :color => "0000FF", align: :center 
@@ -45,15 +46,21 @@ class Sea < Prawn::Document
     end
     font "OpenSans"
     move_down 10
-    table weather_forecast, width: bounds.width, cell_style: { padding: 3, border_width: 0.3, border_color: "bbbbbb", :inline_format => true}
-    move_down 10
+    table weather_forecast, width: bounds.width, cell_style: { padding: 3, border_width: 0, :border_color => "000000", :inline_format => true} do
+      row(0).borders = [:bottom]
+      row(0).border_width = 1
+      column(0).borders = [:right]
+      column(0).border_width = 1
+      row(0).column(0).borders = [:bottom, :right]
+    end
+    move_down 20
     report_date_next2 = (@bulletin.report_date + 2.day).to_s(:custom_datetime)
     report_date_next3 = (@bulletin.report_date + 3.day).to_s(:custom_datetime)
     font "./app/assets/fonts/DejaVu/DejaVuSansCondensed-Bold.ttf"
     text "Периодный прогноз погоды на #{report_date_next2[8,2]}-#{report_date_next3[8,2]} #{MONTH_NAME2[report_date_next3[5,2].to_i]} #{report_date_next3[0,4]} года
     По акватории Азовского моря (на участке с. Безыменное – пгт. Седово)", align: :center, color: "0000ff"
     font "OpenSans"
-    text @bulletin.forecast_period
+    text @bulletin.forecast_period, :leading => 4
     move_down 10
     text "Синоптик #{@bulletin.synoptic1}", align: :right
     
@@ -65,7 +72,7 @@ class Sea < Prawn::Document
     move_down 10
     font "OpenSans"
     
-    table meteo_data, width: bounds.width, cell_style: {padding: 3, border_width: 0.3, border_color: "bbbbbb", :inline_format => true, size: 9} do |t|
+    table meteo_data, width: bounds.width, cell_style: {padding: 3, border_width: 0.5, border_color: "000000", :inline_format => true, size: 9.5} do |t|
       t.cells.padding = [1, 1]
       t.cells.align = :center
       t.row(0).column(0).valign = :center
@@ -96,13 +103,16 @@ class Sea < Prawn::Document
       t.row(5).align = :left
     end
     move_down 10
-    table signatures, width: bounds.width, :column_widths => [300, 100], cell_style: {:overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true } do |t|
+    bounding_box([5, cursor], :width => bounds.width) do
+      text "Время выпуска 13:00"
+    end
+    move_down 10
+    table signatures, width: bounds.width, :column_widths => [300, 270], cell_style: {:overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true } do |t|
       t.cells.border_width = 0
     end
 	end
-
 	def weather_forecast
-		[ ["<b>По акватории Азовского моря (на участке с. Безыменное – пгт. Седово)</b>", "<b>В пгт. Седово</b>"],
+		[ [{:content => "<b>По акватории Азовского моря (на участке с. Безыменное – пгт. Седово)</b>", :align => :center}, {:content => "<b>По г.Новоазовску, пгт. Седово</b>", :align => :center}],
       [@bulletin.forecast_day, @bulletin.forecast_day_city]]
 	end
 	def meteo_data
@@ -172,6 +182,6 @@ class Sea < Prawn::Document
     responsible_descr = @bulletin.responsible_2_pdf
     [ ["Ответственный за выпуск:","",""],
       [responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6}, responsible_descr[:name]],
-      [chief_descr[:position], {:image => chief_descr[:image_name], scale: 0.6}, chief_descr[:name]]]
+      [{:content => chief_descr[:position], :size => 14}, {:image => chief_descr[:image_name], scale: 0.6}, {:content => chief_descr[:name], :size => 14}]]
 	end
 end
