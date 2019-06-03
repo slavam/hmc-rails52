@@ -88,6 +88,9 @@
           %th Ледовое состояние
           %td= text_field_tag 'val_15', m_d[14].present? ? m_d[14] : ''
       %tr
+        %th Дата начала обзора
+        %th= form.date_field :review_start_date, value: @bulletin.review_start_date
+      %tr
         %th Обзор погоды
         %td= form.text_area :forecast_sea_day, cols: "100", rows: "5"
       %tr

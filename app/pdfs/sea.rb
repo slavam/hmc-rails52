@@ -116,6 +116,7 @@ class Sea < Prawn::Document
       t.cells.border_width = 0
       t.row(2).size = 11
       t.column(1).position = :center
+      # t.row(2).valign = :center
     end
 	end
 	
@@ -156,6 +157,7 @@ class Sea < Prawn::Document
 	    Высота волн (дм)", 
 	    "
 	    Видимость"]
+	    [0,1,2,9].each{|i| m_d[i] = m_d[i].to_f.round if m_d[i].present?}
 	    data_row = ['Седово', m_d[0], m_d[1], m_d[2], m_d[3], m_d[4], m_d[5], m_d[6], m_d[7], m_d[8], m_d[9], m_d[10], m_d[11], m_d[12]]
     else
 	    colspan1 = 8
@@ -183,6 +185,7 @@ class Sea < Prawn::Document
 	    data_row = ['Седово', m_d[0], m_d[1], m_d[2], m_d[3], m_d[13], m_d[4], m_d[5], m_d[6], m_d[7], m_d[8], m_d[9], m_d[12], m_d[14]]
 	  end
     report_date_prev = (@bulletin.report_date - 1.day).to_s(:custom_datetime)
+    review_start_date = @bulletin.review_start_date.present? ? @bulletin.review_start_date.to_s(:custom_datetime) : (@bulletin.report_date-1.day).to_s(:custom_datetime)
 	  [
 	    [{:content => "Название
 	    метеостанции", :rowspan => 2},{:content => "за период с 9.00 часов #{report_date_prev[8,2]} #{MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}",
@@ -190,7 +193,7 @@ class Sea < Prawn::Document
 	    head_row1,
 	    data_row,
 	    [{:content => "<color rgb='0000ff'>ОБЗОР ПОГОДЫ</color>", :colspan => 8},{:content => "<color rgb='0000ff'>ОБЗОР СОСТОЯНИЯ АЗОВСКОГО МОРЯ</color>", :colspan => 6}],
-	    [{:content => "за период с 9.00 часов #{report_date_prev[8,2]} #{MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}", :colspan => 14}],
+	    [{:content => "за период с 9.00 часов #{review_start_date[8,2]} #{MONTH_NAME2[review_start_date[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}", :colspan => 14}],
 	    [{content: @bulletin.forecast_sea_day, colspan: 8},{content: @bulletin.forecast_sea_period, colspan: 6}]
     ]
 	end
@@ -198,7 +201,7 @@ class Sea < Prawn::Document
 	  chief_descr = @bulletin.chief_2_pdf
     responsible_descr = @bulletin.responsible_2_pdf
     [ ["Ответственный за выпуск:","",""],
-      [responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6}, responsible_descr[:name]],
-      [{:content => chief_descr[:position]}, {:image => chief_descr[:image_name], scale: 0.6}, {:content => chief_descr[:name]}]]
+      [responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6, :vposition => :center}, responsible_descr[:name]],
+      [{:padding => [10,5],:content => chief_descr[:position]}, {:image => chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]
 	end
 end

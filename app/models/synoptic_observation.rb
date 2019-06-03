@@ -491,14 +491,25 @@ class SynopticObservation < ActiveRecord::Base
   end
   def title
     ret = ''
-    ret += "VV: #{visibility}; "
+    ret += "N: "+cloud_amount(cloud_amount_1)+"; "
+    ret += "Ns: "+cloud_amount(cloud_amount_2)+"; " if cloud_amount_2.present?
+    ret += "V: #{visibility}; "
     ret += "h: #{cloud_base_height_to_s}; "
-    ret += "dd: #{wind_direction_to_s}; "
-    ret += "ff: #{wind_speed_avg}; "
+    ret += "d: #{wind_direction_to_s}; "
+    ret += "f: #{wind_speed_avg}; "
     ret += "T: #{temperature}; "
     ret += "Td: #{temperature_dew_point}; "
     # ret += "P0: #{(pressure_at_station_level/1.334).round(1)}; " if pressure_at_station_level.present? 20190531 O.N.
     ret += "P0: #{(pressure_at_station_level * 0.75).round(1)}; " if pressure_at_station_level.present?
+    if pressure_tendency_characteristic.present? and pressure_tendency.present?
+      ap = (pressure_tendency_characteristic < 4 ? '+' : (pressure_tendency_characteristic == 4 ? '' : '-'))+pressure_tendency.to_s
+      ret += "ap: #{ap}; "
+    end
     ret
+  end
+  def self.station_daily_local_avg_temp(station_id, date)
+    start_time_mark = (date-1.day).strftime("%Y-%m-%d")+' 21'
+    stop_time_mark = date.strftime("%Y-%m-%d")+' 21'
+    return self.select("avg(temperature) temperature").where("station_id = ? AND observed_at >= ? AND observed_at < ?", station_id, start_time_mark, stop_time_mark)[0].temperature
   end
 end

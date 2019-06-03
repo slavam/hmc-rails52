@@ -64,6 +64,7 @@ class BulletinsController < ApplicationController
         @bulletin.forecast_period = last_daily_bulletin.forecast_period
         @bulletin.forecast_day_city = last_daily_bulletin.forecast_day_city
       when 'sea'
+        @bulletin.review_start_date = Date.yesterday
         @bulletin.summer = (params[:variant] == 'summer')
         @bulletin.storm = bulletin.storm
         @bulletin.forecast_day = bulletin.forecast_day
@@ -304,11 +305,11 @@ class BulletinsController < ApplicationController
       m_d = []
       m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
       value = SynopticObservation.max_day_temperatures(report_date-1.day)[sedovo_id]
-      m_d[0] = value.round() if value.present?
+      m_d[0] = value if value.present?
       value = SynopticObservation.min_night_temperatures(report_date)[sedovo_id]
-      m_d[1] = value.round() if value.present?
+      m_d[1] = value if value.present?
       value = SynopticObservation.current_temperatures(6, report_date)[sedovo_id]
-      m_d[2] = value.round() if value.present?
+      m_d[2] = value if value.present?
       value = precipitation_daily(report_date, false)[sedovo_id]
       m_d[3] = value if value.present?
       if @bulletin.summer
@@ -321,9 +322,14 @@ class BulletinsController < ApplicationController
       level_yesterday = SeaObservation.sea_level(report_date-1.day)
       if m_d[7].present? and level_yesterday.present?
         m_d[8] = m_d[7].to_i - level_yesterday.to_i
+        if m_d[8] > 0
+          m_d[8] = '+'+m_d[8].to_s
+        else
+          m_d[8] = m_d[8].to_s
+        end  
       end
       value = SeaObservation.water_temperature(report_date)
-      m_d[9] = value.round() if value.present?
+      m_d[9] = value if value.present?
       syn_o = SynopticObservation.find_by(station_id: 10, term: 6, date: report_date)
       m_d[12] = syn_o.visibility if syn_o.present? 
       m_d
@@ -360,6 +366,9 @@ class BulletinsController < ApplicationController
       push_in_m_d(m_d, min_night,1)
       avg_24 = AgroObservation.temperature_avg_24(@bulletin.report_date.strftime("%Y-%m-%d"))
       push_in_m_d(m_d, avg_24,2)
+      # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{m_d[2].inspect}")
+      m_d[3*9+2] = SynopticObservation.station_daily_local_avg_temp(10, report_date-1.day) if m_d[3*9+2].nil? #Sedovo
+      m_d[7*9+2] = SynopticObservation.station_daily_local_avg_temp(5, report_date-1.day) if m_d[7*9+2].nil? #Mariupol
       at_9_o_clock = SynopticObservation.current_temperatures(6, @bulletin.report_date)
       push_in_m_d(m_d, at_9_o_clock,3)
       precipitation = precipitation_daily(report_date, false)
