@@ -28,7 +28,7 @@
     - @actions.each do |a|
       %tr
         %td= a.version
-        %td= a.user.login
+        %td= a.user.present? ? a.user.login : 'not user!'
         %td= a.action
         %td= a.created_at
   -#= link_to 'Поиск', @search_link

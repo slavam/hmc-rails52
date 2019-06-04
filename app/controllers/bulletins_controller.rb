@@ -338,10 +338,15 @@ class BulletinsController < ApplicationController
       m_d = []
       m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
       radiations = AgroObservation.radiations(report_date)
-      [1,3,2,10].each_with_index {|v,i| m_d[i] = radiations[v] if radiations[v].present?}
+      [1,3,2,10].each_with_index {|v,i| m_d[i] = radiations[v].present? ? radiations[v] : correct_radiation(report_date, v)}
       m_d
     end
     
+    def correct_radiation(report_date, station_id)
+      r_o = RadiationObservation.find_by(date_observation: report_date, hour_observation: 0, station_id: station_id)
+      ret = r_o.present? ? r_o.telegram[20,3].to_i : nil
+      ret
+    end
     def fill_avtodor_meteo_data(report_date)
       m_d = []
       m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?

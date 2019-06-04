@@ -20,7 +20,7 @@
         %tr
           %td= o_o.obs_date.strftime("%d-%m-%Y")+(o_o.data_type == 'perc' ? (o_o.period == 'day' ? '/День' : '/Ночь') : '')
           %td= o_o.data_type == 'perc' ? o_o.source : Station.find(o_o.station_id).name
-          %td= o_o.value
+          %td= @factor == 'min_hum' ? o_o.value.round : o_o.value
           - if @factor == 'perc'
             %td= o_o.description
   = will_paginate

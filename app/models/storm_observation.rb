@@ -10,11 +10,13 @@ class StormObservation < ActiveRecord::Base
     if user.role == 'specialist'
       all_fields = StormObservation.where("station_id = ? and telegram_date > ?", user.station_id, Time.now.utc-45.days).order(:telegram_date, :updated_at).reverse_order
     else
-      all_fields = StormObservation.all.limit(50).order(:telegram_date, :updated_at).reverse_order
+      # all_fields = StormObservation.all.limit(50).order(:telegram_date, :updated_at).reverse_order # 20190604 согласовано с Х.Е.
+      all_fields = StormObservation.all.limit(50).order(:created_at, :updated_at).reverse_order
     end
     stations = Station.all.order(:id)
     all_fields.map do |rec|
-      {id: rec.id, date: rec.telegram_date, station_name: stations[rec.station_id-1].name, telegram: rec.telegram}
+      # {id: rec.id, date: rec.telegram_date, station_name: stations[rec.station_id-1].name, telegram: rec.telegram}
+      {id: rec.id, date: rec.created_at, station_name: stations[rec.station_id-1].name, telegram: rec.telegram}
     end
   end
   

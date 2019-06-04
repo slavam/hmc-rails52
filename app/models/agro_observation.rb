@@ -117,11 +117,11 @@ class AgroObservation < ActiveRecord::Base
         ret[tm.station_id] = tm.telegram[i+4,2].to_i
       end
     end
-    # Sedovo
-    r_o = RadiationObservation.find_by(date_observation: report_date, hour_observation: 0, station_id: 10)
-    if r_o.present?
-      ret[10] = r_o.telegram[20,3].to_i
-    end
+    # Sedovo move to bulletins_controller 20190604
+    # r_o = RadiationObservation.find_by(date_observation: report_date, hour_observation: 0, station_id: 10)
+    # if r_o.present?
+      # ret[10] = r_o.telegram[20,3].to_i
+    # end
     ret
   end
 end

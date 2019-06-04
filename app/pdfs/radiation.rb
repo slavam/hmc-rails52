@@ -1,7 +1,7 @@
 require 'prawn'
 class Radiation < Prawn::Document
   def initialize(bulletin)
-		super(top_margin: 40)		
+		super(top_margin: 40, right_margin: 50, left_margin: 50)		
 		@bulletin = bulletin
     font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),
@@ -60,15 +60,15 @@ class Radiation < Prawn::Document
       end
     end
     text_box @bulletin.synoptic1, :at => [0, 30], :width => 170
-    image "./app/assets/images/radiation.png", at: [440, 100], :scale => 0.75
-    text_box "телефон: (062) 304-82-22", :at => [350, 30], :width => 170, align: :right
+    image "./app/assets/images/radiation.png", at: [400, 100], :scale => 0.75
+    text_box "телефон: (062) 304-82-22", :at => [320, 30], :width => 170, align: :right
     move_to 0, 15
-    line_to 550, 15
+    line_to 520, 15
     stroke_color '0000ff'
     stroke
   end
   def signatures
     responsible_descr = @bulletin.responsible_2_pdf
-    [[responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6}, responsible_descr[:name]]]
+    [[responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6}, {:padding => [20,5],:content => responsible_descr[:name]}]]
   end
 end
