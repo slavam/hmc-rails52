@@ -63,6 +63,7 @@ class Sea < Prawn::Document
     text "Периодный прогноз погоды на #{report_date_next2[8,2]}-#{report_date_next3[8,2]} #{MONTH_NAME2[report_date_next3[5,2].to_i]} #{report_date_next3[0,4]} года
     По акватории Азовского моря (на участке с. Безыменное – пгт. Седово)", align: :center, color: "0000ff"
     font "OpenSans"
+    move_down 10
     text @bulletin.forecast_period, :leading => 4
     move_down 10
     text "Синоптик #{@bulletin.synoptic1}", align: :right
@@ -201,7 +202,7 @@ class Sea < Prawn::Document
 	  chief_descr = @bulletin.chief_2_pdf
     responsible_descr = @bulletin.responsible_2_pdf
     [ ["Ответственный за выпуск:","",""],
-      [responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6, :vposition => :center}, responsible_descr[:name]],
+      [responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6, :vposition => :center}, {:padding => [16,5],:content => responsible_descr[:name]}],
       [{:padding => [10,5],:content => chief_descr[:position]}, {:image => chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]
 	end
 end
