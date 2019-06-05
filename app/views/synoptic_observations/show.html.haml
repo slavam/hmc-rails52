@@ -164,3 +164,6 @@
     = link_to 'Возврат', '/synoptic_observations/input_synoptic_telegrams?input_mode=normal'
   - else
     = link_to "Список", synoptic_observations_path
+  - if current_user.role == 'admin'  
+    %br
+    = link_to 'Удалить', @synoptic_observation, method: :delete, data: { confirm: 'Вы уверены?' }

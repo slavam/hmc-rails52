@@ -1,7 +1,13 @@
 class SynopticObservationsController < ApplicationController
   before_action :logged_user?
   # before_filter :require_observer_or_technicist
-  before_action :find_synoptic_observation, only: [:show, :update_synoptic_telegram] 
+  before_action :find_synoptic_observation, only: [:show, :update_synoptic_telegram, :destroy] 
+  
+  def destroy
+    @synoptic_observation.destroy
+    flash[:success] = "Телеграмма удалена"
+    redirect_to synoptic_observations_path
+  end
   
   def teploenergo
     @year = params[:year].present? ? params[:year] : Time.now.utc.year.to_s
