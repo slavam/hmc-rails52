@@ -1,6 +1,6 @@
 class Daily < Prawn::Document
   def initialize(bulletin)
-		super(top_margin: 40)		
+		super(top_margin: 40, left_margin: 80)		
 		@bulletin = bulletin
     font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),
@@ -10,9 +10,9 @@ class Daily < Prawn::Document
     })
     y_pos = cursor
     image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.25
-    font "OpenSans", style: :bold
+    font "OpenSans"
     bounding_box([50, y_pos], :width => 470) do
-        text Bulletin::HEAD, align: :center
+        text Bulletin::HEAD, align: :center, size: 11
     end
     move_down 20
     font "OpenSans", style: :italic
@@ -34,7 +34,8 @@ class Daily < Prawn::Document
         #    stroke_bounds
         text "ШТОРМОВОЕ ПРЕДУПРЕЖДЕНИЕ", align: :center, :color => "ff0000"
         font "OpenSans"
-        text @bulletin.storm
+        move_down 10
+        text @bulletin.storm, indent_paragraphs: 40, leading: 4
       end
     end
     move_down 10
@@ -107,7 +108,7 @@ class Daily < Prawn::Document
       h8 = "Глубина промерзания (см)"
     end
     stations = ["Донецк", "Дебальцево", "Амвросиевка", "Седово", "Красноармейск", "Волноваха", "Артемовск", "Мариуполь"]
-    table_content = [["Название метеостанции", "<color rgb='ff0000'>Максимальная вчера днем</color>", "<color rgb='0000ff'>Минимальная сегодня ночью</color>", "Средняя за сутки #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", "В 9.00 часов сегодня", "Количество осадков за сутки (мм)", h7, h8, "Максимальная скорость ветра (м/с)", "Явления погоды"]]
+    table_content = [["Название метеостанции", "<color rgb='ff0000'>Максимальная вчера днем</color>", "<color rgb='0000ff'>Минимальная сегодня ночью</color>", "Средняя за сутки  #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", "В 9.00 часов сегодня", "Количество осадков за сутки (мм)", h7, h8, "Максимальная скорость ветра (м/с)", "Явления погоды"]]
     stations.each.with_index do |s, j|
       a = [s]
       (0..8).each do |i| 
@@ -147,32 +148,28 @@ class Daily < Prawn::Document
     c_d = @bulletin.climate_data.split(";") if @bulletin.climate_data.present?
     text "Климатические данные по г. Донецку за #{report_date_prev[8,2]}-#{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]}", align: :center, :color => "0000FF"
     text "С 1945 по #{report_date[0,4]} гг. по данным Гидрометеорологической службы", align: :center, :color => "0000FF"
-    table_content = [["Средняя за сутки температура воздуха", "#{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", c_d[0].present? ? c_d[0].strip : '', ""],
-                     ["Максимальная температура воздуха", "#{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", c_d[1].present? ? c_d[1].strip : '', "отмечалась в #{c_d[2]} г."],
-                     ["Минимальная температура воздуха", "#{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]}", c_d[3].present? ? c_d[3].strip : '', "отмечалась в #{c_d[4]} г."]]
+    table_content = [["Средняя за сутки температура воздуха", "#{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", c_d[0].present? ? c_d[0].strip+'°' : '', ""],
+                     ["Максимальная температура воздуха", "#{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", c_d[1].present? ? c_d[1].strip+'°' : '', "отмечалась в #{c_d[2].strip} г."],
+                     ["Минимальная температура воздуха", "#{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]}", c_d[3].present? ? c_d[3].strip+'°' : '', "отмечалась в #{c_d[4].strip} г."]]
     font "OpenSans"
     table table_content, width: bounds.width
     move_down 10
-    text "Время выпуска 13:00"
-    
-    move_down 10
-    chief_descr = @bulletin.chief_2_pdf
-    responsible_descr = @bulletin.responsible_2_pdf
-    table_content =[["Ответственный за выпуск:","",""],
-                    [responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6}, responsible_descr[:name]],
-                    [chief_descr[:position], {:image => chief_descr[:image_name], scale: 0.6}, chief_descr[:name]]]
-                    
-    table table_content, width: bounds.width, :column_widths => [300, 100], cell_style: {:overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true } do |t|
-      t.cells.border_width = 0
+
+    bounding_box([5, cursor], :width => bounds.width) do
+      text "Время выпуска 13:00", size: 9
     end
-    
-    # font "OpenSans", style: :bold
-    # string = "Страница <page>"
-    # Green page numbers 1 to 7
-    # options = { :at => [bounds.right - 150, 0],
-    # :width => 150,
-    # :align => :right,
-    # :start_count_at => 1}
-    # number_pages string, options
+    table signatures, width: bounds.width, :column_widths => [220,170], cell_style: {:overflow => :shrink_to_fit, size: 10, :inline_format => true } do |t|
+      t.cells.border_width = 0
+      t.row(2).size = 11
+      t.column(1).position = :center
+      # t.row(2).valign = :center
+    end
   end  
+  def signatures
+	  chief_descr = @bulletin.chief_2_pdf
+    responsible_descr = @bulletin.responsible_2_pdf
+    [ ["Ответственный за выпуск:","",""],
+      [responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6, :vposition => :center}, {:padding => [16,5],:content => responsible_descr[:name]}],
+      [{:padding => [10,5],:content => chief_descr[:position]}, {:image => chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]
+  end
 end

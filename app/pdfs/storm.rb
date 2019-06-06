@@ -1,7 +1,7 @@
 require 'prawn'
 class Storm < Prawn::Document
   def initialize(bulletin)
-		super(top_margin: 40, right_margin: 50, left_margin: 55)
+		super(top_margin: 40, right_margin: 50, left_margin: 80)
 		@bulletin = bulletin
     font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),
@@ -11,9 +11,9 @@ class Storm < Prawn::Document
     })
     y_pos = cursor
     image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.25
-    font "OpenSans", style: :bold
+    font "OpenSans" #, style: :bold
     bounding_box([50, y_pos], :width => 470) do
-      text Bulletin::HEAD, align: :center
+      text Bulletin::HEAD, align: :center, size: 11
     end
     move_down 20
     font "OpenSans", style: :italic
@@ -30,17 +30,17 @@ class Storm < Prawn::Document
     move_down 20
     font "OpenSans"
     # text_box @bulletin.storm, :at => [0, cursor], :width => bounds.width, :height => 300, :overflow => :shrink_to_fit, :indent_paragraphs => 40
-    text @bulletin.storm, :indent_paragraphs => 40
+    text @bulletin.storm, indent_paragraphs: 40, leading: 4
     move_down 20
     bounding_box([0, cursor-30], width: bounds.width) do
-      table signatures, width: bounds.width, column_widths:  [100, 300], cell_style: {overflow: :shrink_to_fit, inline_format: true } do |t|
+      table signatures, width: bounds.width, column_widths:  [100, 270], cell_style: {overflow: :shrink_to_fit, inline_format: true } do |t|
         t.cells.border_width = 0
       end
     end
     text_box @bulletin.synoptic1 + " (062) 304-82-22", :at => [0, 30]
-    image "./app/assets/images/storm.png", at: [400, 100], :scale => 0.75
+    image "./app/assets/images/storm.png", at: [380, 100], :scale => 0.75
     move_to 0, 15
-    line_to 520, 15
+    line_to 500, 15
     stroke_color '0000ff'
     stroke
   end
