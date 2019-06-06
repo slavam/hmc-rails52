@@ -1,8 +1,8 @@
 require 'prawn'
 class Storm < Prawn::Document
   def initialize(bulletin)
-	super(top_margin: 40, right_margin: 50, left_margin: 55)
-	@bulletin = bulletin
+		super(top_margin: 40, right_margin: 50, left_margin: 55)
+		@bulletin = bulletin
     font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),
       :italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-Italic.ttf"),
@@ -45,7 +45,7 @@ class Storm < Prawn::Document
     stroke
   end
   def signatures
-      chief_descr = @bulletin.chief_2_pdf
+	  chief_descr = @bulletin.chief_2_pdf
     [["<b>"+chief_descr[:position]+"</b>", {padding: -5, position: :center, image: chief_descr[:image_name], scale: 0.6}, chief_descr[:name]]]
-    end
+	end
 end
