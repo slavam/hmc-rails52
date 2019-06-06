@@ -1,7 +1,7 @@
 require 'prawn'
 class Radiation < Prawn::Document
   def initialize(bulletin)
-		super(top_margin: 40, right_margin: 50, left_margin: 50)		
+		super(top_margin: 40, right_margin: 50, left_margin: 55)		
 		@bulletin = bulletin
     font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),

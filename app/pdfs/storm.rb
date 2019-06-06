@@ -1,8 +1,8 @@
 require 'prawn'
 class Storm < Prawn::Document
   def initialize(bulletin)
-		super(top_margin: 40)		
-		@bulletin = bulletin
+	super(top_margin: 40, right_margin: 50, left_margin: 55)
+	@bulletin = bulletin
     font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),
       :italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-Italic.ttf"),
@@ -27,27 +27,25 @@ class Storm < Prawn::Document
     bounding_box([0, cursor], width: bounds.width) do
       text "ШТОРМОВОЕ ПРЕДУПРЕЖДЕНИЕ № #{@bulletin.curr_number}", align: :center, color: "ff0000"
     end
-    move_down 10
-    font "OpenSans"
-    text_box @bulletin.storm, :at => [0, cursor], :width => bounds.width, :height => 300, :overflow => :shrink_to_fit
     move_down 20
-    bounding_box([0, 150], width: bounds.width) do
-      table signatures, width: bounds.width, column_widths:  [300, 100], cell_style: {overflow: :shrink_to_fit, inline_format: true } do |t|
+    font "OpenSans"
+    # text_box @bulletin.storm, :at => [0, cursor], :width => bounds.width, :height => 300, :overflow => :shrink_to_fit, :indent_paragraphs => 40
+    text @bulletin.storm, :indent_paragraphs => 40
+    move_down 20
+    bounding_box([0, cursor-30], width: bounds.width) do
+      table signatures, width: bounds.width, column_widths:  [100, 300], cell_style: {overflow: :shrink_to_fit, inline_format: true } do |t|
         t.cells.border_width = 0
       end
     end
-    text_box @bulletin.synoptic1, :at => [0, 30], :width => 170
-    image "./app/assets/images/storm.png", at: [450, 100], :scale => 0.75
-    text_box "телефон: (062) 304-82-22", :at => [350, 30], :width => 170, align: :right
+    text_box @bulletin.synoptic1 + " (062) 304-82-22", :at => [0, 30]
+    image "./app/assets/images/storm.png", at: [400, 100], :scale => 0.75
     move_to 0, 15
-    line_to 550, 15
+    line_to 520, 15
     stroke_color '0000ff'
     stroke
   end
   def signatures
-	  chief_descr = @bulletin.chief_2_pdf
-    # [ [["<b>Начальник</b>", {image: "./app/assets/images/chief.png", scale: 0.6},"<b>М.Б. Лукьяненко</b>"]]
-      # [responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6}, responsible_descr[:name]],
-      [["<b>"+chief_descr[:position]+"</b>", {:image => chief_descr[:image_name], scale: 0.6}, chief_descr[:name]]]
-	end
+      chief_descr = @bulletin.chief_2_pdf
+    [["<b>"+chief_descr[:position]+"</b>", {padding: -5, position: :center, image: chief_descr[:image_name], scale: 0.6}, chief_descr[:name]]]
+    end
 end
