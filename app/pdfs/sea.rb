@@ -2,7 +2,8 @@ require 'prawn'
 class Sea < Prawn::Document
   MONTH_NAME2 = %w{nil января февраля марта апреля мая июня июля августа сентября октября ноября декабря}
 	def initialize(bulletin)
-		super(top_margin: 30)		
+		# super(top_margin: 30)	
+		super(top_margin: 30, left_margin: 80)
 		@bulletin = bulletin
     font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),

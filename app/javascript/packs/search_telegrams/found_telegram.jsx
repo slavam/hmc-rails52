@@ -25,7 +25,8 @@ export default class FoundTelegram extends React.Component{
     let info = '';
     switch(this.props.tlgType) {
       case 'storm':
-        info = t.date.substr(0,16)+'; '+t.station_name+'; '+(t.telegram[3] == 'Я'? 'Начало/усиление; ':'Завершение; ')+this.props.fact[t.telegram.substr(26,2)];
+        let eventDate = t.event_date.replace(/T/,' ');
+        info = eventDate.substr(0,16)+'; '+t.station_name+'; '+(t.telegram[3] == 'Я'? 'Начало/усиление; ':'Завершение; ')+this.props.fact[t.telegram.substr(26,2)];
         break;
       case 'synoptic':
         info = t.date.substr(0,10)+'; '+t.term+'; '+t.station_name+'; ';
@@ -53,7 +54,7 @@ export default class FoundTelegram extends React.Component{
     return (
       <tr>
         {/*<td>{this.props.telegram.date.substr(0, 19)+' UTC'}</td> 20190531*/}
-        <td>{this.props.telegram.date.substr(0, 19)}</td>
+        <td>{this.props.telegram.date.substr(0, 19)} {this.props.tlgType == 'synoptic' ? ' UTC' : ''}</td>
         {add_td}
         <td>{this.props.telegram.station_name}</td>
         {/*<td><a href={desiredLink} style={{color: this.state.color}} onMouseOver={(event) => this.inControl(event)}>{this.props.telegram.telegram}</a></td>*/}

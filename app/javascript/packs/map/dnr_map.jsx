@@ -27,7 +27,7 @@ export default class DNRMap extends React.Component{
           // .subscribe(() => {alert(marker.label)}) ;
         markers.push(marker);
       }
-      info[codeStation] += this.stationInfo(t.date, t.telegram);
+      info[codeStation] += this.stationInfo(t.event_date, t.telegram);
     });
     markers.map( m => {
       var infowindow = new google.maps.InfoWindow({content: info[m.label]});

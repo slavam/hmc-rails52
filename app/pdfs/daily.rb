@@ -78,7 +78,8 @@ class Daily < Prawn::Document
     if @bulletin.forecast_orientation.present?
       move_down 10
       report_date_next6 = (@bulletin.report_date + 6.day).to_s(:custom_datetime)
-      report_date_next11 = (@bulletin.report_date + 11.day).to_s(:custom_datetime)
+      # report_date_next11 = (@bulletin.report_date + 11.day).to_s(:custom_datetime) 20190610 KMA
+      report_date_next11 = (@bulletin.report_date + 10.day).to_s(:custom_datetime)
       font "OpenSans", style: :bold
       text "Ориентировочный прогноз погоды на #{report_date_next6[8,2]}-#{report_date_next11[8,2]} #{Bulletin::MONTH_NAME2[report_date_next11[5,2].to_i]} #{report_date_next11[0,4]} года", align: :center
       font "OpenSans"
@@ -86,7 +87,7 @@ class Daily < Prawn::Document
     end
     text "Синоптик #{@bulletin.synoptic1}", align: :right
   
-    start_new_page
+    start_new_page(right_margin: 80, left_margin: 30)
     
     font "OpenSans", style: :bold
     text "Приложение к Гидрометеорологическому Бюллетеню", align: :center, :color => "0000FF"
