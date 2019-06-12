@@ -1,4 +1,4 @@
-require 'prawn'
+# require 'prawn'
 class Sea < Prawn::Document
   MONTH_NAME2 = %w{nil января февраля марта апреля мая июня июля августа сентября октября ноября декабря}
 	def initialize(bulletin)
@@ -13,30 +13,27 @@ class Sea < Prawn::Document
     })
     y_pos = cursor
     image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.25
-    # font "./app/assets/fonts/OpenSans/OpenSans-Bold.ttf"
     font "OpenSans"
-    bounding_box([50, y_pos], :width => 470) do
-        text Bulletin::HEAD, align: :center, size: 10
+    bounding_box([0, y_pos], width: bounds.width) do
+      text Bulletin::HEAD, align: :center, size: 10
     end
     move_down 20
-    # font "./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"
-    bounding_box([50, cursor], :width => 470) do
-        text Bulletin::ADDRESS, align: :center, size: 9
+    bounding_box([0, cursor], width: bounds.width) do
+      text Bulletin::ADDRESS, align: :center, size: 9
     end
     report_date = @bulletin.report_date.to_s(:custom_datetime)
-    # font "./app/assets/fonts/DejaVu/DejaVuSansCondensed-Bold.ttf"
     font "OpenSans", style: :bold
     move_down 40
-    bounding_box([50, cursor], :width => 470) do
+    bounding_box([0, cursor], width: bounds.width) do
       text "МОРСКОЙ ГИДРОМЕТЕОРОЛОГИЧЕСКИЙ БЮЛЛЕТЕНЬ № #{@bulletin.curr_number} 
-      #{@bulletin.report_date_as_str}", :color => "0000FF", align: :center, size: 13
+      #{@bulletin.report_date_as_str}", :color => "0000FF", align: :center, size: 12
     end
     move_down 20
     if @bulletin.storm.present?
       bounding_box([0, cursor], width: bounds.width) do
         text "ШТОРМОВОЕ ПРЕДУПРЕЖДЕНИЕ", align: :center, color: "ff0000"
-        font "./app/assets/fonts/OpenSans/OpenSans-Light.ttf"
-        text @bulletin.storm
+        font "OpenSans"
+        text @bulletin.storm, indent_paragraphs: 40, leading: 4
       end
     end
     move_down 10
@@ -57,10 +54,10 @@ class Sea < Prawn::Document
       row(0).column(0).borders = [:bottom, :right]
       row(1).leading = 4
     end
-    move_down 20
+    move_down 25
     report_date_next2 = (@bulletin.report_date + 2.day).to_s(:custom_datetime)
     report_date_next3 = (@bulletin.report_date + 3.day).to_s(:custom_datetime)
-    font "./app/assets/fonts/DejaVu/DejaVuSansCondensed-Bold.ttf"
+    font "OpenSans", style: :bold
     text "Периодный прогноз погоды на #{report_date_next2[8,2]}-#{report_date_next3[8,2]} #{MONTH_NAME2[report_date_next3[5,2].to_i]} #{report_date_next3[0,4]} года
     По акватории Азовского моря (на участке с. Безыменное – пгт. Седово)", align: :center, color: "0000ff"
     font "OpenSans"
@@ -69,7 +66,8 @@ class Sea < Prawn::Document
     move_down 10
     text "Синоптик #{@bulletin.synoptic1}", align: :right
     
-    start_new_page layout: :landscape
+    # start_new_page layout: :landscape
+    start_new_page(layout: :landscape, right_margin: 30, left_margin: 30)
     font "./app/assets/fonts/DejaVu/DejaVuSansCondensed-Bold.ttf"
     text "Приложение к Морскому Гидрометеорологическому Бюллетеню
     от #{@bulletin.report_date_as_str} № #{@bulletin.curr_number}", align: :center, :color => "0000FF"
@@ -77,46 +75,111 @@ class Sea < Prawn::Document
     move_down 10
     font "OpenSans"
     
-    table meteo_data, width: bounds.width, cell_style: {padding: 3, border_width: 0.5, border_color: "000000", :inline_format => true, size: 9} do |t|
-      t.cells.padding = [1, 1]
+    table meteo_head, width: bounds.width, column_widths: [70,40,40,40,40,40,40,80,50,50,40,40,40], cell_style: {border_width: 0.5, :inline_format => true, size: 9} do |t|
+      t.cells.padding = 1
+      t.cells.rows(0..1).padding = [-5,2,2,2]
       t.cells.align = :center
-      t.row(0).column(0).valign = :center
-      t.row(0).columns(0).width = 90
+      t.row(0).height = 17
+      t.cells.row(0).valign = :center
+      t.row(1).height = 17
+      t.row(2).rotate = 90
+      t.cells.row(2).padding = [10, 10]
       
-      t.row(1).columns(1..13).rotate = 90
+      t.before_rendering_page do |p|
+        p.row(2).height = 90
+      end
+    end
+    table meteo_data, width: bounds.width, column_widths: [70,45,46,45,46,45,46,80,50,50,40,40,40, 89], cell_style: {border_width: 0.5, :inline_format => true, size: 9} do |t|
+      # t.row(1).column(13).content = #t.row_heights().to_s
+      # t.before_rendering_page do |p|
+        # p.row(0).columns(0..13).height = 20
+        # p.row(1).columns(0..13).height = 20
+        # p.row(2).columns(0..13).height = 80
+        # p.row(3).columns(0..13).height = 100
+      # end
+      # y_pos = cursor
+      # t.row(0).columns(0..13).height = 20
+      # t.row(0).column(0).height = 80
+      
+      t.cells.padding = 1 #[1, 1]
+      # t.row(3).padding = 7
+      t.cells.align = :center
+      # t.row(0).column(0).valign = :center
+      # t.row(0).column(0).width = 90
+      # t.row(0).height = 120
+      # t.row(2).height = 120
+      
+      
       if @bulletin.summer
-        spec_cell = 7
-        t.row(1).column(13).width = 40
-        t.row(1).column(9).width = 60
+        # t.row(6).padding = [10,3,10,3]
+        # t.row(5).margin = [3,3,3,3]
+        # t.row(1).rotate = 90
+        # t.row(1).column(1).rotate = -90
+        # t.row(1).column(3).rotate = -90
+        # t.row(1).column(5).rotate = -90
+        # t.row(1).column(7).rotate = -90
+        # t.row(1).column(8).rotate = -90
+        # t.row(1).column(4).padding = [10,10]
+        # t.row(1).column(10).padding = [10,10]
+        # t.row(1).column(13).padding = [10,10]
+        # t.row(3).height = 20
+        # t.row(3).column(13).width = 40
+        # t.row(3).column(11..12).width = 40
+        # t.row(3).column(7).width = 80
+        # t.row(2).column(8).width = 30
+        # t.row(2).column(9).width = 30
+        # t.row(2).column(1..6).width = 30
+        # t.row(2).column(5..6).width = 40
       else
-        spec_cell = 8
-        t.row(1).column(10).width = 40
-        t.row(1).column(13).width = 90
+        # spec_cell = 8
+        t.row(1).rotate = 90
+        t.row(1).column(1).rotate = -90
+        t.row(1).column(6).rotate = -90
+        t.row(1).column(8).rotate = -90
+        t.row(1).column(9).rotate = -90
+        
+        t.row(1).column(13).width = 80
         t.row(1).column(13).rotate = -90
         t.row(1).column(13).valign = :center
+        t.row(1).column(12).width = 30
+        t.row(2).column(10).width = 30
+        t.row(3).column(8).width = 80
+        t.row(2).column(7).width = 30
+        # t.row(5).column(0).top_margin = 50
       end
-      t.row(1).columns(spec_cell).rotate = -90
-      t.row(1).column(spec_cell).valign = :center
+      # t.row(2).columns(spec_cell).rotate = -90
+      # t.row(2).column(spec_cell).valign = :center
       # t.row(1).valign = :center
-      t.row(1).column(spec_cell).width = 90
+      # t.row(2).column(spec_cell).width = 90
+      # t.row(2).rotate = 90
+      # t.row(2).columns(1..13).height = 100
+      # t.row(0).height = 10
+      # t.row(2).height = 30
+      # t.row(0).height = 20
+      # t.row(1).height = 20
       
-      t.row(1).columns(1..13).height = 100
       
-      t.row(1).column(1).width = 40
-      t.row(1).column(2).width = 40
-      t.row(1).column(3).width = 40
-      t.rows(2..5).size = 11
-      t.row(5).align = :left
-      t.row(5).leading = 4
+      # t.row(2).columns(1..13).width = 40
+      
+      # t.row(0).column(8).width = 160
+      # t.row(1).column(8).width = 60
+      
+      # t.row(3).column(9).width = 40
+      # t.row(2).column(3).width = 40
+      t.row(0).height = 17
+      t.rows(0..3).size = 11
+      t.row(3).align = :left
+      t.row(3).leading = 4
+      t.row(3).padding = 7
     end
     move_down 10
     bounding_box([5, cursor], :width => bounds.width) do
-      text "Время выпуска 13:00", size: 9
+      text "Время выпуска 13:00", size: 11
     end
     move_down 10
-    table signatures, width: bounds.width, :column_widths => [270, 300], cell_style: {:overflow => :shrink_to_fit, size: 10, :inline_format => true } do |t|
+    table signatures, width: bounds.width, :column_widths => [270, 300], cell_style: {:overflow => :shrink_to_fit, size: 11, :inline_format => true } do |t|
       t.cells.border_width = 0
-      t.row(2).size = 11
+      t.row(2).size = 12
       t.column(1).position = :center
       # t.row(2).valign = :center
     end
@@ -126,77 +189,111 @@ class Sea < Prawn::Document
 		[ [{:content => "<b>По акватории Азовского моря (на участке с. Безыменное – пгт. Седово)</b>", :align => :center}, {:content => "<b>По г. Новоазовску, пгт. Седово</b>", :align => :center}],
       [@bulletin.forecast_day, @bulletin.forecast_day_city]]
 	end
+	def meteo_head
+	  if @bulletin.summer
+	    colspan1 = 7
+	    colspan2 = 6
+	    head_row01 = 
+	    [
+	      {content:'Температура воздуха (°C)', colspan:3, valign: :center},
+	      {content:"Количество осадков 
+	      за сутки (мм)", rowspan:2, rotate: 90},
+	      {content:'Ветер', colspan:2, valign: :center},
+	      {content:"Явления погоды", rowspan:2, valign: :center}, 
+	      {content:'Уровень моря (см)', colspan:2, valign: :center},
+	      {content:"Температура воды 
+	      (°C)", rowspan:2, rotate: 90}, 
+	      {content:'Волнение', colspan:2, valign: :center},
+  	    {content:"Видимость", rowspan:2, valign: :center},
+	    ]
+	    head_row1 = 
+	    [
+  	    "<color rgb='ff0000'>Максимальная вчера днем</color>", 
+  	    "<color rgb='0000ff'>Минимальная сегодня ночью</color>", 
+  	    "В 9.00 часов сегодня", 
+  	    "Направление", 
+  	    "Максимальная скорость (м/с)", 
+  	    "Над '0' поста", 
+  	    "Повышение (+), понижение (-) за сутки", 
+  	    "Направление", 
+  	    "Высота (дм)"
+	    ]
+	  else
+	    colspan1 = 8
+	    colspan2 = 5
+	    head_row01 = [{content:'Температура воздуха (°C)', colspan:3, valign: :center},
+	      {content:"
+	      Количество осадков 
+	      за сутки (мм)", rowspan:2},
+	      {content:"
+	      Высота снежного покрова (см)", rowspan:2},
+	      {content:'Ветер', colspan:2, valign: :center},
+	      {content:"Явления погоды", rowspan:2, valign: :center}, 
+	      {content:'Уровень моря (см)', colspan:2, valign: :center},
+	      {content:"
+	      Температура воды (°C)", rowspan:2}, 
+  	    {content:"
+  	    Видимость", rowspan:2},
+  	    {content:"Ледовое состояние", rowspan:2},
+	    ]
+	    head_row1 = [
+	    "<color rgb='ff0000'>
+	    Максимальная 
+	    вчера днем</color>", 
+	    "<color rgb='0000ff'>
+	    Минимальная 
+	    сегодня ночью</color>", 
+	    "
+	    В 9.00 часов сегодня", 
+	    "Направление ветра", "Максимальная скорость ветра (м/с)", 
+	    "Над '0' поста", 
+	    "Повышение (+),
+	    понижение (-) 
+	    за сутки"]
+	  end
+    report_date_prev = (@bulletin.report_date - 1.day).to_s(:custom_datetime)
+	  [
+	    [
+	     # '','','','','','','','','','','','','',''
+	      {content: "Название метеостанции", rowspan: 3}, #, width: 70}, 
+	      {content: "за период с 9.00 часов #{report_date_prev[8,2]} #{MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}", 
+	        valign: :center, colspan: colspan1},
+	      {content: "в срок 9.00 часов #{@bulletin.report_date_as_str}", colspan: colspan2, valign: :center}
+	    ],
+	   # ['','','','','','','','','','','','','',''],
+	    head_row01,
+	    head_row1,
+	  ]
+	end
+	
 	def meteo_data
     m_d = []
     m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
 	  if @bulletin.summer
-	    colspan1 = 7
-	    colspan2 = 6
-	    head_row1 = [
-	    "<color rgb='ff0000'>Максимальная 
-	    температура воздуха
-	    вчера днем</color>", 
-	    "<color rgb='0000ff'>Минимальная 
-	    температура воздуха
-	    сегодня ночью</color>", 
-	    "
-	    Температура воздуха
-	    в 9.00 часов сегодня", 
-	    "
-	    Количество осадков 
-	    за сутки (мм)", "
-	    Направление ветра", "
-	    Максимальная скорость ветра (м/с)", "Явления погоды", 
-	    "
-	    Уровень моря
-	    над '0' поста (см)", 
-	    "Повышение (+) 
-	    понижение (-) 
-	    уровня моря 
-	    за сутки (см)", "
-	    Температура воды", "
-	    Направление волн", "
-	    Высота волн (дм)", 
-	    "
-	    Видимость"]
+	    colspan3 = 8
+	    colspan4 = 6
 	    [0,1,2,9].each{|i| m_d[i] = m_d[i].to_f.round if m_d[i].present?}
 	    data_row = ['Седово', m_d[0], m_d[1], m_d[2], m_d[3], m_d[4], m_d[5], m_d[6], m_d[7], m_d[8], m_d[9], m_d[10], m_d[11], m_d[12]]
     else
-	    colspan1 = 8
-	    colspan2 = 5
-	    head_row1 = [
-	    "<color rgb='ff0000'>Максимальная 
-	    температура воздуха
-	    вчера днем</color>", 
-	    "<color rgb='0000ff'>Минимальная 
-	    температура воздуха
-	    сегодня ночью</color>", 
-	    "Температура воздуха
-	    в 9.00 часов сегодня", 
-	    "Количество осадков 
-	    за сутки (мм)",
-	    "Высота снежного покрова (см)",
-	    "Направление ветра", "Максимальная скорость ветра (м/с)", "Явления погоды", 
-	    "Уровень моря
-	    над '0' поста (см)", 
-	    "Повышение (+) 
-	    понижение (-) 
-	    уровня моря 
-	    за сутки (см)", "Температура воды", 
-	    "Видимость", "Ледовое состояние"]
+	    colspan3 = 9
+	    colspan4 = 5
 	    data_row = ['Седово', m_d[0], m_d[1], m_d[2], m_d[3], m_d[13], m_d[4], m_d[5], m_d[6], m_d[7], m_d[8], m_d[9], m_d[12], m_d[14]]
 	  end
-    report_date_prev = (@bulletin.report_date - 1.day).to_s(:custom_datetime)
     review_start_date = @bulletin.review_start_date.present? ? @bulletin.review_start_date.to_s(:custom_datetime) : (@bulletin.report_date-1.day).to_s(:custom_datetime)
 	  [
-	    [{:content => "Название
-	    метеостанции", :rowspan => 2},{:content => "за период с 9.00 часов #{report_date_prev[8,2]} #{MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}",
-	    :colspan => colspan1},{:content => "в срок 9.00 часов #{@bulletin.report_date_as_str}", :colspan => colspan2}],
-	    head_row1,
 	    data_row,
-	    [{:content => "<color rgb='0000ff'>ОБЗОР ПОГОДЫ</color>", :colspan => 8},{:content => "<color rgb='0000ff'>ОБЗОР СОСТОЯНИЯ АЗОВСКОГО МОРЯ</color>", :colspan => 6}],
-	    [{:content => "за период с 9.00 часов #{review_start_date[8,2]} #{MONTH_NAME2[review_start_date[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}", :colspan => 14}],
-	    [{content: @bulletin.forecast_sea_day, colspan: 8},{content: @bulletin.forecast_sea_period, colspan: 6}]
+	    [
+	      {content: "<color rgb='0000ff'>ОБЗОР ПОГОДЫ</color>", colspan: colspan3},
+	      {content: "<color rgb='0000ff'>ОБЗОР СОСТОЯНИЯ АЗОВСКОГО МОРЯ</color>", colspan: colspan4}
+	    ],
+	    [
+	      {content: "за период с 9.00 часов #{review_start_date[8,2]} #{MONTH_NAME2[review_start_date[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}", 
+  	      colspan: 14}
+	    ],
+	    [
+	      {content: @bulletin.forecast_sea_day, colspan: colspan3},
+	      {content: @bulletin.forecast_sea_period, colspan: colspan4}
+	    ]
     ]
 	end
 	def signatures
