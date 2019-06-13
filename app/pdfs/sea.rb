@@ -79,7 +79,7 @@ class Sea < Prawn::Document
       data_col_widths = [70,45,46,45,46,45,46,80,50,50,40,40,40, 89]
     else
       head_col_widths = [70,40,40,40,40,40,40,40,80,50,50,40,40]
-      data_col_widths = [70,45,45,45,45,45,45,45,80,50,50,40,40] #, 87]
+      data_col_widths = [70,45,45,45,45,45,45,45,80,50,50,40,40, 87]
     end
     table meteo_head, width: bounds.width, column_widths: head_col_widths, cell_style: {border_width: 0.5, :inline_format => true, size: 9} do |t|
       t.cells.padding = 1
