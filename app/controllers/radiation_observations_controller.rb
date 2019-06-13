@@ -76,6 +76,14 @@ class RadiationObservationsController < ApplicationController
     end
   end
   
+  def destroy
+    factor = @radiation_observation.hour_observation == 0 ? 'daily' : 'monthly'
+    @radiation_observation.destroy
+    flash[:success] = "Телеграмма удалена"
+    redirect_to '/radiation_observations?factor='+factor
+  end
+  
+  
   private
     def find_radiation_observation
       @radiation_observation = RadiationObservation.find(params[:id])

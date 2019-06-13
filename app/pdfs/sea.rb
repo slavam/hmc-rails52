@@ -3,7 +3,7 @@ class Sea < Prawn::Document
   MONTH_NAME2 = %w{nil января февраля марта апреля мая июня июля августа сентября октября ноября декабря}
 	def initialize(bulletin)
 		# super(top_margin: 30)	
-		super(top_margin: 30, left_margin: 80)
+		super(top_margin: 30, left_margin: 80, right_margin: 50)
 		@bulletin = bulletin
     font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),
@@ -67,15 +67,21 @@ class Sea < Prawn::Document
     text "Синоптик #{@bulletin.synoptic1}", align: :right
     
     # start_new_page layout: :landscape
-    start_new_page(layout: :landscape, right_margin: 30, left_margin: 30)
+    start_new_page(layout: :landscape, right_margin: 30, left_margin: 30) #, top_margin: 50)
     font "./app/assets/fonts/DejaVu/DejaVuSansCondensed-Bold.ttf"
     text "Приложение к Морскому Гидрометеорологическому Бюллетеню
     от #{@bulletin.report_date_as_str} № #{@bulletin.curr_number}", align: :center, :color => "0000FF"
     text "МЕТЕОРОЛОГИЧЕСКИЕ ДАННЫЕ И СВЕДЕНИЯ О СОСТОЯНИИ МОРЯ", align: :center, :color => "0000FF"
     move_down 10
     font "OpenSans"
-    
-    table meteo_head, width: bounds.width, column_widths: [70,40,40,40,40,40,40,80,50,50,40,40,40], cell_style: {border_width: 0.5, :inline_format => true, size: 9} do |t|
+    if @bulletin.summer
+      head_col_widths = [70,40,40,40,40,40,40,80,50,50,40,40,40]
+      data_col_widths = [70,45,46,45,46,45,46,80,50,50,40,40,40, 89]
+    else
+      head_col_widths = [70,40,40,40,40,40,40,40,80,50,50,40,40]
+      data_col_widths = [70,45,45,45,45,45,45,45,80,50,50,40,40] #, 87]
+    end
+    table meteo_head, width: bounds.width, column_widths: head_col_widths, cell_style: {border_width: 0.5, :inline_format => true, size: 9} do |t|
       t.cells.padding = 1
       t.cells.rows(0..1).padding = [-5,2,2,2]
       t.cells.align = :center
@@ -83,89 +89,24 @@ class Sea < Prawn::Document
       t.cells.row(0).valign = :center
       t.row(1).height = 17
       t.row(2).rotate = 90
-      t.cells.row(2).padding = [10, 10]
+      t.cells.row(2).padding = [1, 10]
       
       t.before_rendering_page do |p|
         p.row(2).height = 90
       end
     end
-    table meteo_data, width: bounds.width, column_widths: [70,45,46,45,46,45,46,80,50,50,40,40,40, 89], cell_style: {border_width: 0.5, :inline_format => true, size: 9} do |t|
-      # t.row(1).column(13).content = #t.row_heights().to_s
-      # t.before_rendering_page do |p|
-        # p.row(0).columns(0..13).height = 20
-        # p.row(1).columns(0..13).height = 20
-        # p.row(2).columns(0..13).height = 80
-        # p.row(3).columns(0..13).height = 100
-      # end
-      # y_pos = cursor
-      # t.row(0).columns(0..13).height = 20
-      # t.row(0).column(0).height = 80
-      
-      t.cells.padding = 1 #[1, 1]
-      # t.row(3).padding = 7
+    
+    table meteo_data, width: bounds.width, column_widths: data_col_widths, cell_style: {border_width: 0.5, :inline_format => true, size: 9} do |t|
+      t.cells.padding = 1
       t.cells.align = :center
-      # t.row(0).column(0).valign = :center
-      # t.row(0).column(0).width = 90
-      # t.row(0).height = 120
-      # t.row(2).height = 120
-      
-      
-      if @bulletin.summer
-        # t.row(6).padding = [10,3,10,3]
-        # t.row(5).margin = [3,3,3,3]
-        # t.row(1).rotate = 90
-        # t.row(1).column(1).rotate = -90
-        # t.row(1).column(3).rotate = -90
-        # t.row(1).column(5).rotate = -90
-        # t.row(1).column(7).rotate = -90
-        # t.row(1).column(8).rotate = -90
-        # t.row(1).column(4).padding = [10,10]
-        # t.row(1).column(10).padding = [10,10]
-        # t.row(1).column(13).padding = [10,10]
-        # t.row(3).height = 20
-        # t.row(3).column(13).width = 40
-        # t.row(3).column(11..12).width = 40
-        # t.row(3).column(7).width = 80
-        # t.row(2).column(8).width = 30
-        # t.row(2).column(9).width = 30
-        # t.row(2).column(1..6).width = 30
-        # t.row(2).column(5..6).width = 40
-      else
-        # spec_cell = 8
-        t.row(1).rotate = 90
-        t.row(1).column(1).rotate = -90
-        t.row(1).column(6).rotate = -90
-        t.row(1).column(8).rotate = -90
-        t.row(1).column(9).rotate = -90
-        
-        t.row(1).column(13).width = 80
-        t.row(1).column(13).rotate = -90
-        t.row(1).column(13).valign = :center
-        t.row(1).column(12).width = 30
-        t.row(2).column(10).width = 30
-        t.row(3).column(8).width = 80
-        t.row(2).column(7).width = 30
-        # t.row(5).column(0).top_margin = 50
+      t.before_rendering_page do |p|
+        if !@bulletin.summer
+          p.row(0).column(13).width = 99 
+          p.row(1).column(13).width = 99
+          p.row(2).column(13).width = 99
+          p.row(3).column(13).width = 99
+        end
       end
-      # t.row(2).columns(spec_cell).rotate = -90
-      # t.row(2).column(spec_cell).valign = :center
-      # t.row(1).valign = :center
-      # t.row(2).column(spec_cell).width = 90
-      # t.row(2).rotate = 90
-      # t.row(2).columns(1..13).height = 100
-      # t.row(0).height = 10
-      # t.row(2).height = 30
-      # t.row(0).height = 20
-      # t.row(1).height = 20
-      
-      
-      # t.row(2).columns(1..13).width = 40
-      
-      # t.row(0).column(8).width = 160
-      # t.row(1).column(8).width = 60
-      
-      # t.row(3).column(9).width = 40
-      # t.row(2).column(3).width = 40
       t.row(0).height = 17
       t.rows(0..3).size = 11
       t.row(3).align = :left
@@ -196,12 +137,14 @@ class Sea < Prawn::Document
 	    head_row01 = 
 	    [
 	      {content:'Температура воздуха (°C)', colspan:3, valign: :center},
-	      {content:"Количество осадков 
+	      {content:"
+	      Количество осадков 
 	      за сутки (мм)", rowspan:2, rotate: 90},
 	      {content:'Ветер', colspan:2, valign: :center},
 	      {content:"Явления погоды", rowspan:2, valign: :center}, 
 	      {content:'Уровень моря (см)', colspan:2, valign: :center},
-	      {content:"Температура воды 
+	      {content:"
+	      Температура воды 
 	      (°C)", rowspan:2, rotate: 90}, 
 	      {content:'Волнение', colspan:2, valign: :center},
   	    {content:"Видимость", rowspan:2, valign: :center},
@@ -221,35 +164,33 @@ class Sea < Prawn::Document
 	  else
 	    colspan1 = 8
 	    colspan2 = 5
-	    head_row01 = [{content:'Температура воздуха (°C)', colspan:3, valign: :center},
+	    head_row01 = 
+	    [
+	      {content:'Температура воздуха (°C)', colspan:3, valign: :center},
 	      {content:"
 	      Количество осадков 
-	      за сутки (мм)", rowspan:2},
+	      за сутки (мм)", rowspan:2, rotate: 90},
 	      {content:"
-	      Высота снежного покрова (см)", rowspan:2},
+	      Высота снежного покрова (см)", rowspan:2, rotate: 90},
 	      {content:'Ветер', colspan:2, valign: :center},
 	      {content:"Явления погоды", rowspan:2, valign: :center}, 
 	      {content:'Уровень моря (см)', colspan:2, valign: :center},
 	      {content:"
-	      Температура воды (°C)", rowspan:2}, 
+	      Температура воды 
+	      (°C)", rowspan:2, rotate: 90}, 
   	    {content:"
-  	    Видимость", rowspan:2},
-  	    {content:"Ледовое состояние", rowspan:2},
+  	    Видимость", rowspan:2, rotate: 90},
+  	    {content:"Ледовое состояние", rowspan:2, valign: :center},
 	    ]
 	    head_row1 = [
-	    "<color rgb='ff0000'>
-	    Максимальная 
-	    вчера днем</color>", 
-	    "<color rgb='0000ff'>
-	    Минимальная 
-	    сегодня ночью</color>", 
-	    "
-	    В 9.00 часов сегодня", 
-	    "Направление ветра", "Максимальная скорость ветра (м/с)", 
+	    "<color rgb='ff0000'>Максимальная вчера днем</color>", 
+	    "<color rgb='0000ff'>Минимальная сегодня ночью</color>", 
+	    "В 9.00 часов сегодня", 
+	    "Направление", 
+	    "Максимальная скорость (м/с)", 
 	    "Над '0' поста", 
-	    "Повышение (+),
-	    понижение (-) 
-	    за сутки"]
+	    "Повышение (+), понижение (-) за сутки"
+	    ]
 	  end
     report_date_prev = (@bulletin.report_date - 1.day).to_s(:custom_datetime)
 	  [

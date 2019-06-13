@@ -28,15 +28,16 @@
     - @actions.each do |a|
       %tr
         %td= a.version
-        %td= a.user.login
+        %td= a.user.present? ? a.user.login : 'not user!'
         %td= a.action
         %td= a.created_at
-  -#= link_to 'Поиск', @search_link
   %br
   - if current_user.role == 'technicist'
     = link_to 'Ввод телеграмм', '/radiation_observations/input_radiation_telegrams?input_mode=normal'+(@radiation_observation.hour_observation == 0 ? '&factor=daily' : '')
     %br
     = link_to "Список", '/radiation_observations'+(@radiation_observation.hour_observation == 0 ? '?factor=daily' : '')
+    %br
+    = link_to 'Удалить', @radiation_observation, method: :delete, data: { confirm: 'Вы уверены?' }
   - elsif current_user.role == 'specialist'
     = link_to 'Возврат', '/radiation_observations/input_radiation_telegrams?input_mode=normal'
   - else
