@@ -1,6 +1,7 @@
 class Daily < Prawn::Document
   def initialize(bulletin)
-		super(top_margin: 40, left_margin: 80)		
+		# super(top_margin: 40, left_margin: 80)	
+		super(top_margin: 40, left_margin: 80, right_margin: 50)
 		@bulletin = bulletin
     font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),
@@ -11,18 +12,26 @@ class Daily < Prawn::Document
     y_pos = cursor
     image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.25
     font "OpenSans"
-    bounding_box([50, y_pos], :width => 470) do
-        text Bulletin::HEAD, align: :center, size: 11
+    bounding_box([0, y_pos], width: bounds.width) do
+      text Bulletin::HEAD, align: :center, size: 10
     end
     move_down 20
-    font "OpenSans", style: :italic
-    bounding_box([50, cursor], :width => 470) do
-        text Bulletin::ADDRESS, align: :center, size: 10
+    bounding_box([0, cursor], width: bounds.width) do
+      text Bulletin::ADDRESS, align: :center, size: 9
     end
+    # bounding_box([50, y_pos], :width => 470) do
+    #     text Bulletin::HEAD, align: :center, size: 11
+    # end
+    # move_down 20
+    # font "OpenSans", style: :italic
+    # bounding_box([50, cursor], :width => 470) do
+    #     text Bulletin::ADDRESS, align: :center, size: 10
+    # end
     report_date = @bulletin.report_date.to_s(:custom_datetime)
     font "OpenSans", style: :bold
-    move_down 20
-    bounding_box([50, cursor-10], :width => 470, :height => 30, align: :center) do
+    move_down 40
+    # bounding_box([50, cursor-10], :width => 470, :height => 30, align: :center) do
+    bounding_box([0, cursor], width: bounds.width) do
       # pdf.stroke_bounds
       # pdf.fill_color = "FF0000"
       text "ГИДРОМЕТЕОРОЛОГИЧЕСКИЙ БЮЛЛЕТЕНЬ № #{@bulletin.curr_number}", :color => "0000FF", align: :center
@@ -31,7 +40,6 @@ class Daily < Prawn::Document
 
     if @bulletin.storm.present?
       bounding_box([0, cursor-10], :width => bounds.width) do
-        #    stroke_bounds
         text "ШТОРМОВОЕ ПРЕДУПРЕЖДЕНИЕ", align: :center, :color => "ff0000"
         font "OpenSans"
         move_down 10
@@ -52,13 +60,20 @@ class Daily < Prawn::Document
     # :shrink_to_fit
     table_content = [["<b>В Донецкой Народной Республике</b>", "<b>В городе Донецке</b>"],
                     [@bulletin.forecast_day, @bulletin.forecast_day_city]]
-    table table_content, width: bounds.width,:cell_style => { :padding => 3, :inline_format => true, border_width: 0.3, border_color: "bbbbbb" }
-  
+    table table_content, width: bounds.width, cell_style: { padding: 3, border_width: 0, border_color: "000000", inline_format: true} do
+    # table table_content, width: bounds.width,:cell_style => { :padding => 3, :inline_format => true, border_width: 0.3, border_color: "bbbbbb" } do
+      row(0).borders = [:bottom]
+      row(0).border_width = 1
+      row(0).align = :center
+      column(0).borders = [:right]
+      column(0).border_width = 1
+      row(0).column(0).borders = [:bottom, :right]
+      row(1).leading = 4
+    end
     move_down 10
     text "Дежурный синоптик #{@bulletin.duty_synoptic}", align: :right
-    # text "#{bounds.width}"
   
-    move_down 10
+    move_down 20
     report_date_next2 = (@bulletin.report_date + 2.day).to_s(:custom_datetime)
     report_date_next3 = (@bulletin.report_date + 3.day).to_s(:custom_datetime)
     font "OpenSans", style: :bold
@@ -102,14 +117,33 @@ class Daily < Prawn::Document
     m_d = []
     m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
     if @bulletin.summer
-      h7 = "Минимальная температура почвы" 
-      h8 = "Минимальная относительная влажность воздуха (%)"
+      h7 = {content: "Минимальная температура почвы", rowspan: 2} 
+      h8 = {content: "Минимальная относительная влажность воздуха (%)", rowspan: 2}
     else
       h7 = "Высота снежного покрова (см)"
       h8 = "Глубина промерзания (см)"
     end
     stations = ["Донецк", "Дебальцево", "Амвросиевка", "Седово", "Красноармейск", "Волноваха", "Артемовск", "Мариуполь"]
-    table_content = [["Название метеостанции", "<color rgb='ff0000'>Максимальная вчера днем</color>", "<color rgb='0000ff'>Минимальная сегодня ночью</color>", "Средняя за сутки  #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", "В 9.00 часов сегодня", "Количество осадков за сутки (мм)", h7, h8, "Максимальная скорость ветра (м/с)", "Явления погоды"]]
+    table_content = 
+    [
+      [
+        {content: "Название метеостанции", valign: :center, rowspan: 2}, 
+        {content: "Температура воздуха (°C)", colspan:4},
+        {content: "Количество осадков за сутки (мм)", rowspan: 2}, 
+        h7, 
+        h8, 
+        {content: "Максимальная скорость ветра (м/с)", rowspan: 2},
+        {content: "Явления погоды", valign: :center, rowspan: 2}, 
+      ],
+      [
+        "<color rgb='ff0000'>Максимальная вчера днем</color>", 
+        "<color rgb='0000ff'>Минимальная сегодня ночью</color>", 
+        "Средняя за сутки  #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", 
+        "В 9.00 часов сегодня", 
+
+      ]
+    ]
+    table_data = []
     stations.each.with_index do |s, j|
       a = [s]
       (0..8).each do |i| 
@@ -118,19 +152,37 @@ class Daily < Prawn::Document
         end
         a << ((i!=2 and i!=4 and i!=5 and i!=8 and m_d[j*9+i].present?) ? ((m_d[j*9+i].to_f<0 and m_d[j*9+i].to_f>-0.5) ? '-0' : m_d[j*9+i].to_f.round) : m_d[j*9+i])
       end
-      table_content << a
+      # table_content << a
+      table_data << a
     end
   
     font "OpenSans"
     table table_content, width: bounds.width, :column_widths => [95, 40, 40, 40, 40, 40, 40, 55, 40],:cell_style => { :inline_format => true } do |t|
       t.cells.padding = [1, 1]
       t.cells.align = :center
-      t.row(0).columns(1..8).rotate = 90
-      t.row(0).height = 120
-      t.row(0).column(0).valign = :center
-      t.row(0).column(9).valign = :center
+      t.column(0).align = :left
+      t.row(1).column(3).background_color = "FFCCCC"
+      t.row(0).columns(5..8).rotate = 90
+      # t.row(0).height = 17
+      # t.row(1).height = 100
+      t.row(1).rotate = 90
+      
+      t.before_rendering_page do |p|
+        p.row(1).height = 110
+      end
+      
+      # t.row(0).height = 120
+      # t.row(0).column(0).valign = :center
+      # t.row(0).column(0).align = :center
+      # t.row(0).column(9).valign = :center
       # t.row(0).background_color = 'eeeeee'      
       # t.row(0).text_color = "FFFFFF"
+    end
+    table table_data, width: bounds.width, :column_widths => [95, 40, 40, 40, 40, 40, 40, 55, 40],:cell_style => { :inline_format => true } do |t|
+      t.cells.padding = [1, 1]
+      t.cells.align = :center
+      t.column(0).align = :left
+      t.column(3).background_color = "FFCCCC"
     end
     
     move_down 10

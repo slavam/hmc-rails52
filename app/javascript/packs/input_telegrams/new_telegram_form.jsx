@@ -42,7 +42,8 @@ export default class NewTelegramForm extends React.Component{
         let hdr = this.state.tlgTerm % 2 == 0 ? "ЩЭСМЮ " : "ЩЭСИД ";
         return hdr+this.state.codeStation+' =';
       case 'radiation_daily':
-        let cd = this.state.currDate[3]+this.state.currDate.substr(5,2)+this.state.currDate.substr(8,2);
+        // let cd = this.state.currDate[3]+this.state.currDate.substr(5,2)+this.state.currDate.substr(8,2); 20190614 Boyko
+        let cd = this.state.currDate.substr(2,2)+this.state.currDate.substr(5,2)+this.state.currDate.substr(8,2);
         return 'ЩЭРДЦ '+this.state.codeStation+' '+cd+' 80000=';
       default:
         return '';

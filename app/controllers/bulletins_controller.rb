@@ -223,17 +223,17 @@ class BulletinsController < ApplicationController
           # @png_filename_page2 = "Bulletin_daily_#{current_user.id}-1.png"
         when 'sea'
           pdf = Sea.new(@bulletin)
-          @png_filename_page1 = @bulletin.png_page_filename(current_user.id, 0)
-          @png_filename_page2 = @bulletin.png_page_filename(current_user.id, 1)
+          # @png_filename_page1 = @bulletin.png_page_filename(current_user.id, 0)
+          # @png_filename_page2 = @bulletin.png_page_filename(current_user.id, 1)
         when 'holiday'
           pdf = Holiday.new(@bulletin)
           @png_filename = @bulletin.png_filename(current_user.id)
         when 'storm', 'sea_storm'
           pdf = Storm.new(@bulletin)
-          @png_filename = @bulletin.png_filename(current_user.id)
+          # @png_filename = @bulletin.png_filename(current_user.id)
         when 'radiation'
           pdf = Radiation.new(@bulletin)
-          @png_filename = @bulletin.png_filename(current_user.id)
+          # @png_filename = @bulletin.png_filename(current_user.id)
         when 'tv'
           pdf = Tv.new(@bulletin)
           @png_filename = @bulletin.png_filename(current_user.id)
@@ -344,7 +344,13 @@ class BulletinsController < ApplicationController
     
     def correct_radiation(report_date, station_id)
       r_o = RadiationObservation.find_by(date_observation: report_date, hour_observation: 0, station_id: station_id)
-      ret = r_o.present? ? r_o.telegram[20,3].to_i : nil
+      # ret = r_o.present? ? r_o.telegram[20,3].to_i : nil 20190614 Boyko
+      if r_o.present?
+        index = r_o.telegram[17] == ' ' ? 20 : 21 # old or new format
+        ret = r_o.telegram[index,3].to_i
+      else
+        ret = nil
+      end
       ret
     end
     def fill_avtodor_meteo_data(report_date)

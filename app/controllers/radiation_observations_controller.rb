@@ -2,11 +2,6 @@ class RadiationObservationsController < ApplicationController
   before_action :find_radiation_observation, only: [:show, :destroy, :update_radiation_telegram]
   
   def show
-    # date_from ||= params[:date_from].present? ? params[:date_from] : Time.now.strftime("%Y-%m-%d")
-    # date_to ||= params[:date_to].present? ? params[:date_to] : Time.now.strftime("%Y-%m-%d")
-    # station = params[:station_id].present? ? "&station_id=#{params[:station_id]}" : ''
-    # text = params[:text].present? ? "&text=#{params[:text]}" : ''
-    # @search_link = "/radiation_observations/search_radiation_telegrams?telegram_type=radiation&date_from=#{date_from}&date_to=#{date_to}#{station}#{text}"
     @actions = Audit.where("auditable_id = ? and auditable_type = 'RadiationObservation'", @radiation_observation.id)
   end
   
@@ -33,11 +28,12 @@ class RadiationObservationsController < ApplicationController
     telegram = RadiationObservation.find_by(station_id: params[:radiation_observation][:station_id], hour_observation: params[:radiation_observation][:hour_observation], date_observation: params[:radiation_observation][:date_observation])
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{telegram.inspect}")
     factor = params[:factor].present? ? params[:factor] : 'monthly'
+    telegram_type = factor == 'monthly' ? 'radiation':'radiation_daily'
     if telegram.present?
       if telegram.update_attributes radiation_observation_params
         last_telegrams = RadiationObservation.short_last_50_telegrams(current_user,factor)
         render json: {telegrams: last_telegrams, 
-                      tlgType: 'radiation', 
+                      tlgType: telegram_type, 
                       inputMode: params[:input_mode],
                       currDate: date_dev, 
                       errors: ["Телеграмма изменена"]}
@@ -49,10 +45,10 @@ class RadiationObservationsController < ApplicationController
       # telegram.telegram_date = date_dev 
       if telegram.save
         new_telegram = {id: telegram.id, date: telegram.date_observation, station_name: telegram.station.name, telegram: telegram.telegram}
-        ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'radiation'
+        ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: telegram_type
         last_telegrams = RadiationObservation.short_last_50_telegrams(current_user, factor)
         render json: {telegrams: last_telegrams, 
-                      tlgType: 'radiation', 
+                      tlgType: telegram_type, 
                       inputMode: params[:input_mode],
                       currDate: date_dev, #telegram.telegram_date, 
                       errors: ["Телеграмма корректна"]}

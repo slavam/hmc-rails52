@@ -48,16 +48,21 @@ export function checkRadiationTelegram(tlg, stations, errors, observation, currD
       return false;
     }
   }else{
-    if (/^\d[012]\d[0123]\d$/.test(tlg.substr(12,5))){
-      if(tlg[12] != currDate[3]){
-        errors.push("Ошибка в цифре года");
+    // 20190614 Boyko
+    // if (/^\d[012]\d[0123]\d$/.test(tlg.substr(12,5))){
+      // if(tlg[12] != currDate[3]){
+    if (/^\d\d[01]\d[0123]\d$/.test(tlg.substr(12,6))){
+      if(tlg.substr(12,2) != currDate.substr(2,2)){
+        errors.push("Ошибка в годе");
         return false;
       }
-      if(tlg.substr(13,2) != currDate.substr(5,2)){
+      // if(tlg.substr(13,2) != currDate.substr(5,2)){
+      if(tlg.substr(14,2) != currDate.substr(5,2)){
         errors.push("Ошибка в номере месяца");
         return false;
       }
-      if(+tlg.substr(15,2) != currDate.substr(8,2)){
+      // if(+tlg.substr(15,2) != currDate.substr(8,2)){
+      if(+tlg.substr(16,2) != currDate.substr(8,2)){
         errors.push("Ошибка в номере дня");
         return false;
       }
@@ -67,8 +72,10 @@ export function checkRadiationTelegram(tlg, stations, errors, observation, currD
       errors.push("Ошибка в дате наблюдения");
       return false;
     }
-    if (/^8[012]\d{3}$/.test(tlg.substr(18,5))){
-      if(+tlg.substr(20,3)<1){
+    // if (/^8[012]\d{3}$/.test(tlg.substr(18,5))){
+    //   if(+tlg.substr(20,3)<1){
+    if (/^8[012]\d{3}$/.test(tlg.substr(19,5))){
+      if(+tlg.substr(21,3)<1){
         errors.push("Отсутствуют данные о радиационной обстановке");
         return false;
       }
@@ -76,7 +83,8 @@ export function checkRadiationTelegram(tlg, stations, errors, observation, currD
       errors.push("Ошибка в данных о радиационной обстановке");
       return false;
     }
-    if (tlg[23] == '=')
+    // if (tlg[23] == '=')
+    if (tlg[24] == '=')
       return true;
     else{
       errors.push("Ошибка в окончании телеграммы");
