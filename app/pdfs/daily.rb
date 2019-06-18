@@ -117,7 +117,7 @@ class Daily < Prawn::Document
     m_d = []
     m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
     if @bulletin.summer
-      h7 = {content: "Минимальная температура почвы", rowspan: 2} 
+      h7 = {content: "Минимальная температура почвы (°C)", rowspan: 2} 
       h8 = {content: "Минимальная относительная влажность воздуха (%)", rowspan: 2}
     else
       h7 = "Высота снежного покрова (см)"
