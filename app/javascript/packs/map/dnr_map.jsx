@@ -8,7 +8,7 @@ export default class DNRMap extends React.Component{
   stationInfo(date, telegram){
     let codeWAREP = telegram.substr(26,2);
     let phase = telegram[3] == 'Я'? 'Старт/Рост' : 'Конец';
-    return date.substr(0,16).replace(/T/,' ')+' '+this.props.fact[codeWAREP]+' '+phase+'<br/>';
+    return date.substr(0,16).replace(/T/,' ')+' (UTC) '+this.props.fact[codeWAREP]+' '+phase+'<br/>';
   }
   render(){
     let firstCoords = new google.maps.LatLng(48.0161457, 37.8057165); // Donetsk
@@ -27,7 +27,7 @@ export default class DNRMap extends React.Component{
           // .subscribe(() => {alert(marker.label)}) ;
         markers.push(marker);
       }
-      info[codeStation] += this.stationInfo(t.event_date, t.telegram);
+      info[codeStation] += this.stationInfo(t.date, t.telegram); // 20190618
     });
     markers.map( m => {
       var infowindow = new google.maps.InfoWindow({content: info[m.label]});

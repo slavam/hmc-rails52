@@ -36,7 +36,7 @@ export default class FoundTelegrams extends React.Component{
       <table className="table table-hover">
         <thead>
           <tr>
-            <th><button type="button" id="download-pdf" onClick={(event) => this.sortDirection(event)}>Дата {this.props.tlgType == 'synoptic' ? 'наблюдения (UTC)' : (this.props.tlgType == 'storm' ? 'ввода':'') } {this.state.arrow}</button><br/></th>
+            <th><button type="button" id="download-pdf" onClick={(event) => this.sortDirection(event)}>Дата {this.props.tlgType == 'synoptic' ? 'наблюдения (UTC)' : (this.props.tlgType == 'storm' ? 'явления (UTC)':'') } {this.state.arrow}</button><br/></th>
             {optHead}
             <th>Метеостанция</th>
             <th>Текст</th>

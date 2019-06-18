@@ -78,7 +78,7 @@ class Daily < Prawn::Document
     report_date_next3 = (@bulletin.report_date + 3.day).to_s(:custom_datetime)
     font "OpenSans", style: :bold
     text "Периодный прогноз погоды на #{report_date_next2[8,2]}-#{report_date_next3[8,2]} #{Bulletin::MONTH_NAME2[report_date_next3[5,2].to_i]} #{report_date_next3[0,4]} года", align: :center
-    text "В Донецкой Народной Республике", align: :center
+    text "в Донецкой Народной Республике", align: :center
     font "OpenSans"
     text @bulletin.forecast_period
   
@@ -87,6 +87,7 @@ class Daily < Prawn::Document
     report_date_next5 = (@bulletin.report_date + 5.day).to_s(:custom_datetime)
     font "OpenSans", style: :bold
     text "Консультативный прогноз погоды на #{report_date_next4[8,2]}-#{report_date_next5[8,2]} #{Bulletin::MONTH_NAME2[report_date_next5[5,2].to_i]} #{report_date_next5[0,4]} года", align: :center
+    text "в Донецкой Народной Республике", align: :center
     font "OpenSans"
     text @bulletin.forecast_advice
     
@@ -97,9 +98,11 @@ class Daily < Prawn::Document
       report_date_next11 = (@bulletin.report_date + 10.day).to_s(:custom_datetime)
       font "OpenSans", style: :bold
       text "Ориентировочный прогноз погоды на #{report_date_next6[8,2]}-#{report_date_next11[8,2]} #{Bulletin::MONTH_NAME2[report_date_next11[5,2].to_i]} #{report_date_next11[0,4]} года", align: :center
+      text "в Донецкой Народной Республике", align: :center
       font "OpenSans"
       text @bulletin.forecast_orientation
     end
+    move_down 10
     text "Синоптик #{@bulletin.synoptic1}", align: :right
   
     start_new_page(right_margin: 80, left_margin: 30)
@@ -200,7 +203,7 @@ class Daily < Prawn::Document
     c_d = []
     c_d = @bulletin.climate_data.split(";") if @bulletin.climate_data.present?
     text "Климатические данные по г. Донецку за #{report_date_prev[8,2]}-#{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]}", align: :center, :color => "0000FF"
-    text "С 1945 по #{report_date[0,4]} гг. по данным Гидрометеорологической службы", align: :center, :color => "0000FF"
+    text "С 1945 по #{report_date[0,4]} гг. по данным Гидрометеорологического центра", align: :center, :color => "0000FF"
     table_content = [["Средняя за сутки температура воздуха", "#{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", c_d[0].present? ? c_d[0].strip+'°' : '', ""],
                      ["Максимальная температура воздуха", "#{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", c_d[1].present? ? c_d[1].strip+'°' : '', "отмечалась в #{c_d[2].strip} г."],
                      ["Минимальная температура воздуха", "#{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]}", c_d[3].present? ? c_d[3].strip+'°' : '', "отмечалась в #{c_d[4].strip} г."]]
@@ -223,6 +226,6 @@ class Daily < Prawn::Document
     responsible_descr = @bulletin.responsible_2_pdf
     [ ["Ответственный за выпуск:","",""],
       [responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6, :vposition => :center}, {:padding => [16,5],:content => responsible_descr[:name]}],
-      [{:padding => [10,5],:content => chief_descr[:position]}, {:image => chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]
+      [{:padding => [10,5],:content => chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]
   end
 end

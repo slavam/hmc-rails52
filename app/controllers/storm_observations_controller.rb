@@ -131,9 +131,10 @@ class StormObservationsController < ApplicationController
       and_text = ''
     end
        
-    # sql = "select * from storm_observations where telegram_date >= '#{@date_from}' and telegram_date <= '#{@date_to} 23:59:59' #{station} #{and_storm_type} #{and_text} order by telegram_date desc;"
+    sql = "select * from storm_observations where telegram_date >= '#{@date_from}' and telegram_date <= '#{@date_to} 23:59:59' #{station} #{and_storm_type} #{and_text} order by telegram_date desc;"
     # 20190610 Prach
-    sql = "select * from storm_observations where created_at >= '#{@date_from}' and created_at <= '#{@date_to} 23:59:59' #{station} #{and_storm_type} #{and_text} order by created_at desc;"
+    # 20190618 KMA
+    # sql = "select * from storm_observations where created_at >= '#{@date_from}' and created_at <= '#{@date_to} 23:59:59' #{station} #{and_storm_type} #{and_text} order by created_at desc;"
     tlgs = StormObservation.find_by_sql(sql)
     @stations = Station.stations_array_with_any
     @telegrams = storm_fields_short_list(tlgs)
@@ -144,10 +145,10 @@ class StormObservationsController < ApplicationController
   end
   
   def storm_fields_short_list(full_list)
-    stations = Station.all.order(:id)
+    # stations = Station.all.order(:id)
     full_list.map do |rec|
-      # {id: rec.id, date: rec.telegram_date, station_name: stations[rec.station_id-1].name, telegram: rec.telegram} 20190610
-      {id: rec.id, date: rec.created_at.localtime, station_name: stations[rec.station_id-1].name, telegram: rec.telegram, event_date: rec.telegram_date}
+      {id: rec.id, date: rec.telegram_date, station_name: rec.station.name, telegram: rec.telegram, input_date: rec.created_at} 
+      # {id: rec.id, date: rec.created_at.localtime, station_name: stations[rec.station_id-1].name, telegram: rec.telegram, event_date: rec.telegram_date} 20190618 KMA
     end
   end
 
