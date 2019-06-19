@@ -52,17 +52,19 @@ export function checkRadiationTelegram(tlg, stations, errors, observation, currD
     // if (/^\d[012]\d[0123]\d$/.test(tlg.substr(12,5))){
       // if(tlg[12] != currDate[3]){
     if (/^\d\d[01]\d[0123]\d$/.test(tlg.substr(12,6))){
-      if(tlg.substr(12,2) != currDate.substr(2,2)){
-        errors.push("Ошибка в годе");
-        return false;
-      }
+      // if(tlg.substr(12,2) != currDate.substr(2,2)){
+      //   errors.push("Ошибка в годе");
+      //   return false;
+      // }
+      // 20190619 year deleted Boyko
       // if(tlg.substr(13,2) != currDate.substr(5,2)){
       if(tlg.substr(14,2) != currDate.substr(5,2)){
         errors.push("Ошибка в номере месяца");
         return false;
       }
       // if(+tlg.substr(15,2) != currDate.substr(8,2)){
-      if(+tlg.substr(16,2) != currDate.substr(8,2)){
+      // if(+tlg.substr(16,2) != currDate.substr(8,2)){
+      if(+tlg.substr(12,2) != currDate.substr(8,2)){
         errors.push("Ошибка в номере дня");
         return false;
       }

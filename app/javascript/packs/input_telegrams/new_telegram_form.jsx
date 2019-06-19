@@ -43,7 +43,8 @@ export default class NewTelegramForm extends React.Component{
         return hdr+this.state.codeStation+' =';
       case 'radiation_daily':
         // let cd = this.state.currDate[3]+this.state.currDate.substr(5,2)+this.state.currDate.substr(8,2); 20190614 Boyko
-        let cd = this.state.currDate.substr(2,2)+this.state.currDate.substr(5,2)+this.state.currDate.substr(8,2);
+        // let cd = this.state.currDate.substr(2,2)+this.state.currDate.substr(5,2)+this.state.currDate.substr(8,2); 20190619 Boyko, KMA
+        let cd = this.state.currDate.substr(8,2)+this.state.currDate.substr(5,2)+'09'; // ddmmhh
         return 'ЩЭРДЦ '+this.state.codeStation+' '+cd+' 80000=';
       default:
         return '';
