@@ -242,6 +242,6 @@ class Sea < Prawn::Document
     responsible_descr = @bulletin.responsible_2_pdf
     [ ["Ответственный за выпуск:","",""],
       [responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6, :vposition => :center}, {:padding => [16,5],:content => responsible_descr[:name]}],
-      [{:padding => [10,5],:content => chief_descr[:position]}, {:image => chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]
+      [{:padding => [10,5],:content => chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),:image => chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]
 	end
 end
