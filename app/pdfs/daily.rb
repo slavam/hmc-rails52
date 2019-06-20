@@ -163,10 +163,9 @@ class Daily < Prawn::Document
     table table_content, width: bounds.width, :column_widths => [95, 40, 40, 40, 40, 40, 40, 55, 40],:cell_style => { :inline_format => true } do |t|
       t.cells.padding = [1, 1]
       t.cells.align = :center
-      t.column(0).align = :left
+      # t.column(0).align = :left
       t.row(1).column(3).background_color = "FFCCCC"
       t.row(0).columns(5..8).rotate = 90
-      # t.row(0).height = 17
       # t.row(1).height = 100
       t.row(1).rotate = 90
       
@@ -186,6 +185,15 @@ class Daily < Prawn::Document
       t.cells.align = :center
       t.column(0).align = :left
       t.column(3).background_color = "FFCCCC"
+      t.column(9).align = :left
+      t.column(9).overflow = :shrink_to_fit
+      # t.column(9).size = 8 20190620 Boyko
+      (0..8).each {|i| 
+        if (m_d[i*9+8].present? && width_of(m_d[i*9+8], size: 10) >100)
+          t.row(i).column(9).height = 30
+        end
+      }
+      # t.column(9).height = 30 
     end
     
     move_down 10
