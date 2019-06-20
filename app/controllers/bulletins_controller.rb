@@ -11,12 +11,12 @@ class BulletinsController < ApplicationController
 
   def list
     @bulletin_type = params[:bulletin_type] 
-    @bulletins = Bulletin.where(bulletin_type: @bulletin_type).order(:created_at).reverse_order
+    @bulletins = Bulletin.where(bulletin_type: @bulletin_type).paginate(page: params[:page], per_page: 20).order(:created_at).reverse_order
     respond_to do |format|
       format.html 
-      format.json do
-        render json: {bulletins: @bulletins}
-      end
+      # format.json do
+      #   render json: {bulletins: @bulletins}
+      # end
     end
   end
   
@@ -218,7 +218,14 @@ class BulletinsController < ApplicationController
     respond_to do |format|
       case @bulletin.bulletin_type
         when 'daily'
-          pdf = Daily.new(@bulletin)
+          case params[:variant]
+            when 'two_pages'
+              pdf = Daily.new(@bulletin)
+            when 'one_page'
+              pdf = DailyOnePage.new(@bulletin)
+            when 'short'
+              pdf = DailyShort.new(@bulletin)
+          end
           # @png_filename_page1 = "Bulletin_daily_#{current_user.id}-0.png" 
           # @png_filename_page2 = "Bulletin_daily_#{current_user.id}-1.png"
         when 'sea'
@@ -249,7 +256,12 @@ class BulletinsController < ApplicationController
         # pdf_2_png
       end
       format.pdf do
-        send_data pdf.render, filename: @bulletin.pdf_filename(current_user.id), type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+        if @bulletin.bulletin_type == 'daily'
+            pdf_file_name = "Bulletin_daily_#{current_user.id}_#{params[:variant]}.pdf"
+            send_data pdf.render, filename: pdf_file_name, type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+        else
+          send_data pdf.render, filename: @bulletin.pdf_filename(current_user.id), type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+        end
       end
     end
   end

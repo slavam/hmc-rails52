@@ -8,13 +8,19 @@
         =link_to "  Создать (Зима)", "new_bulletin?variant=winter&bulletin_type=#{@bulletin_type}"
       - when 'radiation', 'radio', 'avtodor', 'storm', 'sea_storm', 'holiday', 'dte'
         = link_to "Создать", "new_bulletin?bulletin_type=#{@bulletin_type}"
+  %br
+  = will_paginate
   %table{class: "table table-hover"}
     %thead
       %tr
         %th= "Дата"
         %th= "Номер"
-        -#%th= ""
-        %th= ""
+        - if @bulletin_type == 'daily'
+          %th Две страницы
+          %th Одна страница
+          %th Без метеоданных
+        - else
+          %th= ""
         - if ['technicist','synoptic'].index(current_user.role)
           %th= ""
           %th= ""
@@ -26,8 +32,13 @@
         %tr
           %td= b.report_date.strftime("%d-%m-%Y")
           %td= b.curr_number + variant
-          -# %td= link_to "Просмотреть", "#{b.id}/bulletin_show"
-          %td= link_to "Просмотреть/Распечатать", "#{b.id}/bulletin_show.pdf"
+          - if @bulletin_type == 'daily'
+            %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=two_pages"
+            %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=one_page"
+            %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=short"
+          - else
+            %td= link_to "Просмотреть/Распечатать", "#{b.id}/bulletin_show.pdf"
           - if ['technicist','synoptic'].index(current_user.role)
             %td= link_to "Изменить", edit_bulletin_path(b.id)
             %td= link_to 'Удалить', b, method: :delete, data: { confirm: 'Вы уверены?' }
+  = will_paginate
