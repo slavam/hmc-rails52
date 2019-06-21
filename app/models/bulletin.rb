@@ -83,4 +83,9 @@ class Bulletin < ActiveRecord::Base
   def self.last_this_type bulletin_type
     Bulletin.where(bulletin_type: bulletin_type).order(:id).reverse_order[0]
   end
+  def start_month(d1,d2)
+    m1 = (self.report_date + d1).month
+    m2 = (self.report_date + d2).month
+    return m1 == m2 ? '' : ' '+MONTH_NAME2[(self.report_date+d1).month]
+  end
 end
