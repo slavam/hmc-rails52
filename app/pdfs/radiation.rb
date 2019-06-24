@@ -59,9 +59,9 @@ class Radiation < Prawn::Document
         t.cells.border_width = 0
       end
     end
-    text_box @bulletin.synoptic1 + " (062) 304-82-22", :at => [0, 30] #, :width => 170
+    text_box @bulletin.synoptic1 + " (062) 303-10-34", :at => [0, 30] #, :width => 170
     image "./app/assets/images/radiation.png", at: [400, 100], :scale => 0.75
-    # text_box "телефон: (062) 304-82-22", :at => [320, 30], :width => 170, align: :right
+    # text_box "телефон: (062) 303-10-34", :at => [320, 30], :width => 170, align: :right
     move_to 0, 15
     line_to 520, 15
     stroke_color '0000ff'

@@ -37,7 +37,7 @@ class Storm < Prawn::Document
         t.cells.border_width = 0
       end
     end
-    text_box @bulletin.synoptic1 + " (062) 304-82-22", :at => [0, 30]
+    text_box @bulletin.synoptic1 + " (062) 303-10-34", :at => [0, 30]
     image "./app/assets/images/storm.png", at: [380, 100], :scale => 0.75
     move_to 0, 15
     line_to 500, 15
