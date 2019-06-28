@@ -177,7 +177,7 @@ class Daily < Prawn::Document
       # t.column(9).size = 8 20190620 Boyko
       # t.column(9).size = 9
       (0..8).each {|i| 
-        if (m_d[i*9+8].present? && width_of(m_d[i*9+8], size: 10)>12) # Boyko, KMA 20190628
+        if (m_d[i*9+8].present? && width_of(m_d[i*9+8], size: 10)>65) # Boyko, KMA 20190628
           t.row(i).column(9).height = 20
         end
       }
