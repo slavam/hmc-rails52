@@ -1,11 +1,16 @@
 %div{ :class=>"container"}
   %ul{ :class=>"nav nav-tabs"}
-    %li= link_to "Ежедневные", "/bulletins/list?bulletin_type=daily"
-    %li= link_to "Морские", "/bulletins/list?bulletin_type=sea"
-    %li= link_to "Выходного дня", "/bulletins/list?bulletin_type=holiday"
-    %li= link_to "Шторма", "/bulletins/list?bulletin_type=storm"
-    %li= link_to "Шторма на море", "/bulletins/list?bulletin_type=sea_storm"
-    %li= link_to "Радиация", "/bulletins/list?bulletin_type=radiation"
-    %li= link_to "АВТОДОР", "/bulletins/list?bulletin_type=avtodor"
-    %li= link_to "Радио", "/bulletins/list?bulletin_type=radio"
-    %li= link_to "Донбасстеплоэнерго", "/bulletins/list?bulletin_type=dte"
+    - case current_user.role
+      - when 'spasatel'
+        %li= link_to "Морские", "/bulletins/list?bulletin_type=sea"
+        %li= link_to "Шторма на море", "/bulletins/list?bulletin_type=sea_storm"
+      - else
+        %li= link_to "Ежедневные", "/bulletins/list?bulletin_type=daily"
+        %li= link_to "Морские", "/bulletins/list?bulletin_type=sea"
+        %li= link_to "Выходного дня", "/bulletins/list?bulletin_type=holiday"
+        %li= link_to "Шторма", "/bulletins/list?bulletin_type=storm"
+        %li= link_to "Шторма на море", "/bulletins/list?bulletin_type=sea_storm"
+        %li= link_to "Радиация", "/bulletins/list?bulletin_type=radiation"
+        %li= link_to "АВТОДОР", "/bulletins/list?bulletin_type=avtodor"
+        %li= link_to "Радио", "/bulletins/list?bulletin_type=radio"
+        %li= link_to "Донбасстеплоэнерго", "/bulletins/list?bulletin_type=dte"

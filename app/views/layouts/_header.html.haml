@@ -171,6 +171,12 @@
                   %li= link_to 'Телеграммы синоптические', synoptic_observations_path
                   %li= link_to 'Телеграммы штормовые', storm_observations_path
                   %li= link_to 'Ежедневные агрометеорологические телеграммы', agro_observations_path
+            - when 'spasatel'
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Бюллетени <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  %li= link_to 'Бюллетени морские', "/bulletins/list?bulletin_type=sea"
+                  %li= link_to 'Шторма на море', "/bulletins/list?bulletin_type=sea_storm"
             - when 'admin'
               %li= link_to "Users", users_path
               %li= link_to "Synoptic Links", meteo_links_path

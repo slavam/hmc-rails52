@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  ROLES = %w(admin vip technicist accountant synoptic agro hydro specialist user chemist observer railman)
+  ROLES = %w(admin vip technicist accountant synoptic agro hydro specialist user chemist observer railman spasatel)
   attr_accessor :remember_token
   validates :login, presence: true, length: { maximum: 50, minimum: 4 }, uniqueness: { case_sensitive: false }
   validates :last_name, presence: true, length: { maximum: 50 }

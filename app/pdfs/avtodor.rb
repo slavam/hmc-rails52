@@ -1,4 +1,4 @@
-require 'prawn'
+# require 'prawn'
 class Avtodor < Prawn::Document
   def initialize(bulletin)
 		super(top_margin: 40, left_margin: 80, right_margin: 50, bottom_margin: 0)
@@ -9,7 +9,7 @@ class Avtodor < Prawn::Document
       :bold => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Bold.ttf"),
       :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
     })
-    image "./app/assets/images/eagle.png", :scale => 0.5, position: :center # at: [235, y_pos], 
+    image "./app/assets/images/eagle.png", :scale => 0.4, position: :center # at: [235, y_pos], 
     font "OpenSans", style: :bold
     move_down 20
     bounding_box([0, cursor], width: bounds.width) do
@@ -39,6 +39,7 @@ class Avtodor < Prawn::Document
 		
             А.С. Николаеву", leading: 3
     end
+    move_down 30
     font "OpenSans", style: :bold
     if @bulletin.storm.present?
       bounding_box([0, cursor-10], :width => bounds.width) do
@@ -59,10 +60,11 @@ class Avtodor < Prawn::Document
     # text "в Донецкой Народной Республике", align: :center
         report_date_next = (@bulletin.report_date + 1.day).to_s(:custom_datetime)
     font "OpenSans", style: :bold
-    bounding_box([0, cursor], :width => bounds.width, :height => 30) do
+    bounding_box([0, cursor], :width => bounds.width, :height => 60) do
       # stroke_bounds
       text "Прогноз погоды", align: :center, size: 14, :color => "0000FF"
       text "на сутки с 21 часа #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} до 21 часа #{report_date_next[8,2]} #{Bulletin::MONTH_NAME2[report_date_next[5,2].to_i]} #{report_date_next[0,4]} года", align: :center, :color => "0000FF"
+      text "в Донецкой Народной Республике", align: :center, color: "0000FF"
     end
     font "OpenSans"
     text @bulletin.forecast_day, leading: 3
