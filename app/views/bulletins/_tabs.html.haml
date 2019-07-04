@@ -1,6 +1,9 @@
 %div{ :class=>"container"}
   %ul{ :class=>"nav nav-tabs"}
     - case current_user.role
+      - when 'chemist'
+        %li= link_to "Ежедневные", "/bulletins/list?bulletin_type=daily"
+        %li= link_to "Шторма", "/bulletins/list?bulletin_type=storm"
       - when 'spasatel'
         %li= link_to "Морские", "/bulletins/list?bulletin_type=sea"
         %li= link_to "Шторма на море", "/bulletins/list?bulletin_type=sea_storm"

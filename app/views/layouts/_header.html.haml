@@ -139,6 +139,12 @@
                   %li= link_to 'Объем пробы при нормальных условиях',  measurements_calc_normal_volume_path
                   %li= link_to 'Фоновые концентрации',  pollution_values_background_concentrations_path
                   -#  %li= link_to 'Конверсия из АКИАМ', measurements_get_convert_params_path
+                %li
+                  -# HES 20190704
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Бюллетени <b class="caret"></b></a>
+                  %ul{class: "dropdown-menu"}
+                    %li= link_to 'Бюллетени ежедневные', "/bulletins/list?bulletin_type=daily"
+                    %li= link_to 'Штормовые предупреждения', "/bulletins/list?bulletin_type=storm"
                 %li= link_to "Помощь", "/bulletins/help_show.pdf"
             - when 'hydro'
               %li

@@ -68,13 +68,14 @@ export default class SearchParamsForm extends React.Component{
     const optHead = this.props.tlgType == 'synoptic' ? <th>Срок</th> : (this.props.tlgType == 'storm' ? <th>Тип</th> : <td></td>);
     const optInput = (this.props.tlgType == 'synoptic' || this.props.tlgType == 'storm') ?
       <td><TermSynopticSelect options={this.props.tlgType == 'synoptic' ? terms : types} onUserInput={this.handleTermSelected} defaultValue={this.props.tlgType == 'synoptic' ? this.props.tlgTerm : this.props.stormType}/></td> : <td></td>;
+    const which_date = this.props.tlgType == 'storm' ? 'явления ' : '';
     return (
       <form className="telegramForm" onSubmit={this.handleSubmit}>
         <table className="table table-hover">
           <thead>
             <tr>
-              <th>Дата с</th>
-              <th>Дата по</th>
+              <th>Дата {which_date}с</th>
+              <th>Дата {which_date}по</th>
               {optHead}
               <th>Метеостанция</th>
               <th>Текст</th>
