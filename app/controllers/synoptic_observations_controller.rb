@@ -825,7 +825,7 @@ class SynopticObservationsController < ApplicationController
     def fields_short_list(full_list)
       stations = Station.all.order(:id)
       full_list.map do |rec|
-        {id: rec.id, date: rec.observed_at, term: rec.term, station_name: stations[rec.station_id-1].name, telegram: rec.telegram}
+        {id: rec.id, date: rec.observed_at.utc, term: rec.term, station_name: stations[rec.station_id-1].name, telegram: rec.telegram}
       end
     end
     
