@@ -94,6 +94,7 @@ class BulletinsController < ApplicationController
           (prev_set.present? ? prev_set.t_max.to_s : '') + '; ' + (prev_set.present? ? prev_set.year_max.to_s : '') + '; '+
           (curr_set.present? ? curr_set.t_min.to_s : '') + '; ' + (curr_set.present? ? curr_set.year_min.to_s : '') + ';'
         @bulletin.forecast_day_city = bulletin.forecast_day_city
+        @precipitation_day_night = []
         @m_d = fill_meteo_data(@bulletin.report_date)      
         @bulletin.meteo_data = ''
         @m_d.each do |v|
@@ -394,6 +395,7 @@ class BulletinsController < ApplicationController
       m_d[7*9+2] = SynopticObservation.station_daily_local_avg_temp(5, report_date-1.day) if m_d[7*9+2].nil? #Mariupol
       at_9_o_clock = SynopticObservation.current_temperatures(6, @bulletin.report_date)
       push_in_m_d(m_d, at_9_o_clock,3)
+      @precipitation_day_night = precipitation_day_night(report_date)
       precipitation = precipitation_daily(report_date, false)
       push_in_m_d(m_d, precipitation,4)
       if @bulletin.summer
@@ -412,6 +414,22 @@ class BulletinsController < ApplicationController
       wind_speed_max = AgroObservation.wind_speed_max_24(@bulletin.report_date.strftime("%Y-%m-%d"))
       push_in_m_d(m_d, wind_speed_max,7)
       m_d
+    end
+    def precipitation_day_night(report_date)
+      ret = []
+      precipitation_day = SynopticObservation.precipitation(18, report_date-1.day)
+      precipitation_night = SynopticObservation.precipitation(6, report_date)
+      (1..10).each do |i| 
+        daily = {day: 0, night: 0}
+        if precipitation_day[i].present?
+          daily['day'] = precipitation_day[i]>989 ? ((precipitation_day[i]-990)*0.1).round(1) : precipitation_day[i]
+        end
+        if precipitation_night[i].present?
+          daily['night'] = precipitation_night[i]>989 ? ((precipitation_night[i]-990)*0.1).round(1) : precipitation_night[i]
+        end
+        ret[i] = daily
+      end
+      ret
     end
     def precipitation_daily(report_date, one_day)
       # one_day - телеграммы за 6 и 18 из одних суток

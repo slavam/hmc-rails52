@@ -44,7 +44,7 @@ class Radio < Prawn::Document
     # text @bulletin.report_date_as_str, :color => "0000FF", align: :center
     text "на сутки с 21 часа #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} до 21 часа #{report_date_next[8,2]} #{Bulletin::MONTH_NAME2[report_date_next[5,2].to_i]} #{report_date_next[0,4]} года", align: :center
     text "в Донецкой Народной Республике", align: :center
-    # font "OpenSans"
+    move_down 10
     text @bulletin.forecast_day, leading: 3
     move_down 10
     table temps, width: bounds.width,:cell_style => { :align => :center, :inline_format => true, :padding => [2, 2, 2, 2], :size => 11} do |t|
