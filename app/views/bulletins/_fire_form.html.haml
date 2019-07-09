@@ -24,17 +24,7 @@
             %th= "Ожидаемый #{(@bulletin.report_date+3.day).day} #{I18n.l(@bulletin.report_date+3.day, format: "%B")}"
           - m_d = []
           - m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
-          - stations = ["Донецк", 
-                        "Макеевка, Харцызск, Ясиноватая",
-                        "Горловка, Енакиево, Дебальцево", 
-                        "Шахтерский", 
-                        "Шахтерск, Торез, Снежное", 
-                        "Амвросиевкий", 
-                        "Старобешевский", 
-                        "Докучаевск", 
-                        "Тельмановский", 
-                        "Новоазовский"]
-          - stations.each.with_index do |s, j|
+          - Bulletin::REGIONS.each.with_index do |s, j|
             %tr
               %td #{s}
               - (0..3).each do |i|

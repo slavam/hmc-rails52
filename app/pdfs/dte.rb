@@ -40,45 +40,6 @@ class Dte < Prawn::Document
             А.В. Кочетову", leading: 3
     end
     
-		# super(top_margin: 40)		
-		# @bulletin = bulletin
-  #   font_families.update("OpenSans" => {
-  #     :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),
-  #     :italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-Italic.ttf"),
-  #     :bold => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Bold.ttf"),
-  #     :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
-  #   })
-  #   y_pos = cursor
-  #   image "./app/assets/images/eagle.png", at: [235, y_pos], :scale => 0.5
-  #   font "OpenSans", style: :bold
-  #   move_down 80
-  #   bounding_box([50, cursor], :width => 470) do
-  #     text Bulletin::HEAD, align: :center
-  #   end
-  #   move_down 10
-  #   font "OpenSans" #, style: :italic
-  #   bounding_box([50, cursor], :width => 470) do
-  #     text "ул. Любавина, 2, г. Донецк, 83015 тел. (062) 311-40-10 тел./факс (062)340-99-25", align: :center, size: 10
-  #     text "web: www.dnmchs.ru  Идентификационный код 51001468  E-mail: gidromet@mail.dnmchs.ru", align: :center, size: 10
-  #     # text Bulletin::ADDRESS, align: :center, size: 10
-  #   end
-    
-  #   stroke do
-  #     horizontal_line 0, bounds.width, :at => cursor
-  #   end
-  #   move_down 10
-  #   font "OpenSans", style: :normal
-  #   y_pos = cursor
-  #   bounding_box([0, y_pos], width: 300) do
-  #     text @bulletin.report_date.strftime("%d.%m.%Y")+' № 03/'+@bulletin.curr_number
-  #     text 'На № 08/18-19/03 от 29.08.2018'
-  #   end
-  #   bounding_box([350, y_pos], width: bounds.width-300) do
-  #     text "Генеральному директору
-  #           ГП 'Донбасстеплоэнерго'
-		
-  #           А.В. Кочетову"
-  #   end
     move_down 50
     font "OpenSans", style: :bold
     text "ПРОГНОЗ ПОГОДЫ", align: :center

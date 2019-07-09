@@ -27,7 +27,7 @@ class BulletinsController < ApplicationController
     case params[:bulletin_type]
       when 'fire'
         if bulletin.present?
-          @bulletin.curr_number = bulletin.curr_number + 1
+          @bulletin.curr_number = bulletin.curr_number.to_i + 1
           @bulletin.meteo_data = bulletin.meteo_data if bulletin.present?
         else
           @bulletin.curr_number = 1
