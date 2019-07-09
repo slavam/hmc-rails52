@@ -21,7 +21,8 @@ class Bulletin < ActiveRecord::Base
     # 'tv' => "Телевидение", 
     'radio' => 'Радио', 
     'avtodor' => "АВТОДОР",
-    'dte' => "Донбасстеплоэнерго"
+    'dte' => "Донбасстеплоэнерго",
+    'fire' => "Пожароопасность"
   }
   CHIEFS = {"Лукьяненко" => "М.Б. Лукьяненко", "Стец" => "Н.В. Стец"}
   RESPONSIBLES = {"Бойко" => "Л.Н. Бойко", "Кияненко" => "М.А. Кияненко"}
@@ -53,7 +54,7 @@ class Bulletin < ActiveRecord::Base
   
   def date_hour_minute
     report_date = self.report_date.to_s
-    "#{report_date[8,2]}.#{report_date[5,2]}.#{report_date[0,4]} г. #{self.storm_hour} час. #{self.storm_minute == 0 ? '00' : self.storm_minute} мин."
+    "#{report_date[8,2]}.#{report_date[5,2]}.#{report_date[0,4]} г. #{self.storm_hour>9 ? self.storm_hour : '0'+self.storm_hour.to_s} час. #{self.storm_minute>9  ? self.storm_minute : '0'+self.storm_minute.to_s} мин."
   end
   
   def chief_2_pdf

@@ -1,6 +1,6 @@
-require 'prawn'
+# require 'prawn'
 class Storm < Prawn::Document
-  def initialize(bulletin)
+  def initialize(bulletin, variant)
 		super(top_margin: 40, right_margin: 40, left_margin: 80)
 		@bulletin = bulletin
     font_families.update("OpenSans" => {
@@ -24,25 +24,21 @@ class Storm < Prawn::Document
     text @bulletin.date_hour_minute
     move_down 20
     font "OpenSans", style: :bold
+    warning = "ПРЕДУПРЕЖДЕНИЕ"
+    if @bulletin.bulletin_type == 'storm' && variant == 'notification'
+      warning = 'ОПОВЕЩЕНИЕ'
+    end
     bounding_box([0, cursor], width: bounds.width) do
-      text "ШТОРМОВОЕ ПРЕДУПРЕЖДЕНИЕ № #{@bulletin.curr_number}", align: :center, color: "ff0000", size: 12
+      text "ШТОРМОВОЕ #{warning} № #{@bulletin.curr_number}", align: :center, color: "ff0000", size: 13
     end
     move_down 20
     font "OpenSans"
-    # text_box @bulletin.storm, :at => [0, cursor], :width => bounds.width, :height => 300, :overflow => :shrink_to_fit, :indent_paragraphs => 40
     text @bulletin.storm, indent_paragraphs: 40, leading: 4
     move_down 20
-    
-    table signatures, width: bounds.width, :column_widths => [170,170], cell_style: {:overflow => :shrink_to_fit, size: 11, :inline_format => true } do |t|
+    # 20190709 одинаковый размер шрифта КМА
+    table signatures, width: bounds.width, :column_widths => [170,170], cell_style: {:overflow => :shrink_to_fit, :inline_format => true } do |t|
       t.cells.border_width = 0
-      # t.row(0).size = 11
-      # t.column(1).position = :center
     end
-    # bounding_box([0, cursor-30], width: bounds.width) do
-    #   table signatures, width: bounds.width, column_widths: [220,170], cell_style: {overflow: :shrink_to_fit, inline_format: true } do |t|
-    #     t.cells.border_width = 0
-    #   end
-    # end
     text_box @bulletin.synoptic1 + " (062) 303-10-34", :at => [0, 30], size: 9
     image "./app/assets/images/storm.png", at: [380, 100], :scale => 0.75
     move_to 0, 15

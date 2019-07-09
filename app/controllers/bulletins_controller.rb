@@ -12,12 +12,9 @@ class BulletinsController < ApplicationController
   def list
     @bulletin_type = params[:bulletin_type] 
     @bulletins = Bulletin.where(bulletin_type: @bulletin_type).paginate(page: params[:page], per_page: 20).order(:created_at).reverse_order
-    respond_to do |format|
-      format.html 
-      # format.json do
-      #   render json: {bulletins: @bulletins}
-      # end
-    end
+    # respond_to do |format|
+    #   format.html 
+    # end
   end
   
   def new_bulletin
@@ -28,6 +25,13 @@ class BulletinsController < ApplicationController
     bulletin = Bulletin.last_this_type params[:bulletin_type]
     last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307 
     case params[:bulletin_type]
+      when 'fire'
+        if bulletin.present?
+          @bulletin.curr_number = bulletin.curr_number + 1
+          @bulletin.meteo_data = bulletin.meteo_data if bulletin.present?
+        else
+          @bulletin.curr_number = 1
+        end
       when 'dte'
         @bulletin.forecast_day = last_daily_bulletin.forecast_day
       when 'radio'
@@ -138,6 +142,10 @@ class BulletinsController < ApplicationController
         @m_d = fill_radiation_meteo_data(@bulletin.report_date)
       when 'avtodor'
         @m_d = fill_avtodor_meteo_data(@bulletin.report_date)
+      when 'fire'
+        return
+      when 'radio'
+        return
       else
         @m_d = []
     end
@@ -162,7 +170,7 @@ class BulletinsController < ApplicationController
       render :action => :edit
     else
       # redirect_to "/bulletins/#{@bulletin.id}/bulletin_show"
-      Rails.logger.debug("My object+++++++++++++++++: #{@bulletin.meteo_data.inspect}")
+      # Rails.logger.debug("My object+++++++++++++++++: #{@bulletin.meteo_data.inspect}")
       flash[:success] = "Бюллетень изменен"
       redirect_to "/bulletins/list?bulletin_type=#{@bulletin.bulletin_type}"
     end
@@ -236,9 +244,11 @@ class BulletinsController < ApplicationController
         when 'holiday'
           pdf = Holiday.new(@bulletin)
           @png_filename = @bulletin.png_filename(current_user.id)
-        when 'storm', 'sea_storm'
-          pdf = Storm.new(@bulletin)
-          # @png_filename = @bulletin.png_filename(current_user.id)
+        when 'storm'
+          variant = params[:variant]
+          pdf = Storm.new(@bulletin, variant)
+        when 'sea_storm'
+          pdf = Storm.new(@bulletin, nil)
         when 'radiation'
           pdf = Radiation.new(@bulletin)
           # @png_filename = @bulletin.png_filename(current_user.id)
@@ -251,6 +261,8 @@ class BulletinsController < ApplicationController
           pdf = Radio.new(@bulletin)
         when 'dte'
           pdf = Dte.new(@bulletin)
+        when 'fire'
+          pdf = Fire.new(@bulletin)
       end
       format.html do
         save_as_pdf(pdf)
@@ -298,6 +310,8 @@ class BulletinsController < ApplicationController
           22
         when 'avtodor'
           16
+        when 'fire'
+          40
         else
           72        
       end
@@ -420,7 +434,7 @@ class BulletinsController < ApplicationController
       precipitation_day = SynopticObservation.precipitation(18, report_date-1.day)
       precipitation_night = SynopticObservation.precipitation(6, report_date)
       (1..10).each do |i| 
-        daily = {day: 0, night: 0}
+        daily = {day: nil, night: nil}
         if precipitation_day[i].present?
           daily['day'] = precipitation_day[i]>989 ? ((precipitation_day[i]-990)*0.1).round(1) : precipitation_day[i]
         end

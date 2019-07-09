@@ -26,3 +26,6 @@
   - when 'daily'
   %h3{align: :center} Создать ежедневный бюллетень
   = render :partial => 'form'
+  - when 'fire'
+  %h3{align: :center} Создать бюллетень пожарной опасности
+  = render :partial => 'fire_form'

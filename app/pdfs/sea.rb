@@ -107,6 +107,8 @@ class Sea < Prawn::Document
           p.row(3).column(13).width = 99
         end
       end
+      t.row(0).column(7).align = :left
+      t.row(0).column(7).overflow = :shrink_to_fit
       t.row(0).height = 17
       t.rows(0..3).size = 11
       t.row(3).align = :left
