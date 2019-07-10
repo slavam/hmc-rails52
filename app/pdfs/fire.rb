@@ -28,7 +28,7 @@ class Fire < Prawn::Document
     text "Информация о фактической пожарной опасности по погодным условиям", align: :center
     text "и прогноз классов пожарной опасности на 1-3 суток", align: :center
     text "в Донецкой Народной Республике", align: :center
-    
+    move_down 10
     
     table_data = [
       [{content: "

@@ -12,7 +12,8 @@ meteo:
   encoding: utf8
   username: meteo
   password: meteo2015
-  host: 10.105.24.9
+  # host: 10.105.24.9
+  host: 10.105.24.70
   port: 3306
   database: meteo
   
