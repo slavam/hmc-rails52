@@ -138,7 +138,11 @@ class Daily < Prawn::Document
       a = [s]
       (0..8).each do |i| 
         if i==4 and m_d[j*9+i].present? and m_d[j*9+i].to_f>1
-          m_d[j*9+i] = m_d[j*9+i].to_f.round
+          # if m_d[j*9+i].to_f>1
+          #   m_d[j*9+i] = m_d[j*9+i].to_f.round
+          # else
+          #   m_d[j*9+i] = m_d[j*9+i].to_s.tr(".",",")
+          # end
         end
         a << ((i!=2 and i!=4 and i!=5 and i!=8 and m_d[j*9+i].present?) ? ((m_d[j*9+i].to_f<0 and m_d[j*9+i].to_f>-0.5) ? '-0' : m_d[j*9+i].to_f.round) : m_d[j*9+i])
       end

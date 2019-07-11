@@ -9,6 +9,27 @@ class SynopticObservationsController < ApplicationController
     redirect_to synoptic_observations_path
   end
   
+  def fire
+    now_date = Time.now.utc
+    if params[:date_from].present?
+      @date_from = params[:date_from]
+    else
+      @date_from = now_date.year.to_s+'-04-15' #.to_date < now_date ? now_date.year.to_s+'-04-15' : now_date.(year-1).to_s+'-04-15'
+    end
+    if params[:date_to].present?
+      @date_to = params[:date_to]
+    else
+      @date_to = (@date_from.to_date + 180.days) < now_date ? (@date_from.to_date + 180.days).strftime("%Y-%m-%d") : now_date.strftime("%Y-%m-%d")
+    end
+    @station_id = params[:station_id].present? ? params[:station_id] : 1
+    temps = SynopticObservation.select(:date, :temperature, :temperature_dew_point).
+      where("date >= ? and date <= ? and station_id = ? and term = 12", @date_from, @date_to, @station_id).order(:date)
+    fire_data = {}
+    temps.each do |t|
+      fire_data[t.date] = {temp: t.temperature, temp_d_p: t.temperature_dew_point}
+    end
+  end
+  
   def teploenergo
     @year = params[:year].present? ? params[:year] : Time.now.utc.year.to_s
     @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')

@@ -21,7 +21,7 @@ class Fire < Prawn::Document
     move_down 40
     bounding_box([0, cursor], width: bounds.width) do
       text "БЮЛЛЕТЕНЬ ПОЖАРНОЙ ОПАСНОСТИ № #{@bulletin.curr_number}", align: :center, color: "ff0000", size: 12
-      text "#{@bulletin.report_date.day} #{I18n.l(@bulletin.report_date, format: "%B")} #{@bulletin.report_date.year} года", align: :center, color: "ff0000", size: 12
+      text "#{@bulletin.report_date.day} #{Bulletin::MONTH_NAME2[@bulletin.report_date.month]} #{@bulletin.report_date.year} года", align: :center, color: "ff0000", size: 12
     end
     move_down 20
     font "OpenSans"
@@ -38,10 +38,10 @@ class Fire < Prawn::Document
       ["Фактический",
       {content: "Ожидаемый", colspan:3}
       ],
-      ["#{@bulletin.report_date.day} #{I18n.l(@bulletin.report_date, format: "%B")}",
-      "#{(@bulletin.report_date+1.day).day} #{I18n.l(@bulletin.report_date+1.day, format: "%B")}",
-      "#{(@bulletin.report_date+2.day).day} #{I18n.l(@bulletin.report_date+2.day, format: "%B")}",
-      "#{(@bulletin.report_date+3.day).day} #{I18n.l(@bulletin.report_date+3.day, format: "%B")}"
+      ["#{@bulletin.report_date.day} #{Bulletin::MONTH_NAME2[@bulletin.report_date.month]}",
+      "#{(@bulletin.report_date+1.day).day} #{Bulletin::MONTH_NAME2[(@bulletin.report_date+1.day).month]}",
+      "#{(@bulletin.report_date+2.day).day} #{Bulletin::MONTH_NAME2[(@bulletin.report_date+2.day).month]}",
+      "#{(@bulletin.report_date+3.day).day} #{Bulletin::MONTH_NAME2[(@bulletin.report_date+3.day).month]}"
       ]
     ]
     m_d = []
@@ -62,7 +62,7 @@ class Fire < Prawn::Document
     end
     move_down 10
     table_content = [
-      ["<b>Класс пожарной опасности</b>", "<b>Уровень опасности</b>"],
+      ["<b>Класс пожарной опасности</b>", "<b>Степень опасности</b>"],
       ["1 класс","отсутствует"],
       ["2 класс","малая"],
       ["3 класс","средняя"],

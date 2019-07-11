@@ -66,6 +66,7 @@
               - (0..8).each do |i|
                 %td= text_field_tag "val_"+(9*j+i+1).to_s, m_d[9*j+i].present? ? m_d[9*j+i] : '', size: 4, title: i == 4 ? "День: "+@precipitation_day_night[station_ids[j]]['day'].to_s+"; Ночь: "+@precipitation_day_night[station_ids[j]]['night'].to_s+";" : nil
                 // %td= text_field_tag "val_"+(9*j+i+1).to_s, m_d[9*j+i].present? ? m_d[9*j+i] : '', size: 4, title: i == 4 ? "День: ; Ночь: ;" : nil
+                // <input type="tel" pattern="[0-9]+([\.,][0-9]+)?"/>
       - c_d = []
       - c_d = @bulletin.climate_data.split(";") if @bulletin.climate_data.present?
     %table{class: "table table-hover"}

@@ -464,6 +464,6 @@ class BulletinsController < ApplicationController
           precipitation[i] += precipitation_night[i]>989 ? ((precipitation_night[i]-990)*0.1).round(1) : precipitation_night[i]
         end
       end
-      precipitation
+      # precipitation
     end
 end
