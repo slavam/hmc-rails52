@@ -23,10 +23,40 @@ class SynopticObservationsController < ApplicationController
     end
     @station_id = params[:station_id].present? ? params[:station_id] : 1
     temps = SynopticObservation.select(:date, :temperature, :temperature_dew_point).
-      where("date >= ? and date <= ? and station_id = ? and term = 12", @date_from, @date_to, @station_id).order(:date)
-    fire_data = {}
+      where("date >= ? and date <= ? and station_id = ? and term = 12", @date_from, @date_to, @station_id.to_i).order(:date)
+    @fire_data = {}
     temps.each do |t|
-      fire_data[t.date] = {temp: t.temperature, temp_d_p: t.temperature_dew_point}
+      @fire_data[t.date.strftime("%Y-%m-%d")] = {temp: t.temperature, temp_d_p: t.temperature_dew_point}
+    end
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@fire_data.inspect}") 
+    day_precipitations = SynopticObservation.select(:date, :precipitation_1).
+      where("date >= ? and date <= ? and station_id = ? and term = 18 and precipitation_1 > 0", @date_from, @date_to, @station_id).order(:date)
+    day_precipitations.each do |dp|
+      day_prec = dp.precipitation_1>989 ? ((dp.precipitation_1-990)*0.1).round(1) : dp.precipitation_1
+      if !@fire_data.key?(dp.date.strftime("%Y-%m-%d"))
+        @fire_data[dp.date.strftime("%Y-%m-%d")] = {day: day_prec}
+      else
+        @fire_data[dp.date.strftime("%Y-%m-%d")]['day'] = day_prec
+      end
+    end
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@fire_data.inspect}") 
+    night_precipitations = SynopticObservation.select(:date, :precipitation_1).
+      where("date >= ? and date <= ? and station_id = ? and term = 6 and precipitation_1 > 0", @date_from, @date_to, @station_id).order(:date)
+    night_precipitations.each do |np|
+      night_prec = np.precipitation_1>989 ? ((np.precipitation_1-990)*0.1).round(1) : np.precipitation_1
+      if !@fire_data.key?(np.date.strftime("%Y-%m-%d"))
+        @fire_data[np.date.strftime("%Y-%m-%d")] = {night: night_prec}
+      else
+        @fire_data[np.date.strftime("%Y-%m-%d")]['night'] = night_prec
+      end
+    end
+    @stations = Station.all.order(:id)
+    respond_to do |format|
+      format.html
+      format.json do 
+        # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@fire_data.inspect}") 
+        render json: {fireData: @fire_data}
+      end
     end
   end
   
