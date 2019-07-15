@@ -1,0 +1,28 @@
+.container
+  = form_for @bulletin, html: {id: "clarification-form"} do |form|
+    %table{class: "table table-hover"}
+      %tr
+        %th Отчетная дата
+        %td= form.text_field :report_date, readonly: true
+      %tr
+        %th Номер бюллетеня
+        %td= form.text_field :curr_number
+      %tr
+        %th Тип бюллетеня
+        %td= form.text_field :bulletin_type, readonly: true
+      %tr
+        %th Прогноз погоды на день в ДНР
+        %td= form.text_area :forecast_day, cols: "30", rows: "5"
+      %tr
+        %th Прогноз погоды на день в Донецке
+        %td= form.text_area :forecast_day_city, cols: "30", rows: "5"
+      %tr
+        %th В 7 часов в Донецке
+        %td= form.text_area :forecast_period, cols: "30", rows: "5"
+      %tr
+        %th Синоптик
+        %td= form.select :synoptic1, options_for_select(Bulletin.synoptic_list, @bulletin.synoptic1)
+      = render partial: 'chief'
+    %br
+    = submit_tag "Сохранить"
+  = link_to "Список", "/bulletins/list?bulletin_type=clarification"

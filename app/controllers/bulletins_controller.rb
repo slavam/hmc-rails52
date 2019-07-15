@@ -25,6 +25,12 @@ class BulletinsController < ApplicationController
     bulletin = Bulletin.last_this_type params[:bulletin_type]
     last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307 
     case params[:bulletin_type]
+      when 'clarification'
+        if bulletin.present?
+          @bulletin.forecast_day = bulletin.forecast_day
+          @bulletin.forecast_day_city = bulletin.forecast_day_city
+          @bulletin.forecast_period = bulletin.forecast_period
+        end
       when 'fire'
         if bulletin.present?
           @bulletin.curr_number = bulletin.curr_number.to_i + 1
@@ -263,6 +269,8 @@ class BulletinsController < ApplicationController
           pdf = Dte.new(@bulletin)
         when 'fire'
           pdf = Fire.new(@bulletin)
+        when 'clarification'
+          pdf = Clarification.new(@bulletin)
       end
       format.html do
         save_as_pdf(pdf)

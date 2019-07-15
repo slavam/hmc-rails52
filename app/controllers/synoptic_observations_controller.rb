@@ -22,6 +22,7 @@ class SynopticObservationsController < ApplicationController
       @date_to = (@date_from.to_date + 180.days) < now_date ? (@date_from.to_date + 180.days).strftime("%Y-%m-%d") : now_date.strftime("%Y-%m-%d")
     end
     @station_id = params[:station_id].present? ? params[:station_id] : 1
+    
     temps = SynopticObservation.select(:date, :temperature, :temperature_dew_point).
       where("date >= ? and date <= ? and station_id = ? and term = 12", @date_from, @date_to, @station_id.to_i).order(:date)
     @fire_data = {}
@@ -51,6 +52,13 @@ class SynopticObservationsController < ApplicationController
       end
     end
     @stations = Station.all.order(:id)
+    first_day = true
+    @fire_data.sort.map do |key,value|
+      if first_day
+        first_day = false
+      end
+      # fire_danger += 
+    end
     respond_to do |format|
       format.html
       format.json do 

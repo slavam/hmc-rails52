@@ -171,9 +171,16 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
         regex = state[name].regex;
         if (regex.test(group) && ((section[5] == ' ') || (section[5] == '=') || (section.length == 5))) {
           switch(section[0]) {
-            case '1':
+            case '1': // KMA 20190715
+              if(term != 18){
+                errors.push("Ошибка в группе 1 раздела 3: только для срока 18");
+                return false;
+              }
             case '2':
-              // sign = section[1] == '0' ? '' : '-';
+              if((section[0] == '2') && (term != 6)){ // KMA 20190715
+                errors.push("Ошибка в группе 2 раздела 3: только для срока 06");
+                return false;
+              }
               val = sign[section[1]]+section.substr(2,2)+'.'+section[4];
               if (section[0] == '1')
                 observation.temperature_dey_max = val;
