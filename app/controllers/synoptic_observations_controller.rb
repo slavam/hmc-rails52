@@ -14,12 +14,12 @@ class SynopticObservationsController < ApplicationController
     if params[:date_from].present?
       @date_from = params[:date_from]
     else
-      @date_from = now_date.year.to_s+'-04-15' #.to_date < now_date ? now_date.year.to_s+'-04-15' : now_date.(year-1).to_s+'-04-15'
+      @date_from = '2017-10-01' #now_date.year.to_s+'-04-15'
     end
     if params[:date_to].present?
       @date_to = params[:date_to]
     else
-      @date_to = (@date_from.to_date + 180.days) < now_date ? (@date_from.to_date + 180.days).strftime("%Y-%m-%d") : now_date.strftime("%Y-%m-%d")
+      @date_to = '2017-10-17' #(@date_from.to_date + 180.days) < now_date ? (@date_from.to_date + 180.days).strftime("%Y-%m-%d") : now_date.strftime("%Y-%m-%d")
     end
     @station_id = params[:station_id].present? ? params[:station_id] : 1
     
@@ -27,7 +27,7 @@ class SynopticObservationsController < ApplicationController
       where("date >= ? and date <= ? and station_id = ? and term = 12", @date_from, @date_to, @station_id.to_i).order(:date)
     @fire_data = {}
     temps.each do |t|
-      @fire_data[t.date.strftime("%Y-%m-%d")] = {temp: t.temperature, temp_d_p: t.temperature_dew_point}
+      @fire_data[t.date.strftime("%Y-%m-%d")] = {temp: t.temperature, temp_d_p: t.temperature_dew_point, fire_danger: 0, day: nil, night: nil}
     end
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@fire_data.inspect}") 
     day_precipitations = SynopticObservation.select(:date, :precipitation_1).
@@ -37,7 +37,7 @@ class SynopticObservationsController < ApplicationController
       if !@fire_data.key?(dp.date.strftime("%Y-%m-%d"))
         @fire_data[dp.date.strftime("%Y-%m-%d")] = {day: day_prec}
       else
-        @fire_data[dp.date.strftime("%Y-%m-%d")]['day'] = day_prec
+        @fire_data[dp.date.strftime("%Y-%m-%d")][:day] = day_prec
       end
     end
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@fire_data.inspect}") 
@@ -48,16 +48,20 @@ class SynopticObservationsController < ApplicationController
       if !@fire_data.key?(np.date.strftime("%Y-%m-%d"))
         @fire_data[np.date.strftime("%Y-%m-%d")] = {night: night_prec}
       else
-        @fire_data[np.date.strftime("%Y-%m-%d")]['night'] = night_prec
+        @fire_data[np.date.strftime("%Y-%m-%d")][:night] = night_prec
       end
     end
     @stations = Station.all.order(:id)
     first_day = true
-    @fire_data.sort.map do |key,value|
+    fire_danger = 0
+    @fire_data.sort.each do |key,value|
       if first_day
         first_day = false
+        fire_danger = value[:temp]*(value[:temp] - value[:temp_d_p])*is_3mm(value[:day],value[:night])
       end
-      # fire_danger += 
+      # puts value
+      fire_danger = value[:temp]*(value[:temp] - value[:temp_d_p])+fire_danger*is_3mm(value[:day],value[:night]) if value[:temp].present? and value[:temp_d_p].present?
+      @fire_data[key][:fire_danger] = fire_danger.round
     end
     respond_to do |format|
       format.html
@@ -900,5 +904,9 @@ class SynopticObservationsController < ApplicationController
         redirect_to login_path
         return false
       end
+    end
+    def is_3mm(day, night)
+      # puts day, night
+      return (day.to_f+night.to_f)>=3.0 ? 0 : 1
     end
 end
