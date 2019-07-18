@@ -1,5 +1,5 @@
 class MeteoLinksController < ApplicationController
-  before_action :find_meteo_link, only: [:edit, :update]
+  before_action :find_meteo_link, only: [:edit, :update, :destroy]
   
   def index
     @meteo_links = MeteoLink.all.order(:name)
@@ -27,6 +27,12 @@ class MeteoLinksController < ApplicationController
     else
       redirect_to meteo_links_path
     end
+  end
+  
+  def destroy
+    @meteo_link.destroy
+    flash[:success] = "Ссылка удалена"
+    redirect_to meteo_links_path
   end
   
   private

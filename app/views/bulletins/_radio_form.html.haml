@@ -16,7 +16,10 @@
       %tr
         %th Прогноз по территории республики на сутки
         %td= form.text_area :forecast_day, cols: "30", rows: "5"
-    = render partial: 'responsible'
+      %tr
+        %th Синоптик
+        %td= form.select :synoptic1, options_for_select(Bulletin.synoptic_list, @bulletin.synoptic1)
+    -#= render partial: 'responsible' 20190718 КМА
     %table{class: "table table-hover"}
       %tr
         %th Города

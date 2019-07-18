@@ -7,12 +7,14 @@
         %th Адрес
         %th Активна?
         %th
+        %th
     %tbody
       - @meteo_links.each do |m_l| 
         %tr
           %td= m_l.name
           %td= m_l.address
-          %td= m_l.is_active
+          %td= m_l.is_active ? "Да" : "Нет"
           %td= link_to "Изменить", edit_meteo_link_path(m_l.id)
+          %td= link_to 'Удалить', m_l, method: :delete, data: { confirm: 'Вы уверены?' }
   %br
   = link_to "Создать", new_meteo_link_path  

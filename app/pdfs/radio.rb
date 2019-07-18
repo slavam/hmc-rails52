@@ -53,7 +53,9 @@ class Radio < Prawn::Document
     end
     responsible_descr = @bulletin.responsible_2_pdf
     move_cursor_to 20
-    text responsible_descr[:full_name]+" (062) 303-10-45", size: 10
+    synoptic_name = @bulletin.synoptic1.present? ? @bulletin.synoptic1 : 'Синоптик'
+    text_box synoptic_name + " (062) 303-10-34", :at => [0, 30], size: 9
+    # text responsible_descr[:full_name]+" (062) 303-10-45", size: 10 20190718 KMA
     # text responsible_descr[:name]+" (062) 303-10-45"
   end
   def temps

@@ -14,12 +14,12 @@ class SynopticObservationsController < ApplicationController
     if params[:date_from].present?
       @date_from = params[:date_from]
     else
-      @date_from = '2017-10-01' #now_date.year.to_s+'-04-15'
+      @date_from = now_date.year.to_s+'-04-15'
     end
     if params[:date_to].present?
       @date_to = params[:date_to]
     else
-      @date_to = '2017-10-17' #(@date_from.to_date + 180.days) < now_date ? (@date_from.to_date + 180.days).strftime("%Y-%m-%d") : now_date.strftime("%Y-%m-%d")
+      @date_to = (@date_from.to_date + 180.days) < now_date ? (@date_from.to_date + 180.days).strftime("%Y-%m-%d") : now_date.strftime("%Y-%m-%d")
     end
     @station_id = params[:station_id].present? ? params[:station_id] : 1
     
@@ -57,7 +57,7 @@ class SynopticObservationsController < ApplicationController
     @fire_data.sort.each do |key,value|
       if first_day
         first_day = false
-        fire_danger = value[:temp]*(value[:temp] - value[:temp_d_p])*is_3mm(value[:day],value[:night])
+        fire_danger = value[:temp]*(value[:temp] - value[:temp_d_p])*is_3mm(value[:day],value[:night]) if value[:temp].present? and value[:temp_d_p].present?
       end
       # puts value
       fire_danger = value[:temp]*(value[:temp] - value[:temp_d_p])+fire_danger*is_3mm(value[:day],value[:night]) if value[:temp].present? and value[:temp_d_p].present?
