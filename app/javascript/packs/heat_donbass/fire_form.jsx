@@ -33,10 +33,22 @@ export default class FireForm extends React.Component{
     return (
     <div className="col-md-12">
       <form className="dateForm" onSubmit={(event) => this.handleSubmit(event)}>
-        <input type="date" name="dateFrom" value={this.state.dateFrom} onChange={this.dateFromChange} />
-        <input type="date" name="dateTo" value={this.state.dateTo} onChange={this.dateToChange} />
-        <Select value={this.state.station} onChange={this.handleStationSelected} options={stations}/>
-        <br/>
+        <table className="table table-hover">
+          <thead>
+            <tr>
+              <th>Дата с</th>
+              <th>Дата по</th>
+              <th>Метеостанция</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="date" name="dateFrom" value={this.state.dateFrom} onChange={this.dateFromChange} /></td>
+              <td><input type="date" name="dateTo" value={this.state.dateTo} onChange={this.dateToChange} /></td>
+              <td><Select value={this.state.station} onChange={this.handleStationSelected} options={stations}/></td>
+            </tr>
+          </tbody>
+        </table>
         <input type="submit" value="Пересчитать" />
       </form>
     </div>

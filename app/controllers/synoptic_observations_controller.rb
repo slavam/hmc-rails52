@@ -29,7 +29,6 @@ class SynopticObservationsController < ApplicationController
     temps.each do |t|
       @fire_data[t.date.strftime("%Y-%m-%d")] = {temp: t.temperature, temp_d_p: t.temperature_dew_point, fire_danger: 0, day: nil, night: nil}
     end
-    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@fire_data.inspect}") 
     day_precipitations = SynopticObservation.select(:date, :precipitation_1).
       where("date >= ? and date <= ? and station_id = ? and term = 18 and precipitation_1 > 0", @date_from, @date_to, @station_id).order(:date)
     day_precipitations.each do |dp|
@@ -40,7 +39,6 @@ class SynopticObservationsController < ApplicationController
         @fire_data[dp.date.strftime("%Y-%m-%d")][:day] = day_prec
       end
     end
-    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@fire_data.inspect}") 
     night_precipitations = SynopticObservation.select(:date, :precipitation_1).
       where("date >= ? and date <= ? and station_id = ? and term = 6 and precipitation_1 > 0", @date_from, @date_to, @station_id).order(:date)
     night_precipitations.each do |np|
@@ -59,14 +57,12 @@ class SynopticObservationsController < ApplicationController
         first_day = false
         fire_danger = value[:temp]*(value[:temp] - value[:temp_d_p])*is_3mm(value[:day],value[:night]) if value[:temp].present? and value[:temp_d_p].present?
       end
-      # puts value
       fire_danger = value[:temp]*(value[:temp] - value[:temp_d_p])+fire_danger*is_3mm(value[:day],value[:night]) if value[:temp].present? and value[:temp_d_p].present?
       @fire_data[key][:fire_danger] = fire_danger.round
     end
     respond_to do |format|
       format.html
       format.json do 
-        # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@fire_data.inspect}") 
         render json: {fireData: @fire_data}
       end
     end
