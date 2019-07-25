@@ -1,0 +1,23 @@
+.container
+  %h3 Показатель пожарной опасности
+  = will_paginate
+  %table{class: "table table-hover"}
+    %thead
+      %tr
+        %th Дата
+        %th Метеостанция
+        %th Пожарная опасность
+        %th Температура
+        %th Точка росы
+        %th Осадки за ночь
+        %th Осадки за день
+    %tbody
+      - @fire_dangers.each do |fd|
+        %tr
+          %td= fd.observation_date
+          %td= fd.station.name
+          %td= fd.fire_danger
+          %td= fd.temperature
+          %td= fd.temperature_dew_point
+          %td= fd.precipitation_night
+          %td= fd.precipitation_day

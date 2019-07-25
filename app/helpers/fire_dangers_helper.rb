@@ -1,0 +1,2 @@
+module FireDangersHelper
+end

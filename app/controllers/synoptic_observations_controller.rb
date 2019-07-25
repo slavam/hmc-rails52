@@ -343,6 +343,40 @@ class SynopticObservationsController < ApplicationController
       telegram.term = term.to_i
       # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{telegram.inspect}")
       if telegram.save
+        # 20190719 add fire
+        # last_fire_danger = FireDanger.last_fire_danger(:station_id)
+        # 20190725
+        # prev_fd_value = FireDanger.fire_danger_value(:station_id, date.to_date-1.day)
+        # if telegram.term == 6
+        #   precipitation_night = telegram.precipitation_1.present? ? (telegram.precipitation_1>989 ? ((telegram.precipitation_1-990)*0.1).round(1) : telegram.precipitation_1) : 0
+        #   fire_danger = FireDanger.new(observation_date: date, station_id: station_id, precipitation_night: precipitation_night)
+        #   fire_danger.save
+        # elsif telegram.term == 12
+        #   fire_danger = FireDanger.find_by(observation_date: date, station_id: station_id)
+        #   temp = telegram.temperature
+        #   temp_d_p = telegram.temperature_dew_point
+        #   if fire_danger.present?
+        #     fire_danger[:temperature] = temp 
+        #     fire_danger[:temperature_dew_point] = temp_d_p
+        #     fire_danger[:fire_danger] = temp*(temp-temp_d_p)+prev_fd_value*(fire_danger[:precipitation_night].to_i>3 ? 0:1)
+        #   else
+        #     precipitation_1 = SynopticObservation.select(:precipitation_1).find_by(date: date, term: 6, station_id: station_id)
+        #     precipitation_night = precipitation_1.present? ? (precipitation_1>989 ? ((precipitation_1-990)*0.1).round(1) : precipitation_1) : 0
+        #     f_d = temp*(temp-temp_d_p)
+        #     fire_danger = FireDanger.new(observation_date: date, station_id: station_id, temperature: temp, temperature_dew_point: temp_d_p, fire_danger: f_d, precipitation_night: precipitation_night)
+        #   end
+        #   fire_danger.save
+        # elsif telegram.term == 18
+        #   precipitation_day = telegram.precipitation_1.present? ? (telegram.precipitation_1>989 ? ((telegram.precipitation_1-990)*0.1).round(1) : telegram.precipitation_1) : 0
+        #   fire_danger = FireDanger.find_by(observation_date: date, station_id: station_id)
+        #   if fire_danger.present?
+        #     fire_danger[:precipitation_day] = precipitation_day
+        #     if fire_danger.temperature.present? and fire_danger.temperature_dew_point.present?
+        #       fire_danger[:fire_danger] = fire_danger.temperature*(fire_danger.temperature-fire_danger.temperature_dew_point)+prev_fd_value*((fire_danger.precipitation_night.to_f+precipitation_day).to_i>3 ? 0:1)
+        #     end
+        #     fire_danger.save
+        #   end
+        # end
         new_telegram = {id: telegram.id, date: telegram.observed_at, term: term, station_name: telegram.station.name, telegram: telegram.telegram}
         ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'synoptic'
         last_telegrams = SynopticObservation.short_last_50_telegrams(current_user)
@@ -640,6 +674,10 @@ class SynopticObservationsController < ApplicationController
       new_telegram.cloud_amount_1 = groups[3][0].to_i if groups[3][0] != '/'
       new_telegram.wind_direction = groups[3][1,2].to_i if groups[3][1] != '/'
       new_telegram.wind_speed_avg = groups[3][3,2].to_i if groups[3][3] != '/'
+      if groups[4][0] != '1'
+        errors << "Отсутствует обязательная группа 1 раздела 1"
+        return nil
+      end
       if (groups[4] =~ /^1[01][0-5][0-9][0-9]$/).nil?
         errors << "Ошибка в группе 1 раздела 1"
         return nil
@@ -647,6 +685,10 @@ class SynopticObservationsController < ApplicationController
       sign = groups[4][1] == '0' ? '' : '-'
       val = sign+groups[4][2,2]+'.'+groups[4][4]
       new_telegram.temperature = val.to_f
+      if groups[5][0] != '2'
+        errors << "Отсутствует обязательная группа 2 раздела 1"
+        return nil
+      end
       if (groups[5] =~ /^2[01][0-5][0-9][0-9]$/).nil?
         errors << "Ошибка в группе 2 раздела 1"
         return nil

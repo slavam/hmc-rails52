@@ -239,8 +239,8 @@ class StormObservationsController < ApplicationController
         new_telegram = {id: telegram.id, date: telegram.telegram_date, station_name: telegram.station.name, telegram: telegram.telegram}
         ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'storm'
         User.where(role: 'synoptic').each do |synoptic|
-          ActionCable.server.broadcast "storm_telegram_user_#{synoptic.id}", 
-            sound: true
+          ActionCable.server.broadcast "storm_telegram_user_#{synoptic.id}", # "storm_telegram_created",         #20190724
+            sound: true, telegram: new_telegram
         end
         last_telegrams = StormObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams, 

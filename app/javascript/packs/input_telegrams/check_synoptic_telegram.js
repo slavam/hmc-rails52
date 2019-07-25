@@ -227,7 +227,14 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
   }
   var val = '';
   var first = '';
-  // console.log('section1-1:', section);
+  if(tlg[24] != '1'){
+    errors.push("Отсутствует обязательная группа 1 раздела 1");
+    return false;
+  }
+  if(tlg[30] != '2'){
+    errors.push("Отсутствует обязательная группа 2 раздела 1");
+    return false;
+  }
   while (section.length>=5) {
     if(~['1', '2', '3', '4', '5', '6', '7', '8'].indexOf(section[0])){
       group = section.substr(0,5);
@@ -237,7 +244,6 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
         switch(section[0]) {
           case '1':
           case '2':
-            // sign = section[1] == '0' ? '' : '-';
             val = sign[section[1]]+section.substr(2,2)+'.'+section[4];
             if (section[0] == '1')
               observation.temperature = val;
