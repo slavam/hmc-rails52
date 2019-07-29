@@ -58,7 +58,8 @@ class Sea < Prawn::Document
     report_date_next2 = (@bulletin.report_date + 2.day).to_s(:custom_datetime)
     report_date_next3 = (@bulletin.report_date + 3.day).to_s(:custom_datetime)
     font "OpenSans", style: :bold
-    text "Периодный прогноз погоды на #{report_date_next2[8,2]}-#{report_date_next3[8,2]} #{MONTH_NAME2[report_date_next3[5,2].to_i]} #{report_date_next3[0,4]} года
+    month_p = @bulletin.start_month(2,3)
+    text "Периодный прогноз погоды на #{report_date_next2[8,2]}#{month_p}-#{report_date_next3[8,2]} #{MONTH_NAME2[report_date_next3[5,2].to_i]} #{report_date_next3[0,4]} года
     По акватории Азовского моря (на участке с. Безыменное – пгт. Седово)", align: :center, color: "0000ff"
     font "OpenSans"
     move_down 10

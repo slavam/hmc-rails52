@@ -144,6 +144,8 @@ class Daily < Prawn::Document
           #   m_d[j*9+i] = m_d[j*9+i].to_s.tr(".",",")
           # end
         end
+        m_d[i*9+2] = m_d[i*9+2].gsub('.',',') if m_d[i*9+2].present?
+        m_d[i*9+4] = m_d[i*9+4].gsub('.',',') if m_d[i*9+4].present?
         a << ((i!=2 and i!=4 and i!=5 and i!=8 and m_d[j*9+i].present?) ? ((m_d[j*9+i].to_f<0 and m_d[j*9+i].to_f>-0.5) ? '-0' : m_d[j*9+i].to_f.round) : m_d[j*9+i])
       end
       # table_content << a
@@ -205,9 +207,9 @@ class Daily < Prawn::Document
     month_d = @bulletin.start_month(-1,0)
     text "Климатические данные по г. Донецку за #{report_date_prev[8,2]}#{month_d}-#{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]}", align: :center, :color => "0000FF"
     text "С 1945 по #{report_date[0,4]} гг. по данным Гидрометеорологического центра", align: :center, :color => "0000FF"
-    table_content = [["Средняя за сутки температура воздуха (норма)", "#{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", c_d[0].present? ? c_d[0].strip+'°' : '', ""],
-                     ["Максимальная температура воздуха", "#{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", c_d[1].present? ? c_d[1].strip+'°' : '', "отмечалась в #{c_d[2].strip} г."],
-                     ["Минимальная температура воздуха", "#{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]}", c_d[3].present? ? c_d[3].strip+'°' : '', "отмечалась в #{c_d[4].strip} г."]]
+    table_content = [["Средняя за сутки температура воздуха (норма)", "#{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", c_d[0].present? ? c_d[0].strip.gsub('.',',')+'°' : '', ""],
+                     ["Максимальная температура воздуха", "#{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", c_d[1].present? ? c_d[1].strip.gsub('.',',')+'°' : '', "отмечалась в #{c_d[2].strip} г."],
+                     ["Минимальная температура воздуха", "#{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]}", c_d[3].present? ? c_d[3].strip.gsub('.',',')+'°' : '', "отмечалась в #{c_d[4].strip} г."]]
     font "OpenSans"
     table table_content, width: bounds.width , cell_style: {:overflow => :shrink_to_fit, size: 10} do |t|
       t.cells.padding = [2, 2]

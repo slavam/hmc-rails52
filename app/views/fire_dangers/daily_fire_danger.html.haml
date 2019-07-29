@@ -1,5 +1,5 @@
 .container
-  %h3 Показатели пожарной опасности на #{@report_date}
+  %h3 Пожароопасность
   #map{:style => "height: 300px"}
   #form_and_result
   #init_params{ fireDangers: @fire_dangers.to_json, reportDate: @report_date.to_json, stations: @stations.to_json }

@@ -11,6 +11,8 @@
         %th Точка росы
         %th Осадки за ночь
         %th Осадки за день
+        - if current_user.role == 'technicist'
+          %th
     %tbody
       - @fire_dangers.each do |fd|
         %tr
@@ -21,3 +23,5 @@
           %td= fd.temperature_dew_point
           %td= fd.precipitation_night
           %td= fd.precipitation_day
+          - if current_user.role == 'technicist'
+            %td= link_to "Изменить", edit_fire_danger_path(fd.id)

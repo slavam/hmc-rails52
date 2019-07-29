@@ -1,4 +1,5 @@
 class FireDangersController < ApplicationController
+  before_action :find_fire_danger, only: [:edit, :update] 
   def index 
     @fire_dangers = FireDanger.all.paginate(page: params[:page]).order(:observation_date).reverse_order.order(:station_id)
   end
@@ -15,7 +16,23 @@ class FireDangersController < ApplicationController
     end
   end
   
+  def edit
+  end
+  
+  def update
+    if not @fire_danger.update_attributes fire_danger_params
+      render :action => :edit
+    else
+      flash[:success] = "Изменено значение пожарной опасности"
+      redirect_to fire_dangers_path
+    end
+  end
+  
   private
+    def find_fire_danger
+      @fire_danger = FireDanger.find(params[:id])
+    end
+    
     def fire_danger_params
       params.require(:fire_danger).permit(:date_observation, :station_id, :fire_danger, :temperature, :temperature_dew_point, :precipitation_day, :precipitation_night)
     end

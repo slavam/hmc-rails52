@@ -3,6 +3,38 @@ import ReactDOM from 'react-dom';
 import FireMap from '../map/fire_map';
 import ReportDateForm from './report_date_form';
 
+const FireDangersTable = ({fireDangers, stations}) => {
+  var rows = [];
+  if(fireDangers)
+  fireDangers.forEach((fd) => {
+    rows.push(
+      <tr key = {fd.id}>
+        <td>{stations[fd.station_id-1].name}</td>
+        <td>{fd.fire_danger}</td>
+        <td>{fd.temperature}</td>
+        <td>{fd.temperature_dew_point}</td>
+        <td>{fd.precipitation_day}</td>
+        <td>{fd.precipitation_night}</td>
+      </tr>
+    );
+  });
+  return (
+    <table className="table table-hover">
+      <thead>
+        <tr>
+          <th>Метеостанция</th>
+          <th>Пожароопасность</th>
+          <th>Температура (°С)</th>
+          <th>Точка росы (°С)</th>
+          <th>Осадки днем (мм)</th>
+          <th>Осадки ночью (мм)</th>
+        </tr>
+      </thead>
+      <tbody>{rows}</tbody>
+    </table>
+  );
+};
+
 export default class DailyFireDanger extends React.Component{
   constructor(props) {
     super(props);
@@ -35,8 +67,8 @@ export default class DailyFireDanger extends React.Component{
         <div>
           {map}
         </div>
-        <h3>Пожароопасность</h3>
-        {/*<FoundTelegrams fact={fact} telegrams={this.state.telegrams} tlgType={this.props.tlgType} dateFrom={this.state.dateFrom} dateTo={this.state.dateTo} tlgTerm={this.state.tlgTerm} tlgText={this.state.tlgText} stationId={this.state.stationId}/>*/}
+        <h3>Показатели пожарной опасности на {this.state.reportDate}</h3>
+        <FireDangersTable fireDangers={this.state.fireDangers} stations={this.props.stations}/>
       </div>
     );
 

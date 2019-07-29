@@ -19,7 +19,7 @@ export default class ReportDateForm extends React.Component{
   render(){
     return(
       <div>
-        <h3>Задайте дату</h3>
+        <h4>Задайте дату</h4>
         <form className="telegramForm" onSubmit={this.handleSubmit}>
           <input type="date" name="input-date-from" value={this.state.reportDate} onChange={this.reportDateChange} required="true" autoComplete="on" />
           <input type="submit" value="Показать" />

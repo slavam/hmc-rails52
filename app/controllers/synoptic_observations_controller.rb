@@ -319,7 +319,7 @@ class SynopticObservationsController < ApplicationController
   
   def create_synoptic_telegram
     date = params[:input_mode] == 'direct' ? params[:date] : Time.now.utc.strftime("%Y-%m-%d")
-    term = params[:input_mode] == 'direct' ? params[:observation][:term] : Time.now.utc.hour / 3 * 3
+    term = params[:input_mode] == 'direct' ? params[:observation][:term].to_i : Time.now.utc.hour / 3 * 3
     station_id = params[:observation][:station_id]
     telegram = SynopticObservation.find_by(date: date, term: term, station_id: station_id)
     if telegram.present?
@@ -340,43 +340,56 @@ class SynopticObservationsController < ApplicationController
       telegram = SynopticObservation.new(observation_params)
       telegram.observed_at = params[:input_mode] == 'direct' ? Time.parse(date+' '+term+':01:00 UTC') : Time.now.utc # 20180413 added UTC
       telegram.date = date
-      telegram.term = term.to_i
+      telegram.term = term
       # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{telegram.inspect}")
       if telegram.save
         # 20190719 add fire
         # last_fire_danger = FireDanger.last_fire_danger(:station_id)
         # 20190725
-        # prev_fd_value = FireDanger.fire_danger_value(:station_id, date.to_date-1.day)
-        # if telegram.term == 6
-        #   precipitation_night = telegram.precipitation_1.present? ? (telegram.precipitation_1>989 ? ((telegram.precipitation_1-990)*0.1).round(1) : telegram.precipitation_1) : 0
-        #   fire_danger = FireDanger.new(observation_date: date, station_id: station_id, precipitation_night: precipitation_night)
-        #   fire_danger.save
-        # elsif telegram.term == 12
-        #   fire_danger = FireDanger.find_by(observation_date: date, station_id: station_id)
-        #   temp = telegram.temperature
-        #   temp_d_p = telegram.temperature_dew_point
-        #   if fire_danger.present?
-        #     fire_danger[:temperature] = temp 
-        #     fire_danger[:temperature_dew_point] = temp_d_p
-        #     fire_danger[:fire_danger] = temp*(temp-temp_d_p)+prev_fd_value*(fire_danger[:precipitation_night].to_i>3 ? 0:1)
-        #   else
-        #     precipitation_1 = SynopticObservation.select(:precipitation_1).find_by(date: date, term: 6, station_id: station_id)
-        #     precipitation_night = precipitation_1.present? ? (precipitation_1>989 ? ((precipitation_1-990)*0.1).round(1) : precipitation_1) : 0
-        #     f_d = temp*(temp-temp_d_p)
-        #     fire_danger = FireDanger.new(observation_date: date, station_id: station_id, temperature: temp, temperature_dew_point: temp_d_p, fire_danger: f_d, precipitation_night: precipitation_night)
-        #   end
-        #   fire_danger.save
-        # elsif telegram.term == 18
-        #   precipitation_day = telegram.precipitation_1.present? ? (telegram.precipitation_1>989 ? ((telegram.precipitation_1-990)*0.1).round(1) : telegram.precipitation_1) : 0
-        #   fire_danger = FireDanger.find_by(observation_date: date, station_id: station_id)
-        #   if fire_danger.present?
-        #     fire_danger[:precipitation_day] = precipitation_day
-        #     if fire_danger.temperature.present? and fire_danger.temperature_dew_point.present?
-        #       fire_danger[:fire_danger] = fire_danger.temperature*(fire_danger.temperature-fire_danger.temperature_dew_point)+prev_fd_value*((fire_danger.precipitation_night.to_f+precipitation_day).to_i>3 ? 0:1)
-        #     end
-        #     fire_danger.save
-        #   end
-        # end
+        prev_fd_value = FireDanger.fire_danger_value(:station_id, date.to_date-1.day) if (term == 12) or (term == 18)
+        fire_danger = FireDanger.find_by(observation_date: date, station_id: station_id) if (term == 12) or (term == 18) # (term == 6) or 
+        if telegram.term == 6
+          precipitation_night = telegram.precipitation_1.present? ? (telegram.precipitation_1>989 ? ((telegram.precipitation_1-990)*0.1).round(1) : telegram.precipitation_1) : 0
+          # if fire_danger.present?
+          #   fire_danger[:precipitation_night] = precipitation_night
+          # else
+            fire_danger = FireDanger.new(observation_date: date, station_id: station_id, precipitation_night: precipitation_night)
+          # end
+          fire_danger.save
+        elsif telegram.term == 12
+          temp = telegram.temperature
+          temp_d_p = telegram.temperature_dew_point
+          if fire_danger.present?
+            fire_danger[:temperature] = temp 
+            fire_danger[:temperature_dew_point] = temp_d_p
+            fire_danger[:fire_danger] = temp*(temp-temp_d_p)+prev_fd_value*(fire_danger[:precipitation_night].to_i>3 ? 0:1)
+            fire_danger.save
+          else
+            # precipitation_1 = SynopticObservation.select(:precipitation_1).find_by(date: date, term: 6, station_id: station_id)
+            # precipitation_night = precipitation_1.present? ? (precipitation_1>989 ? ((precipitation_1-990)*0.1).round(1) : precipitation_1) : 0
+            # f_d = temp*(temp-temp_d_p)+prev_fd_value*(precipitation_night.to_i>3 ? 0:1)
+            # fire_danger = FireDanger.new(observation_date: date, station_id: station_id, temperature: temp, temperature_dew_point: temp_d_p, fire_danger: f_d, precipitation_night: precipitation_night)
+          end
+          # fire_danger.save
+        elsif telegram.term == 18
+          precipitation_day = telegram.precipitation_1.present? ? (telegram.precipitation_1>989 ? ((telegram.precipitation_1-990)*0.1).round(1) : telegram.precipitation_1) : 0
+          if fire_danger.present?
+            fire_danger[:precipitation_day] = precipitation_day
+            if fire_danger.temperature.present? and fire_danger.temperature_dew_point.present?
+              fire_danger[:fire_danger] = fire_danger.temperature*(fire_danger.temperature-fire_danger.temperature_dew_point)+prev_fd_value*((fire_danger.precipitation_night.to_f+precipitation_day).to_i>3 ? 0:1)
+            end
+            fire_danger.save
+          else
+            # precipitation_night = SynopticObservation.select(:precipitation_1).find_by(date: date, term: 6, station_id: station_id)
+            # temps = SynopticObservation.select(:temperature, :temperature_dew_point).find_by(date: date, term: 12, station_id: station_id)
+            # f_d = 0
+            # if temps.temperature.present? and temps.temperature_dew_point.present?
+            #   f_d = temps.temperature*(temps.temperature-temps.temperature_dew_point)+prev_fd_value*((precipitation_night.to_f+precipitation_day).to_i>3 ? 0:1)
+            # end
+            # fire_danger = FireDanger.new(observation_date: date, station_id: station_id, temperature: temps.temp, temperature_dew_point: temps.temperature_dew_point, fire_danger: f_d, precipitation_night: precipitation_night, precipitation_day: precipitation_day)
+            # fire_danger.save
+          end
+        end
         new_telegram = {id: telegram.id, date: telegram.observed_at, term: term, station_name: telegram.station.name, telegram: telegram.telegram}
         ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'synoptic'
         last_telegrams = SynopticObservation.short_last_50_telegrams(current_user)

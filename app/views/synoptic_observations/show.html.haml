@@ -3,7 +3,7 @@
   %table{class: "table table-bordered"}
     %tr
       %th Дата ввода
-      %td= @synoptic_observation.created_at.to_s
+      %td= @synoptic_observation.created_at.utc.strftime("%Y-%m-%d %H:%M:%S UTC")
     %tr
       %th Дата наблюдения
       %td= @synoptic_observation.observed_at.utc.strftime("%Y-%m-%d %H:%M:%S UTC")
