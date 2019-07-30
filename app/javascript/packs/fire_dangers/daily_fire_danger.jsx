@@ -63,10 +63,11 @@ export default class DailyFireDanger extends React.Component{
     let map = <FireMap stations={this.props.stations} fireDangers={this.state.fireDangers}/>;
     return (
       <div>
-        <ReportDateForm onDateSubmit={this.handleSubmit} reportDate={this.state.reportDate} />
         <div>
           {map}
         </div>
+        <h6>0-400 зеленый; 401-1000 синий; 1001-3000 желтый; 3001-5000 оранжевый; более 5000 красный.</h6>
+        <ReportDateForm onDateSubmit={this.handleSubmit} reportDate={this.state.reportDate} />
         <h3>Показатели пожарной опасности на {this.state.reportDate}</h3>
         <FireDangersTable fireDangers={this.state.fireDangers} stations={this.props.stations}/>
       </div>
