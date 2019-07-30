@@ -365,7 +365,8 @@ class SynopticObservationsController < ApplicationController
             fire_danger[:fire_danger] = temp*(temp-temp_d_p)+prev_fd_value*(fire_danger[:precipitation_night].to_i>3 ? 0:1)
             # fire_danger.save
           else
-            precipitation_1 = SynopticObservation.select(:precipitation_1).find_by(date: date, term: 6, station_id: station_id)
+            observation = SynopticObservation.find_by(date: date, term: 6, station_id: station_id)
+            precipitation_1 = observation.precipitation_1 if observation.present?
             precipitation_night = precipitation_1.present? ? (precipitation_1>989 ? ((precipitation_1-990)*0.1).round(1) : precipitation_1) : 0
             f_d = temp*(temp-temp_d_p)+prev_fd_value*(precipitation_night.to_i>3 ? 0:1)
             fire_danger = FireDanger.new(observation_date: date, station_id: station_id, temperature: temp, temperature_dew_point: temp_d_p, fire_danger: f_d, precipitation_night: precipitation_night)
