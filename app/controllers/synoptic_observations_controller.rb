@@ -338,7 +338,7 @@ class SynopticObservationsController < ApplicationController
       end
     else
       telegram = SynopticObservation.new(observation_params)
-      telegram.observed_at = params[:input_mode] == 'direct' ? Time.parse(date+' '+term+':01:00 UTC') : Time.now.utc # 20180413 added UTC
+      telegram.observed_at = params[:input_mode] == 'direct' ? Time.parse(date+' '+term.to_s+':01:00 UTC') : Time.now.utc # 20180413 added UTC
       telegram.date = date
       telegram.term = term
       # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{telegram.inspect}")
@@ -363,14 +363,14 @@ class SynopticObservationsController < ApplicationController
             fire_danger[:temperature] = temp 
             fire_danger[:temperature_dew_point] = temp_d_p
             fire_danger[:fire_danger] = temp*(temp-temp_d_p)+prev_fd_value*(fire_danger[:precipitation_night].to_i>3 ? 0:1)
-            fire_danger.save
+            # fire_danger.save
           else
-            # precipitation_1 = SynopticObservation.select(:precipitation_1).find_by(date: date, term: 6, station_id: station_id)
-            # precipitation_night = precipitation_1.present? ? (precipitation_1>989 ? ((precipitation_1-990)*0.1).round(1) : precipitation_1) : 0
-            # f_d = temp*(temp-temp_d_p)+prev_fd_value*(precipitation_night.to_i>3 ? 0:1)
-            # fire_danger = FireDanger.new(observation_date: date, station_id: station_id, temperature: temp, temperature_dew_point: temp_d_p, fire_danger: f_d, precipitation_night: precipitation_night)
+            precipitation_1 = SynopticObservation.select(:precipitation_1).find_by(date: date, term: 6, station_id: station_id)
+            precipitation_night = precipitation_1.present? ? (precipitation_1>989 ? ((precipitation_1-990)*0.1).round(1) : precipitation_1) : 0
+            f_d = temp*(temp-temp_d_p)+prev_fd_value*(precipitation_night.to_i>3 ? 0:1)
+            fire_danger = FireDanger.new(observation_date: date, station_id: station_id, temperature: temp, temperature_dew_point: temp_d_p, fire_danger: f_d, precipitation_night: precipitation_night)
           end
-          # fire_danger.save
+          fire_danger.save
         elsif telegram.term == 18
           precipitation_day = telegram.precipitation_1.present? ? (telegram.precipitation_1>989 ? ((telegram.precipitation_1-990)*0.1).round(1) : telegram.precipitation_1) : 0
           if fire_danger.present?
