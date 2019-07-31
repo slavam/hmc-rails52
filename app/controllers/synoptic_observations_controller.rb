@@ -353,7 +353,7 @@ class SynopticObservationsController < ApplicationController
           # if fire_danger.present?
           #   fire_danger[:precipitation_night] = precipitation_night
           # else
-            fire_danger = FireDanger.new(observation_date: date, station_id: station_id, precipitation_night: precipitation_night)
+            fire_danger = FireDanger.new(observation_date: date, station_id: station_id, precipitation_night: precipitation_night, precipitation_day: 0, temperature: 0, temperature_dew_point: 0, fire_danger: 0)
           # end
           fire_danger.save
         elsif telegram.term == 12
@@ -368,7 +368,7 @@ class SynopticObservationsController < ApplicationController
             observation = SynopticObservation.find_by(date: date, term: 6, station_id: station_id)
             precipitation_1 = observation.precipitation_1 if observation.present?
             precipitation_night = precipitation_1.present? ? (precipitation_1>989 ? ((precipitation_1-990)*0.1).round(1) : precipitation_1) : 0
-            f_d = temp*(temp-temp_d_p)+prev_fd_value*(precipitation_night.to_i>3 ? 0:1)
+            f_d = temp*(temp-temp_d_p)+prev_fd_value*(precipitation_night>=3 ? 0:1)
             fire_danger = FireDanger.new(observation_date: date, station_id: station_id, temperature: temp, temperature_dew_point: temp_d_p, fire_danger: f_d, precipitation_night: precipitation_night)
           end
           fire_danger.save
@@ -376,9 +376,12 @@ class SynopticObservationsController < ApplicationController
           precipitation_day = telegram.precipitation_1.present? ? (telegram.precipitation_1>989 ? ((telegram.precipitation_1-990)*0.1).round(1) : telegram.precipitation_1) : 0
           if fire_danger.present?
             fire_danger[:precipitation_day] = precipitation_day
-            if fire_danger.temperature.present? and fire_danger.temperature_dew_point.present?
-              fire_danger[:fire_danger] = fire_danger.temperature*(fire_danger.temperature-fire_danger.temperature_dew_point)+prev_fd_value*((fire_danger.precipitation_night.to_f+precipitation_day).to_i>3 ? 0:1)
+            if (fire_danger[:precipitation_night]+fire_danger[:precipitation_day]>=3)
+              fire_danger[:fire_danger] = fire_danger.temperature*(fire_danger.temperature-fire_danger.temperature_dew_point) if (fire_danger.temperature.present? and fire_danger.temperature_dew_point.present?)
             end
+            # if fire_danger.temperature.present? and fire_danger.temperature_dew_point.present?
+            #   fire_danger[:fire_danger] = fire_danger.temperature*(fire_danger.temperature-fire_danger.temperature_dew_point)+prev_fd_value*((fire_danger.precipitation_night.to_f+precipitation_day).to_i>3 ? 0:1)
+            # end
             fire_danger.save
           else
             # precipitation_night = SynopticObservation.select(:precipitation_1).find_by(date: date, term: 6, station_id: station_id)
