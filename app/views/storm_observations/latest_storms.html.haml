@@ -1,0 +1,5 @@
+.container
+  %h3 Текущие штормовые телеграммы
+  #telegrams
+  #init_params{ telegrams: @telegrams.to_json, stations: @stations.to_json, tlgType: 'storm'.to_json }
+  = javascript_pack_tag 'latest_telegrams/latest_storms'

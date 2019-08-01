@@ -6,7 +6,7 @@ class FireDanger < ApplicationRecord
     return f_d.present? ? f_d : 0
   end
   def self.fire_danger_value(station_id, obs_date)
-    f_d = self.select(:fire_danger).find_by(station_id: station_id, observation_date: obs_date )
-    return f_d.present? ? f_d : 0
+    f_d = self.find_by(station_id: station_id, observation_date: obs_date )
+    return f_d.present? ? f_d.fire_danger : 0
   end
 end

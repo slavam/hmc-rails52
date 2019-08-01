@@ -1,6 +1,11 @@
 class StormObservationsController < ApplicationController
   before_action :find_storm_observation, only: [:show, :edit, :update, :destroy, :update_storm_telegram]
-  
+
+  def latest_storms
+    @telegrams = StormObservation.all.limit(50).order(:id).reverse_order
+    @stations = Station.all.order(:id)
+  end
+
   def storms_4_download
     @init_date = Time.now.strftime("%Y-%m-%d")
   end

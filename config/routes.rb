@@ -57,6 +57,7 @@ Rails.application.routes.draw do
   get 'agro_observations/agro_month_data', to: 'agro_observations#agro_month_data'
   resources :agro_observations
   resources :meteo_links
+  get 'storm_observations/latest_storms', to: 'storm_observations#latest_storms'
   get 'storm_observations/search_storm_telegrams', to: 'storm_observations#search_storm_telegrams'
   post 'storm_observations/create_storm_telegram', to: 'storm_observations#create_storm_telegram'
   get 'storm_observations/get_last_telegrams', to: 'storm_observations#get_last_telegrams'
