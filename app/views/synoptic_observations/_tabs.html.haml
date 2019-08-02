@@ -3,7 +3,7 @@
     %li= link_to "Синоптические", synoptic_observations_path
     %li= link_to 'Штормовые', storm_observations_path
     %li= link_to 'Агро ежедневные', agro_observations_path
-    - if current_user.role != 'railman'
+    - if current_user.present? and current_user.role != 'railman'
       %li= link_to 'Агро декадные', agro_dec_observations_path
       %li= link_to 'Радиация', '/radiation_observations?factor=daily'
       %li= link_to 'Морские', sea_observations_path

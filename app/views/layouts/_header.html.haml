@@ -18,6 +18,8 @@
                   = render 'layouts/list_telegrams'
                   %li{ class: "divider"}
                   = render 'layouts/search_telegrams'
+                  %li{ class: "divider"}
+                  %li= link_to 'Климатические данные по Донецку', donetsk_climate_sets_path
                   -# %li= link_to 'Буфер', '/applicants/applicants_list'
               %li
                 = render 'layouts/bulletins'
@@ -29,7 +31,7 @@
                   - active_meteo_links.each do |l|
                     %li= link_to l.name,  l.address, target: :_blank
                   %li{ class: "divider"}
-                  %li= link_to 'Климатические данные по Донецку', donetsk_climate_sets_path
+                  -# %li= link_to 'Климатические данные по Донецку', donetsk_climate_sets_path
                   %li= link_to "Настройка ссылок", meteo_links_path
               %li
                 = render 'layouts/forecast_links'

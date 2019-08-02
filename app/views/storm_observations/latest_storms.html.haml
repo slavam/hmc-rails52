@@ -1,4 +1,5 @@
 .container
+  = link_to "Все штормовые телеграмммы", storm_observations_path
   %h3 Текущие штормовые телеграммы
   #telegrams
   #init_params{ telegrams: @telegrams.to_json, stations: @stations.to_json, tlgType: 'storm'.to_json }
