@@ -9,7 +9,7 @@ App.candidate = App.cable.subscriptions.create({
       if (playPromise !== null){
         playPromise.catch(() => { snd.play(); });
       }
-      alert("Штормовая телеграмма! "+data.telegram.telegram);
+      // alert("Штормовая телеграмма! "+data.telegram.telegram); 20190805 KMA
     }
   }
 });
