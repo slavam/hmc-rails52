@@ -31,7 +31,7 @@ class DailyShort < Prawn::Document
         text "ШТОРМОВОЕ ПРЕДУПРЕЖДЕНИЕ", align: :center, :color => "ff0000"
         font "OpenSans"
         move_down 10
-        text @bulletin.storm, indent_paragraphs: 40, leading: 4
+        text @bulletin.storm, indent_paragraphs: 40, leading: 2
       end
     end
     move_down 10
@@ -54,7 +54,7 @@ class DailyShort < Prawn::Document
       column(0).borders = [:right]
       column(0).border_width = 1
       row(0).column(0).borders = [:bottom, :right]
-      row(1).leading = 4
+      row(1).leading = 2
     end
     move_down 10
     text "Дежурный синоптик #{@bulletin.duty_synoptic}", align: :right
