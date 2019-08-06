@@ -79,6 +79,7 @@ export default class SearchSynopticTelegrams extends React.Component{
       51: "Сложные отложения",
       52: "Налипание мокрого снега",
       61: "Сильный дождь",
+      65: "Очень сильный дождь",
       71: "Сильный снег",
       91: "Гроза"
     };

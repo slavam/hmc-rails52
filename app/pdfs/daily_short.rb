@@ -106,7 +106,7 @@ class DailyShort < Prawn::Document
     text "ОБЗОР ПОГОДЫ И АГРОМЕТЕОРОЛОГИЧЕСКИХ УСЛОВИЙ", align: :center, :color => "0000FF"
     text "в Донецкой Народной Республике", align: :center, :color => "0000FF"
     review_start_date = @bulletin.review_start_date.present? ? @bulletin.review_start_date : (@bulletin.report_date-1.day)
-    text "за период с 9.00 часов #{review_start_date.day} #{Bulletin::MONTH_NAME2[review_start_date.month]} до 9.00 часов #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} #{report_date[0,4]} года", align: :center, :color => "0000FF"
+    text "за период с 9.00 часов #{review_start_date.strftime("%d")} #{Bulletin::MONTH_NAME2[review_start_date.month]} до 9.00 часов #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} #{report_date[0,4]} года", align: :center, :color => "0000FF"
     # text "за период с 9.00 часов #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} #{report_date[0,4]} года", align: :center, :color => "0000FF"
     font "OpenSans"
     text @bulletin.agro_day_review  

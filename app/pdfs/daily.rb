@@ -98,12 +98,12 @@ class Daily < Prawn::Document
     text "Приложение к Гидрометеорологическому Бюллетеню", align: :center, :color => "0000FF"
     text "от #{@bulletin.report_date_as_str} № #{@bulletin.curr_number}", align: :center, :color => "0000FF"
     
-    move_down 10
+    move_down 5
     report_date_prev = (@bulletin.report_date - 1.day).to_s(:custom_datetime)
     text "МЕТЕОРОЛОГИЧЕСКИЕ ДАННЫЕ", align: :center, :color => "0000FF"
     text "за период с 9.00 часов #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} #{report_date[0,4]} года", align: :center, :color => "0000FF"
   
-    move_down 10
+    move_down 5
     m_d = []
     m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
     if @bulletin.summer
@@ -195,12 +195,13 @@ class Daily < Prawn::Document
     text "ОБЗОР ПОГОДЫ И АГРОМЕТЕОРОЛОГИЧЕСКИХ УСЛОВИЙ", align: :center, :color => "0000FF"
     text "в Донецкой Народной Республике", align: :center, :color => "0000FF"
     review_start_date = @bulletin.review_start_date.present? ? @bulletin.review_start_date : (@bulletin.report_date-1.day)
-    text "за период с 9.00 часов #{review_start_date.day} #{Bulletin::MONTH_NAME2[review_start_date.month]} до 9.00 часов #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} #{report_date[0,4]} года", align: :center, :color => "0000FF"
+    text "за период с 9.00 часов #{review_start_date.strftime("%d")} #{Bulletin::MONTH_NAME2[review_start_date.month]} до 9.00 часов #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} #{report_date[0,4]} года", align: :center, :color => "0000FF"
+    # text "за период с 9.00 часов #{review_start_date.day} #{Bulletin::MONTH_NAME2[review_start_date.month]} до 9.00 часов #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} #{report_date[0,4]} года", align: :center, :color => "0000FF"
     # text "за период с 9.00 часов #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} #{report_date[0,4]} года", align: :center, :color => "0000FF"
     font "OpenSans"
     text @bulletin.agro_day_review  
     
-    move_down 10
+    move_down 5
     font "OpenSans", style: :bold
     c_d = []
     c_d = @bulletin.climate_data.split(";") if @bulletin.climate_data.present?
@@ -214,7 +215,7 @@ class Daily < Prawn::Document
     table table_content, width: bounds.width , cell_style: {:overflow => :shrink_to_fit, size: 10} do |t|
       t.cells.padding = [2, 2]
     end
-    move_down 10
+    move_down 5
 
     bounding_box([5, cursor], :width => bounds.width) do
       text "Время выпуска 13:00", size: 9

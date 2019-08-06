@@ -242,11 +242,11 @@ class StormObservationsController < ApplicationController
       if telegram.save
         # storm_4_arm_syn(telegram)
         # new_telegram = {id: telegram.id, date: telegram.telegram_date, station_name: telegram.station.name, telegram: telegram.telegram}
-        new_telegram = {id: telegram.id, date: telegram.telegram_date, station_name: telegram.station.name, telegram: telegram.telegram, created_at: telegram.created_at, station_id: telegram.station_id}
+        new_telegram = {id: telegram.id, date: telegram.telegram_date.utc, station_name: telegram.station.name, telegram: telegram.telegram, created_at: telegram.created_at.utc, station_id: telegram.station_id}
         ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'storm'
         User.where(role: 'synoptic').each do |synoptic|
-          ActionCable.server.broadcast "storm_telegram_user_#{synoptic.id}", # "storm_telegram_created",         #20190724
-            sound: true, telegram: new_telegram
+          ActionCable.server.broadcast "storm_telegram_user_#{synoptic.id}", # "storm_telegram_created",         #20190724 sound: true, telegram: new_telegram 20190806
+            sound: true, telegram_id: telegram.id
         end
         last_telegrams = StormObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams, 

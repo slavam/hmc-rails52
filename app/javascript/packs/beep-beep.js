@@ -5,11 +5,12 @@ App.candidate = App.cable.subscriptions.create({
   },{
   received: data => {
     if (data.sound){
-      const playPromise = snd.play();
+      var playPromise = snd.play();
       if (playPromise !== null){
-        playPromise.catch(() => { snd.play(); });
+        playPromise.catch(() => { snd.muted = true; snd.play(); });
       }
-      // alert("Штормовая телеграмма! "+data.telegram.telegram); 20190805 KMA
+      console.log("sound=true, telegram_id="+data.telegram_id);
+      // alert("Штормовая телеграмма! "+data.telegram.telegram); //20190805 KMA
     }
   }
 });
