@@ -84,5 +84,4 @@ $(()=>{
       document.getElementById('telegrams')
     );
   }
-}
-);
+});

@@ -11,4 +11,7 @@
   -# %li= link_to "Донбасстеплоэнерго", "/bulletins/list?bulletin_type=dte"
   %li= link_to "Пожароопасность", "/bulletins/list?bulletin_type=fire"
   %li= link_to "Уточнения", "/bulletins/list?bulletin_type=clarification"
+  - if current_user.role == 'synoptic'
+    %li{ class: "divider"}
+    %li= link_to 'Текущие бюллетени', bulletins_latest_bulletins_path
   

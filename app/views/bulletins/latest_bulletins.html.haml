@@ -1,0 +1,6 @@
+= render 'bulletins/tabs'
+.container
+  %h3 Текущие бюллетени
+  #bulletins
+  #init_params{ bulletins: @latest_bulletins.to_json}
+  = javascript_pack_tag 'bulletins/latest_bulletins'

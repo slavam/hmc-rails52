@@ -99,7 +99,7 @@ Rails.application.routes.draw do
   delete '/logout',  to: 'sessions#destroy'
   resources :users
   resources :audits
-  
+  get 'bulletins/latest_bulletins', to: 'bulletins#latest_bulletins'
   get 'bulletins/print_bulletin', to: 'bulletins#print_bulletin'
   get 'bulletins/new_sea_bulletin', to: 'bulletins#new_sea_bulletin'
   get 'bulletins/new_radiation_bulletin', to: 'bulletins#new_radiation_bulletin'

@@ -4,6 +4,23 @@ class BulletinsController < ApplicationController
   # def index
   #   @bulletins = Bulletin.all.order(:created_at).reverse_order
   # end
+  def latest_bulletins
+    bulletins = Bulletin.all.limit(50).order(:id).reverse_order
+    @latest_bulletins = []
+    bulletins.each do |b|
+      editing = BulletinEditor.find_by(bulletin_id: b.id)
+      if editing.present?
+        start_editing = editing.created_at
+        user_login = User.find(editing.user_id).login
+      else
+        start_editing = nil
+        user_login = ''
+      end
+      @latest_bulletins << {id: b.id, created_at: b.created_at, curr_number: b.curr_number, bulletin_type: b.bulletin_type, user_login: user_login, start_editing: start_editing}
+    end
+     
+  end
+    
   def bulletins_select
     @tab_titles = ['Бюллетени ежедневные', 'Бюллетени морские', 'Бюллетени выходного дня']
     @bulletins = Bulletin.where(bulletin_type: 'daily').order(:created_at).reverse_order
@@ -130,6 +147,10 @@ class BulletinsController < ApplicationController
     if not @bulletin.save
       render :new
     else
+      User.where(role: 'synoptic').each do |synoptic|
+        ActionCable.server.broadcast "bulletin_editing_channel_user_#{synoptic.id}", 
+          bulletin: {id: @bulletin.id, created_at: @bulletin.created_at, bulletin_type: @bulletin.bulletin_type, curr_number: @bulletin.curr_number, user_login: '', start_editing: nil}, mode: 'new_bulletin'
+      end
       # MeteoMailer.welcome_email(current_user).deliver_now
       flash[:success] = "Бюллетень создан"
       redirect_to "/bulletins/list?bulletin_type=#{@bulletin.bulletin_type}"
@@ -138,6 +159,13 @@ class BulletinsController < ApplicationController
   end
   
   def edit
+    bulletin_editor = BulletinEditor.new(user_id: current_user.id, bulletin_id: @bulletin.id)
+    if bulletin_editor.save
+      User.where(role: 'synoptic').each do |synoptic|
+        ActionCable.server.broadcast "bulletin_editing_channel_user_#{synoptic.id}", 
+          bulletin_id: @bulletin.id, user_login: current_user.login, start_editing: bulletin_editor.created_at, mode: 'start_editing'
+      end
+    end
     case @bulletin.bulletin_type
       when 'daily'
         # ОН 20190307 выбирать данные из базы каждый раз
@@ -175,6 +203,14 @@ class BulletinsController < ApplicationController
     if not @bulletin.update_attributes bulletin_params
       render :action => :edit
     else
+      bulletin_editor = BulletinEditor.find_by(bulletin_id: @bulletin.id)
+      if bulletin_editor.present?
+        bulletin_editor.destroy
+        User.where(role: 'synoptic').each do |synoptic|
+          ActionCable.server.broadcast "bulletin_editing_channel_user_#{synoptic.id}", 
+            bulletin_id: @bulletin.id, mode: 'stop_editing'
+        end
+      end
       # redirect_to "/bulletins/#{@bulletin.id}/bulletin_show"
       # Rails.logger.debug("My object+++++++++++++++++: #{@bulletin.meteo_data.inspect}")
       flash[:success] = "Бюллетень изменен"
@@ -184,7 +220,12 @@ class BulletinsController < ApplicationController
 
   def destroy
     bulletin_type = @bulletin.bulletin_type
+    bulletin_id = @bulletin.id
     @bulletin.destroy
+    User.where(role: 'synoptic').each do |synoptic|
+      ActionCable.server.broadcast "bulletin_editing_channel_user_#{synoptic.id}", 
+        mode: 'del_bulletin', id: bulletin_id
+    end
     flash[:success] = "Бюллетень удален"
     redirect_to "/bulletins/list?bulletin_type="+bulletin_type
   end
