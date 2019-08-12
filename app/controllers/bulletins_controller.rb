@@ -279,7 +279,8 @@ class BulletinsController < ApplicationController
               pdf = Daily.new(@bulletin)
             when 'one_page'
               pdf = DailyOnePage.new(@bulletin)
-            when 'short'
+            # when 'short'
+            else
               pdf = DailyShort.new(@bulletin)
           end
           # @png_filename_page1 = "Bulletin_daily_#{current_user.id}-0.png" 

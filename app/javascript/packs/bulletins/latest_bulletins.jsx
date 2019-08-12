@@ -43,7 +43,15 @@ export default class LatestBulletins extends React.Component{
     });
     let rows = [];
     this.state.bulletins.forEach((b) => {
-      rows.push(<tr title={b.user_login == ''? '': 'Пользователь '+b.user_login+' редактирует бюллетень'} style={{background: b.user_login == ''? '#fff' : '#f00'}} key={b.id}><td>{b.created_at}</td><td>{b.bulletin_type}</td><td>{b.curr_number}</td><td>Изменить</td><td>Удалить</td></tr>);
+      let editLink = b.id+'/edit';
+      let showLink = b.id+'/bulletin_show.pdf'; //?variant=two_pages';
+      let title = null;
+      // let bColor = '#fff';
+      if(b.user_login != ''){
+        title = 'Пользователь '+b.user_login+' редактирует бюллетень';
+        // bColor = '#f00';
+      }
+      rows.push(<tr title={title} style={{background: b.user_login == ''? '#fff' : '#f00'}} key={b.id}><td>{b.created_at}</td><td>{b.bulletin_type}</td><td>{b.curr_number}</td><td><a href={editLink}>Изменить</a></td><td><a href={showLink}>Просмотреть</a></td></tr>);
     });
     return(
       <table className="table table-hover">

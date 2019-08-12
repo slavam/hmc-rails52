@@ -2,5 +2,5 @@
   %h3 Пожароопасность
   #map{:style => "height: 300px"}
   #form_and_result
-  #init_params{ fireDangers: @fire_dangers.to_json, reportDate: @report_date.to_json, stations: @stations.to_json }
+  #init_params{ fireDangers: @daily_fire_dangers.to_json, reportDate: @report_date.to_json, stations: @stations.to_json }
   = javascript_pack_tag 'fire_dangers/daily_fire_danger'
