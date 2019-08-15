@@ -512,4 +512,8 @@ class SynopticObservation < ActiveRecord::Base
     stop_time_mark = date.strftime("%Y-%m-%d")+' 21'
     return self.select("avg(temperature) temperature").where("station_id = ? AND observed_at >= ? AND observed_at < ?", station_id, start_time_mark, stop_time_mark)[0].temperature
   end
+  def precipitation
+    return 0 if precipitation_1.nil?
+    precipitation_1>989 ? ((precipitation_1-990)*0.1).round(1) : precipitation_1
+  end
 end

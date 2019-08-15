@@ -19,4 +19,9 @@ class ApplicationController < ActionController::Base
     con = (m*chem_coefficient.solution_volume)/(v_normal*chem_coefficient.aliquot_volume)
     return con
   end
+  def precipitation(value)
+    return 0 if value.nil?
+    value>989 ? ((value-990)*0.1).round(1) : value
+  end
+
 end

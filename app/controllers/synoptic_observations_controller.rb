@@ -32,7 +32,7 @@ class SynopticObservationsController < ApplicationController
     day_precipitations = SynopticObservation.select(:date, :precipitation_1).
       where("date >= ? and date <= ? and station_id = ? and term = 18 and precipitation_1 > 0", @date_from, @date_to, @station_id).order(:date)
     day_precipitations.each do |dp|
-      day_prec = dp.precipitation_1>989 ? ((dp.precipitation_1-990)*0.1).round(1) : dp.precipitation_1
+      day_prec = precipitation(dp.precipitation_1)
       if !@fire_data.key?(dp.date.strftime("%Y-%m-%d"))
         @fire_data[dp.date.strftime("%Y-%m-%d")] = {day: day_prec}
       else
@@ -42,7 +42,7 @@ class SynopticObservationsController < ApplicationController
     night_precipitations = SynopticObservation.select(:date, :precipitation_1).
       where("date >= ? and date <= ? and station_id = ? and term = 6 and precipitation_1 > 0", @date_from, @date_to, @station_id).order(:date)
     night_precipitations.each do |np|
-      night_prec = np.precipitation_1>989 ? ((np.precipitation_1-990)*0.1).round(1) : np.precipitation_1
+      night_prec = precipitation(np.precipitation_1)
       if !@fire_data.key?(np.date.strftime("%Y-%m-%d"))
         @fire_data[np.date.strftime("%Y-%m-%d")] = {night: night_prec}
       else
@@ -71,11 +71,12 @@ class SynopticObservationsController < ApplicationController
   def teploenergo
     @year = params[:year].present? ? params[:year] : Time.now.utc.year.to_s
     @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
-    sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date like '#{@year}-#{@month}%' and station_id in (1,2,3,4,5) group by date, station_id;"
+    # sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date like '#{@year}-#{@month}%' and station_id in (1,2,3,4,5) group by date, station_id;"
+    sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date like '#{@year}-#{@month}%' and station_id in (1,2,3,4,10) group by date, station_id;"
     db_temperatures = SynopticObservation.find_by_sql(sql)
     @temperatures = {}
     db_temperatures.each {|t|
-      key = t.date.day.to_s.rjust(2, '0')+'-'+t.station_id.to_s
+      key = t.date.day.to_s.rjust(2, '0')+'-'+t.station_id.to_s.rjust(2, '0')
       @temperatures[key] = t.temperature
     }
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@temperatures.inspect}") 
@@ -91,7 +92,7 @@ class SynopticObservationsController < ApplicationController
       end
     end
   end
-  
+
   def telegrams_4_download
     @date = (Time.now-3.hours).utc.strftime("%Y-%m-%d") # предыдущий срок
   end
@@ -347,14 +348,15 @@ class SynopticObservationsController < ApplicationController
         # last_fire_danger = FireDanger.last_fire_danger(:station_id)
         # 20190725
         prev_fd_value = FireDanger.fire_danger_value(station_id, date.to_date-1.day) if (term == 12) or (term == 18)
-        fire_danger = FireDanger.find_by(observation_date: date, station_id: station_id) if (term == 12) or (term == 18) # (term == 6) or 
+        fire_danger = FireDanger.find_by(observation_date: date, station_id: station_id) if (term == 12) or (term == 18) or (term == 6)
         if telegram.term == 6
-          precipitation_night = telegram.precipitation_1.present? ? (telegram.precipitation_1>989 ? ((telegram.precipitation_1-990)*0.1).round(1) : telegram.precipitation_1) : 0
-          # if fire_danger.present?
-          #   fire_danger[:precipitation_night] = precipitation_night
-          # else
+          # precipitation_night = telegram.precipitation_1.present? ? (telegram.precipitation_1>989 ? ((telegram.precipitation_1-990)*0.1).round(1) : telegram.precipitation_1) : 0
+          precipitation_night = precipitation(telegram.precipitation_1)
+          if fire_danger.present?
+            fire_danger[:precipitation_night] = precipitation_night
+          else
             fire_danger = FireDanger.new(observation_date: date, station_id: station_id, precipitation_night: precipitation_night, precipitation_day: 0, temperature: 0, temperature_dew_point: 0, fire_danger: 0)
-          # end
+          end
           fire_danger.save
         elsif telegram.term == 12
           temp = telegram.temperature
@@ -366,14 +368,16 @@ class SynopticObservationsController < ApplicationController
             # fire_danger.save
           else
             observation = SynopticObservation.find_by(date: date, term: 6, station_id: station_id)
-            precipitation_1 = observation.precipitation_1 if observation.present?
-            precipitation_night = precipitation_1.present? ? (precipitation_1>989 ? ((precipitation_1-990)*0.1).round(1) : precipitation_1) : 0
+            # precipitation_1 = observation.precipitation_1 if observation.present?
+            # precipitation_night = precipitation_1.present? ? (precipitation_1>989 ? ((precipitation_1-990)*0.1).round(1) : precipitation_1) : 0
+            precipitation_night = observation.present? ? precipitation(observation.precipitation_1) : 0
             f_d = (temp*(temp-temp_d_p)).round+prev_fd_value*(precipitation_night>=3 ? 0:1)
             fire_danger = FireDanger.new(observation_date: date, station_id: station_id, temperature: temp, temperature_dew_point: temp_d_p, fire_danger: f_d, precipitation_night: precipitation_night)
           end
           fire_danger.save
         elsif telegram.term == 18
-          precipitation_day = telegram.precipitation_1.present? ? (telegram.precipitation_1>989 ? ((telegram.precipitation_1-990)*0.1).round(1) : telegram.precipitation_1) : 0
+          # precipitation_day = telegram.precipitation_1.present? ? (telegram.precipitation_1>989 ? ((telegram.precipitation_1-990)*0.1).round(1) : telegram.precipitation_1) : 0
+          precipitation_day = precipitation(telegram.precipitation_1)
           if fire_danger.present?
             fire_danger[:precipitation_day] = precipitation_day
             if (fire_danger[:precipitation_night]+fire_danger[:precipitation_day]>=3)

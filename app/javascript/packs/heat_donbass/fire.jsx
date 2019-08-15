@@ -1,15 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import FireForm from './fire_form';
-// import {Line} from 'react-chartjs-2';
 import {Bar} from 'react-chartjs-2';
-
 
 const FireTable = ({fireData}) => {
   let row = [<tr key="0"><td>Дата</td><td>ПО</td><td>Температура</td><td>Точка росы</td><td>Осадки ночью</td><td>Осадки днем</td></tr>];
-  Object.keys(fireData).forEach( (k) => {
-    row.push(<tr key={k}><td>{k}</td><td>{fireData[k]['fire_danger']}</td><td>{fireData[k]['temp']}</td><td>{fireData[k]['temp_d_p']}</td><td>{fireData[k]['night']}</td><td>{fireData[k]['day']}</td></tr>);
-  });
+  // Object.keys(fireData).forEach( (k) => {
+  //   row.push(<tr key={k}><td>{k}</td><td>{fireData[k]['fire_danger']}</td><td>{fireData[k]['temp']}</td><td>{fireData[k]['temp_d_p']}</td><td>{fireData[k]['night']}</td><td>{fireData[k]['day']}</td></tr>);
+  // });
+  let fds = [];
+  let l = Object.keys(fireData).length;
+  let i = 0;
+  for(var k in fireData){
+    let fd = fireData[k];
+    fd['obsDate'] = k;
+    fds[l-i] = fd;
+    i++;
+  }
+  fds.forEach((e) => {
+		row.push(<tr key={e['obsDate']}><td>{e['obsDate']}</td><td>{e['fire_danger']}</td><td>{e['temp']}</td><td>{e['temp_d_p']}</td><td>{e['night']}</td><td>{e['day']}</td></tr>);
+	});
+  
   return <table className="table table-hover"><tbody>{row}</tbody></table>;
 };
 
@@ -36,7 +47,7 @@ export default class Fire extends React.Component{
         this.setState({fireData: data.fireData});
       }).fail((res) => {
         this.setState({errors: ["Проблемы с чтением данных из БД"]});
-      }); 
+    }); 
   }
   render(){
     let stationName = this.props.stations[this.state.stationId-1].name;
@@ -85,17 +96,6 @@ export default class Fire extends React.Component{
         }
       },
       scales: {
-        // xAxes: [
-        //   {
-        //     display: true,
-        //     gridLines: {
-        //       display: false
-        //     },
-        //     labels: {
-        //       show: true
-        //     }
-        //   }
-        // ],
         yAxes: [
           {
             type: 'linear',

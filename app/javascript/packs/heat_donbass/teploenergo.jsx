@@ -4,12 +4,12 @@ import TeploenergoForm from './teploenergo_form';
 import {Line} from 'react-chartjs-2';
 
 const AvgTemperatures = ({temperatures, maxDay}) => {
-  let row = [<tr key="0"><td>Число</td><td>Донецк</td><td>Дебальцево</td><td>Амвросиевка</td><td>Волноваха</td><td>Мариуполь</td></tr>];
+  let row = [<tr key="0"><td>Число</td><td>Донецк</td><td>Дебальцево</td><td>Амвросиевка</td><td>Волноваха</td><td>Седово</td><td>Горловка</td><td>Зугрэс</td><td>Ждановка<br/>Кировское</td></tr>];
   let values = [];
   for(var i=1; i<=maxDay; ++i){
     values = [];
-    [1,3,2,4,5].forEach((j) => { // коды станций 1-5
-      let key = ('0'+i).slice(-2)+'-'+j;
+    [1,3,2,4,10,11,12,13].forEach((j) => { // коды станций 1-4,10
+      let key = ('0'+i).slice(-2)+'-'+('0'+j).slice(-2);
       let val = temperatures[key] == null ? '': temperatures[key];
       values.push(<td key={j}>{val}</td>);
     });
@@ -44,19 +44,31 @@ export default class Teploenergo extends React.Component{
       }); 
   }
   render(){
+    for(var i=1; i<=this.state.daysInMonth; ++i){
+      let d = ('0'+i).slice(-2);
+      if(this.state.temperatures[d+'-01'] && this.state.temperatures[d+'-03']){
+        let v = (Math.round(((Number(this.state.temperatures[d+'-01'])+Number(this.state.temperatures[d+'-03']))/2)*10)/10).toFixed(1);
+        this.state.temperatures[d+'-11'] = v.toString();
+      }
+      if(this.state.temperatures[d+'-02'] && this.state.temperatures[d+'-03']){
+        let db = Number(this.state.temperatures[d+'-03']);
+        let a = Number(this.state.temperatures[d+'-02']);
+        let v = (Math.round((a+db)/2*10)/10).toFixed(1);
+        this.state.temperatures[d+'-12'] = v.toString();
+        v = (Math.round((db-(db-a)/3)*10)/10).toFixed(1);
+        this.state.temperatures[d+'-13'] = v.toString();
+      }
+      
+    }
     const MONTHS = ['', 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
     let endDate = this.state.daysInMonth+' '+MONTHS[+this.state.month]+' '+this.state.year;
     let desiredLink = "/synoptic_observations/teploenergo.pdf?year="+this.state.year+"&month="+this.state.month;
-    let dataDonetsk = [];
-    Object.keys(this.state.temperatures).forEach((k) => {if(k[3]=='1') dataDonetsk[+k.substr(0,2)-1]=this.state.temperatures[k]});
-    let dataDebaltsevo = [];
-    Object.keys(this.state.temperatures).forEach((k) => {if(k[3]=='3') dataDebaltsevo[+k.substr(0,2)-1]=this.state.temperatures[k]});
-    let dataAmvrosievka = [];
-    Object.keys(this.state.temperatures).forEach((k) => {if(k[3]=='2') dataAmvrosievka[+k.substr(0,2)-1]=this.state.temperatures[k]});
-    let dataVolnovaha = [];
-    Object.keys(this.state.temperatures).forEach((k) => {if(k[3]=='4') dataVolnovaha[+k.substr(0,2)-1]=this.state.temperatures[k]});
-    let dataMariupol = [];
-    Object.keys(this.state.temperatures).forEach((k) => {if(k[3]=='5') dataMariupol[+k.substr(0,2)-1]=this.state.temperatures[k]});
+    let cData = [];
+    [1,3,2,4,10].forEach((j) => {
+      cData[j] = [];
+      let id = ('0'+j).slice(-2);
+      Object.keys(this.state.temperatures).forEach((k) => {if(k.substr(3,2)==id) cData[j][+k.substr(0,2)-1]=this.state.temperatures[k]});
+    });
     const lineChartData = {
       labels: Array.from({length: this.state.daysInMonth}, (v, k) => k+1),
       datasets: [ 
@@ -64,36 +76,36 @@ export default class Teploenergo extends React.Component{
           backgroundColor: 'rgba(255,99,32,0.2)',
           borderColor: 'rgba(255,99,32,1)',
       	  label: "Донецк",
-      	  data: dataDonetsk,
-        	fill: false,
+      	  fill: false,
+      	  data: cData[1]
         }, 
         {
           label: "Дебальцево",
           backgroundColor: 'rgba(55,199,32,0.2)',
           borderColor: 'rgba(55,199,32,1)',
           fill: false,
-          data: dataDebaltsevo
+          data: cData[3]
         },
         {
           label: "Амвросиевка",
           backgroundColor: 'rgba(55,99,232,0.2)',
           borderColor: 'rgba(55,99,232,1)',
           fill: false,
-          data: dataAmvrosievka
+          data: cData[2]
         },
         {
           label: "Волноваха",
           backgroundColor: 'rgba(155,99,132,0.2)',
           borderColor: 'rgba(155,99,132,1)',
           fill: false,
-          data: dataVolnovaha
+          data: cData[4]
         },
         {
-          label: "Мариуполь",
+          label: "Седово",
           backgroundColor: 'rgba(155,199,32,0.2)',
           borderColor: 'rgba(155,199,232,1)',
           fill: false,
-          data: dataMariupol
+          data: cData[10]
         }
       ]
     };

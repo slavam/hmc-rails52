@@ -43,11 +43,17 @@ class BulletinsController < ApplicationController
     last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307 
     case params[:bulletin_type]
       when 'clarification'
-        if bulletin.present?
-          @bulletin.forecast_day = bulletin.forecast_day
-          @bulletin.forecast_day_city = bulletin.forecast_day_city
-          @bulletin.forecast_period = bulletin.forecast_period
+        if last_daily_bulletin.present?
+          @bulletin.forecast_day = last_daily_bulletin.forecast_day
+          @bulletin.forecast_day_city = last_daily_bulletin.forecast_day_city
         end
+        @bulletin.forecast_period = bulletin.forecast_period if bulletin.present?
+        
+        # if bulletin.present? 20190815 OH
+        #   @bulletin.forecast_day = bulletin.forecast_day
+        #   @bulletin.forecast_day_city = bulletin.forecast_day_city
+        #   @bulletin.forecast_period = bulletin.forecast_period
+        # end
       when 'fire'
         if bulletin.present?
           @bulletin.curr_number = bulletin.curr_number.to_i + 1
