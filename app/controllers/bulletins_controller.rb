@@ -1,4 +1,5 @@
 class BulletinsController < ApplicationController
+  before_action :logged_in_user, only: [:list] # 20190819
   before_action :find_bulletin, :only => [:bulletin_show, :show, :destroy, :print_bulletin, :edit, :update]
   # after_filter :pdf_png_delete, :only => [:holiday_show]
   # def index
@@ -18,7 +19,6 @@ class BulletinsController < ApplicationController
       end
       @latest_bulletins << {id: b.id, created_at: b.created_at, curr_number: b.curr_number, bulletin_type: b.bulletin_type, user_login: user_login, start_editing: start_editing}
     end
-     
   end
     
   def bulletins_select
@@ -29,9 +29,6 @@ class BulletinsController < ApplicationController
   def list
     @bulletin_type = params[:bulletin_type] 
     @bulletins = Bulletin.where(bulletin_type: @bulletin_type).paginate(page: params[:page], per_page: 20).order(:created_at).reverse_order
-    # respond_to do |format|
-    #   format.html 
-    # end
   end
   
   def new_bulletin

@@ -1,7 +1,7 @@
-require 'prawn'
 class Teploenergo < Prawn::Document
-  def initialize(temperatures, year, month)
-		super(top_margin: 40)	
+  def initialize(temperatures, year, month, signatory)
+    super :page_size => "A4", :page_layout => :landscape
+		# super(top_margin: 40)	
 		@month = month
 		@year = year
 		@temperatures = temperatures
@@ -12,16 +12,33 @@ class Teploenergo < Prawn::Document
       :bold => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Bold.ttf"),
       :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
     })
+    y_pos = cursor
+    font "OpenSans"
+    bounding_box([bounds.width-150, y_pos], width: 300, leading: 3) do
+      text "Приложение к письму"
+      text "Гидрометцентра МЧС ДНР"
+      text "от _________ № _______"
+    end
+    move_down 20
     font "OpenSans", style: :bold
-    text "Средняя за сутки температура воздуха (°С) с 1 по #{@max_day} #{Bulletin::MONTH_NAME2[@month.to_i]} #{@year} года (по данным метеорологических станций)", size: 12
+    text "Средняя за сутки температура воздуха (°С) с 01 по #{@max_day} #{Bulletin::MONTH_NAME2[@month.to_i]} #{@year} года (по данным метеорологических станций)", size: 12, align: :center
     move_down 20
     font "OpenSans", style: :normal
-    table table_data, width: bounds.width, cell_style: { border_width: 0.3, :overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true, size: 9, align: :center } do |t|
+    # table table_data, width: bounds.width, cell_style: { border_width: 0.3, :overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true, size: 9, align: :center } do |t|
       # t.cells.border_width = 0
-    end
+    # end
     # responsible_descr = @bulletin.responsible_2_pdf
     # move_cursor_to 20
     # text responsible_descr[:position]+" "+responsible_descr[:name]
+    move_down 20
+    if signatory == 'chief'
+      position = "Начальник ОГМО"
+      person = "Л.Н. Бойко"
+    else
+      position = "Врио начальника ОГМО"
+      person = "М.А. Кияненко"
+    end
+    table [[position, '', person]], width: bounds.width, cell_style: { border_width: 0, align: :center}
   end
   def table_data
     table = []

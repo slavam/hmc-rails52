@@ -24,4 +24,14 @@ class ApplicationController < ActionController::Base
     value>989 ? ((value-990)*0.1).round(1) : value
   end
 
+  private
+
+    # Confirms a logged-in user. 20190819
+    def logged_in_user
+      unless logged_in?
+        store_location
+        flash[:danger] = "Выполните регистрацию"
+        redirect_to login_url
+      end
+    end
 end

@@ -20,7 +20,7 @@ export default class TeploenergoForm extends React.Component{
     return (
     <div className="col-md-12">
       <form className="dateForm" onSubmit={(event) => this.handleSubmit(event)}>
-        <input type="month" name="input-date" value={this.state.year+'-'+this.state.month} onChange={(event) => this.dateChange(event)} required="true" autoComplete="on" />
+        <input type="month" name="input-date" value={this.state.year+'-'+this.state.month} onChange={(event) => this.dateChange(event)} autoComplete="on" />
         <input type="submit" value="Пересчитать" />
       </form>
     </div>

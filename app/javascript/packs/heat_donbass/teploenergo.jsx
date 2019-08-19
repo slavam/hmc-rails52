@@ -120,7 +120,7 @@ export default class Teploenergo extends React.Component{
       },
   		hover: {
         mode: 'dataset'
-      },
+      }
     };
     return(
       <div>
@@ -128,7 +128,9 @@ export default class Teploenergo extends React.Component{
         <h4>Средняя за сутки температура воздуха (°С) с 1 по {endDate} года по данным метеорологических станций</h4>
         <Line data={lineChartData} height={100} options={options}/>
         <AvgTemperatures temperatures={this.state.temperatures} maxDay={this.state.daysInMonth}/>
-        <a href={desiredLink}>Распечатать</a>
+        <a href={desiredLink+'&variant=chief'} title='Подписал начальник'>Распечатать вариант 1</a>
+        <br/>
+        <a href={desiredLink+'&variant=deputy_chief'} title='Подписал заместитель'>Распечатать вариант 2</a>
       </div>
     );
   }

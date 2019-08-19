@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import FireForm from './fire_form';
 import {Bar} from 'react-chartjs-2';
+import 'chartjs-plugin-annotation';
 
 const FireTable = ({fireData}) => {
   let row = [<tr key="0"><td>Дата</td><td>ПО</td><td>Температура</td><td>Точка росы</td><td>Осадки ночью</td><td>Осадки днем</td></tr>];
@@ -90,6 +91,9 @@ export default class Fire extends React.Component{
       tooltips: {
         mode: 'label'
       },
+      hover: {
+        mode: 'dataset'
+      },
       elements: {
         line: {
           fill: false
@@ -121,6 +125,35 @@ export default class Fire extends React.Component{
               show: true
             }
           }
+        ]
+      },
+      annotation: {
+        annotations: [{
+          type: 'line',
+          mode: 'horizontal',
+          scaleID: 'y-axis-2',
+          value: 3,
+          borderColor: 'rgb(75, 192, 92)',
+          borderWidth: 3,
+          label: {
+            enabled: true,
+            position: 'top',
+            content: '3 мм'
+          }
+        }
+        // ,{
+        //   type: 'line',
+        //   mode: 'horizontal',
+        //   scaleID: 'y-axis-1',
+        //   value: 3000,
+        //   borderColor: 'rgb(175, 92, 92)',
+        //   borderWidth: 4,
+        //   label: {
+        //     enabled: true,
+        //     position: 'top',
+        //     content: '3000'
+        //   }
+        // }
         ]
       }
     };

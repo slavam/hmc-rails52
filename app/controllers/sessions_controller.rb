@@ -8,7 +8,8 @@ class SessionsController < ApplicationController
       # Log the user in and redirect to the user's show page.
       log_in user
       remember user
-      redirect_to user
+      # redirect_to user 20190819
+      redirect_back_or user
     else
       flash.now[:danger] = 'Ошибочная login/password комбинация'
       render 'new'
