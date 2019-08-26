@@ -4,7 +4,16 @@ import TeploenergoForm from './teploenergo_form';
 import {Line} from 'react-chartjs-2';
 
 const AvgTemperatures = ({temperatures, maxDay}) => {
-  let row = [<tr key="0"><td>Число</td><td>Донецк</td><td>Дебальцево</td><td>Амвросиевка</td><td>Волноваха</td><td>Седово</td><td>Горловка</td><td>Зугрэс</td><td>Ждановка<br/>Кировское</td></tr>];
+  let row = [<tr key="0">
+    <td><font size = "2">Число</font></td>
+    <td><font size = "2">Донецк<br/>Пантелеймоновка<br/>Моспино<br/>Еленовка<br/>Макеевка<br/>Харцызск<br/>Ясиноватая</font></td>
+    <td><font size = "2">Дебальцево<br/>Углегорск</font></td>
+    <td><font size = "2">Амвросиевка<br/>Иловайск<br/>Старобешево<br/>Комсомольское</font></td>
+    <td><font size = "2">Докучаевск<br/>Тельманово</font></td>
+    <td><font size = "2">Новоазовск</font></td>
+    <td><font size = "2">Горловка<br/>Енакиево</font></td>
+    <td><font size = "2">Зугрэс<br/>Снежное<br/>Торез<br/>Шахтерск</font></td>
+    <td><font size = "2">Ждановка<br/>Кировское</font></td></tr>];
   let values = [];
   for(var i=1; i<=maxDay; ++i){
     values = [];
@@ -94,14 +103,14 @@ export default class Teploenergo extends React.Component{
           data: cData[2]
         },
         {
-          label: "Волноваха",
+          label: "Докучаевск",
           backgroundColor: 'rgba(155,99,132,0.2)',
           borderColor: 'rgba(155,99,132,1)',
           fill: false,
           data: cData[4]
         },
         {
-          label: "Седово",
+          label: "Новоазовск",
           backgroundColor: 'rgba(155,199,32,0.2)',
           borderColor: 'rgba(155,199,232,1)',
           fill: false,

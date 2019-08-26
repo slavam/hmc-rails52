@@ -25,16 +25,16 @@
                 = render 'layouts/bulletins'
               %li
                 = render 'layouts/synoptic_reports'
-              %li
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Карты <b class="caret"></b></a>
-                %ul{class: "dropdown-menu"}
-                  - active_meteo_links.each do |l|
-                    %li= link_to l.name,  l.address, target: :_blank
-                  %li{ class: "divider"}
+              -#%li
+                -#<a href="#" class="dropdown-toggle" data-toggle="dropdown">Карты <b class="caret"></b></a>
+                -#%ul{class: "dropdown-menu"}
+                  -#- active_meteo_links.each do |l|
+                    -#%li= link_to l.name,  l.address, target: :_blank
+                  -#%li{ class: "divider"}
                   -# %li= link_to 'Климатические данные по Донецку', donetsk_climate_sets_path
-                  %li= link_to "Настройка ссылок", meteo_links_path
-              %li
-                = render 'layouts/forecast_links'
+                  -#%li= link_to "Настройка ссылок", meteo_links_path
+              -#%li
+                -#= render 'layouts/forecast_links'
                 -# = render 'layouts/synoptic_links' 20190718 Boyko
             - when 'agro'
               %li
@@ -54,6 +54,8 @@
                   %li= link_to 'Агро-метео данные (холодный период)',  '/agro_dec_observations/agro_meteo_data?period=cold'
                   %li= link_to 'Агро-метео данные (теплый период)',  '/agro_dec_observations/agro_meteo_data?period=warm'
                   %li= link_to 'Данные из ежедневных агротелеграмм', '/agro_observations/agro_month_data'
+              %li
+                = render 'layouts/bulletins'
             - when 'technicist'
               %li
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Телеграммы <b class="caret"></b></a>
@@ -71,6 +73,7 @@
                   %li= link_to 'Буфер', '/applicants/applicants_list'
                   %li= link_to 'Формирование данных для ARM_SIN', '/synoptic_observations/telegrams_4_download'
                   %li= link_to 'Конвертор синоптических телеграмм', synoptic_observations_get_conversion_params_path
+                  -# %li= link_to 'Синоптические данные', '/synoptic_observations/get_date_term_station'
                   -# %li= link_to 'Формирование штормов для ARM_SIN', '/storm_observations/storms_4_download'
               %li
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Сервис <b class="caret"></b></a>

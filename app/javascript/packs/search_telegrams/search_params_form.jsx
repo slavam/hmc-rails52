@@ -83,8 +83,8 @@ export default class SearchParamsForm extends React.Component{
           </thead>
           <tbody>
             <tr>
-              <td><input type="date" name="input-date-from" value={this.state.dateFrom} onChange={this.dateFromChange} required="true" autoComplete="on" /></td>
-              <td><input type="date" name="input-date-to" value={this.state.dateTo} onChange={this.dateToChange} required="true" autoComplete="on" /></td>
+              <td><input type="date" name="input-date-from" value={this.state.dateFrom} onChange={this.dateFromChange} autoComplete="on" /></td>
+              <td><input type="date" name="input-date-to" value={this.state.dateTo} onChange={this.dateToChange} autoComplete="on" /></td>
               {optInput}
               <td><StationSelect options={this.props.stations} onUserInput={this.handleStationSelected} defaultValue={this.props.stationId} /></td>
               {/*<td><Select value={this.state.station} onChange={this.handleStationSelected} options={this.props.stations}/></td>*/}

@@ -1,0 +1,12 @@
+.container  
+  %h1 Изменение синоптических данных
+  .row
+    %div{ class: "col-md-6 col-md-offset-3"}
+      = form_for(@telegram, url: synoptic_observations_test_telegram_path) do |f| 
+        -#= render 'shared/error_messages'
+        = f.label "Дата наблюдения"
+        = f.text_field :date, class: 'form-control'
+        = f.label "Метеостанция"
+        = collection_select(:telegram, :station_id, Station.all.order(:name), :id, :name, :include_blank => true)
+        
+        = f.submit "Сохранить", class: "btn btn-primary"

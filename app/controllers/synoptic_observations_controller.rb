@@ -3,6 +3,58 @@ class SynopticObservationsController < ApplicationController
   # before_filter :require_observer_or_technicist
   before_action :find_synoptic_observation, only: [:show, :update_synoptic_telegram, :destroy] 
   
+  def get_date_term_station
+    @stations = Station.all.order(:id)
+  end
+
+  def edit_synoptic_data
+    @telegram = SynopticObservation.find(params[:id])
+    # respond_to do |format|
+    #   format.js do
+    #     render :js => "alert('hello!')"
+    #   end
+    #   format.html do
+    #     Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@telegram.inspect}") 
+    #   end
+    # end
+    Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@telegram.inspect}") 
+  end
+  
+  def new_synoptic_data
+  end
+  
+  def test_telegram
+    observation_date = params[:observation_date]
+    term = params[:term]
+    station_id = params[:station_id]
+    observation = SynopticObservation.find_by(date: observation_date, term: term, station_id: station_id)
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@observation.inspect}") 
+    if observation.present?
+      # @telegram = SynopticObservation.new(observation.as_json)
+      redirect_to synoptic_observations_path
+      # redirect_to "/synoptic_observations/#{observation.id}/edit_synoptic_data"
+      # respond_to do |format|
+      # #   # format.html
+      #   format.json do 
+      #     render json: {observation_id: observation.id}
+      #   end
+      # end
+      # redirect_to "/synoptic_observations/#{@telegram.id}/edit_synoptic_data"
+      # redirect_to synoptic_observations_edit_synoptic_data_path
+      # render :edit_synoptic_data
+      # redirect_to :action => "edit_synoptic_data", :id => observation.id
+      # respond_to do |format|
+      # format.js do
+      #   render :js => "alert('hello')"
+      # end
+      # format.html
+      # end
+    else
+      @telegram = SynopticObservation.new(observation_params)
+      redirect_to new_synoptic_data
+    end
+  end
+  
   def destroy
     @synoptic_observation.destroy
     flash[:success] = "Телеграмма удалена"

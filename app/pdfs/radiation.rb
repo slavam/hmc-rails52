@@ -16,18 +16,18 @@ class Radiation < Prawn::Document
       text Bulletin::HEAD, align: :center
     end
     move_down 20
-    font "OpenSans", style: :italic
+    font "OpenSans" #, style: :italic
     bounding_box([50, cursor], :width => 470) do
       text Bulletin::ADDRESS, align: :center, size: 10
     end
     move_down 30
     font "OpenSans", style: :bold
     bounding_box([50, cursor], :width => 470) do
-      text @bulletin.report_date.to_s+" № "+@bulletin.curr_number
+      text @bulletin.report_date.strftime("%d.%m.%Y")+" № "+@bulletin.curr_number
     end
     move_down 20
-    image "./app/assets/images/rhumbs.png", at: [0, cursor]
-    font "OpenSans", style: :italic
+    # image "./app/assets/images/rhumbs.png", at: [0, cursor]
+    font "OpenSans" #, style: :italic
     bounding_box([300, cursor], width: bounds.width-300) do
       text "Начальнику центра управления в кризисных ситуациях Министерства по делам гражданской обороны, чрезвычайным ситуациям и ликвидации последствий стихийных бедствий 
       Донецкой Народной Республики
@@ -35,7 +35,9 @@ class Radiation < Prawn::Document
       В.В. Вовку"
     end
     move_down 20
-    text "Сообщаем данные о состоянии радиационного фона (мкР/ч) на 09.00 часов <b>#{@bulletin.report_date_as_str}</b>:", :inline_format => true, :indent_paragraphs => 40
+    # text "Сообщаем данные о состоянии радиационного фона (мкР/ч) на 09.00 часов <b>#{@bulletin.report_date_as_str}</b>:", :inline_format => true, :indent_paragraphs => 40
+    text "Сообщаем данные наблюдений за радиационным фоном в 09.00 часов", align: :center
+    text "#{@bulletin.report_date_as_str}:", align: :center
     m_d = []
     m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
     move_down 20
@@ -52,15 +54,18 @@ class Radiation < Prawn::Document
       end
     end
     avg = (avg / n.to_f).to_f.round if n > 0
-    text "Средний радиационный фон по Республике #{avg} мкР/ч."
+    text "Естественный радиационный фон в Донецкой Народной Республике в среднем составил #{avg} мкР/ч."
     bounding_box([0, 150], width: bounds.width) do
       text "Ответственный за выпуск:"
       table signatures, width: bounds.width, column_widths:  [300, 100], cell_style: {overflow: :shrink_to_fit, inline_format: true } do |t|
         t.cells.border_width = 0
       end
     end
-    text_box @bulletin.synoptic1 + " (062) 303-10-34", :at => [0, 30] #, :width => 170
-    image "./app/assets/images/radiation.png", at: [400, 100], :scale => 0.75
+    last_name = @bulletin.synoptic1[0..-6]
+    user = User.find_by(last_name: last_name)
+    synoptic = user.present? ? user[:last_name]+' '+user[:first_name]+' '+user[:middle_name] : @bulletin.synoptic1 # 'Синоптик'
+    text_box synoptic + " (062) 303-10-34", :at => [0, 30] #, :width => 170
+    # image "./app/assets/images/radiation.png", at: [400, 100], :scale => 0.75
     # text_box "телефон: (062) 303-10-34", :at => [320, 30], :width => 170, align: :right
     move_to 0, 15
     line_to 520, 15

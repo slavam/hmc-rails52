@@ -1,0 +1,16 @@
+.container
+  %h1 Ключ наблюдения
+
+  .row
+  %div{ class: "col-md-6 col-md-offset-3"}
+    = form_with(url: synoptic_observations_test_telegram_path, method: "get") do |f| 
+      = f.label "Дата"
+      = date_field(:key_fields, :observation_date, value: Time.now.strftime("%Y-%m-%d"))
+
+      = f.label "Срок"
+      = select(:key_fields, :term, [[0,0],[3,3],[6,6],[9,9],[12,12],[15,15],[18,18],[21,21]], include_blank: false)
+      
+      = f.label "Метеостанция"
+      = collection_select(:key_fields, :station_id, Station.all.order(:name), :id, :name)
+
+      = f.submit "Дальше", class: "btn btn-primary" 
