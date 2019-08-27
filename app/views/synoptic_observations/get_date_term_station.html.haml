@@ -1,5 +1,5 @@
 .container
   %h3 Ключ наблюдения
-  #form_and_result
-  #search_params{ observationDate: Time.now.utc.strftime("%Y-%m-%d").to_json, term: "0", stations: @stations.to_json}
+  #form_dts
+  #dts_params{ observationDate: Time.now.utc.strftime("%Y-%m-%d").to_json, stations: @stations.to_json}
   = javascript_pack_tag 'synoptic_data/get_date_term_station'

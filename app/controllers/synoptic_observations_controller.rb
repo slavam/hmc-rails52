@@ -17,10 +17,11 @@ class SynopticObservationsController < ApplicationController
     #     Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@telegram.inspect}") 
     #   end
     # end
-    Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@telegram.inspect}") 
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@telegram.inspect}") 
   end
   
   def new_synoptic_data
+    @telegram = SynopticObservation.new #(observation_params)
   end
   
   def test_telegram
@@ -31,14 +32,17 @@ class SynopticObservationsController < ApplicationController
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@observation.inspect}") 
     if observation.present?
       # @telegram = SynopticObservation.new(observation.as_json)
-      redirect_to synoptic_observations_path
+      # redirect_to synoptic_observations_path
       # redirect_to "/synoptic_observations/#{observation.id}/edit_synoptic_data"
-      # respond_to do |format|
-      # #   # format.html
-      #   format.json do 
-      #     render json: {observation_id: observation.id}
-      #   end
-      # end
+      respond_to do |format|
+        # format.html do
+          # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{observation.inspect}") 
+          # redirect_to synoptic_observations_path and return
+        # end
+        format.json do 
+          render json: {observation_id: observation.id}
+        end
+      end
       # redirect_to "/synoptic_observations/#{@telegram.id}/edit_synoptic_data"
       # redirect_to synoptic_observations_edit_synoptic_data_path
       # render :edit_synoptic_data
@@ -50,8 +54,12 @@ class SynopticObservationsController < ApplicationController
       # format.html
       # end
     else
-      @telegram = SynopticObservation.new(observation_params)
-      redirect_to new_synoptic_data
+      respond_to do |format|
+        format.json do
+          render json: {observation_id: 0}
+        end
+      end
+      # redirect_to synoptic_observations_new_synoptic_data_path
     end
   end
   
@@ -376,6 +384,9 @@ class SynopticObservationsController < ApplicationController
     station_id = params[:observation][:station_id]
     telegram = SynopticObservation.find_by(date: date, term: term, station_id: station_id)
     if telegram.present?
+      if telegram.telegram[0,5] != params[:observation][:telegram][0,5] # 20190827
+        render json: {errors: ["Несовпадение различительных групп (различие во времени)"]}, status: :unprocessable_entity
+      end
       if telegram.update_attributes observation_params
         # new_telegram = {id: telegram.id, date: telegram.observed_at, term: term, station_name: telegram.station.name, telegram: telegram.telegram}
         # ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'synoptic'
