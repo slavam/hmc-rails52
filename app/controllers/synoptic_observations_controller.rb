@@ -1,27 +1,40 @@
 class SynopticObservationsController < ApplicationController
   before_action :logged_user?
   # before_filter :require_observer_or_technicist
-  before_action :find_synoptic_observation, only: [:show, :update_synoptic_telegram, :destroy] 
+  before_action :find_synoptic_observation, only: [:show, :update_synoptic_telegram, :destroy, :update] 
   
   def get_date_term_station
     @stations = Station.all.order(:id)
   end
 
-  def edit_synoptic_data
-    @telegram = SynopticObservation.find(params[:id])
-    # respond_to do |format|
-    #   format.js do
-    #     render :js => "alert('hello!')"
-    #   end
-    #   format.html do
-    #     Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@telegram.inspect}") 
-    #   end
-    # end
-    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@telegram.inspect}") 
+  def edit
+    @synoptic_observation = SynopticObservation.find(params[:id])
   end
   
-  def new_synoptic_data
-    @telegram = SynopticObservation.new #(observation_params)
+  def update
+    if @synoptic_observation.update_attributes observation_params(:synoptic_observation)
+      redirect_to synoptic_observation_path @synoptic_observation
+    else
+      render action: :edit
+    end
+  end
+
+  def new
+    @synoptic_observation = SynopticObservation.new
+    @synoptic_observation.date = params[:date]
+    @synoptic_observation.term = params[:term]
+    @synoptic_observation.station_id = params[:station_id]
+    @synoptic_observation.telegram = (params[:term].to_i % 2 == 0 ? "ЩЭСМЮ" : "ЩЭСИД")+" #{Station.find(params[:station_id]).code} ="
+  end
+
+  def create
+    @synoptic_observation = SynopticObservation.new(observation_params(:synoptic_observation))
+    @synoptic_observation.observed_at = @synoptic_observation.date.strftime("%Y-%m-%d")+" #{@synoptic_observation.term.to_s.rjust(2, '0')}:02:00"
+    if @synoptic_observation.save
+      redirect_to synoptic_observation_path @synoptic_observation
+    else
+      render action: :new
+    end
   end
   
   def test_telegram
@@ -31,35 +44,17 @@ class SynopticObservationsController < ApplicationController
     observation = SynopticObservation.find_by(date: observation_date, term: term, station_id: station_id)
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@observation.inspect}") 
     if observation.present?
-      # @telegram = SynopticObservation.new(observation.as_json)
-      # redirect_to synoptic_observations_path
-      # redirect_to "/synoptic_observations/#{observation.id}/edit_synoptic_data"
       respond_to do |format|
-        # format.html do
-          # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{observation.inspect}") 
-          # redirect_to synoptic_observations_path and return
-        # end
         format.json do 
-          render json: {observation_id: observation.id}
+          render json: {observation_id: observation.id, telegram: observation.telegram}
         end
       end
-      # redirect_to "/synoptic_observations/#{@telegram.id}/edit_synoptic_data"
-      # redirect_to synoptic_observations_edit_synoptic_data_path
-      # render :edit_synoptic_data
-      # redirect_to :action => "edit_synoptic_data", :id => observation.id
-      # respond_to do |format|
-      # format.js do
-      #   render :js => "alert('hello')"
-      # end
-      # format.html
-      # end
     else
       respond_to do |format|
         format.json do
-          render json: {observation_id: 0}
+          render json: {observation_id: 0, telegram: ''}
         end
       end
-      # redirect_to synoptic_observations_new_synoptic_data_path
     end
   end
   
@@ -372,11 +367,10 @@ class SynopticObservationsController < ApplicationController
     @actions = Audit.where("auditable_id = ? and auditable_type = 'SynopticObservation'", @synoptic_observation.id)
   end
   
-  def new
-    # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{current_user.inspect}")
-    @stations = Station.all.order(:name)
-    @last_telegrams = SynopticObservation.short_last_50_telegrams(current_user)
-  end
+  # def new
+  #   @stations = Station.all.order(:name)
+  #   @last_telegrams = SynopticObservation.short_last_50_telegrams(current_user)
+  # end
   
   def create_synoptic_telegram
     date = params[:input_mode] == 'direct' ? params[:date] : Time.now.utc.strftime("%Y-%m-%d")
@@ -387,7 +381,7 @@ class SynopticObservationsController < ApplicationController
       if telegram.telegram[0,5] != params[:observation][:telegram][0,5] # 20190827
         render json: {errors: ["Несовпадение различительных групп (различие во времени)"]}, status: :unprocessable_entity
       end
-      if telegram.update_attributes observation_params
+      if telegram.update_attributes observation_params(:observation)
         # new_telegram = {id: telegram.id, date: telegram.observed_at, term: term, station_name: telegram.station.name, telegram: telegram.telegram}
         # ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'synoptic'
         # 2018.12.29
@@ -401,7 +395,7 @@ class SynopticObservationsController < ApplicationController
         render json: {errors: ["Ошибка при сохранении изменений"]}, status: :unprocessable_entity
       end
     else
-      telegram = SynopticObservation.new(observation_params)
+      telegram = SynopticObservation.new(observation_params(:observation))
       telegram.observed_at = params[:input_mode] == 'direct' ? Time.parse(date+' '+term.to_s+':01:00 UTC') : Time.now.utc # 20180413 added UTC
       telegram.date = date
       telegram.term = term
@@ -472,7 +466,7 @@ class SynopticObservationsController < ApplicationController
   end
   
   def update_synoptic_telegram
-    if @synoptic_observation.update_attributes observation_params
+    if @synoptic_observation.update_attributes observation_params(:observation)
       render json: {errors: []}
     else
       render json: {errors: ["Ошибка при сохранении изменений"]}, status: :unprocessable_entity
@@ -714,8 +708,8 @@ class SynopticObservationsController < ApplicationController
       @synoptic_observation = SynopticObservation.find(params[:id])
     end
     
-    def observation_params
-      params.require(:observation).permit(:date, :term, :telegram, :station_id, :cloud_base_height,
+    def observation_params(model)
+      params.require(model).permit(:date, :term, :telegram, :station_id, :cloud_base_height,
         :visibility_range, :cloud_amount_1, :wind_direction, :wind_speed_avg, :temperature, :temperature_dew_point, 
         :pressure_at_station_level, :pressure_at_sea_level, :pressure_tendency_characteristic, :pressure_tendency,
         :precipitation_1, :precipitation_time_range_1, :weather_in_term, :weather_past_1, :weather_past_2,

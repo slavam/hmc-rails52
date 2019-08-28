@@ -1,11 +1,24 @@
-.container  
-  .row
-    %div{ class: "col-md-6 col-md-offset-3"}
-      = form_for(@telegram, url: synoptic_observations_test_telegram_path) do |f| 
-        -#= render 'shared/error_messages'
-        = f.label "Дата наблюдения"
-        = f.text_field :date, class: 'form-control'
-        = f.label "Метеостанция"
-        = collection_select(:telegram, :station_id, Station.all.order(:name), :id, :name, :include_blank => true)
-        
-        = f.submit "Сохранить", class: "btn btn-primary"
+%div{ class: "row"}
+  %div{ class: "col-md-6 col-md-offset-3"}
+  = form_with model: @synoptic_observation do |f| 
+    %table{class: "table table-bordered"}
+      %tr
+        %th Дата наблюдения
+        %td= f.date_field :date, readonly:true
+      %tr
+        %th Срок 
+        %td= f.number_field :term, readonly:true
+      %tr
+        %th Метеостанция
+        %td= f.collection_select(:station_id, Station.all, :id, :name)
+      %tr
+        %th Телеграмма
+        %td= f.text_field :telegram
+      %tr
+        %th Высота нижней границы самых низких облаков (м)
+        %td= f.number_field :cloud_base_height, in: 0..9
+      %tr
+        %th Метеорологическая дальность видимости
+        %td= f.number_field :visibility_range, in: 0..99
+    
+    = f.submit "Сохранить", class: "btn btn-primary"

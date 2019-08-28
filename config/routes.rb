@@ -70,8 +70,8 @@ Rails.application.routes.draw do
   get 'storm_observations/storms_4_arm_syn', to: 'storm_observations#storms_4_arm_syn'
   get 'storm_observations/storms_download_2_arm_syn', to: 'storm_observations#storms_download_2_arm_syn'
   resources :storm_observations
-  get 'synoptic_observations/:id/edit_synoptic_data', to: 'synoptic_observations#edit_synoptic_data'
-  get 'synoptic_observations/new_synoptic_data', to: 'synoptic_observations#new_synoptic_data'
+  # get 'synoptic_observations/:id/edit_synoptic_data', to: 'synoptic_observations#edit_synoptic_data'
+  # get 'synoptic_observations/new_synoptic_data', to: 'synoptic_observations#new_synoptic_data'
   get 'synoptic_observations/get_date_term_station', to: 'synoptic_observations#get_date_term_station'
   get 'synoptic_observations/test_telegram', to: 'synoptic_observations#test_telegram'
   get 'synoptic_observations/fire', to: 'synoptic_observations#fire'
