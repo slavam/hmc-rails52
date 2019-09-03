@@ -1,6 +1,7 @@
 %div{ class: "row"}
   %div{ class: "col-md-6 col-md-offset-3"}
   = form_with model: @synoptic_observation do |f| 
+    - station_name = Station.find(params[:station_id]).name
     %table{class: "table table-bordered"}
       %tr
         %th Дата наблюдения
@@ -10,15 +11,115 @@
         %td= f.number_field :term, readonly:true
       %tr
         %th Метеостанция
-        %td= f.collection_select(:station_id, Station.all, :id, :name)
+        %td= f.select(:station_id, [[station_name, params[:station_id]]])
       %tr
         %th Телеграмма
         %td= f.text_field :telegram
       %tr
-        %th Высота нижней границы самых низких облаков (м)
-        %td= f.number_field :cloud_base_height, in: 0..9
+        %th Высота нижней границы самых низких облаков
+        %td= f.select(:cloud_base_height, SynopticObservation::CLOUD_HEIGHT.map.with_index{|v,i| [i.to_s+' - "'+v+'"',i]}, include_blank: true)
+        -# %td= f.number_field :cloud_base_height, in: 0..9
       %tr
         %th Метеорологическая дальность видимости
         %td= f.number_field :visibility_range, in: 0..99
+      %tr
+        %th Общее количество облаков всех ярусов
+        %td= f.select(:cloud_amount_1, SynopticObservation::CLOUD_AMOUNT.map.with_index{|v,i| [i.to_s+' - "'+v+'"',i]}, include_blank: true)
+      %tr
+        %th Направление ветра
+        %td= f.number_field :wind_direction, in: 0..99
+      %tr
+        %th Скорость ветра (м/с)
+        %td= f.number_field :wind_speed_avg, in: 0..99
+      %tr
+        %th Температура воздуха (°С)
+        %td= f.number_field :temperature, in: -99..99, step: 0.1
+      %tr
+        %th Точка росы (°С)
+        %td= f.number_field :temperature_dew_point, in: -99..99, step: 0.1
+      %tr
+        %th Давление воздуха на уровне станции (hPa)
+        %td= f.number_field :pressure_at_station_level, in: 1..9999, step: 0.1
+      %tr
+        %th Давление воздуха, приведенное к уровню моря (hPa)
+        %td= f.number_field :pressure_at_sea_level, in: 1..9999, step: 0.1
+      %tr
+        %th Характеристика барической тенденции
+        %td= f.number_field :pressure_tendency_characteristic, in: 0..8
+      %tr
+        %th Значение барической тенденции (hPa)
+        %td= f.number_field :pressure_tendency, in: -99..99, step: 0.1
+      %tr
+        %th Количество осадков (мм)
+        %td= f.number_field :precipitation_1, in: 0..999
+      %tr
+        %th Период времени, за который измерено количество осадков
+        %td= f.number_field :precipitation_time_range_1, in: 0..9
+      %tr
+        %th Погода в срок наблюдений или в последний час
+        %td= f.number_field :weather_in_term, in: 0..99
+      %tr
+        %th Прошедшая погода (W1)
+        %td= f.number_field :weather_past_1, in: 0..9
+      %tr
+        %th Прошедшая погода (W2)
+        %td= f.number_field :weather_past_2, in: 0..9
+      %tr
+        %th Количество облаков CL или CM
+        %td= f.select(:cloud_amount_2, SynopticObservation::CLOUD_AMOUNT.map.with_index{|v,i| [i.to_s+' - "'+v+'"',i]}, include_blank: true)
+      %tr
+        %th Облака вертикального развития (CL)
+        %td= f.number_field :clouds_1, in: 0..9
+      %tr
+        %th Облака среднего яруса (CM)
+        %td= f.number_field :clouds_2, in: 0..9
+      %tr
+        %th Облака верхнего яруса (CH)
+        %td= f.number_field :clouds_3, in: 0..9
+      %tr
+        %th Максимальная темперптура воздуха за день (°С)
+        %td= f.number_field :temperature_dey_max, in: -99..99, step: 0.1
+      %tr
+        %th Минимальная темперптура воздуха за ночь (°С)
+        %td= f.number_field :temperature_night_min, in: -99..99, step: 0.1
+      %tr
+        %th Состояние подстилающей поверхности при наличии снежного покрова
+        %td= f.select(:underlying_surface_сondition, SynopticObservation::SURFACE_CONDITION.map.with_index{|v,i| [i.to_s+' - "'+v+'"',i]}, include_blank: true)
+      %tr
+        %th Продолжительность солнечного сияния (часы)
+        %td= f.number_field :sunshine_duration, in: 0..24, step: 0.1
+      %tr
+        %th Количество облаков слоя (раздел 3, группа 8)
+        %td= f.select(:cloud_amount_3, SynopticObservation::CLOUD_AMOUNT.map.with_index{|v,i| [i.to_s+' - "'+v+'"',i]}, include_blank: true)
+      %tr
+        %th Форма облаков в слое (раздел 3, группа 8)
+        %td= f.select(:cloud_form, SynopticObservation::CLOUD_FORM.map.with_index{|v,i| [i.to_s+' - "'+v+'"',i]}, include_blank: true)
+      %tr
+        %th Высота нижней границы слоя облаков (раздел 3, группа 8)
+        %td= f.number_field :cloud_height, in: 0..99
+      %tr
+        %th Дополнительная информация о погоде
+        %td= f.number_field :weather_data_add, in: 1000..7000
+      %tr
+        %th Состояние поверхности почвы при отсутствии снежного покрова (раздел 5 группа 1)
+        %td= f.select(:soil_surface_condition_1, SynopticObservation::SOIL_CONDITION.map.with_index{|v,i| [i.to_s+' - "'+v+'"',i]}, include_blank: true)
+      %tr
+        %th Температура поверхности почвы в срок наблюдения (°С)
+        %td= f.number_field :temperature_soil, in: -99..99
+      %tr
+        %th Состояние поверхности почвы при отсутствии снежного покрова (раздел 5 группа 3)
+        %td= f.select(:soil_surface_condition_2, SynopticObservation::SOIL_CONDITION.map.with_index{|v,i| [i.to_s+' - "'+v+'"',i]}, include_blank: true)
+      %tr
+        %th Минимальная температура поверхности почвы за ночь (°С)
+        %td= f.number_field :temperature_soil_min, in: -99..99
+      %tr
+        %th Минимальная температура воздуха на высоте 2 см от поверхности почвы (°С)
+        %td= f.number_field :temperature_2cm_min, in: -99..99
+      %tr
+        %th Количество осадков (мм) (раздел 5 группа 6)
+        %td= f.number_field :precipitation_2, in: 0..999
+      %tr
+        %th Период времени, за который измерено количество осадков (раздел 5 группа 6)
+        %td= f.number_field :precipitation_time_range_2, in: 0..9
     
     = f.submit "Сохранить", class: "btn btn-primary"

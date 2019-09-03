@@ -35,7 +35,7 @@ class Dte < Prawn::Document
     end
     bounding_box([290, y_pos], width: bounds.width-290) do
       text "Генеральному директору
-            ГП 'Донбасстеплоэнерго'
+            ГП \"Донбасстеплоэнерго\"
 		
             А.В. Кочетову", leading: 3
     end

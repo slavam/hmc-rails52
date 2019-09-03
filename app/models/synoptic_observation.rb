@@ -5,7 +5,10 @@ class SynopticObservation < ActiveRecord::Base
   validates :telegram, presence: true
   belongs_to :station
   audited
-
+  SOIL_CONDITION=['Сухая','Влажная (без луж)','Влажная (с лужами)','Затоплена водой','Замерзшая','Покрыта льдом','Покрыта сухой пылью','Покрыта сухой пылью полностью (тонкий слой)','Покрыта сухой пылью полностью (умеренный или толстый слой)','Сухая чрезвычайно']
+  CLOUD_FORM = ['Перистые','Перисто-кучевые','Перисто-слоистые',"Высококучевые","Высокослоистые","Слоисто-дождевые","Слоисто-кучевые","Слоистые","Кучевые","Кучево-дождевые"]
+  CLOUD_HEIGHT = ["< 50","50-100","100-200","200-300","300-600","600-1000","1000-1500","1500-2000","2000-2500","> 2500 или облаков нет"]
+  CLOUD_AMOUNT=["0 (облаков нет)",'<=1 (но не 0)','2-3','4','5','6','7-8','>= 9 (но не 10, есть просветы)','10 (без просветов)','Определить невозможно (затруднена видимость)']
   WEATHER_IN_TERM = [
         "Изменение количества облаков в последний час неизвестно", #0
         "Количество облаков в последний час уменьшилось", #1
@@ -232,54 +235,56 @@ class SynopticObservation < ActiveRecord::Base
   
   def cloud_base_height_to_s
     return "Нижняя граница не определенна" if self.cloud_base_height.nil?
-    case self.cloud_base_height
-      when 0
-        "< 50"
-      when 1
-        "50-100"
-      when 2
-        "100-200"
-      when 3
-        "200-300"
-      when 4
-        "300-600"
-      when 5
-        "600-1000"
-      when 6
-        "1000-1500"
-      when 7
-        "1500-2000"
-      when 8
-        "2000-2500"
-      when 9
-        "> 2500 или облаков нет"
-    end
+    return CLOUD_HEIGHT[cloud_base_height]
+    # case self.cloud_base_height
+    #   when 0
+    #     "< 50"
+    #   when 1
+    #     "50-100"
+    #   when 2
+    #     "100-200"
+    #   when 3
+    #     "200-300"
+    #   when 4
+    #     "300-600"
+    #   when 5
+    #     "600-1000"
+    #   when 6
+    #     "1000-1500"
+    #   when 7
+    #     "1500-2000"
+    #   when 8
+    #     "2000-2500"
+    #   when 9
+    #     "> 2500 или облаков нет"
+    # end
   end
   
   def cloud_amount(c_a)
     return 'Определить невозможно или наблюдения не производились' if c_a.nil?
-    case c_a
-      when 0
-        "0 (облаков нет)"
-      when 1
-        '<=1 (но не 0)'
-      when 2
-        '2-3'
-      when 3
-        '4'
-      when 4
-        '5'
-      when 5
-        '6'
-      when 6
-        '7-8'
-      when 7
-        '>= 9 (но не 10, есть просветы)'
-      when 8
-        '10 (без просветов)'
-      when 9
-        'Определить невозможно (затруднена видимость)'
-    end
+    return CLOUD_AMOUNT[c_a]
+    # case c_a
+    #   when 0
+    #     "0 (облаков нет)"
+    #   when 1
+    #     '<=1 (но не 0)'
+    #   when 2
+    #     '2-3'
+    #   when 3
+    #     '4'
+    #   when 4
+    #     '5'
+    #   when 5
+    #     '6'
+    #   when 6
+    #     '7-8'
+    #   when 7
+    #     '>= 9 (но не 10, есть просветы)'
+    #   when 8
+    #     '10 (без просветов)'
+    #   when 9
+    #     'Определить невозможно (затруднена видимость)'
+    # end
   end
   
   def pressure_tendency_characteristic_to_s
@@ -353,28 +358,30 @@ class SynopticObservation < ActiveRecord::Base
   end
   
   def soil_surface_condition_1_to_s
-    case self.soil_surface_condition_1
-      when 0
-        'Сухая'
-      when 1
-        'Влажная (без луж)'
-      when 2
-        'Влажная (с лужами)'
-      when 3
-        'Затоплена водой'
-      when 4
-        'Замерзшая'
-      when 5
-        'Покрыта льдом'
-      when 6
-        'Покрыта сухой пылью'
-      when 7
-        'Покрыта сухой пылью полностью (тонкий слой)'
-      when 8
-        'Покрыта сухой пылью полностью (умеренный или толстый слой)'
-      when 9
-        'Сухая чрезвычайно'
-    end
+    return 'Не определено' if self.soil_surface_condition_1.nil?
+    return SOIL_CONDITION[soil_surface_condition_1]
+    # case self.soil_surface_condition_1
+    #   when 0
+    #     'Сухая'
+    #   when 1
+    #     'Влажная (без луж)'
+    #   when 2
+    #     'Влажная (с лужами)'
+    #   when 3
+    #     'Затоплена водой'
+    #   when 4
+    #     'Замерзшая'
+    #   when 5
+    #     'Покрыта льдом'
+    #   when 6
+    #     'Покрыта сухой пылью'
+    #   when 7
+    #     'Покрыта сухой пылью полностью (тонкий слой)'
+    #   when 8
+    #     'Покрыта сухой пылью полностью (умеренный или толстый слой)'
+    #   when 9
+    #     'Сухая чрезвычайно'
+    # end
   end
   
   def precipitation_to_s(value)
@@ -412,54 +419,56 @@ class SynopticObservation < ActiveRecord::Base
   
   def clouds_form_to_s
     return 'Не определена' if self.cloud_form.nil?
-    case self.cloud_form
-      when 0
-        'Перистые'
-      when 1
-        'Перисто-кучевые'
-      when 2
-        'Перисто-слоистые'
-      when 3
-        "Высококучевые"
-      when 4
-        "Высокослоистые"
-      when 5
-        "Слоисто-дождевые"
-      when 6
-        "Слоисто-кучевые"
-      when 7
-        "Слоистые"
-      when 8
-        "Кучевые"
-      when 9
-        "Кучево-дождевые"
-    end
+    return CLOUD_FORM[cloud_form]
+    # case self.cloud_form
+    #   when 0
+    #     'Перистые'
+    #   when 1
+    #     'Перисто-кучевые'
+    #   when 2
+    #     'Перисто-слоистые'
+    #   when 3
+    #     "Высококучевые"
+    #   when 4
+    #     "Высокослоистые"
+    #   when 5
+    #     "Слоисто-дождевые"
+    #   when 6
+    #     "Слоисто-кучевые"
+    #   when 7
+    #     "Слоистые"
+    #   when 8
+    #     "Кучевые"
+    #   when 9
+    #     "Кучево-дождевые"
+    # end
   end
   
   def soil_surface_condition_2_to_s 
     return 'Не определено' if self.soil_surface_condition_2.nil?
-    case self.cloud_form
-      when 0
-        'Сухая'
-      when 1
-        'Влажная (без луж)'
-      when 2
-        'Влажная (с лужами)'
-      when 3
-        'Затоплена водой'
-      when 4
-        'Замерзшая'
-      when 5
-        'Покрыта льдом'
-      when 6
-        'Покрыта пылью или сыпучим песком частично'
-      when 7
-        'Покрыта пылью или сыпучим песком полностью - тонкий слой'
-      when 8
-        'Покрыта пылью или сыпучим песком полностью - умеренный или толстый слой'
-      when 9
-        'Сухая чрезвычайно'
-    end
+    return SOIL_CONDITION[soil_surface_condition_2]
+    # case self.cloud_form
+    #   when 0
+    #     'Сухая'
+    #   when 1
+    #     'Влажная (без луж)'
+    #   when 2
+    #     'Влажная (с лужами)'
+    #   when 3
+    #     'Затоплена водой'
+    #   when 4
+    #     'Замерзшая'
+    #   when 5
+    #     'Покрыта льдом'
+    #   when 6
+    #     'Покрыта пылью или сыпучим песком частично'
+    #   when 7
+    #     'Покрыта пылью или сыпучим песком полностью - тонкий слой'
+    #   when 8
+    #     'Покрыта пылью или сыпучим песком полностью - умеренный или толстый слой'
+    #   when 9
+    #     'Сухая чрезвычайно'
+    # end
   end
   def self.max_day_temperatures(date)
     ret = []

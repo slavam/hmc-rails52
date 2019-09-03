@@ -29,7 +29,7 @@ export default class DateTermStation extends React.Component{
     }); 
   }
   render(){
-    let editLink = "/synoptic_observations/"+this.state.observationId+"/edit";
+    let editLink = "/synoptic_observations/"+this.state.observationId+"/edit?station_id="+this.state.stationId;
     let createLink = "/synoptic_observations/new?date="+this.state.observationDate+"&term="+this.state.term+"&station_id="+this.state.stationId;
     let link = this.state.observationId != null ? (this.state.observationId>0 ? <a href={editLink}>Изменить?</a> : <a href={createLink}>Создать?</a>) : '';
     let telegram = this.state.observationId>0 ? 
