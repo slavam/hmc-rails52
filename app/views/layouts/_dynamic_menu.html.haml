@@ -1,0 +1,6 @@
+- user_menu_names.each do |um|
+  %li
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">#{um.name} <b class="caret"></b></a>
+    %ul{class: "dropdown-menu"}
+      - dynamic_meteo_links(um.id).each do |l|
+        %li= link_to l.name,  l.address

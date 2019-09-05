@@ -73,6 +73,8 @@
                   = render 'layouts/search_telegrams'
                   %li{ class: "divider"}
                   = render 'layouts/list_telegrams'
+                  %li{ class: "divider"}
+                  %li= link_to 'Динамические меню', meteo_links_path
               %li
                 = render 'layouts/bulletins'
               %li
@@ -201,15 +203,7 @@
                   %li= link_to "Гидропосты", hydro_posts_path
             - when 'guest'
               %li
-                -#- active_user_menus.each do |gr|
-                  -#<a href="#" class="dropdown-toggle" data-toggle="dropdown">Карты <b class="caret"></b></a>
-                  -#%ul{class: "dropdown-menu"}
-                    -#- active_meteo_links.each do |l|
-                      -#%li= link_to l.name,  l.address, target: :_blank
-                
-                  -#%li{ class: "divider"}
-                  -# %li= link_to 'Климатические данные по Донецку', donetsk_climate_sets_path
-                  -#%li= link_to "Настройка ссылок", meteo_links_path
+                = render 'layouts/dynamic_menu'
           %li{ class: "dropdown"}
           %li
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Сеанс <b class="caret"></b></a>

@@ -1,6 +1,12 @@
 %div{ class: "row"}
   %div{ class: "col-md-6 col-md-offset-3"}
-    = form_for(@meteo_link) do |f| 
+    = form_with model: @meteo_link do |f|
+      = f.label "Пользователь"
+      = f.collection_select(:user_id, User.where(role: 'guest').order(:id), :id, :login)
+      
+      = f.label "Меню"
+      = f.collection_select(:user_menu_id, UserMenu.all.order(:id), :id, :name)
+      
       = f.label "Название"
       = f.text_field :name
       

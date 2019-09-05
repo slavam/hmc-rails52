@@ -1,0 +1,2 @@
+class UserMenu < ApplicationRecord
+end

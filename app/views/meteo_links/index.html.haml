@@ -1,8 +1,10 @@
 .container
-  %h3 Ссылки на полезные сайты
+  %h3 Динамические меню пользователей
   %table{class: "table table-hover"}
     %thead
       %tr
+        %th Пользователь
+        %th Меню
         %th Название
         %th Адрес
         %th Активна?
@@ -11,6 +13,8 @@
     %tbody
       - @meteo_links.each do |m_l| 
         %tr
+          %td= m_l.user.login
+          %td= m_l.user_menu.name
           %td= m_l.name
           %td= m_l.address
           %td= m_l.is_active ? "Да" : "Нет"

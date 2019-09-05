@@ -2,7 +2,7 @@ class MeteoLinksController < ApplicationController
   before_action :find_meteo_link, only: [:edit, :update, :destroy]
   
   def index
-    @meteo_links = MeteoLink.all.order(:name)
+    @meteo_links = MeteoLink.where("user_id>0 AND user_menu_id>0").order(:user_id, :user_menu_id, :name)
   end
   
   def new
@@ -41,7 +41,6 @@ class MeteoLinksController < ApplicationController
     end
     
     def meteo_link_params
-      params.require(:meteo_link).permit(:name, :address, :is_active)
+      params.require(:meteo_link).permit(:name, :address, :is_active, :user_id, :user_menu_id)
     end
-  
 end
