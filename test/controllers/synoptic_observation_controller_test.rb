@@ -6,9 +6,9 @@ class SynopticObservationsControllerTest < ActionController::TestCase
   #   assert_response :success
   # end
   
-  test "should get telegrams_4_download" do
-    get :telegrams_4_download
-    assert_response :success
-    assert_select 'h3', "Задайте параметры выгрузки данных для ARM_SIN"
-  end
+  # test "should get telegrams_4_download" do
+  #   get :telegrams_4_download
+  #   assert_response :success
+  #   assert_select 'h3', "Задайте параметры выгрузки данных для ARM_SIN"
+  # end
 end

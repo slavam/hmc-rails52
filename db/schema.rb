@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_04_075003) do
+ActiveRecord::Schema.define(version: 2019_09_05_110206) do
 
   create_table "agro_crop_categories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 2019_09_04_075003) do
   end
 
   create_table "agro_crops", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "agro_crop_category_id", null: false
+    t.integer "agro_crop_category_id"
     t.integer "code"
     t.string "name"
     t.datetime "created_at", null: false
@@ -71,12 +71,12 @@ ActiveRecord::Schema.define(version: 2019_09_04_075003) do
 
   create_table "agro_observations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "telegram_type", default: "ЩЭАГЯ", null: false
-    t.integer "station_id", null: false
-    t.datetime "date_dev", null: false
-    t.integer "day_obs", null: false
-    t.integer "month_obs", null: false
+    t.integer "station_id"
+    t.datetime "date_dev", default: "2019-09-05 11:11:07", null: false
+    t.integer "day_obs"
+    t.integer "month_obs"
     t.integer "telegram_num", default: 1, null: false
-    t.text "telegram", null: false
+    t.text "telegram"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "temperature_max_12"
@@ -106,7 +106,7 @@ ActiveRecord::Schema.define(version: 2019_09_04_075003) do
   end
 
   create_table "agro_phases", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "agro_phase_category_id", null: false
+    t.integer "agro_phase_category_id"
     t.integer "code"
     t.string "name"
     t.datetime "created_at", null: false
@@ -151,8 +151,8 @@ ActiveRecord::Schema.define(version: 2019_09_04_075003) do
   end
 
   create_table "bulletin_editors", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "bulletin_id", null: false
+    t.integer "user_id"
+    t.integer "bulletin_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -187,8 +187,8 @@ ActiveRecord::Schema.define(version: 2019_09_04_075003) do
   end
 
   create_table "chem_coefficients", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "material_id", null: false
-    t.integer "laboratory_id", null: false
+    t.integer "material_id"
+    t.integer "laboratory_id"
     t.decimal "calibration_factor", precision: 6, scale: 3
     t.decimal "aliquot_volume", precision: 5, scale: 2
     t.decimal "solution_volume", precision: 5, scale: 2
@@ -206,7 +206,7 @@ ActiveRecord::Schema.define(version: 2019_09_04_075003) do
 
   create_table "crop_conditions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "agro_observation_id"
-    t.integer "crop_code", null: false
+    t.integer "crop_code"
     t.integer "development_phase_1"
     t.integer "development_phase_2"
     t.integer "development_phase_3"
@@ -243,7 +243,7 @@ ActiveRecord::Schema.define(version: 2019_09_04_075003) do
 
   create_table "crop_damages", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "agro_observation_id"
-    t.integer "crop_code", null: false
+    t.integer "crop_code"
     t.integer "height_snow_cover_rail"
     t.integer "depth_soil_freezing"
     t.integer "thermometer_index"
@@ -359,8 +359,8 @@ ActiveRecord::Schema.define(version: 2019_09_04_075003) do
   end
 
   create_table "donetsk_climate_sets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "mm", null: false
-    t.integer "dd", null: false
+    t.integer "mm"
+    t.integer "dd"
     t.decimal "t_avg", precision: 5, scale: 1
     t.decimal "t_max", precision: 5, scale: 1
     t.integer "year_max"
@@ -404,7 +404,7 @@ ActiveRecord::Schema.define(version: 2019_09_04_075003) do
   end
 
   create_table "laboratories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name", null: false
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -443,8 +443,8 @@ ActiveRecord::Schema.define(version: 2019_09_04_075003) do
   end
 
   create_table "meteo_links", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "address", null: false
+    t.string "name"
+    t.string "address"
     t.boolean "is_active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -454,7 +454,7 @@ ActiveRecord::Schema.define(version: 2019_09_04_075003) do
   end
 
   create_table "other_observations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "data_type", null: false
+    t.string "data_type", default: "temp", null: false
     t.decimal "value", precision: 7, scale: 2
     t.date "obs_date"
     t.integer "station_id"
@@ -492,20 +492,20 @@ ActiveRecord::Schema.define(version: 2019_09_04_075003) do
   end
 
   create_table "radiation_observations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.date "date_observation", null: false
+    t.datetime "date_observation", default: "2019-09-05 11:11:17", null: false
     t.integer "hour_observation"
-    t.integer "station_id", null: false
-    t.string "telegram", null: false
+    t.integer "station_id"
+    t.string "telegram"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "sea_observations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.datetime "date_dev", null: false
-    t.integer "term", null: false
-    t.integer "day_obs", null: false
-    t.integer "station_id", null: false
-    t.string "telegram", null: false
+    t.datetime "date_dev", default: "2019-09-05 11:11:20", null: false
+    t.integer "term"
+    t.integer "day_obs"
+    t.integer "station_id"
+    t.string "telegram"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -529,9 +529,9 @@ ActiveRecord::Schema.define(version: 2019_09_04_075003) do
   end
 
   create_table "snow_points", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name", null: false
+    t.string "name"
     t.integer "code"
-    t.string "snow_point_type", null: false
+    t.string "snow_point_type"
     t.boolean "is_active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -549,11 +549,11 @@ ActiveRecord::Schema.define(version: 2019_09_04_075003) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "telegram_type", default: "ЩЭОЯЮ", null: false
-    t.integer "station_id", null: false
-    t.integer "day_event", null: false
+    t.integer "station_id"
+    t.integer "day_event"
     t.integer "hour_event"
     t.integer "minute_event"
-    t.string "telegram", null: false
+    t.string "telegram"
     t.datetime "telegram_date"
   end
 
@@ -605,7 +605,7 @@ ActiveRecord::Schema.define(version: 2019_09_04_075003) do
   end
 
   create_table "user_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name", null: false
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -138,8 +138,12 @@ class SynopticObservationsController < ApplicationController
     respond_to do |format|
       format.html 
       format.pdf do
-        # station_name = Station.find(params[:station_id]).name
-        pdf = Teploenergo.new(@temperatures, @year, @month, params[:variant])
+        variant = params[:variant]
+        if variant == 'one_page'
+          pdf = TeploenergoOnePage.new(@temperatures, @year, @month)
+        else
+          pdf = Teploenergo.new(@temperatures, @year, @month, variant)
+        end
         send_data pdf.render, filename: "teploenergo_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
       end
       format.json do 

@@ -12,6 +12,7 @@ class MeteoLinksController < ApplicationController
   def create
     @meteo_link = MeteoLink.new(meteo_link_params)
     if @meteo_link.save
+      flash[:success] = "Ссылка создана"
       redirect_to meteo_links_path
     else
       render 'new'
@@ -25,6 +26,7 @@ class MeteoLinksController < ApplicationController
     if not @meteo_link.update_attributes meteo_link_params
       render :action => :edit
     else
+      flash[:success] = "Ссылка изменена"
       redirect_to meteo_links_path
     end
   end
