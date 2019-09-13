@@ -46,6 +46,7 @@ class Radio < Prawn::Document
     text "в Донецкой Народной Республике", align: :center
     move_down 10
     text @bulletin.forecast_day, leading: 3
+    text @bulletin.forecast_period, leading: 3
     move_down 10
     table temps, width: bounds.width,:cell_style => { :align => :center, :inline_format => true, :padding => [2, 2, 2, 2], :size => 11} do |t|
       t.column(0).align = :left

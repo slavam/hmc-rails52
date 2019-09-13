@@ -40,8 +40,8 @@ export default class LatestStorms extends React.Component{
   render(){
     let rows = [];
     this.state.telegrams.forEach((t) => {
-      let date1 = t.telegram_date.replace(/T/,' ').substr(0, 19)+' UTC';
-      let date2 = t.created_at.replace(/T/,' ').substr(0, 19)+' UTC';
+      let date1 = t.telegram_date; //.replace(/T/,' ').substr(0, 19)+' UTC';
+      let date2 = t.created_at; //.replace(/T/,' ').substr(0, 19)+' UTC';
       let title = (t.telegram[3] == 'Я'? 'Начало/усиление; ':'Завершение; ')+this.fact[t.telegram.substr(26,2)];
       rows.push(<tr key={t.id}><td>{date2}</td><td>{date1}</td><td>{this.props.stations[t.station_id-1].name}</td><td title={title}>{t.telegram}</td></tr>);
     });

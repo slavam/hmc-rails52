@@ -139,11 +139,14 @@ class SynopticObservationsController < ApplicationController
       format.html 
       format.pdf do
         variant = params[:variant]
-        if variant == 'one_page'
-          pdf = TeploenergoOnePage.new(@temperatures, @year, @month)
-        else
-          pdf = Teploenergo.new(@temperatures, @year, @month, variant)
-        end
+        # if variant == 'one_page'
+        #   pdf = TeploenergoOnePage.new(@temperatures, @year, @month)
+        # elsif variant == 'portrait'
+        #   pdf = TeploenergoPortrait.new(@temperatures, @year, @month)
+        # else
+        #   pdf = Teploenergo.new(@temperatures, @year, @month, variant)
+        # end
+        pdf = TeploenergoPortrait.new(@temperatures, @year, @month, variant)
         send_data pdf.render, filename: "teploenergo_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
       end
       format.json do 

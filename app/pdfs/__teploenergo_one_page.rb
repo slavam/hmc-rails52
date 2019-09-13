@@ -22,7 +22,8 @@ class TeploenergoOnePage < Prawn::Document
     end
     move_down 20
     font "OpenSans", style: :bold
-    text "Средняя за сутки температура воздуха (°С) с 01 по #{@max_day} #{Bulletin::MONTH_NAME2[@month.to_i]} #{@year} года (по данным метеорологических станций)", size: 12, align: :center
+    text "Средняя за сутки температура воздуха (°С) с 01 по #{@max_day} #{Bulletin::MONTH_NAME2[@month.to_i]} #{@year} года для населенных пунктов", size: 12, align: :center
+    text "Донецкой Народной Республики", size: 12, align: :center
     move_down 20
     font "OpenSans"
     table table_data, width: bounds.width, cell_style: { border_width: 0.3, :overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true, size: 8, align: :center } do |t|

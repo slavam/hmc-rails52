@@ -17,6 +17,9 @@
         %th Прогноз по территории республики на сутки
         %td= form.text_area :forecast_day, cols: "30", rows: "5"
       %tr
+        %th Температура воды, давление
+        %td= form.text_area :forecast_period, cols: "30", rows: "5"
+      %tr
         %th Синоптик
         %td= form.select :synoptic1, options_for_select(Bulletin.synoptic_list, @bulletin.synoptic1)
     -#= render partial: 'responsible' 20190718 КМА

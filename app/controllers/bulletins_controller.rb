@@ -62,6 +62,7 @@ class BulletinsController < ApplicationController
         @bulletin.forecast_day = last_daily_bulletin.forecast_day
       when 'radio'
         @bulletin.forecast_day = last_daily_bulletin.forecast_day
+        @bulletin.forecast_period = bulletin.forecast_period if bulletin.present?
         @bulletin.meteo_data = bulletin.meteo_data if bulletin.present?
       when 'radiation'
         # @bulletin.meteo_data = bulletin.meteo_data if bulletin.present?

@@ -2,7 +2,11 @@ class StormObservationsController < ApplicationController
   before_action :find_storm_observation, only: [:show, :edit, :update, :destroy, :update_storm_telegram]
 
   def latest_storms
-    @telegrams = StormObservation.all.limit(50).order(:id).reverse_order
+    @telegrams = []
+    storms = StormObservation.all.limit(50).order(:id).reverse_order
+    storms.each do |s|
+      @telegrams << {id: s.id, station_id: s.station_id, created_at: s.created_at.utc.strftime("%d-%m-%Y %H:%M:%S UTC"), telegram_date: s.telegram_date.utc.strftime("%d-%m-%Y %H:%M UTC"), telegram: s.telegram}
+    end
     @stations = Station.all.order(:id)
   end
 

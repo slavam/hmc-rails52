@@ -4,9 +4,10 @@ class OtherObservation < ApplicationRecord
   # belongs_to :station
   audited
   OTHER_TYPES = {
-    'temp' => "Температура",
+    'temp' => "Температура на 8 часов",
     'perc' => "Осадки",
-    'min_hum' => "Минимальная влажность"
+    'min_hum' => "Минимальная влажность",
+    'freezing' => "Критическая температура вымерзания"
   }
   def self.last_50_telegrams(data_type)
     OtherObservation.where('data_type = ?', data_type).limit(50).order(:obs_date, :updated_at).reverse_order

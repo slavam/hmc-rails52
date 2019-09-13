@@ -102,10 +102,10 @@ export default class NewOtherData extends React.Component{
   
   render(){
     const types = [
-      { value: 'temp',  label: 'Температура воздуха' },
+      { value: 'temp',  label: 'Температура воздуха на 8 часов' },
       { value: 'perc',  label: 'Осадки' },
       { value: 'min_hum',  label: 'Минимальная влажность' },
-      // { value: 'freez',  label: 'Промерзание' },
+      { value: 'freezing',  label: 'Критическая температура вымерзания' },
       // { value: 'rad',  label: 'Радиация' },
     ];
     const stations = [

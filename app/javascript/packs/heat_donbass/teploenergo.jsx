@@ -26,6 +26,40 @@ const AvgTemperatures = ({temperatures, maxDay}) => {
   }
   return <table className="table table-hover"><tbody>{row}</tbody></table>;
 };
+
+const AvgTemperaturesCompact = ({temperatures, maxDay}) => {
+  let rows = [];
+  let row = [<td><b>Населенные пункты ДНР</b></td>];
+  for(var i=1; i<=maxDay; ++i){
+    row.push(<td key={i}><b>{i}</b></td>);
+  }
+  rows[0] = <tr>{row}</tr>;
+  let cities = [
+    ,
+    <td><b>Донецк<br/>Пантелеймоновка<br/>Моспино<br/>Еленовка<br/>Макеевка<br/>Харцызск<br/>Ясиноватая</b></td>,
+    <td><b>Амвросиевка<br/>Иловайск<br/>Старобешево<br/>Комсомольское</b></td>,
+    <td><b>Дебальцево<br/>Углегорск</b></td>,
+    <td><b>Докучаевск<br/>Тельманово</b></td>,
+    ,,,,,
+    <td><b>Новоазовск</b></td>,
+    <td><b>Горловка<br/>Енакиево</b></td>,
+    <td><b>Снежное<br/>Торез<br/>Шахтерск</b></td>,
+    <td><b>Ждановка<br/>Кировское</b></td>,
+    <td><b>Зугрэс</b></td>
+  ];
+  let values = [];
+  [1,3,2,4,10,11,12,13,14].forEach((j) => { // коды станций 1-4,10
+    values = [];
+    for(var i=1; i<=maxDay; ++i){
+      let key = ('0'+i).slice(-2)+'-'+('0'+j).slice(-2);
+      let val = temperatures[key] == null ? '': temperatures[key];
+      values.push(<td key={i}>{val}</td>);
+    }
+    rows.push(<tr key={j}><td key="0">{cities[j]}</td>{values}</tr>);
+  });
+  return <table className="table table-hover"><tbody>{rows}</tbody></table>;
+};
+
 export default class Teploenergo extends React.Component{
   constructor(props){
     super(props);
@@ -67,7 +101,10 @@ export default class Teploenergo extends React.Component{
         v = (Math.round((db-(db-a)/3)*10)/10).toFixed(1);
         this.state.temperatures[d+'-13'] = v.toString();
       }
-      
+      if(this.state.temperatures[d+'-01'] && this.state.temperatures[d+'-02']){
+        let v = (Math.round(((Number(this.state.temperatures[d+'-01'])+Number(this.state.temperatures[d+'-02']))/2)*10)/10).toFixed(1);
+        this.state.temperatures[d+'-14'] = v.toString();
+      }
     }
     const MONTHS = ['', 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
     let endDate = this.state.daysInMonth+' '+MONTHS[+this.state.month]+' '+this.state.year;
@@ -136,12 +173,16 @@ export default class Teploenergo extends React.Component{
         <TeploenergoForm year={this.state.year} month={this.state.month} onFormSubmit={this.handleFormSubmit} />
         <h4>Средняя за сутки температура воздуха (°С) с 01 по {endDate} года для населенных пунктов Донецкой Народной Республики</h4>
         <Line data={lineChartData} height={100} options={options}/>
-        <AvgTemperatures temperatures={this.state.temperatures} maxDay={this.state.daysInMonth}/>
+        <br/>
+        {/*<AvgTemperatures temperatures={this.state.temperatures} maxDay={this.state.daysInMonth}/>*/}
+        <AvgTemperaturesCompact temperatures={this.state.temperatures} maxDay={this.state.daysInMonth}/>
         <a href={desiredLink+'&variant=chief'} title='Подписал начальник'>Распечатать вариант 1</a>
         <br/>
         <a href={desiredLink+'&variant=deputy_chief'} title='Подписал заместитель'>Распечатать вариант 2</a>
-        <br/>
+        {/*<br/>
         <a href={desiredLink+'&variant=one_page'} title='Development'>Распечатать вариант 3</a>
+        <br/>
+        <a href={desiredLink+'&variant=portrait'} title='Development'>Распечатать вариант 4</a>*/}
       </div>
     );
   }
