@@ -5,10 +5,8 @@ export default class NewOtherData extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      // seconds: 0,
-      // localTime: '',
       station: { value: '1',  label: 'Донецк' },
-      dataType: { value: 'temp',  label: 'Температура воздуха' },
+      dataType: { value: 'temp',  label: this.props.otherTypes['temp'] },
       value: '',
       observationDate: this.props.currDate,
       message: '',
@@ -20,18 +18,8 @@ export default class NewOtherData extends React.Component{
     this.handleStationSelected = this.handleStationSelected.bind(this);
     this.handlePointSelected = this.handlePointSelected.bind(this);
     this.handlePeriodSelected = this.handlePeriodSelected.bind(this);
-    // this.tick = this.tick.bind(this);
-    // this.timer = setInterval(this.tick, 1000);
   }
   
-  // tick(){
-  //   let d = new Date();
-  //   let h = d.getHours();
-  //   let lt = (h<10 ? '0'+h : h)+d.toJSON().slice(13,19);
-  //   if(this.state.seconds != d.getSeconds()){  
-  //     this.setState({seconds: d.getSeconds(), localTime: lt}); //d.toJSON().slice(11,19)});
-  //   }
-  // }
   handleTypeSelected(val){
     this.props.onDataTypeChange(val.value);
     this.setState({dataType: val, errors: []});
@@ -101,19 +89,10 @@ export default class NewOtherData extends React.Component{
   }
   
   render(){
-    const types = [
-      { value: 'temp',  label: 'Температура воздуха на 8 часов' },
-      { value: 'perc',  label: 'Осадки' },
-      { value: 'min_hum',  label: 'Минимальная влажность' },
-      { value: 'freezing',  label: 'Критическая температура вымерзания' },
-      // { value: 'rad',  label: 'Радиация' },
-    ];
-    const stations = [
-      { value: '1',  label: 'Донецк' },
-      { value: '2',  label: 'Амвросиевка' },
-      { value: '3',  label: 'Дебальцево' },
-      { value: '10',  label: 'Седово' },
-    ];
+    const types = [];
+    Object.keys(this.props.otherTypes).forEach( k => types.push({value: k, label: this.props.otherTypes[k]}));
+    const stations = [];
+    [1,2,3,10].forEach(s => stations.push({value: s, label: this.props.stations[s]}));
     const points = [
       { value: 'Макеевка',  label: 'Макеевка' },
       { value: 'Кировский',  label: 'Кировский' },

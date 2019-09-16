@@ -1,0 +1,3 @@
+%ul{ :class=>"nav nav-tabs"}
+  - OtherObservation::OTHER_TYPES.each do |k,v|
+    %li= link_to v, '/other_observations?factor='+k

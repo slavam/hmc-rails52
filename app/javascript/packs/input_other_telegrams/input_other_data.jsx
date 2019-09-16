@@ -3,13 +3,12 @@ import ReactDOM from 'react-dom';
 import NewOtherData from './new_other_data';
 
 const LastData = ({observations, tlgType, stations, onClickDelete}) => {
-  var stationNames = ['','Донецк','Амвросиевка','Дебальцево','','','','','','','Седово'];
   var rows = [];
   observations.forEach((o) => {
     if (tlgType == 'perc')
       rows.push(<tr key={o.id}><td>{o.obs_date}</td><td>{o.source}</td><td>{o.period}</td><td>{o.value}</td><td>{o.description}</td><td><button id={o.id} onClick={o => onClickDelete(o)}>Удалить</button></td></tr>);
     else
-      rows.push(<tr key={o.id}><td>{o.obs_date}</td><td>{stationNames[o.station_id]}</td><td>{o.value}</td><td><button id={o.id} onClick={o => onClickDelete(o)}>Удалить</button></td></tr>);
+      rows.push(<tr key={o.id}><td>{o.obs_date}</td><td>{stations[o.station_id]}</td><td>{o.value}</td><td><button id={o.id} onClick={o => onClickDelete(o)}>Удалить</button></td></tr>);
   });
   let hdr = '';
   if (tlgType == 'perc')
@@ -103,7 +102,7 @@ export default class InputOtherData extends React.Component{
     return(
       <div>
         <h3>Ввод дополнительных данных</h3>
-        <NewOtherData tlgType={this.state.tlgType} currDate={this.state.currDate} inputMode={this.state.inputMode} onFormSubmit={this.handleFormSubmit} onDataTypeChange={this.handleDataTypeChanged} />
+        <NewOtherData tlgType={this.state.tlgType} currDate={this.state.currDate} inputMode={this.state.inputMode} onFormSubmit={this.handleFormSubmit} onDataTypeChange={this.handleDataTypeChanged} otherTypes={this.props.otherTypes} stations={this.props.stations}/>
         {dataTypes[this.state.tlgType]}
         <LastData observations={this.state.observations} tlgType={this.state.tlgType} stations={this.props.stations} onClickDelete={this.deleteOtherData}/>
       </div>
@@ -119,9 +118,10 @@ $(function () {
     const tlgType = JSON.parse(node.getAttribute('tlgType'));
     const stations = JSON.parse(node.getAttribute('stations'));
     const inputMode = JSON.parse(node.getAttribute('inputMode'));
+    const otherTypes = JSON.parse(node.getAttribute('otherTypes'));
     
     ReactDOM.render(
-      <InputOtherData observations={observations} stations={stations} currDate={currDate} tlgType={tlgType} inputMode={inputMode}/>,
+      <InputOtherData observations={observations} stations={stations} currDate={currDate} tlgType={tlgType} inputMode={inputMode} otherTypes={otherTypes}/>,
       document.getElementById('form_and_last_telegrams')
     );
   }

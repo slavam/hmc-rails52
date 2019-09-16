@@ -5,7 +5,7 @@ class OtherObservationsController < ApplicationController
   end
   
   def input_other_telegrams
-    @stations =  Station.all.order(:name)
+    @stations =  Station.name_stations_as_array #all.order(:name)
     @observations = OtherObservation.last_50_telegrams('temp') #.to_json
     @input_mode = params[:input_mode]
   end

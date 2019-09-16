@@ -1,0 +1,15 @@
+.container
+  %h3 Названия меню пользователей
+  %table{class: "table table-hover"}
+    %thead
+      %tr
+        %th ID
+        %th Название
+        %th
+    %tbody
+      - @user_menus.each do |u_m| 
+        %tr
+          %td= u_m.id
+          %td= u_m.name
+          %td= link_to "Изменить", edit_user_menu_path(u_m.id)
+  =link_to "Создать", new_user_menu_path
