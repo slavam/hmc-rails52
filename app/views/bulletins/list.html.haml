@@ -1,4 +1,5 @@
-= render 'bulletins/tabs'
+- if current_user.role != 'guest'
+  = render 'bulletins/tabs'
 .container
   %h3= "#{Bulletin::BULLETIN_TYPES[@bulletin_type]}"
   - if ['technicist','synoptic'].index(current_user.role)
