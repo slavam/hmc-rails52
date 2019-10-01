@@ -1,6 +1,6 @@
 class TeploenergoPortrait < Prawn::Document
   def initialize(temperatures, year, month, signatory)
-    super :page_size => "A4", left_margin: 80 #, :page_layout => :landscape
+    super :page_size => "A4", left_margin: 95 #, :page_layout => :landscape
 		# super(top_margin: 40)	
 		@month = month
 		@year = year
@@ -21,8 +21,9 @@ class TeploenergoPortrait < Prawn::Document
     end
     move_down 20
     font "OpenSans", style: :bold
-    text "Средняя за сутки температура воздуха (°С) с 01 по #{@max_day} #{Bulletin::MONTH_NAME2[@month.to_i]} #{@year} года для населенных пунктов", size: 12, align: :center
-    text "Донецкой Народной Республики", size: 12, align: :center
+    text "Средняя за сутки (00:01-24:00) температура воздуха (°С)", size: 12, align: :center
+    text "с 01 по #{@max_day} #{Bulletin::MONTH_NAME2[@month.to_i]} #{@year} года", size: 12, align: :center
+    text "для населенных пунктов Донецкой Народной Республики", size: 12, align: :center
     move_down 20
     font "OpenSans", style: :normal
     table table_data, width: bounds.width, cell_style: { border_width: 0.3, :overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true, size: 9, align: :center } do |t|
@@ -40,7 +41,7 @@ class TeploenergoPortrait < Prawn::Document
       # t.column(7).width = 45
       # t.column(8).width = 50
     end
-    move_down 20
+    move_down 40
     if signatory == 'chief'
       position = "Начальник ОГМО"
       signature = "./app/assets/images/head_of_dep.png"
@@ -50,7 +51,10 @@ class TeploenergoPortrait < Prawn::Document
       signature = "./app/assets/images/kian.png"
       person = "М.А. Кияненко"
     end
-    table [[position, {image: signature, scale: 0.6, padding: [-5,5], position: :center}, person]], width: bounds.width, cell_style: { border_width: 0, align: :center}
+    # table [[position, {image: signature, scale: 0.6, padding: [-5,5], position: :center}, person]], width: bounds.width, cell_style: { border_width: 0, align: :center}
+    table [[position, person]], width: bounds.width, :column_widths => [330], cell_style: { border_width: 0, align: :left} do |t|
+      t.cells.padding = [2,2]
+    end
   end
   def table_data
     table = []

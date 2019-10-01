@@ -10,6 +10,7 @@ export default class ApplicantsList extends React.Component{
     };
     this.updateApplicantsState = this.updateApplicantsState.bind(this);
     this.deleteApplicant = this.deleteApplicant.bind(this);
+    this.showWindow = this.showWindow.bind(this);
     // this.snd = new Audio("/assets/ring1.wav");
   }  
   
@@ -31,12 +32,18 @@ export default class ApplicantsList extends React.Component{
     }.bind(this));
   }
   
+  showWindow(myWindow){
+    myWindow.document.write("<p>Поступила штормовая телеграмма</p>");
+  }
+  
   updateApplicantsState(applicant, action) {
     let applicants = [...this.state.applicants];
     let applicantsCopy = applicants.slice();
     let applicantId = applicantsCopy.findIndex((element, index, array) => element.id == applicant.id);
     if(action == 'insert')
       if (applicantId == -1) {
+        // let myWindow = window.open("", "", "width=300,height=100");
+        // this.showWindow(myWindow);
         applicantsCopy = [applicant].concat(applicants); // add
       } else {
         applicantsCopy[applicantId] = applicant; // update

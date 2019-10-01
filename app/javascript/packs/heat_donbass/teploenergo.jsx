@@ -171,7 +171,7 @@ export default class Teploenergo extends React.Component{
     return(
       <div>
         <TeploenergoForm year={this.state.year} month={this.state.month} onFormSubmit={this.handleFormSubmit} />
-        <h4>Средняя за сутки температура воздуха (°С) с 01 по {endDate} года для населенных пунктов Донецкой Народной Республики</h4>
+        <h5>Средняя за сутки (00:01-24:00) температура воздуха (°С) с 01 по {endDate} года для населенных пунктов Донецкой Народной Республики</h5>
         <Line data={lineChartData} height={100} options={options}/>
         <br/>
         {/*<AvgTemperatures temperatures={this.state.temperatures} maxDay={this.state.daysInMonth}/>*/}

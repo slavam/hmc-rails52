@@ -126,8 +126,14 @@ class SynopticObservationsController < ApplicationController
   def teploenergo
     @year = params[:year].present? ? params[:year] : Time.now.utc.year.to_s
     @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
+    if @month.to_i == Time.now.month
+      last_day = (Time.now.day-1).to_s.rjust(2,'0') # не брать текущий день ЛМБ 20191001
+    else
+      last_day = Time.parse('#{@year}-#{@month}-01').end_of_month.day.to_s
+    end
     # sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date like '#{@year}-#{@month}%' and station_id in (1,2,3,4,5) group by date, station_id;"
-    sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date like '#{@year}-#{@month}%' and station_id in (1,2,3,4,10) group by date, station_id;"
+    # sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date like '#{@year}-#{@month}%' and station_id in (1,2,3,4,10) group by date, station_id;"
+    sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date >= '#{@year}-#{@month}-01' and date <= '#{@year}-#{@month}-#{last_day}' and station_id in (1,2,3,4,10) group by date, station_id;"
     db_temperatures = SynopticObservation.find_by_sql(sql)
     @temperatures = {}
     db_temperatures.each {|t|

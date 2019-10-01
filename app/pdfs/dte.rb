@@ -1,7 +1,7 @@
 # require 'prawn'
 class Dte < Prawn::Document
   def initialize(bulletin)
-		super(top_margin: 40, left_margin: 80, right_margin: 50, bottom_margin: 0)
+		super(top_margin: 40, left_margin: 95, right_margin: 50, bottom_margin: 0)
 		@bulletin = bulletin
     font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),
@@ -30,7 +30,8 @@ class Dte < Prawn::Document
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
       text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № 03/"+@bulletin.curr_number
-      text "На № ___________  #{Prawn::Text::NBSP * 3}от __________"
+      text "К договору от 01.10.2019 № 08/19-20/03"
+      # text "На № 08/19-20/03  #{Prawn::Text::NBSP * 3}от 01.10.2019"
       # text "На № 08/18-19/03  #{Prawn::Text::NBSP * 3}от 29.08.2018"
       # text "На № 04/18/03 #{Prawn::Text::NBSP * 3}от 09.01.2018"
     end
@@ -44,11 +45,13 @@ class Dte < Prawn::Document
     move_down 50
     font "OpenSans", style: :bold
     text "ПРОГНОЗ ПОГОДЫ", align: :center
+    move_down 20
     font "OpenSans"
     report_date = @bulletin.report_date.strftime("%Y-%m-%d")
     report_date_next = (@bulletin.report_date + 1.day).strftime("%Y-%m-%d")
     # text @bulletin.report_date_as_str, :color => "0000FF", align: :center
     text "на сутки с 21 часа #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} до 21 часа #{report_date_next[8,2]} #{Bulletin::MONTH_NAME2[report_date_next[5,2].to_i]} #{report_date_next[0,4]} года", align: :center
+    move_down 5
     text "в Донецкой Народной Республике", align: :center
     move_down 10
     text @bulletin.forecast_day, leading: 3
@@ -61,7 +64,7 @@ class Dte < Prawn::Document
     # end
                     
     table_content =[[{:padding => [10,0],:content => chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]                    
-    table table_content, width: bounds.width, :column_widths => [200, 170], cell_style: {:overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true } do |t|
+    table table_content, width: bounds.width, :column_widths => [200, 150], cell_style: {:overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true } do |t|
       t.cells.border_width = 0
     end
     move_cursor_to 20
