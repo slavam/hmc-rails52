@@ -29,11 +29,11 @@ const AvgTemperatures = ({temperatures, maxDay}) => {
 
 const AvgTemperaturesCompact = ({temperatures, maxDay}) => {
   let rows = [];
-  let row = [<td><b>Населенные пункты ДНР</b></td>];
+  let row = [<td key="0"><b>Населенные пункты ДНР</b></td>];
   for(var i=1; i<=maxDay; ++i){
     row.push(<td key={i}><b>{i}</b></td>);
   }
-  rows[0] = <tr>{row}</tr>;
+  rows[0] = <tr key="0">{row}</tr>;
   let cities = [
     ,
     <td><b>Донецк<br/>Пантелеймоновка<br/>Моспино<br/>Еленовка<br/>Макеевка<br/>Харцызск<br/>Ясиноватая</b></td>,
@@ -55,7 +55,7 @@ const AvgTemperaturesCompact = ({temperatures, maxDay}) => {
       let val = temperatures[key] == null ? '': temperatures[key];
       values.push(<td key={i}>{val}</td>);
     }
-    rows.push(<tr key={j}><td key="0">{cities[j]}</td>{values}</tr>);
+    rows.push(<tr key={j}>{cities[j]}{values}</tr>);
   });
   return <table className="table table-hover"><tbody>{rows}</tbody></table>;
 };

@@ -1,7 +1,5 @@
 .container
   <p align="right">Дежурный синоптик (062) 303-10-34, 071-300-73-59</p>
-  <h4 align="center">Задайте месяц и год</h4>
-  -# <input type="month" id='input-date' required="true" autoComplete= "on" class="col-md-6 col-md-offset-3" align="center"/>
   #form_and_report
   #input_params{ temperatures: @temperatures.to_json, year: @year.to_json, month: @month.to_json}
   = javascript_pack_tag 'heat_donbass/teploenergo'

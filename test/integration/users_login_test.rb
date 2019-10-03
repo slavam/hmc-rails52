@@ -41,4 +41,9 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_template 'sessions/new'
   end
+  
+  test "login with remembering" do
+    log_in_as(@user)
+    assert_not_empty cookies[:remember_token]
+  end
 end

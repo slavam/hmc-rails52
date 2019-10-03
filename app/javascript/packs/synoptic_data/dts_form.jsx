@@ -61,6 +61,6 @@ export default class DtsForm extends React.Component{
           <input type="submit" value="Дальше" />
         </form>  
       </div>
-    )
+    );
   }
 }
