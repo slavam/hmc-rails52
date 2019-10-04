@@ -1,6 +1,13 @@
 class UsersController < ApplicationController
   before_action :require_admin, :except => :show
   before_action :find_user, only: [:show, :edit, :update, :destroy]
+
+  def require_admin
+    if !logged_in? or !current_user.admin?
+      redirect_to login_path, :alert => "Access denied."
+    end
+  end
+
   def index
     @users = User.all.order(:last_name)
   end
@@ -27,8 +34,9 @@ class UsersController < ApplicationController
 
   def update
     if not @user.update_attributes user_params
-      render :action => :edit
+      render 'edit'
     else
+      flash[:success] = "Параметры пользователя изменены"
       redirect_to users_path
     end
   end
