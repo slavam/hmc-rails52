@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TeploenergoForm from './teploenergo_form';
+import MonthYearForm from './month_year_form';
 import {Line} from 'react-chartjs-2';
 
 const MonthTemperaturesTable = ({temperatures, maxDay}) => {
@@ -157,7 +157,7 @@ export default class MonthAvgTemperatures extends React.Component{
     };
     return(
       <div>
-        <TeploenergoForm year={this.state.year} month={this.state.month} onFormSubmit={this.handleDateSubmit} />
+        <MonthYearForm year={this.state.year} month={this.state.month} onFormSubmit={this.handleDateSubmit} />
         <h4>Средняя за сутки температура воздуха (°С) с 1 по {endDate} года по данным метеорологических станций</h4>
         <Line data={lineChartData} height={100} options={options}/>
         <MonthTemperaturesTable temperatures={this.state.temperatures} maxDay={this.state.daysInMonth}/>
