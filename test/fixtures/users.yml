@@ -2,3 +2,10 @@ michael:
   login: test
   last_name: test
   password_digest: <%= User.digest('test') %>
+  role: user
+  
+archer:
+  login: test2
+  last_name: test2
+  role: user
+  password_digest: <%= User.digest('test') %>

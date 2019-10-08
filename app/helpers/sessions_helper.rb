@@ -28,6 +28,11 @@ module SessionsHelper
   #   end
   # end
   
+  # Returns true if the given user is the current user.
+  def current_user?(user)
+    user == current_user
+  end
+  
   def current_user
     # if (user_id = session[:user_id]) # mwm!
     if (user_id = cookies.signed[:user_id]) # mwm!

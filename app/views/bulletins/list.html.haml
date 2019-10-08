@@ -18,12 +18,16 @@
         %th= "Дата"
         %th= "Номер"
         - if @bulletin_type == 'daily'
-          %th Две страницы
-          %th Одна страница
-          %th Без метеоданных
+          - if @variant.present?
+            %th Бюллетень
+          - else
+            %th Две страницы
+            %th Одна страница
+            %th Без метеоданных
         - elsif @bulletin_type == 'storm'
           %th Предупреждение
-          %th Оповещение
+          - if current_user.role != 'guest'
+            %th Оповещение
         - else
           %th= ""
         - if ['technicist','synoptic'].index(current_user.role)
@@ -38,12 +42,18 @@
           %td= b.report_date.strftime("%d-%m-%Y")
           %td= b.curr_number + variant
           - if @bulletin_type == 'daily'
-            %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=two_pages"
-            %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=one_page"
-            %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=short"
+            - if @variant == 'one_page'
+              %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=one_page"
+            -elsif @variant == 'short'
+              %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=short"
+            -else
+              %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=two_pages"
+              %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=one_page"
+              %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=short"
           - elsif @bulletin_type == 'storm'
             %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=warning"
-            %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=notification"
+            - if current_user.role != 'guest'
+              %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=notification"
           - else
             %td= link_to "Просмотреть/Распечатать", "#{b.id}/bulletin_show.pdf"
           - if ['technicist','synoptic'].index(current_user.role)

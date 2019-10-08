@@ -15,8 +15,6 @@ class User < ActiveRecord::Base
   def code_station
     if self.station_id.present? 
       return Station.find(self.station_id).code
-    # else
-      # return 34519
     end
   end
 

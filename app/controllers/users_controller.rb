@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  before_action :require_admin, :except => :show
+  # before_action :require_admin, :except => :show
+  before_action :logged_in_user
   before_action :find_user, only: [:show, :edit, :update, :destroy]
 
   def require_admin
@@ -56,4 +57,12 @@ class UsersController < ApplicationController
     def find_user
       @user = User.find(params[:id])
     end
+    
+    # def logged_in_user
+    #   unless logged_in?
+    #     store_location
+    #     flash[:danger] = "Выполните регистрацию"
+    #     redirect_to login_url
+    #   end
+    # end
 end

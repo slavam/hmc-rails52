@@ -26,4 +26,4 @@ export default class MonthYearForm extends React.Component{
         </div>
     );
   }
-  }
+}

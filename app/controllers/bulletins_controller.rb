@@ -27,7 +27,8 @@ class BulletinsController < ApplicationController
   end
 
   def list
-    @bulletin_type = params[:bulletin_type] 
+    @bulletin_type = params[:bulletin_type]
+    @variant = params[:variant].present? ? params[:variant] : nil
     @bulletins = Bulletin.where(bulletin_type: @bulletin_type).paginate(page: params[:page], per_page: 20).order(:created_at).reverse_order
   end
   
