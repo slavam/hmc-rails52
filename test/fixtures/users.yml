@@ -2,10 +2,18 @@ michael:
   login: test
   last_name: test
   password_digest: <%= User.digest('test') %>
-  role: user
+  role: admin
   
 archer:
   login: test2
   last_name: test2
   role: user
   password_digest: <%= User.digest('test') %>
+  
+<% 30.times do |n| %>
+user_<%= n %>:
+  last_name:  <%= "User #{n}" %>
+  login: <%= "user-#{n}" %>
+  role: user
+  password_digest: <%= User.digest('test') %>
+<% end %>
