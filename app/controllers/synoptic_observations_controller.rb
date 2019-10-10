@@ -131,7 +131,11 @@ class SynopticObservationsController < ApplicationController
       if today.hour > 1
         last_day = (today.day-1).to_s.rjust(2,'0') # не брать текущий день ЛМБ 20191001
       else
-        last_day = (today.day-2).to_s.rjust(2,'0') # до часа ночи берем позавчерашний день
+        if today.day > 1
+          last_day = (today.day-2).to_s.rjust(2,'0') # до часа ночи берем позавчерашний день 20191010 КМА
+        else
+          last_day = '00'
+        end
       end
     else
       last_day = Time.parse('#{@year}-#{@month}-01').end_of_month.day.to_s
