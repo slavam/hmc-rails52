@@ -102,6 +102,7 @@ Rails.application.routes.draw do
   post   '/login',   to: 'sessions#create'
   delete '/logout',  to: 'sessions#destroy'
   resources :users
+  resources :old_agro_telegrams, only: [:index]
   resources :user_menus
   resources :audits
   get 'bulletins/latest_bulletins', to: 'bulletins#latest_bulletins'

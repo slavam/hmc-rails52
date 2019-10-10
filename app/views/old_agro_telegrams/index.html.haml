@@ -1,0 +1,15 @@
+.container
+  .row
+    %h1 "Старые" агротелеграммы
+    = will_paginate
+    %table{class: "table table-hover"}
+      %thead
+        %tr
+          %th Дата
+          %th Телеграмма
+      %tbody
+        - @old_agro_telegrams.each do |agro| 
+          %tr
+            %td= agro["Дата"]
+            %td= agro["Телеграмма"]
+    = will_paginate
