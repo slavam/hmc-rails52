@@ -124,10 +124,15 @@ class SynopticObservationsController < ApplicationController
   end
   
   def teploenergo
-    @year = params[:year].present? ? params[:year] : Time.now.utc.year.to_s
-    @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
-    if @month.to_i == Time.now.month
-      last_day = (Time.now.day-1).to_s.rjust(2,'0') # не брать текущий день ЛМБ 20191001
+    today = Time.now
+    @year = params[:year].present? ? params[:year] : today.year.to_s
+    @month = params[:month].present? ? params[:month] : today.month.to_s.rjust(2, '0')
+    if @month.to_i == today.month
+      if today.hour > 1
+        last_day = (today.day-1).to_s.rjust(2,'0') # не брать текущий день ЛМБ 20191001
+      else
+        last_day = (today.day-2).to_s.rjust(2,'0') # до часа ночи берем позавчерашний день
+      end
     else
       last_day = Time.parse('#{@year}-#{@month}-01').end_of_month.day.to_s
     end
