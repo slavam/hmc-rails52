@@ -128,7 +128,7 @@ class SynopticObservationsController < ApplicationController
     @year = params[:year].present? ? params[:year] : today.year.to_s
     @month = params[:month].present? ? params[:month] : today.month.to_s.rjust(2, '0')
     if @month.to_i == today.month
-      if today.hour > 1
+      if today.hour >= 1
         last_day = (today.day-1).to_s.rjust(2,'0') # не брать текущий день ЛМБ 20191001
       else
         if today.day > 1
