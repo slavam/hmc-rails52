@@ -30,14 +30,15 @@ class Avtodor < Prawn::Document
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
       text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 11} № 03/"+@bulletin.curr_number
-      text "На № 04/18/03 #{Prawn::Text::NBSP * 3}от 09.01.2018"
+      text "К договору от 09.01.2019 № 04/19/03"
+      # text "На № 04/18/03 #{Prawn::Text::NBSP * 3}от 09.01.2018"
     end
     bounding_box([290, y_pos], width: bounds.width-290) do
-      text "Директору
+      text "И.о. директора
             Государственного предприятия
-            'АВТОДОР'
+            \"АВТОДОР\"
 		
-            А.С. Николаеву", leading: 3
+            А.Г. Маркину", leading: 3
     end
     move_down 20
     font "OpenSans", style: :bold

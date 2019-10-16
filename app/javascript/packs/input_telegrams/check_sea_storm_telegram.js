@@ -48,41 +48,47 @@ export function checkSeaStormTelegram(tlg, stations, errors, observation){
   var codeWAREP = +tlg.substr(25,2);
   var currentPos = 28;
   
-  if (isCodeWAREP()) {
-    if (checkByCode())
-      return true;
-      // if (tlg[currentPos-1] == '=')
-      //   return true;
-      // else {
-      //   codeWAREP = +tlg.substr(currentPos, 2);
-      //   currentPos += 3;
-      // }
-    else{
-      return false;
-    }
-  } else {
+  if (isCodeWAREP()) 
+    return checkByCode();
+  else {
     errors.push("Ошибочный код WAREP");
     return false;
   }
   
   function isCodeWAREP(){ 
-    return [21, 22, 23, 24, 25, 26, 27, 28, 29, 80, 81, 82].some(s => {
+    return [21, 22, 28, 29, 80, 81, 82].some(s => {
       return codeWAREP == s;
     });
+  }
+  function checkEnd(position){
+    if(tlg[position]=='=')
+      return true;
+    else{
+      errors.push("Ошибка в окончании телеграммы");
+      return false;
+    }
   }
   function checkByCode(){
     switch (codeWAREP) {
       case 21:
+      case 22:
         if(/^4\d{4}$/.test(tlg.substr(currentPos,5))){
           if(tlg[currentPos+5]=='=')
             return true;
           else{
             currentPos += 6;
-            if(/^1[0-3]\d{3}$/.test(tlg.substr(currentPos,5)))
-              if(tlg[currentPos+5]=='=')
-                return true;
+            if(tlg.substr(0, 5) == 'ЩЭОЯА')
+              if(/^1[0-3]\d{3}$/.test(tlg.substr(currentPos,5)))
+                return checkEnd(currentPos+5);
               else{
-                errors.push("Ошибка в окончании телеграммы");
+                errors.push("Ошибка в дополнительной группе 1");
+                return false;
+              }
+            else // finish
+              if(/^[0-3]\d[0-2]\d[0-5]\d$/.test(tlg.substr(currentPos,6)))
+                return checkEnd(currentPos+6);
+              else{
+                errors.push("Ошибка в метке времени");
                 return false;
               }
           }
@@ -90,6 +96,42 @@ export function checkSeaStormTelegram(tlg, stations, errors, observation){
           errors.push("Ошибка в группе 4");
           return false;
         }
+      // case 23:
+      // case 24:
+      // case 25:
+      // case 26:
+      // case 27:
+      case 28:
+      case 29:
+        if(tlg.substr(0, 5) == 'ЩЭОЯУ' && codeWAREP == 28)
+          if(/^3[12]\d{6}$/.test(tlg.substr(currentPos,8))){
+            currentPos += 8;
+            if(/^[0-3]\d[0-2]\d[0-5]\d$/.test(tlg.substr(currentPos,6)))
+              return checkEnd(currentPos+6);
+            else{
+              errors.push("Ошибка в метке времени");
+              return false;
+            }
+          }else{
+            errors.push("Ошибка в группе 3");
+            return false;
+          }
+        else
+          if(/^3[12]\d{3}$/.test(tlg.substr(currentPos,5)))
+            return checkEnd(currentPos+5);
+          else{
+            errors.push("Ошибка в группе 3");
+            return false;
+          }
+      case 81:
+        if(/^\d{7}$/.test(tlg.substr(currentPos,7)))
+          return checkEnd(currentPos+7);
+        else{
+          errors.push("Ошибка в группе изменения температуры");
+          return false;
+        }          
+      case 82:
+        return checkEnd(tlg.length-1);
     }
   }
 }
