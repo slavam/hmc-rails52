@@ -3,6 +3,7 @@ import TermSynopticSelect from '../search_telegrams/term_synoptic_select';
 import { checkSynopticTelegram } from './check_synoptic_telegram';
 import { checkStormTelegram } from './check_storm_telegram';
 import { checkSeaStormTelegram } from './check_sea_storm_telegram';
+import { checkAgroStormTelegram } from './check_agro_storm_telegram';
 import { checkAgroTelegram } from './check_agro_telegram';
 import { checkRadiationTelegram } from './check_radiation_telegram';
 import { checkSeaTelegram } from './check_sea_telegram';
@@ -83,15 +84,22 @@ export default class NewTelegramForm extends React.Component{
         this.observation.date = date;
         break;
       case 'storm':
-        if(text.substr(0,5) == 'ЩЭОЯА' || text.substr(0,5) != 'ЩЭОЯУ'){ // sea storm
+        if(text.substr(0,5) == 'ЩЭОЯА' || text.substr(0,5) == 'ЩЭОЯУ'){ // sea storm
           if (!checkSeaStormTelegram(text, this.props.stations, errors, this.observation)){
             this.setState({errors: errors});
             return;
           }
         }else{
-          if (!checkStormTelegram(text, this.props.stations, errors, this.observation)){
-            this.setState({errors: errors});
-            return;
+          if(text[24] == '2'){ // agro storm
+            if (!checkAgroStormTelegram(text, this.props.stations, errors, this.observation)){
+              this.setState({errors: errors});
+              return;
+            }
+          }else{
+            if (!checkStormTelegram(text, this.props.stations, errors, this.observation)){
+              this.setState({errors: errors});
+              return;
+            }
           }
         }
         break;
