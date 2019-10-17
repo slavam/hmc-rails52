@@ -26,7 +26,19 @@ export default class FoundTelegram extends React.Component{
     switch(this.props.tlgType) {
       case 'storm':
         let inputDate = t.input_date.replace(/T/,' ');
-        info = 'Введена '+inputDate.substr(0,16)+' (UTC); '+t.station_name+'; '+(t.telegram[3] == 'Я'? 'Начало/усиление; ':'Завершение; ')+this.props.fact[t.telegram.substr(26,2)];
+        let phase = '';
+        if(t.telegram.substr(0,5) == 'ЩЭОЯА' || t.telegram.substr(0,5) == 'ЩЭОЯЮ')
+          phase = 'Начало/усиление; ';
+        else
+          phase = 'Завершение; ';
+        let fact = '';
+        if(t.telegram[24] == '2')
+          fact = 'Агро';
+        else if(t.telegram[24] == '1')
+          fact = this.props.fact[t.telegram.substr(26,2)];
+        else
+          fact = t.telegram.substr(25,2);
+        info = 'Введена '+inputDate.substr(0,16)+' (UTC); '+t.station_name+'; '+phase+fact;
         break;
       case 'synoptic':
         info = t.date.substr(0,10)+'; '+t.term+'; '+t.station_name+'; ';

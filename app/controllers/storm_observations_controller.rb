@@ -119,8 +119,12 @@ class StormObservationsController < ApplicationController
     # station = station_id.present? ? " and station_id = #{station_id}" : ''
     # text = params[:text].present? ? " and telegram like '%#{params[:text]}%'" : ''
     if params[:storm_type].present?
-      and_storm_type = " and telegram_type = '#{params[:storm_type]}'"
-      @storm_type = params[:storm_type]
+      if params[:storm_type] == 'Агро'
+        and_storm_type = " and telegram REGEXP '.{5} WAREP [0-9]{5} [0-9]{6}2'"
+      else
+        and_storm_type = " and telegram_type = '#{params[:storm_type]}'"
+        @storm_type = params[:storm_type]
+      end
     else
       and_storm_type = ''
       @storm_type = ''

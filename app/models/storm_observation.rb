@@ -1,6 +1,10 @@
 class StormObservation < ActiveRecord::Base
   belongs_to :station
   audited
+
+  def storm_type
+    self.telegram[24] == '1' ? 'meteo' : (self.telegram[24] == '2' ? 'agro' : 'sea')
+  end
   
   def self.last_50_telegrams
     StormObservation.all.limit(50).order(:telegram_date, :updated_at).reverse_order

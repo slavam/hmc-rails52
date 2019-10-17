@@ -64,6 +64,9 @@ export default class SearchParamsForm extends React.Component{
       { value: '99', label: 'Все' },
       { value: 'ЩЭОЗМ', label: 'ЩЭОЗМ' },
       { value: 'ЩЭОЯЮ', label: 'ЩЭОЯЮ' },
+      { value: 'ЩЭОЯУ', label: 'ЩЭОЯУ' },
+      { value: 'ЩЭОЯА', label: 'ЩЭОЯА' },
+      { value: 'Агро', label: 'Агро' },
     ];
     const optHead = this.props.tlgType == 'synoptic' ? <th>Срок</th> : (this.props.tlgType == 'storm' ? <th>Тип</th> : <td></td>);
     const optInput = (this.props.tlgType == 'synoptic' || this.props.tlgType == 'storm') ?

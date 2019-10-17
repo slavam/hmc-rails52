@@ -13,7 +13,7 @@
       %td= @text
     %tr
       %th Тип телеграммы
-      %td= @storm_observation.telegram_type == 'ЩЭОЗМ' ? 'Окончание явления (ЩЭОЗМ)' : 'Начало/усиление явления (ЩЭОЯЮ)'
+      %td= (['ЩЭОЗМ','ЩЭОЯУ'].include? @storm_observation.telegram_type) ? "Окончание явления (#{@storm_observation.telegram_type})" : "Начало/усиление явления (#{@storm_observation.telegram_type})"
     %tr
       %th Метеостанция:
       %td= @storm_observation.station.name
@@ -25,7 +25,7 @@
       %td= @storm_observation.event_time
     %tr
       %th Вид телеграммы
-      %td Для метеорологических явлений
+      %td= (@storm_observation.telegram[24] == ' ') ? 'Для морских гидрометеорологических явлений' : ((@storm_observation.telegram[24] == '1') ? 'Для метеорологических явлений' : 'Для агрометеорологических явлений')
     - @code_warep_positions.each do |code_warep_pos|
       %tr
         %th= "Тип опасного/стихийного гидрометеорологического явления"
