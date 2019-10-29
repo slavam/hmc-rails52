@@ -37,6 +37,19 @@ class SynopticObservationsController < ApplicationController
     end
   end
   
+  def find_term_telegrams
+    @term = params[:term].present? ? params[:term].to_i : 0
+    @observation_date = params[:date].present? ? params[:date] : Time.now.utc.strftime("%Y-%m-%d")
+    @telegrams = SynopticObservation.where("date = ? AND term= ?", @observation_date, @term)
+    @stations = Station.all.order(:id)
+    respond_to do |format|
+      format.html 
+      format.json do 
+        render json: {telegrams: @telegrams}
+      end
+    end
+  end
+  
   def test_telegram
     observation_date = params[:observation_date]
     term = params[:term]

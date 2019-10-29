@@ -5,6 +5,7 @@ class OtherObservation < ApplicationRecord
   audited
   OTHER_TYPES = {
     'temp' => "Температура на 8 часов",
+    'temp16' => "Температура на 16 часов",
     'perc' => "Осадки",
     'min_hum' => "Минимальная влажность",
     'freezing' => "Критическая температура вымерзания"

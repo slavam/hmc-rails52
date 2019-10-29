@@ -72,6 +72,7 @@ Rails.application.routes.draw do
   resources :storm_observations
   # get 'synoptic_observations/:id/edit_synoptic_data', to: 'synoptic_observations#edit_synoptic_data'
   # get 'synoptic_observations/new_synoptic_data', to: 'synoptic_observations#new_synoptic_data'
+  get 'synoptic_observations/find_term_telegrams', to: 'synoptic_observations#find_term_telegrams'
   get 'synoptic_observations/get_date_term_station', to: 'synoptic_observations#get_date_term_station'
   get 'synoptic_observations/test_telegram', to: 'synoptic_observations#test_telegram'
   get 'synoptic_observations/fire', to: 'synoptic_observations#fire'

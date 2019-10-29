@@ -1,0 +1,6 @@
+<script src="https://cdn.rawgit.com/googlemaps/v3-utility-library/fb56a0dc/markerwithlabel/src/markerwithlabel.js"></script>
+.container
+  #form_surface_map
+  #init_params{ telegrams: @telegrams.to_json, observationDate: @observation_date.to_json, term: @term.to_json, stations: @stations.to_json}
+  #map{:style => "height: 500px"}
+  = javascript_pack_tag 'synoptic_data/data_surface_map'
