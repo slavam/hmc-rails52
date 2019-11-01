@@ -151,7 +151,7 @@ class SynopticObservationsController < ApplicationController
         end
       end
     else
-      last_day = Time.parse('#{@year}-#{@month}-01').end_of_month.day.to_s
+      last_day = Time.parse("#{@year}-#{@month}-01").end_of_month.day.to_s
     end
     # sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date like '#{@year}-#{@month}%' and station_id in (1,2,3,4,5) group by date, station_id;"
     # sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date like '#{@year}-#{@month}%' and station_id in (1,2,3,4,10) group by date, station_id;"
