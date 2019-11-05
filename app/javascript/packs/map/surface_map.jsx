@@ -117,7 +117,6 @@ export default class SurfaceMap extends React.Component{
     return '<table><tbody><tr><td height="15px"></td><td width="20px"></td><td>'+cloudHigh+'</td><td></td><td></td></tr><tr><td height="15px"></td><td>'+airTemperature+'</td><td>'+cloudMedium+'</td><td>'+airPressure+'</td><td></td></tr><tr><td>'+meteoRange+'</td><td>'+presentWeather+'</td><td>'+totalCloudCover+'</td><td>'+pressureDelta+'</td><td>'+pressureTendency+'</td></tr><tr><td></td><td>'+dewPoint+'</td><td>'+cloudLow+'</td><td>'+cloudsNumber+' '+pastWeather1+'</td><td>'+pastWeather2+'</td></tr><tr><td></td><td></td><td></td><td>'+hightCloud+'</td></tr></tbody></table>';
   }
   render(){
-    // const totalCloudCover = [9675,9021,9684,,9681,,9685,,9679,2297];
     let firstCoords = new google.maps.LatLng(48.0161457, 37.8057165); // Donetsk
     let mapOptions = {
       center: firstCoords, 

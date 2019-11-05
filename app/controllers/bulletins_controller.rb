@@ -438,8 +438,10 @@ class BulletinsController < ApplicationController
     def fill_avtodor_meteo_data(report_date)
       m_d = []
       m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
-      avg_24 = AgroObservation.temperature_avg_24(report_date-1.day) #.strftime("%Y-%m-%d"))
-      wind_speed = AgroObservation.wind_speed_max_24(report_date-1.day)
+      # avg_24 = AgroObservation.temperature_avg_24(report_date-1.day) #.strftime("%Y-%m-%d")) 20191105 KMA
+      avg_24 = AgroObservation.temperature_avg_24(report_date)
+      # wind_speed = AgroObservation.wind_speed_max_24(report_date-1.day)
+      wind_speed = AgroObservation.wind_speed_max_24(report_date)
       precipitations = precipitation_daily(report_date-1.day, true)
       [1,3,2,10].each_with_index do |v,i| 
         m_d[i*4] = avg_24[v] if avg_24[v].present?

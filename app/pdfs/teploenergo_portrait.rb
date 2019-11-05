@@ -14,10 +14,10 @@ class TeploenergoPortrait < Prawn::Document
     })
     y_pos = cursor
     font "OpenSans"
-    bounding_box([bounds.width-150, y_pos], width: 300, leading: 3) do
+    bounding_box([bounds.width-200, y_pos], width: 300, leading: 3) do
       text "Приложение к письму"
       text "Гидрометцентра МЧС ДНР"
-      text "от __________ № ______"
+      text "от _________________ № ____________"
     end
     move_down 20
     font "OpenSans", style: :bold

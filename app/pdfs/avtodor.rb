@@ -63,9 +63,9 @@ class Avtodor < Prawn::Document
     font "OpenSans", style: :bold
     bounding_box([0, cursor], :width => bounds.width) do
       # stroke_bounds
-      text "Прогноз погоды", align: :center, size: 14, :color => "0000FF"
-      text "на сутки с 21 часа #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} до 21 часа #{report_date_next[8,2]} #{Bulletin::MONTH_NAME2[report_date_next[5,2].to_i]} #{report_date_next[0,4]} года", align: :center, :color => "0000FF"
-      text "в Донецкой Народной Республике", align: :center, color: "0000FF"
+      text "Прогноз погоды", align: :center, size: 14 #, :color => "0000FF"
+      text "на сутки с 21 часа #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} до 21 часа #{report_date_next[8,2]} #{Bulletin::MONTH_NAME2[report_date_next[5,2].to_i]} #{report_date_next[0,4]} года", align: :center #, :color => "0000FF"
+      text "в Донецкой Народной Республике", align: :center #, color: "0000FF"
     end
     move_down 8
     font "OpenSans"
