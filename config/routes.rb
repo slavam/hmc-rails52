@@ -97,6 +97,7 @@ Rails.application.routes.draw do
   get 'synoptic_observations/daily_avg_temp', to: 'synoptic_observations#daily_avg_temp'
   get 'synoptic_observations/month_avg_temp', to: 'synoptic_observations#month_avg_temp'
   get 'synoptic_observations/conversion_log_download', to: 'synoptic_observations#conversion_log_download'
+  # get 'synoptic_observations/wmo_stations_create', to: 'synoptic_observations#wmo_stations_create'
   resources :synoptic_observations
   get 'sessions/new'
   get    '/login',   to: 'sessions#new'

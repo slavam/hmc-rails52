@@ -10,7 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_05_110206) do
+ActiveRecord::Schema.define(version: 2019_11_06_052918) do
+
+  create_table "agro", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "Дата", limit: 60, null: false
+    t.string "Телеграмма", limit: 650, null: false
+  end
 
   create_table "agro_crop_categories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -624,6 +629,18 @@ ActiveRecord::Schema.define(version: 2019_09_05_110206) do
     t.integer "station_id"
     t.index ["login"], name: "index_users_on_login", unique: true
     t.index ["station_id"], name: "index_users_on_station_id"
+  end
+
+  create_table "wmo_stations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "code"
+    t.string "name"
+    t.string "country"
+    t.decimal "latitude", precision: 13, scale: 9
+    t.decimal "longitude", precision: 13, scale: 9
+    t.integer "altitude"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_wmo_stations_on_code", unique: true
   end
 
   add_foreign_key "users", "stations"

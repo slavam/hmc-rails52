@@ -39,7 +39,7 @@ class Dte < Prawn::Document
       text "Генеральному директору
             ГП \"Донбасстеплоэнерго\"
 		
-            А.В. Кочетову", leading: 3
+            А.А. Цюпке", leading: 3
     end
     
     move_down 50

@@ -1,4 +1,5 @@
 class SynopticObservationsController < ApplicationController
+  require 'csv'
   before_action :logged_user?
   # before_filter :require_observer_or_technicist
   before_action :find_synoptic_observation, only: [:show, :update_synoptic_telegram, :destroy, :update] 
@@ -228,8 +229,27 @@ class SynopticObservationsController < ApplicationController
     end
     flash[:success] = "Дата: #{date}; срок: #{term}; телеграмм из БД ГМЦ: #{our_telegrams_num}; телеграмм из БД ogimet: #{web_telegrams_num}; записано телеграмм: #{total}"
     redirect_to synoptic_observations_arm_sin_files_list_path(request.parameters)
-    
   end
+  
+  # def wmo_stations_create
+  #   # CSV::Row "STATION_NUMBER":"13610" "STATION_NAME":"Kukes" "WMO_NO":"13610" "ORGANIZATION":"wmo" "Y_COORDINATE":"2162966,85479" "X_COORDINATE":"5183575,02876" "LATITUDE":"42,03330" "LONGITUDE":"20,41670" "COUNTRY":"Albania" "ALTITUDE":"354" "DISTANCE_TO_COAST":"73" "RELIABLE_STATION":"0"
+  #   table = []
+  #   csv_text = ''
+  #   csv_text = File.read("#{Rails.root}/wmo_stations.csv")
+  #   csv = CSV.parse(csv_text, :headers => true, :encoding => 'utf-8', :col_sep => ";")
+  #   csv.each do |row|
+  #     s = WmoStation.new
+  #     s.code = row["STATION_NUMBER"]
+  #     s.name = row["STATION_NAME"]
+  #     s.country = row["COUNTRY"]
+  #     s.latitude = row["LATITUDE"]
+  #     s.longitude = row["LONGITUDE"]
+  #     s.altitude = row["ALTITUDE"]
+  #     s.save
+  #   end
+  #   puts ">>>>>>>>>>>>>>>> В справочнике WMO-станций #{WmoStation.count} записей"
+  #   redirect_to synoptic_observations_path
+  # end
   
   def arm_sin_files_list
     date = params[:download][:date] 

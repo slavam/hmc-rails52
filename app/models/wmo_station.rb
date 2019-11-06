@@ -1,0 +1,2 @@
+class WmoStation < ApplicationRecord
+end
