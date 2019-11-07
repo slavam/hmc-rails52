@@ -37,6 +37,70 @@ class SynopticObservationsController < ApplicationController
       render action: :new
     end
   end
+
+  def surface_map_show
+    @term = params[:term].present? ? params[:term] : '00'
+    @observation_date = params[:date].present? ? params[:date] : Time.now.utc.strftime("%Y-%m-%d")
+    year = @observation_date[0,4]
+    month = @observation_date[5,2]
+    day = @observation_date[8,2]
+    @telegrams = []
+    file_name = 'tmp/surface_data/'+year+month+day+@term+'ukr.txt'
+    if !File.exists?(file_name)
+      url = "http://www.ogimet.com/cgi-bin/getsynop?begin="+year+month+day+@term+'00&end='+year+month+day+@term+'00&state=Ukr' #20181004 directive Boyko
+      csv_data = Net::HTTP.get(URI.parse(url))
+      web_rows = csv_data.split("\n")
+      rows = []
+      web_rows.each do |t|
+        if t =~ /AAXX/
+          rows << t 
+        end
+      end
+      our_synoptic_observations = SynopticObservation.where("date = ? and term = ? and station_id != 5", @observation_date, @term.to_i) # w/o Mariupol
+      our_synoptic_observations.each do |o|
+        rows << make_row_as_ogimet(@observation_date, @term, o.telegram)
+      end
+      File.open(file_name,'w+') do |f|
+        rows.each { |t| f.puts t }
+      end
+    end
+    wmo_stations = WmoStation.wmo_stations
+    csv_text = File.read(file_name)
+    csv = CSV.parse(csv_text, :headers => false, :encoding => 'utf-8', :col_sep => ",")
+    # 33088,2019,10,31,00,00,AAXX 31001 33088 32997 80000 11014 21017 30085 40284 52001 8805/ 555 1/001=
+    csv.each do |row|
+      if row[6][0,4] == "AAXX"
+        t = row[6][11..-1]
+        section1 = ''
+        if t =~ / 333 /
+          section1 = t[0..(t =~ / 333 /)]
+        elsif t =~ / 555 /
+          section1 = t[0..(t =~ / 555 /)]
+        else
+          section1 = t
+        end
+        station = wmo_stations[row[0].to_i]
+        if station.present?
+          @telegrams << [station[:latitude], station[:longitude], station[:name], section1]
+        else
+          puts "Станция с кодом #{row[0]} отсутствует в справочнике!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        end
+      end
+    end
+    respond_to do |format|
+      format.html 
+      format.json do 
+        render json: {telegrams: @telegrams}
+      end
+    end
+    # puts ">>>>>>>>>>>>>>>>>>>>>>"+@telegrams[0].inspect
+  end
+  
+  def make_row_as_ogimet(date, term, telegram)
+    # 33088,2019,10,31,00,00,AAXX 31001 33088 32997 80000 11014 21017 30085 40284 52001 8805/ 555 1/001=
+    # 	ЩЭСИД 34712 41996 61602 10144 20131 30066 40149 51004 71022 80008 555 1/022=
+    return telegram[6,5]+','+date[0,4]+','+date[5,2]+','+date[8,2]+','+term+',00,AAXX '+date[8,2]+term+'1'+telegram[5..-1]
+  end
   
   def find_term_telegrams
     @term = params[:term].present? ? params[:term].to_i : 0
