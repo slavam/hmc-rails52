@@ -45,14 +45,14 @@ class SynopticObservationsController < ApplicationController
     month = @observation_date[5,2]
     day = @observation_date[8,2]
     @telegrams = []
-    file_name = 'tmp/surface_data/'+year+month+day+@term+'ukr.txt'
+    file_name = 'tmp/surface_data/'+year+month+day+@term+'.txt'
     if !File.exists?(file_name)
-      url = "http://www.ogimet.com/cgi-bin/getsynop?begin="+year+month+day+@term+'00&end='+year+month+day+@term+'00&state=Ukr' #20181004 directive Boyko
+      url = "http://www.ogimet.com/cgi-bin/getsynop?begin="+year+month+day+@term+'00&end='+year+month+day+@term+'00' #&state=Ukr'  &block=02_ #20181004 directive Boyko
       csv_data = Net::HTTP.get(URI.parse(url))
       web_rows = csv_data.split("\n")
       rows = []
       web_rows.each do |t|
-        if t =~ /AAXX/
+        if (t =~ /AAXX/) && (t.size>55)
           rows << t 
         end
       end
@@ -65,11 +65,12 @@ class SynopticObservationsController < ApplicationController
       end
     end
     wmo_stations = WmoStation.wmo_stations
+    code_active_wmo_stations = WmoStation.active_station_codes
     csv_text = File.read(file_name)
     csv = CSV.parse(csv_text, :headers => false, :encoding => 'utf-8', :col_sep => ",")
     # 33088,2019,10,31,00,00,AAXX 31001 33088 32997 80000 11014 21017 30085 40284 52001 8805/ 555 1/001=
     csv.each do |row|
-      if row[6][0,4] == "AAXX"
+      if code_active_wmo_stations.index(row[0].to_i)
         t = row[6][11..-1]
         section1 = ''
         if t =~ / 333 /
@@ -79,12 +80,12 @@ class SynopticObservationsController < ApplicationController
         else
           section1 = t
         end
-        station = wmo_stations[row[0].to_i]
-        if station.present?
+        if section1.size > 18
+          station = wmo_stations[row[0].to_i]
           @telegrams << [station[:latitude], station[:longitude], station[:name], section1]
-        else
-          puts "Станция с кодом #{row[0]} отсутствует в справочнике!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         end
+      # else
+        # puts "Станция с кодом #{row[0]} отсутствует в справочнике!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
       end
     end
     respond_to do |format|

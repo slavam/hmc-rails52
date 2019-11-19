@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_06_052918) do
+ActiveRecord::Schema.define(version: 2019_11_12_055822) do
 
   create_table "agro", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "Дата", limit: 60, null: false
@@ -640,6 +640,7 @@ ActiveRecord::Schema.define(version: 2019_11_06_052918) do
     t.integer "altitude"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_active", default: false
     t.index ["code"], name: "index_wmo_stations_on_code", unique: true
   end
 

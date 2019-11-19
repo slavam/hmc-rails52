@@ -1,0 +1,30 @@
+.container
+  %h1 WMO-станции
+  = will_paginate
+  %table{class: "table table-hover"}
+    %thead
+      %tr
+        %th Код
+        %th ID
+        %th Название
+        %th Страна
+        %th Широта
+        %th Долгота
+        %th Высота
+        %th Активна?
+        %th Изменить
+        %th Удалить
+    %tbody
+      - @wmo_stations.each do |s|
+        %tr
+          %td= s.code
+          %td= s.id
+          %td= s.name
+          %td= s.country
+          %td= s.latitude
+          %td= s.longitude
+          %td= s.altitude
+          %td= s.is_active
+          %td= link_to "Изменить", edit_wmo_station_path(s.id)
+          %td= link_to "Удалить", s, method: :delete, data: {confirm: 'Are you sure?'}
+  = will_paginate

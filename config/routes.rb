@@ -152,6 +152,7 @@ Rails.application.routes.draw do
   resources :stations
   resources :chem_coefficients
   resources :laboratories
+  resources :wmo_stations
   root 'sessions#new'
   mount ActionCable.server, at: '/cable'
 end

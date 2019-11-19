@@ -1,6 +1,10 @@
 <script src="https://cdn.rawgit.com/googlemaps/v3-utility-library/fb56a0dc/markerwithlabel/src/markerwithlabel.js"></script>
+-#<script src="https://github.com/googlemaps/v3-utility-library/blob/master/packages/markerclusterer/src/markerclusterer.js"></script>
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+-#<script src="/hmc-rails52/app/javascript/packs/map/markerclusterer.js"></script>
 .container
   #form_surface_map
   #init_params{ telegrams: @telegrams.to_json, observationDate: @observation_date.to_json, term: @term.to_json}
+  
   #map{:style => "height: 500px"}
   = javascript_pack_tag 'synoptic_data/wmo_data_surface_map'

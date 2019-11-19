@@ -1,4 +1,5 @@
 import React from 'react';
+// import MarkerClusterer from './markercluster';
 
 export default class WmoSurfaceMap extends React.Component{
   constructor(props){
@@ -80,7 +81,7 @@ export default class WmoSurfaceMap extends React.Component{
       else
         pastWeather2 = '<img height="15px" src="/assets/weather/past_weather/w1w2 '+val+'.svg">';
     }
-    let totalCloudCover = '<img height="15px" src="/assets/weather/total_cloud_cover/N '+t[12]+'.svg">';
+    let totalCloudCover = t[12] == '/'? '___':'<img height="15px" src="/assets/weather/total_cloud_cover/N '+t[12]+'.svg">';
     let pressureTendency = '';
     let pressureDelta = '';
     if(/5[0-8]\d{3}/.test(other)){
@@ -92,16 +93,16 @@ export default class WmoSurfaceMap extends React.Component{
       else
         pressureDelta = other.substr(index+3,2);
     }
-    let dewPoint = +(sign[+t[25]]+t.substr(26,3));
+    let dewPoint = t.length>24? +(sign[+t[25]]+t.substr(26,3)):'';
     
     return '<table><tbody><tr><td height="15px"></td><td width="20px"></td><td>'+cloudHigh+'</td><td></td><td></td></tr><tr><td height="15px"></td><td>'+airTemperature+'</td><td>'+cloudMedium+'</td><td>'+airPressure+'</td><td></td></tr><tr><td>'+meteoRange+'</td><td>'+presentWeather+'</td><td>'+totalCloudCover+'</td><td>'+pressureDelta+'</td><td>'+pressureTendency+'</td></tr><tr><td></td><td>'+dewPoint+'</td><td>'+cloudLow+'</td><td>'+cloudsNumber+' '+pastWeather1+'</td><td>'+pastWeather2+'</td></tr><tr><td></td><td></td><td></td><td>'+hightCloud+'</td></tr></tbody></table>';
   }
   render(){
-    let firstCoords = new google.maps.LatLng(48.0161457, 37.8057165); // Donetsk
+    let firstCoords = new google.maps.LatLng(48.3667, 25.9); //Cernovcy    48.0161457, 37.8057165); // Donetsk
     let mapOptions = {
       center: firstCoords, 
       // mapTypeId: google.maps.MapTypeId.TERRAIN,
-      zoom: 7,
+      zoom: 6.1,
       styles: [
             // {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
             {elementType: 'geometry', stylers: [{color: '#eeeeee'}]},
@@ -129,7 +130,10 @@ export default class WmoSurfaceMap extends React.Component{
             {
               featureType: 'poi.park',
               elementType: 'labels.text.fill',
-              stylers: [{color: '#6b9a76'}]
+              // stylers: [{color: '#6b9a76'}]
+              stylers: [
+                { visibility: "off" }
+              ]
             },
             {
               featureType: 'road',
@@ -209,7 +213,8 @@ export default class WmoSurfaceMap extends React.Component{
       "M0,0l-40,0l-5,-17 M-35,0l-5,-17 M-30,0l-5,-17 M-25,0l-5,-17", //08 19-21
       "M0,0l-40,0l-5,-17 M-35,0l-5,-17 M-30,0l-5,-17 M-25,0l-5,-17 M-20,0l-2.5,-8.5", // 09 22-23
       "M0,0l-40,0 l0,-1l5,-17.25l5,17.25l0,1", // 10 24-26
-      
+      "M0,0l-40,0 l0,-1l5,-17.25l5,17.25l0,1 M-25,0l-2.5,-8.5", // 11 27-28
+      "M0,0l-40,0 l0,-1l5,-17.25l5,17.25l0,1 M-25,0l-5,-17", // 12 29-31
       ];
     this.props.telegrams.map((telegram) => {
       let text = telegram[3];
@@ -237,6 +242,8 @@ export default class WmoSurfaceMap extends React.Component{
         id: codeStation});
       markers.push(marker);
     });
+    var markerCluster = new MarkerClusterer(map, markers,
+            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
     // markers.map( m => {
     //   var infowindow = new google.maps.InfoWindow({content: info[m.id],maxWidth: '500px'});
     //   m.addListener('click', () => infowindow.open(map, m));

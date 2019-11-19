@@ -7,6 +7,7 @@ class CreateWmoStations < ActiveRecord::Migration[5.2]
       t.decimal :latitude, precision: 13, scale: 9
       t.decimal :longitude, precision: 13, scale: 9
       t.integer :altitude
+      t.boolean :is_active, default: false
       t.timestamps
     end
     add_index :wmo_stations, :code, unique: true
