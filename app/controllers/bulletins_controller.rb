@@ -59,7 +59,7 @@ class BulletinsController < ApplicationController
         else
           @bulletin.curr_number = 1
         end
-      when 'dte'
+      when 'dte','bus_stations'
         @bulletin.forecast_day = last_daily_bulletin.forecast_day
       when 'radio'
         @bulletin.forecast_day = last_daily_bulletin.forecast_day
@@ -310,10 +310,12 @@ class BulletinsController < ApplicationController
           @png_filename = @bulletin.png_filename(current_user.id)
         when 'avtodor'
           pdf = Avtodor.new(@bulletin)
+        when 'bus_stations'
+          pdf = Dte.new(@bulletin,'bus_stations')
         when 'radio'
           pdf = Radio.new(@bulletin)
         when 'dte'
-          pdf = Dte.new(@bulletin)
+          pdf = Dte.new(@bulletin, nil)
         when 'fire'
           pdf = Fire.new(@bulletin)
         when 'clarification'

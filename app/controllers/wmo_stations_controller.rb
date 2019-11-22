@@ -1,5 +1,5 @@
 class WmoStationsController < ApplicationController
-  before_action :find_wmo_station, only: [:edit, :destroy, :update]
+  before_action :find_wmo_station, only: [:edit, :destroy, :update, :edit_station]
   def index
     @wmo_stations = WmoStation.paginate(page: params[:page]).order(:code)
   end
@@ -19,11 +19,22 @@ class WmoStationsController < ApplicationController
   end
   
   def find_by_code
-    code = params[:code].present? : params[:code] : nil
+    code = params[:code].present? ? params[:code] : nil
     if code
-      station = WmoStation.find_by_code(:code)
-      if station
+      station = WmoStation.find_by_code(code).as_json
+      if station.present?
+        station.delete('updated_at')
+        station.delete('created_at')
       end
+      render json: {station: station}
+    end
+  end
+  
+  def edit_station
+    if @wmo_station.update_attributes wmo_station_params
+      render json: {errors: []}
+    else
+      render json: {errors: ["Ошибка при сохранении изменений"]}, status: :unprocessable_entity
     end
   end
   

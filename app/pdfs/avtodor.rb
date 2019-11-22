@@ -38,7 +38,7 @@ class Avtodor < Prawn::Document
             Государственного предприятия
             \"АВТОДОР\"
 		
-            А.Г. Маркину", leading: 3
+            В.И. Георгиеву", leading: 3
     end
     move_down 15
     font "OpenSans", style: :bold

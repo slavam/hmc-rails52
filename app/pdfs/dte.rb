@@ -1,6 +1,6 @@
 # require 'prawn'
 class Dte < Prawn::Document
-  def initialize(bulletin)
+  def initialize(bulletin, variant)
 		super(top_margin: 40, left_margin: 95, right_margin: 50, bottom_margin: 0)
 		@bulletin = bulletin
     font_families.update("OpenSans" => {
@@ -35,11 +35,19 @@ class Dte < Prawn::Document
       # text "На № 08/18-19/03  #{Prawn::Text::NBSP * 3}от 29.08.2018"
       # text "На № 04/18/03 #{Prawn::Text::NBSP * 3}от 09.01.2018"
     end
+    
     bounding_box([290, y_pos], width: bounds.width-290) do
-      text "Генеральному директору
-            ГП \"Донбасстеплоэнерго\"
-		
-            А.А. Цюпке", leading: 3
+      if variant == 'bus_stations'
+        text "Генеральному директору
+              ГП \"Автовокзалы Донбасса\"
+  		
+              .. ", leading: 3
+      else
+        text "Генеральному директору
+              ГП \"Донбасстеплоэнерго\"
+  		
+              А.А. Цюпке", leading: 3
+      end
     end
     
     move_down 50

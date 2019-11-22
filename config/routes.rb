@@ -152,6 +152,8 @@ Rails.application.routes.draw do
   resources :stations
   resources :chem_coefficients
   resources :laboratories
+  put 'wmo_stations/edit_station', to: 'wmo_stations#edit_station'
+  get 'wmo_stations/find_by_code', to: 'wmo_stations#find_by_code'
   resources :wmo_stations
   root 'sessions#new'
   mount ActionCable.server, at: '/cable'

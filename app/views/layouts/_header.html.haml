@@ -76,7 +76,8 @@
                   %li{ class: "divider"}
                   %li= link_to 'Динамические меню', meteo_links_path
                   %li= link_to 'Названия меню', user_menus_path
-                  %li= link_to 'WMO-станции', wmo_stations_path
+                  %li= link_to 'Список WMO-станций', wmo_stations_path
+                  %li= link_to 'Изменение параметров WMO-станций', wmo_stations_find_by_code_path
               %li
                 = render 'layouts/bulletins'
               %li
