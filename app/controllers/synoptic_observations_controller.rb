@@ -39,6 +39,7 @@ class SynopticObservationsController < ApplicationController
   end
 
   def surface_map_show
+    set_stations = params[:set_stations].present? ? params[:set_stations] : 'set2500'
     @term = params[:term].present? ? params[:term] : '00'
     @observation_date = params[:date].present? ? params[:date] : Time.now.utc.strftime("%Y-%m-%d")
     year = @observation_date[0,4]
@@ -65,7 +66,8 @@ class SynopticObservationsController < ApplicationController
       end
     end
     wmo_stations = WmoStation.wmo_stations
-    code_active_wmo_stations = WmoStation.active_station_codes
+    # code_active_wmo_stations = WmoStation.active_station_codes
+    code_active_wmo_stations = WmoStation.active_station_codes(set_stations)
     csv_text = File.read(file_name)
     csv = CSV.parse(csv_text, :headers => false, :encoding => 'utf-8', :col_sep => ",")
     # 33088,2019,10,31,00,00,AAXX 31001 33088 32997 80000 11014 21017 30085 40284 52001 8805/ 555 1/001=

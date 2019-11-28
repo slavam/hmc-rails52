@@ -32,3 +32,6 @@
   - when 'clarification'
   %h3{align: :center} Создать уточнение
   = render :partial => 'clarification_form'
+  - when 'bus_station'
+  %h3{align: :center} Создать прогноз для Автовокзалов
+  = render partial: 'bus_station_form'

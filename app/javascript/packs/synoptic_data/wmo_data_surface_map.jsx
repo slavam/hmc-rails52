@@ -9,18 +9,20 @@ export default class WmoDataSurfaceMap extends React.Component{
     this.state={
       telegrams: this.props.telegrams,
       term: this.props.term,
+      setStations: 'set2500', //this.props.setStations,
       observationDate: this.props.observationDate
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   
-  handleSubmit(date,term){
+  handleSubmit(date,term,setStations){
     this.state.observationDate = date;
     this.state.term = +term<10? '0'+term : term;
+    this.state.setStations = setStations;
     $.ajax({
       type: 'GET',
       dataType: 'json',
-      url: 'surface_map_show?date='+date+'&term='+this.state.term
+      url: 'surface_map_show?date='+date+'&term='+this.state.term+'&set_stations='+this.state.setStations
       }).done(function(data) {
         this.setState({telegrams: data.telegrams});
       }.bind(this))
@@ -34,7 +36,7 @@ export default class WmoDataSurfaceMap extends React.Component{
       <div>
         <DateTermForm term={this.state.term} observationDate={this.state.observationDate} onDateTermSubmit={this.handleSubmit}/>
         <h3>Данные на приземной карте за {this.state.observationDate} срок {this.state.term}</h3>
-        <WmoSurfaceMap telegrams={this.state.telegrams} />
+        <WmoSurfaceMap telegrams={this.state.telegrams} setStations={this.state.setStations}/>
       </div>
     );
   }  

@@ -12,6 +12,10 @@ class User < ActiveRecord::Base
   
   audited except: [:password_digest, :remember_digest],  allow_mass_assignment: true
   
+  def full_name
+    last_name+' '+first_name+' '+middle_name
+  end
+
   def code_station
     if self.station_id.present? 
       return Station.find(self.station_id).code

@@ -21,6 +21,12 @@
       = f.label "Активна?"
       = f.check_box :is_active
   
+      = f.label "Активна?(1:2500)"
+      = f.check_box :is_active_2500
+  
+      = f.label "Активна?(1:5000)"
+      = f.check_box :is_active_5000
+  
       = f.submit "Сохранить", class: "btn btn-primary"
     
     %br  

@@ -12,6 +12,8 @@
         %th Долгота
         %th Высота
         %th Активна?
+        %th Активна?(1:2500)
+        %th Активна?(1:5000)
         %th Изменить
         %th Удалить
     %tbody
@@ -25,6 +27,8 @@
           %td= s.longitude
           %td= s.altitude
           %td= s.is_active
+          %td= s.is_active_2500
+          %td= s.is_active_5000
           %td= link_to "Изменить", edit_wmo_station_path(s.id)
           %td= link_to "Удалить", s, method: :delete, data: {confirm: 'Are you sure?'}
   = will_paginate

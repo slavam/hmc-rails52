@@ -12,7 +12,7 @@
         %th
     %tbody
       - @meteo_links.each do |m_l| 
-        %tr
+        %tr{title: m_l.user.full_name+', '+m_l.user.position}
           %td= m_l.user.login
           %td= m_l.user_menu.name
           %td= m_l.name

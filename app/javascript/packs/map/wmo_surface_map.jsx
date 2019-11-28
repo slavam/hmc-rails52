@@ -1,5 +1,4 @@
 import React from 'react';
-// import MarkerClusterer from './markercluster';
 
 export default class WmoSurfaceMap extends React.Component{
   constructor(props){
@@ -98,11 +97,12 @@ export default class WmoSurfaceMap extends React.Component{
     return '<table><tbody><tr><td height="15px"></td><td width="20px"></td><td>'+cloudHigh+'</td><td></td><td></td></tr><tr><td height="15px"></td><td>'+airTemperature+'</td><td>'+cloudMedium+'</td><td>'+airPressure+'</td><td></td></tr><tr><td>'+meteoRange+'</td><td>'+presentWeather+'</td><td>'+totalCloudCover+'</td><td>'+pressureDelta+'</td><td>'+pressureTendency+'</td></tr><tr><td></td><td>'+dewPoint+'</td><td>'+cloudLow+'</td><td>'+cloudsNumber+' '+pastWeather1+'</td><td>'+pastWeather2+'</td></tr><tr><td></td><td></td><td></td><td>'+hightCloud+'</td></tr></tbody></table>';
   }
   render(){
-    let firstCoords = new google.maps.LatLng(48.3667, 25.9); //Cernovcy    48.0161457, 37.8057165); // Donetsk
+    const opts = {set2500: [6.85, 48.5, 31.0],set5000: [6.1, 47.0, 27.0],set10000: [6.87, 48.3667, 25.9]};
+    let firstCoords = new google.maps.LatLng(opts[this.props.setStations][1],opts[this.props.setStations][2]); //48.3667, 25.9); //Cernovcy    48.0161457, 37.8057165); // Donetsk
     let mapOptions = {
       center: firstCoords, 
       // mapTypeId: google.maps.MapTypeId.TERRAIN,
-      zoom: 6.1,
+      zoom: opts[this.props.setStations][0], //6.1,
       styles: [
             // {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
             {elementType: 'geometry', stylers: [{color: '#eeeeee'}]},
@@ -199,7 +199,6 @@ export default class WmoSurfaceMap extends React.Component{
     };
     let map = new google.maps.Map(document.getElementById('map'), mapOptions);
     let markers = [];
-    // let info = {};
     const windArrows = [
       "M 18,0 C 18,9.9411255 9.9411255,18 0,18 -9.9411255,18 -18,9.9411255 -18,0 c 0,-9.9411255 8.0588745,-18 18,-18 9.9411255,0 18,8.0588745 18,18 z", // calm 0 scale = 0.4
       "M0,0l-40,0", // 00 1

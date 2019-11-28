@@ -44,6 +44,6 @@ class WmoStationsController < ApplicationController
     end
     
     def wmo_station_params
-      params.require(:wmo_station).permit(:code, :name, :country, :latitude, :longitude, :altitude, :is_active)
+      params.require(:wmo_station).permit(:code, :name, :country, :latitude, :longitude, :altitude, :is_active, :is_active_2500, :is_active_5000)
     end
 end

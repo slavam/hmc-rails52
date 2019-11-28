@@ -12,6 +12,8 @@ export default class FindEditStation extends React.Component{
       longitude: null,
       altitude: null,
       isActive: null,
+      isActive2500: null,
+      isActive5000: null,
       station: null,
       message: ''
     };
@@ -20,6 +22,12 @@ export default class FindEditStation extends React.Component{
   }
   isActiveChange(e){
     this.setState({isActive: e.target.checked});
+  }
+  isActive2500Change(e){
+    this.setState({isActive2500: e.target.checked});
+  }
+  isActive5000Change(e){
+    this.setState({isActive5000: e.target.checked});
   }
   altitudeChange(e){
     this.setState({altitude: e.target.value});
@@ -45,6 +53,8 @@ export default class FindEditStation extends React.Component{
     this.state.station.longitude = this.state.longitude;
     this.state.station.altitude = this.state.altitude;
     this.state.station.is_active = this.state.isActive;
+    this.state.station.is_active_2500 = this.state.isActive2500;
+    this.state.station.is_active_5000 = this.state.isActive5000;
     delete this.state.station.id;
     $.ajax({
       type: 'PUT',
@@ -74,6 +84,8 @@ export default class FindEditStation extends React.Component{
           longitude: data.station.longitude,
           altitude: data.station.altitude,
           isActive: data.station.is_active,
+          isActive2500: data.station.is_active_2500,
+          isActive5000: data.station.is_active_5000,
           message: 'Параметры станции с кодом '+code
         });
     }).fail((res) => {
@@ -85,7 +97,7 @@ export default class FindEditStation extends React.Component{
           <table className= "table table-hover">
             <thead>
               <tr>
-                <th>Название</th><th>Страна</th><th>Широта</th><th>Долгота</th><th>Высота</th><th>Активна?</th>
+                <th>Название</th><th>Страна</th><th>Широта</th><th>Долгота</th><th>Высота</th><th>Активна?</th><th>Активна?(2500)</th><th>Активна?(5000)</th>
               </tr>
             </thead>
             <tbody>
@@ -107,6 +119,12 @@ export default class FindEditStation extends React.Component{
                 </td>
                 <td>
                   <input type="checkbox" checked={this.state.isActive} onChange={(event) => this.isActiveChange(event)}/>
+                </td>
+                <td>
+                  <input type="checkbox" checked={this.state.isActive2500} onChange={(event) => this.isActive2500Change(event)}/>
+                </td>
+                <td>
+                  <input type="checkbox" checked={this.state.isActive5000} onChange={(event) => this.isActive5000Change(event)}/>
                 </td>
               </tr>
             </tbody>

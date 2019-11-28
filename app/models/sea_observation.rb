@@ -28,7 +28,7 @@ class SeaObservation < ApplicationRecord
     # (report_date-3.hours).strftime("%Y-%m-%d %H:%M:%S") 2019-05-16 
     s_o = self.where("station_id=10 and term=9 and date_dev like ?","#{report_date}%")[0]
     if s_o.present?
-      return (s_o.telegram[22,2]+'.'+s_o.telegram[24]).to_f
+      return s_o.telegram[22] == '5' ? ('-'+s_o.telegram[23]+'.'+s_o.telegram[24]).to_f : (s_o.telegram[22,2]+'.'+s_o.telegram[24]).to_f
     else
       return nil
     end
