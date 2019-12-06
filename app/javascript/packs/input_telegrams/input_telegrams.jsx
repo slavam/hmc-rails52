@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import NewTelegramForm from './new_telegram_form';
 import TelegramRow from './telegram_row';
+import MakeSynopticTelegram from './make_synoptic_telegram';
 
 // import { Observable} from 'rxjs/Observable';
 // import { range } from 'rxjs/observable/range';
@@ -215,6 +216,7 @@ export default class InputTelegrams extends React.Component{
       </div> : '';
     return(
       <div>
+        <MakeSynopticTelegram term={this.state.tlgTerm} stations={this.props.stations}/>
         <h3>Новая телеграмма</h3>
         <NewTelegramForm codeStation={this.state.codeStation} currDate={this.state.currDate} tlgType={this.state.tlgType} onTelegramTypeChange={this.handleTelegramTypeChanged} onFormSubmit={this.handleFormSubmit} stations={this.props.stations} tlgTerm={this.state.tlgTerm} inputMode={this.props.inputMode} onInBuffer={this.handleInBuffer} minutes={this.state.minutes}/>
         {telegramTable}

@@ -29,7 +29,7 @@ class BusStation < Prawn::Document
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
       text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № 03/"+@bulletin.curr_number
-      text "К договору от 21.11.2019 № 01/19-20/03"
+      text "К договору от 27.11.2019 № 01/19-20/03"
     end
     
     bounding_box([250, y_pos], width: bounds.width-250) do
@@ -43,7 +43,7 @@ class BusStation < Prawn::Document
             СОВРЕМЕННЫХ ТЕХНОЛОГИЙ
             \"ДОНЕЦКИЕ ТЕХНОЛОГИИ\"
 		
-            В.В. Гайдук", leading: 3
+            В.В. Гайдуку", leading: 3
     end
     
     move_down 50
@@ -62,7 +62,8 @@ class BusStation < Prawn::Document
     chief_descr = @bulletin.chief_2_pdf
     responsible_descr = @bulletin.responsible_2_pdf
                     
-    table_content =[[{:padding => [10,0],:content => chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]                    
+    # table_content =[[{:padding => [10,0],:content => chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]                    
+    table_content =[[{:padding => [10,0],:content => chief_descr[:position]}, "", {:padding => [10,5],:content => chief_descr[:name]}]]
     table table_content, width: bounds.width, :column_widths => [200, 150], cell_style: {:overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true } do |t|
       t.cells.border_width = 0
     end
