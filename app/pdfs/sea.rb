@@ -108,8 +108,13 @@ class Sea < Prawn::Document
           p.row(3).column(13).width = 99
         end
       end
-      t.row(0).column(7).align = :left
-      t.row(0).column(7).overflow = :shrink_to_fit
+      if @bulletin.summer
+        t.row(0).column(7).align = :left
+        t.row(0).column(7).overflow = :shrink_to_fit
+      else
+        t.row(0).column(8).align = :left
+        t.row(0).column(8).overflow = :shrink_to_fit
+      end
       t.row(0).height = 17
       t.rows(0..3).size = 11
       t.row(3).align = :left
@@ -221,6 +226,7 @@ class Sea < Prawn::Document
     else
 	    colspan3 = 9
 	    colspan4 = 5
+	    [0,1,2,9].each{|i| m_d[i] = m_d[i].to_f.round if m_d[i].present?}
 	    data_row = ['Седово', m_d[0], m_d[1], m_d[2], m_d[3], m_d[13], m_d[4], m_d[5], m_d[6], m_d[7], m_d[8], m_d[9], m_d[12], m_d[14]]
 	  end
     review_start_date = @bulletin.review_start_date.present? ? @bulletin.review_start_date.to_s(:custom_datetime) : (@bulletin.report_date-1.day).to_s(:custom_datetime)

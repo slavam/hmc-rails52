@@ -15,10 +15,10 @@ export default class MakeSynopticTelegram extends React.Component{
       visibilityR: {value: '//',label: "Видимость не определена"},
       cloudAmountR: {value: '/',label:'Определить невозможно или наблюдения не производились'},
       windDirectionR: {value: '//',label: "Данные отсутствуют"},
-      windSpeed: null, //'//',
+      windSpeed: 0, //null, //'//',
       temperature: 0,
       dewPoint: 0,
-      pressureStation: null,
+      pressureStation: 0, //null,
       pressureSea: 0,
       isAnemometer: false
     };
@@ -225,7 +225,8 @@ export default class MakeSynopticTelegram extends React.Component{
         <input id="observation-date" type="date" value={this.state.observationDate} onChange={(event) => this.handleDateChange(event)}/>
         <label htmlFor="term">Срок</label>
         <Select id="term" value={this.state.termR} onChange={this.handleTermChange} options={terms}/>*/}
-        <table className = "table table-bordered">
+        {/*<table className = "table table-bordered">*/}
+        <table className="table table-hover">
           <thead>
             <tr>
               <th width="40%"></th>
@@ -257,10 +258,16 @@ export default class MakeSynopticTelegram extends React.Component{
               <th>Общее количество облаков всех ярусов N (баллы)</th>
               <td><Select id="cloud-amount" value={this.state.cloudAmountR} onChange={this.handleCloudAmountChange} options={cloudAmount}/></td>
             </tr>
-            <tr>
+            <tr height="70px">
               <th>Направление ветра в срок наблюдения dd
-                <input id="scales" type="checkbox" checked={this.state.isAnemometer} onChange={(event) => this.isAnemometerChange(event)} />
-                <label htmlFor="scales">По румбометру</label>
+                <table  className="table" margin-bottom="1px">
+                  <tbody>
+                    <tr>
+                      <th><input id="cb-wind-d" type="checkbox" checked={this.state.isAnemometer} onChange={(event) => this.isAnemometerChange(event)}/></th>
+                      <th><label htmlFor="cb-wind-d" >По румбометру</label></th>
+                    </tr>
+                  </tbody>
+                </table>
               </th>
               <td>
                 <Select id="wind-direction" value={this.state.windDirectionR} onChange={this.handleWindDirectionChange} options={this.state.isAnemometer ? rumbometerWindDirections : windDirections}/>
