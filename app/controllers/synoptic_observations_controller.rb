@@ -809,6 +809,8 @@ class SynopticObservationsController < ApplicationController
     @term = (Time.now.utc.hour/3*3).to_s.rjust(2, '0')
     @input_mode = params[:input_mode]
     @code_station = current_user.code_station.to_s
+    @weather_in_term = SynopticObservation::WEATHER_IN_TERM
+    @weather_past = SynopticObservation::WEATHER_PAST
   end
   
   def get_last_telegrams

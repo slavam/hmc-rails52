@@ -216,7 +216,7 @@ export default class InputTelegrams extends React.Component{
       </div> : '';
     return(
       <div>
-        <MakeSynopticTelegram term={this.state.tlgTerm} stations={this.props.stations}/>
+        <MakeSynopticTelegram term={this.state.tlgTerm} stations={this.props.stations} weatherInTerm={this.props.weatherInTerm} weatherPast={this.props.weatherPast}/>
         <h3>Новая телеграмма</h3>
         <NewTelegramForm codeStation={this.state.codeStation} currDate={this.state.currDate} tlgType={this.state.tlgType} onTelegramTypeChange={this.handleTelegramTypeChanged} onFormSubmit={this.handleFormSubmit} stations={this.props.stations} tlgTerm={this.state.tlgTerm} inputMode={this.props.inputMode} onInBuffer={this.handleInBuffer} minutes={this.state.minutes}/>
         {telegramTable}
@@ -236,9 +236,11 @@ $(function () {
     const term = JSON.parse(node.getAttribute('term'));
     const inputMode = JSON.parse(node.getAttribute('inputMode'));
     const codeStation = JSON.parse(node.getAttribute('codeStation'));
+    const weatherInTerm = JSON.parse(node.getAttribute('weatherInTerm'));
+    const weatherPast = JSON.parse(node.getAttribute('weatherPast'));
     
     ReactDOM.render(
-      <InputTelegrams telegrams={telegrams} stations={stations} currDate={currDate} tlgType={tlgType} term={term} inputMode={inputMode} codeStation={codeStation}/>,
+      <InputTelegrams telegrams={telegrams} stations={stations} currDate={currDate} tlgType={tlgType} term={term} inputMode={inputMode} codeStation={codeStation} weatherInTerm={weatherInTerm} weatherPast={weatherPast}/>,
       document.getElementById('form_and_last_telegrams')
     );
   }

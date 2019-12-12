@@ -20,7 +20,25 @@ export default class MakeSynopticTelegram extends React.Component{
       dewPoint: 0,
       pressureStation: 0, //null,
       pressureSea: 0,
-      isAnemometer: false
+      baricTrendR: {value: 0,label:"Рост, затем падение"},
+      baricTrendValue: 0,
+      rainfall: 0,
+      rainfallCode: '000',
+      rainfallTimeR: {value: '1',label:"6"},
+      weatherInTermR: {value: '00', label: "Изменение количества облаков в последний час неизвестно"},
+      weatherPast1R: {value:0, label:"Количество облаков <= 5 баллов, ясно"},
+      weatherPast2R: {value:0, label:"Количество облаков <= 5 баллов, ясно"},
+      cloudTotalR: {value:'/',label:'Наблюдения не производились'},
+      cloudCLR: {value:'/',label:'Облака не видны из-за темноты, тумана или других подобных явлений'},
+      cloudCMR: {value:'/',label:'Облака не видны из-за темноты, тумана или других подобных явлений'},
+      cloudCHR: {value:'/',label:'Облака не видны из-за темноты, тумана или других подобных явлений'},
+      temperatureMax: 0,
+      
+      isAnemometer: false,
+      less1mm: false,
+      isGroup8: false,
+      isSection3: false,
+      isGroup31: false
     };
     this.handleTermChange = this.handleTermChange.bind(this);
     this.handleStationChange = this.handleStationChange.bind(this);
@@ -30,8 +48,15 @@ export default class MakeSynopticTelegram extends React.Component{
     this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
     this.handleCloudAmountChange = this.handleCloudAmountChange.bind(this);
     this.handleWindDirectionChange = this.handleWindDirectionChange.bind(this);
-    // this.handleWindSpeedChange = this.handleWindSpeedChange.bind(this);
-    // this.handleTemperatureChange = this.handleTemperatureChange.bind(this);
+    this.handleBaricTrendChange = this.handleBaricTrendChange.bind(this);
+    this.handleRainfallTimeChange = this.handleRainfallTimeChange.bind(this);
+    this.handleWeatherInTermChange = this.handleWeatherInTermChange.bind(this);
+    this.handleWeatherPast1Change= this.handleWeatherPast1Change.bind(this);
+    this.handleWeatherPast2Change= this.handleWeatherPast2Change.bind(this);
+    this.handleCloudTotalChange=this.handleCloudTotalChange.bind(this);
+    this.handleCloudCLChange=this.handleCloudCLChange.bind(this);
+    this.handleCloudCMChange=this.handleCloudCMChange.bind(this);
+    this.handleCloudCHChange=this.handleCloudCHChange.bind(this);
     this.state.tlgText = this.formText();
   }
   handlePressureSeaChange(e){
@@ -59,6 +84,24 @@ export default class MakeSynopticTelegram extends React.Component{
   isAnemometerChange(e){
     this.state.windDirectionR = {value: '//',label:"Данные отсутствуют"};
     this.setState({isAnemometer: e.target.checked});
+    this.setState({tlgText: this.formText()});
+  }
+  less1mmChange(e){
+    this.state.rainfall = 0;
+    this.state.rainfallCode = e.target.checked ? '990':'000';
+    this.setState({less1mm: e.target.checked});
+    this.setState({tlgText: this.formText()});
+  }
+  isGroup8Change(e){
+    this.state.isGroup8 = e.target.checked;
+    this.setState({tlgText: this.formText()});
+  }
+  isSection3Change(e){
+    this.state.isSection3 = e.target.checked;
+    this.setState({tlgText: this.formText()});
+  }
+  isGroup31Change(e){
+    this.state.isGroup31 = e.target.checked;
     this.setState({tlgText: this.formText()});
   }
   handleTermChange(val){
@@ -92,12 +135,70 @@ export default class MakeSynopticTelegram extends React.Component{
     this.state.windDirectionR = val;
     this.setState({tlgText: this.formText()});
   }
+  handleBaricTrendChange(val){
+    this.state.baricTrendR = val;
+    this.setState({tlgText: this.formText()});
+  }
+  handleBTValueChange(e){
+    this.state.baricTrendValue = e.target.value;
+    this.setState({tlgText: this.formText()});
+  }
+  handleRainfallChange(e){
+    this.state.rainfall = e.target.value;
+    // if(+e.target.value>=1)
+    if(this.state.less1mm)
+      this.state.rainfallCode = 990+(+e.target.value*10);
+    else
+      this.state.rainfallCode = ('00'+e.target.value).substr(-3);
+    this.setState({tlgText: this.formText()});
+  }
+  handleRainfallTimeChange(val){
+    this.state.rainfallTimeR = val;
+    this.setState({tlgText: this.formText()});
+  }
+  handleWeatherInTermChange(val){
+    this.state.weatherInTermR = val;
+    this.setState({tlgText: this.formText()});
+  }
+  handleWeatherPast1Change(val){
+    this.state.weatherPast1R = val;
+    this.setState({tlgText: this.formText()});
+  }
+  handleWeatherPast2Change(val){
+    this.state.weatherPast2R = val;
+    this.setState({tlgText: this.formText()});
+  }
+  handleCloudTotalChange(val){
+    this.state.cloudTotalR = val;
+    this.setState({tlgText: this.formText()});
+  }
+  handleCloudCLChange(val){
+    this.state.cloudCLR = val;
+    this.setState({tlgText: this.formText()});
+  }
+  handleCloudCMChange(val){
+    this.state.cloudCMR = val;
+    this.setState({tlgText: this.formText()});
+  }
+  handleCloudCHChange(val){
+    this.state.cloudCHR = val;
+    this.setState({tlgText: this.formText()});
+  }
+  handleTemperatureMaxChange(e){
+    this.state.temperatureMax = e.target.value;
+    this.setState({tlgText: this.formText()});
+  }
   formText(){
     let wSpeed = (this.state.windSpeed ? (this.state.windSpeed<10 ? ('0'+(+this.state.windSpeed)) : (+this.state.windSpeed)) : '//') +' ';
     let temperature = '1'+(this.state.temperature<0? '1'+('00'+this.state.temperature*(-10)).substr(-3):'0'+('00'+this.state.temperature*(10)).substr(-3))+' ';
     let dewPoint = '2'+(this.state.dewPoint<0? '1'+('00'+this.state.dewPoint*(-10)).substr(-3):'0'+('00'+this.state.dewPoint*(10)).substr(-3))+' ';
     let pressureStation = (this.state.pressureStation ? '3'+('000'+this.state.pressureStation*10).substr(-4)+' ' : '');
     let pressureSea = '4'+('000'+this.state.pressureSea*10).substr(-4)+' ';
+    let valueBT = ('00'+this.state.baricTrendValue*10).substr(-3)+' ';
+    let rainfall = '6'+this.state.rainfallCode+this.state.rainfallTimeR.value+' ';
+    let weatherInTerm = '7'+this.state.weatherInTermR.value+this.state.weatherPast1R.value+this.state.weatherPast2R.value+' ';
+    let cloudNumber = '8'+this.state.cloudTotalR.value+this.state.cloudCLR.value+this.state.cloudCMR.value+this.state.cloudCHR.value+' ';
+    let temperatureMax = '1'+(this.state.temperatureMax<0? '1'+('00'+this.state.temperatureMax*(-10)).substr(-3):'0'+('00'+this.state.temperatureMax*(10)).substr(-3))+' ';
     return ((+this.props.term % 2) == 0 ? 'ЩЭСМЮ ': 'ЩЭСИД ')+
       this.state.stationR.value+' '+
       this.state.factorGr6R.value+
@@ -111,10 +212,15 @@ export default class MakeSynopticTelegram extends React.Component{
       dewPoint+
       pressureStation+
       pressureSea+
-      (this.state.factorGr6R.value == '1'? '6RRRt ': '')+
-      (this.state.factorGr7R.value == '1'? '7wwWW ': '')+
+      '5'+this.state.baricTrendR.value+
+      valueBT+
+      (this.state.factorGr6R.value == '1'? rainfall : '')+
+      (this.state.factorGr7R.value == '1'? weatherInTerm : '')+
       (this.state.factorGr6R.value == '/'? '555 ': '')+
       (this.state.factorGr6R.value == '/'? '6RRRt ': '')+
+      (this.state.isGroup8 ? cloudNumber:'')+
+      ((this.state.isSection3 && this.state.isGroup31)? '333 ':'')+
+      ((this.state.isSection3 && this.state.isGroup31)? temperatureMax:'')+
       '=';
   }
   render(){
@@ -211,11 +317,181 @@ export default class MakeSynopticTelegram extends React.Component{
     }
     rumbometerWindDirections.push({value: '99',label:"Переменное"});
     rumbometerWindDirections.push({value: '//',label:"Данные отсутствуют"});
-    // let windDirectionControl = 
-    //   <Select id="wind-direction" value={this.state.windDirectionR} onChange={this.handleWindDirectionChange} options={windDirections}/>;
-    
-    // if(this.state.isAnemometer)
-    //   windDirectionControl = <p>Anemometer</p>;
+    const baricTrends = [
+      {value: 0,label:"Рост, затем падение"},
+      {value: 1,label:"Рост затем без изменений или более слабый рост"},
+      {value: 2,label:"Рост (равномерный или неравномерный)"},
+      {value: 3,label:"Падение или ровный ход, затем рост; или рост, затем более быстрый рост"},
+      {value: 4,label:"Ровный или неровный ход"},
+      {value: 5,label:"Падение, затем рост"},
+      {value: 6,label:"Падение, затем без изменений или слабое падение"},
+      {value: 7,label:"Падение"},
+      {value: 8,label:"Ровный ход или рост, затем падение; или падение, затем более быстрое падение"}
+    ];
+    const rainfallTimes = [];
+    for(let i=1; i<5; i++){
+      rainfallTimes.push({value: i,label:i*6});
+    }
+    const weatherInTerms = [];
+    this.props.weatherInTerm.forEach((w,i) => {
+      let k = (i<10 ? ('0'+i):i);
+      weatherInTerms.push({value: k, label: w});
+    });
+    const weatherPasts = [];
+    this.props.weatherPast.forEach((w,i) => {
+      weatherPasts.push({value:i,label:w});
+    });
+    const cloudTotals = [
+      {value:'0',label:"0 (облаков нет)"},
+      {value:'1',label:'<=1 (но не 0)'},
+      {value:'2',label:'2-3'},
+      {value:'3',label:'4'},
+      {value:'4',label:'5'},
+      {value:'5',label:'6'},
+      {value:'6',label:'7-8'},
+      {value:'7',label:'>= 9 (но не 10, есть просветы)'},
+      {value:'8',label:'10 (без просветов)'},
+      {value:'9',label:'Определить невозможно (затруднена видимость)'},
+      {value:'/',label:'Наблюдения не производились'}
+    ];
+    const cloudCL = [
+      {value:'0',label:'Облаков нет'},
+      {value:'1',label:'Кучевые плоские и/или кучевые разорванные'},
+      {value:'2',label:'Кучевые средние или мощные или вместе с кучевыми разорванными, или с кучевыми плоскими. Основания расположены на одном уровне'},
+      {value:'3',label:'Кучево-дождевые лысые с кучевыми, слоисто-кучевыми или слоистыми'},
+      {value:'4',label:'Слоисто-кучевые, образовавшиеся из кучевых'},
+      {value:'5',label:'Слоисто-кучевые, образовавшиеся не из кучевых'},
+      {value:'6',label:'Слоистые туманообразные и/или слоистые разорванные'},
+      {value:'7',label:'Слоистые разорванные или кучевые разорванные'},
+      {value:'8',label:'Кучевые и слоисто-кучевые. Основания расположены на разных уровнях'},
+      {value:'9',label:'Кучево-дождевые волокнистые'},
+      {value:'/',label:'Облака не видны из-за темноты, тумана или других подобных явлений'},
+    ];
+    const cloudCM = [
+      {value:'0',label:'Облаков нет'},
+      {value:'1',label:'Высокослоистые просвечивающие'},
+      {value:'2',label:'Высокослоистые непросвечивающие или слоисто-дождевые'},
+      {value:'3',label:'Высококучевые просвечивающие, расположенные на одном уровне'},
+      {value:'4',label:'Клочья высококучевых просвечивающих, непрерывно изменяющихся'},
+      {value:'5',label:'Высококучевые просвечивающие, полосами'},
+      {value:'6',label:'Высококучевые, образовавшиеся из кучевых'},
+      {value:'7',label:'Высококучевые, просвечивающие либо высококучевые с высокослоистыми или слоисто-дождевыми'},
+      {value:'8',label:'Высококучевые башенкообразные или хлопьевидные'},
+      {value:'9',label:'Высококучевые при хаотическом виде неба'},
+      {value:'/',label:'Облака CM не видны из-за темноты, тумана и других подобных явлений'},
+    ];
+    const cloudCH = [
+      {value:'0',label:'Облаков нет'},
+      {value:'1',label:'Перистые нитевидные, иногда когтевидные'},
+      {value:'2',label:'Перистые плотные в виде клочьев или хлопьевидные '},
+      {value:'3',label:'Перистые плотные, образовавшиеся от кучево-дождевых'},
+      {value:'4',label:'Перистые когтевидные или нитевидные распространяющиеся по небу'},
+      {value:'5',label:'Перистые и перисто-слоистые распространяющиеся по небу и в целом обычно уплотняющиеся'},
+      {value:'6',label:'Перистые и перисто-слоистые распространяющиеся по небу и в целом обычно уплотняющиеся; сплошная пелена, поднимающаяся над горизонтом выше 45°'},
+      {value:'7',label:'Перисто-слоистые, покрывающие все небо'},
+      {value:'8',label:'Перисто-слоистые, не распространяющиеся по небу и не покрывающие его полностью'},
+      {value:'9',label:'Перисто-кучевые одни или перисто-кучевые'},
+      {value:'/',label:'Облака не видны из-за темноты, тумана или вследствие сплошного слоя более низких облаков'},
+    ];
+    let group6RRR=null;
+    let group6tR=null;
+    let rfValue;
+    if(this.state.factorGr6R.value == '1'){
+      if(this.state.less1mm)
+        rfValue=<td><input type='number' value={this.state.rainfall} min='0' max='0.9' step="0.1" onChange={(event) => this.handleRainfallChange(event)}/></td>;
+      else
+        rfValue=<td><input type='number' value={this.state.rainfall} min='0' max='989' onChange={(event) => this.handleRainfallChange(event)}/></td>;
+      group6RRR=
+        <tr>
+          <th>Количество осадков RRR (мм)
+            <table>
+              <tbody>
+                <tr>
+                  <td width="20%"><input id="cb-rainfall" type="checkbox" checked={this.state.less1mm} onChange={(event) => this.less1mmChange(event)}/></td>
+                  <td><label htmlFor="cb-rainfall" >До 1 миллиметра</label></td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          {rfValue}
+        </tr>;
+      group6tR=
+        <tr>
+          <th>Период времени, за который измерено количество осадков t<sub>R</sub> (час)</th>
+          <td><Select id="rf-time" value={this.state.rainfallTimeR} onChange={this.handleRainfallTimeChange} options={rainfallTimes}/></td>
+        </tr>;
+    }
+    let group7ww = null;
+    let group7W1 = null;
+    let group7W2 = null;
+    if(this.state.factorGr7R.value == '1'){
+      group7ww=
+        <tr>
+          <th>Текущая погода ww</th>
+          <td><Select id="weather-in-term" value={this.state.weatherInTermR} onChange={this.handleWeatherInTermChange} options={weatherInTerms}/></td>
+        </tr>;
+      group7W1=
+        <tr>
+          <th>Прошедшая погода W<sub>1</sub></th>
+          <td><Select id="weather-past" value={this.state.weatherPast1R} onChange={this.handleWeatherPast1Change} options={weatherPasts}/></td>
+        </tr>;
+      group7W2=
+        <tr>
+          <th>Прошедшая погода W<sub>2</sub></th>
+          <td><Select id="weather-past2" value={this.state.weatherPast2R} onChange={this.handleWeatherPast2Change} options={weatherPasts}/></td>
+        </tr>;
+    }
+    let group8N = null;
+    let group8CL = null;
+    let group8CM = null;
+    let group8CH = null;
+    if(this.state.isGroup8){
+      group8N=
+        <tr>
+          <th>Общее количество облаков всех ярусов N</th>
+          <td><Select id="n-cloud-total" value={this.state.cloudTotalR} onChange={this.handleCloudTotalChange} options={cloudTotals}/></td>
+        </tr>;
+      group8CL=
+        <tr>
+          <th>Облака вертикального развития и облака нижнего яруса C<sub>L</sub></th>
+          <td><Select id="cloud-cl" value={this.state.cloudCLR} onChange={this.handleCloudCLChange} options={cloudCL}/></td>
+        </tr>;
+      group8CM=
+        <tr>
+          <th>Облака среднего яруса и слоисто-дождевые облака C<sub>M</sub></th>
+          <td><Select id="cloud-cm" value={this.state.cloudCMR} onChange={this.handleCloudCMChange} options={cloudCM}/></td>
+        </tr>;
+      group8CH=
+        <tr>
+          <th>Облака верхнего яруса C<sub>H</sub></th>
+          <td><Select id="cloud-ch" value={this.state.cloudCHR} onChange={this.handleCloudCHChange} options={cloudCH}/></td>
+        </tr>;
+    }
+    let section31 = null;
+    let group31 = null;
+    if(this.state.isSection3){
+      section31 =
+        <tr>
+          <th>
+            <table >
+              <tbody>
+                <tr>
+                  <td width="20%"><input id="cb-group31" type="checkbox" checked={this.state.isGroup31} onChange={(event) => this.isGroup31Change(event)}/></td>
+                  <td ><label htmlFor="cb-group31" >Включить группу 1 раздела 3</label></td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <td></td>
+        </tr>;
+    }
+    if(this.state.isSection3 && this.state.isGroup31){
+      group31 = 
+        <tr>
+          <th>Максимальная температура воздуха за день T<sub>x</sub>T<sub>x</sub>T<sub>x</sub> (°C)</th>
+          <td><input type='number' value={this.state.temperatureMax} min='-50' max='60' step="0.1" onChange={(event) => this.handleTemperatureMaxChange(event)} /> </td>
+        </tr>;
+    }
     return(
       <div>
         <label htmlFor="tlg-text">Текст телеграммы</label>
@@ -258,13 +534,13 @@ export default class MakeSynopticTelegram extends React.Component{
               <th>Общее количество облаков всех ярусов N (баллы)</th>
               <td><Select id="cloud-amount" value={this.state.cloudAmountR} onChange={this.handleCloudAmountChange} options={cloudAmount}/></td>
             </tr>
-            <tr height="70px">
+            <tr>
               <th>Направление ветра в срок наблюдения dd
-                <table  className="table" margin-bottom="1px">
+                <table>
                   <tbody>
                     <tr>
-                      <th><input id="cb-wind-d" type="checkbox" checked={this.state.isAnemometer} onChange={(event) => this.isAnemometerChange(event)}/></th>
-                      <th><label htmlFor="cb-wind-d" >По румбометру</label></th>
+                      <td width="20%"><input id="cb-wind-d" type="checkbox" checked={this.state.isAnemometer} onChange={(event) => this.isAnemometerChange(event)}/></td>
+                      <td><label htmlFor="cb-wind-d" >По румбометру</label></td>
                     </tr>
                   </tbody>
                 </table>
@@ -293,6 +569,51 @@ export default class MakeSynopticTelegram extends React.Component{
               <th>Давление воздуха, приведенное к уровню моря PPPP (hPa)</th>
               <td><input type='number' value={this.state.pressureSea} min='0' max='2000' step='0.1'  onChange={(event) => this.handlePressureSeaChange(event)} /> </td>
             </tr>
+            <tr>
+              <th>Характеристика барической тенденции a</th>
+              <td><Select id="baric-trend" value={this.state.baricTrendR} onChange={this.handleBaricTrendChange} options={baricTrends}/></td>
+            </tr>
+            <tr>
+              <th>Значение барической тенденции ppp (hPa)</th>
+              <td><input type='number' value={this.state.baricTrendValue} min='0' max='100' step='0.1'  onChange={(event) => this.handleBTValueChange(event)} /> </td>
+            </tr>
+            {group6RRR}
+            {group6tR}
+            {group7ww}
+            {group7W1}
+            {group7W2}
+            <tr>
+              <th>
+                <table >
+                  <tbody>
+                    <tr>
+                      <td width="20%"><input id="cb-clouds" type="checkbox" checked={this.state.isGroup8} onChange={(event) => this.isGroup8Change(event)}/></td>
+                      <td ><label htmlFor="cb-clouds" >Включить группу 8</label></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </th>
+              <td></td>
+            </tr>
+            {group8N}
+            {group8CL}
+            {group8CM}
+            {group8CH}
+            <tr>
+              <th>
+                <table >
+                  <tbody>
+                    <tr>
+                      <td width="20%"><input id="cb-section3" type="checkbox" checked={this.state.isSection3} onChange={(event) => this.isSection3Change(event)}/></td>
+                      <td ><label htmlFor="cb-section3" >Включить раздел 3</label></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </th>
+              <td></td>
+            </tr>
+            {section31}
+            {group31}
           </tbody>
         </table>
         <label htmlFor="tlg-text2">Текст телеграммы</label>
