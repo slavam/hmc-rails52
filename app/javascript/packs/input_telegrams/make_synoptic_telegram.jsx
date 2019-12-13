@@ -1,13 +1,11 @@
 import React from 'react';
 import Select from 'react-select';
-// import cx from 'classnames';
 
 export default class MakeSynopticTelegram extends React.Component{
   constructor(props){
     super(props);
     this.state = {
       tlgText: '', //(+this.props.term % 2) == 0 ? 'ЩЭСМЮ ': 'ЩЭСИД ', //this.formText(), //this.props.tlgText,
-      // termR: {value: 0, label: '00'},
       stationR: {value: 34519, label: "Донецк"},
       factorGr6R: {value: '4', label: 'Не включена: количество осадков не измерялось'},
       factorGr7R: {value: '2', label: 'Не включена: нет явлений, подлежащих передаче'},
@@ -15,10 +13,10 @@ export default class MakeSynopticTelegram extends React.Component{
       visibilityR: {value: '//',label: "Видимость не определена"},
       cloudAmountR: {value: '/',label:'Определить невозможно или наблюдения не производились'},
       windDirectionR: {value: '//',label: "Данные отсутствуют"},
-      windSpeed: 0, //null, //'//',
+      windSpeed: 0, 
       temperature: 0,
       dewPoint: 0,
-      pressureStation: 0, //null,
+      pressureStation: 0, 
       pressureSea: 0,
       baricTrendR: {value: 0,label:"Рост, затем падение"},
       baricTrendValue: 0,
@@ -33,14 +31,36 @@ export default class MakeSynopticTelegram extends React.Component{
       cloudCMR: {value:'/',label:'Облака не видны из-за темноты, тумана или других подобных явлений'},
       cloudCHR: {value:'/',label:'Облака не видны из-за темноты, тумана или других подобных явлений'},
       temperatureMax: 0,
+      temperatureMin: 0,
+      soilSnowR: {value:'/',label:'Нельзя определить'},
       
       isAnemometer: false,
       less1mm: false,
       isGroup8: false,
       isSection3: false,
-      isGroup31: false
+      isGroup31: false,
+      isGroup32:false,
+      isGroup34:false
     };
-    this.handleTermChange = this.handleTermChange.bind(this);
+    // this.myListeners =[
+    //   this.handleStationChange,
+    //   this.handleFactorGr6Change,
+    //   this.handleFactorGr7Change(),
+    //   this.handleCloudHeightChange(),
+    //   this.handleVisibilityChange(), 
+    //   this.handleCloudAmountChange(),
+    //   this.handleWindDirectionChange(),
+    //   this.handleBaricTrendChange(),
+    //   this.handleRainfallTimeChange(), 
+    //   this.handleWeatherInTermChange(),
+    //   this.handleWeatherPast1Change(),
+    //   this.handleWeatherPast2Change(),
+    //   this.handleCloudTotalChange(),
+    //   this.handleCloudCLChange(),
+    //   this.handleCloudCMChange(),
+    //   this.handleCloudCHChange()
+    // ];
+    // this.myListeners.forEach((l) => l = l.bind(this));
     this.handleStationChange = this.handleStationChange.bind(this);
     this.handleFactorGr6Change = this.handleFactorGr6Change.bind(this);
     this.handleFactorGr7Change = this.handleFactorGr7Change.bind(this);
@@ -57,6 +77,8 @@ export default class MakeSynopticTelegram extends React.Component{
     this.handleCloudCLChange=this.handleCloudCLChange.bind(this);
     this.handleCloudCMChange=this.handleCloudCMChange.bind(this);
     this.handleCloudCHChange=this.handleCloudCHChange.bind(this);
+    this.handleSoilSnowChange=this.handleSoilSnowChange.bind(this);
+    
     this.state.tlgText = this.formText();
   }
   handlePressureSeaChange(e){
@@ -104,8 +126,13 @@ export default class MakeSynopticTelegram extends React.Component{
     this.state.isGroup31 = e.target.checked;
     this.setState({tlgText: this.formText()});
   }
-  handleTermChange(val){
-    this.setState({termR: val});
+  isGroup32Change(e){
+    this.state.isGroup32 = e.target.checked;
+    this.setState({tlgText: this.formText()});
+  }
+  isGroup34Change(e){
+    this.state.isGroup34 = e.target.checked;
+    this.setState({tlgText: this.formText()});
   }
   handleStationChange(val){
     this.state.stationR = val;
@@ -188,6 +215,14 @@ export default class MakeSynopticTelegram extends React.Component{
     this.state.temperatureMax = e.target.value;
     this.setState({tlgText: this.formText()});
   }
+  handleTemperatureMinChange(e){
+    this.state.temperatureMin = e.target.value;
+    this.setState({tlgText: this.formText()});
+  }
+  handleSoilSnowChange(val){
+    this.state.soilSnowR = val;
+    this.setState({tlgText: this.formText()});
+  }
   formText(){
     let wSpeed = (this.state.windSpeed ? (this.state.windSpeed<10 ? ('0'+(+this.state.windSpeed)) : (+this.state.windSpeed)) : '//') +' ';
     let temperature = '1'+(this.state.temperature<0? '1'+('00'+this.state.temperature*(-10)).substr(-3):'0'+('00'+this.state.temperature*(10)).substr(-3))+' ';
@@ -199,6 +234,8 @@ export default class MakeSynopticTelegram extends React.Component{
     let weatherInTerm = '7'+this.state.weatherInTermR.value+this.state.weatherPast1R.value+this.state.weatherPast2R.value+' ';
     let cloudNumber = '8'+this.state.cloudTotalR.value+this.state.cloudCLR.value+this.state.cloudCMR.value+this.state.cloudCHR.value+' ';
     let temperatureMax = '1'+(this.state.temperatureMax<0? '1'+('00'+this.state.temperatureMax*(-10)).substr(-3):'0'+('00'+this.state.temperatureMax*(10)).substr(-3))+' ';
+    let temperatureMin = '2'+(this.state.temperatureMin<0? '1'+('00'+this.state.temperatureMin*(-10)).substr(-3):'0'+('00'+this.state.temperatureMin*(10)).substr(-3))+' ';
+    let soilSnow = '4'+(this.state.soilSnowR.value)+'___ ';
     return ((+this.props.term % 2) == 0 ? 'ЩЭСМЮ ': 'ЩЭСИД ')+
       this.state.stationR.value+' '+
       this.state.factorGr6R.value+
@@ -219,15 +256,17 @@ export default class MakeSynopticTelegram extends React.Component{
       (this.state.factorGr6R.value == '/'? '555 ': '')+
       (this.state.factorGr6R.value == '/'? '6RRRt ': '')+
       (this.state.isGroup8 ? cloudNumber:'')+
-      ((this.state.isSection3 && this.state.isGroup31)? '333 ':'')+
+      ((this.state.isSection3 && (this.state.isGroup31 || this.state.isGroup32 || this.state.isGroup34))? '333 ':'')+
       ((this.state.isSection3 && this.state.isGroup31)? temperatureMax:'')+
+      ((this.state.isSection3 && this.state.isGroup32)? temperatureMin:'')+
+      ((this.state.isSection3 && this.state.isGroup34)? soilSnow:'')+
       '=';
   }
   render(){
-    const terms = [];
-    for(let i=0; i<8; i++){
-      terms.push({value: i*3, label: i*3<10 ? '0'+i*3 : i*3});
-    }
+    // const terms = [];
+    // for(let i=0; i<8; i++){
+    //   terms.push({value: i*3, label: i*3<10 ? '0'+i*3 : i*3});
+    // }
     const stations = [];
     this.props.stations.forEach((s) => {
       stations.push({value: s.code, label: s.name});
@@ -393,6 +432,19 @@ export default class MakeSynopticTelegram extends React.Component{
       {value:'9',label:'Перисто-кучевые одни или перисто-кучевые'},
       {value:'/',label:'Облака не видны из-за темноты, тумана или вследствие сплошного слоя более низких облаков'},
     ];
+    const soilSnow = [
+      {value:'0',label:'Поверхность почвы преимущественно покрыта льдом'},
+      {value:'1',label:'Слежавшийся или мокрый снег (со льдом или без него), покрывающий менее половины поверхности почвы'},
+      {value:'2',label:'Слежавшийся или мокрый снег (со льдом или без него), покрывающий по крайней мере половину поверхности почвы'},
+      {value:'3',label:'Ровный слой слежавшегося или мокрого снега покрывает поверхность почвы полностью'},
+      {value:'4',label:'Неровный слой слежавшегося или мокрого снега покрывает почву полностью'},
+      {value:'5',label:'Сухой рассыпчатый снег покрывает меньше половины поверхности почвы'},
+      {value:'6',label:'Сухой рассыпчатый снег покрывает по крайней мере половину поверхности почвы'},
+      {value:'7',label:'Ровный слой сухого рассыпчатого снега покрывает поверхность почвы полностью'},
+      {value:'8',label:'Неровный слой сухого рассыпчатого снега покрывает поверхность почвы полностью'},
+      {value:'9',label:' Снег покрывает поверхность почвы полностью; глубокие сугробы'},
+      {value:'/',label:'Нельзя определить'},
+    ];
     let group6RRR=null;
     let group6tR=null;
     let rfValue;
@@ -490,6 +542,56 @@ export default class MakeSynopticTelegram extends React.Component{
         <tr>
           <th>Максимальная температура воздуха за день T<sub>x</sub>T<sub>x</sub>T<sub>x</sub> (°C)</th>
           <td><input type='number' value={this.state.temperatureMax} min='-50' max='60' step="0.1" onChange={(event) => this.handleTemperatureMaxChange(event)} /> </td>
+        </tr>;
+    }
+    let section32 = null;
+    let group32 = null;
+    if(this.state.isSection3){
+      section32 =
+        <tr>
+          <th>
+            <table >
+              <tbody>
+                <tr>
+                  <td width="20%"><input id="cb-group32" type="checkbox" checked={this.state.isGroup32} onChange={(event) => this.isGroup32Change(event)}/></td>
+                  <td ><label htmlFor="cb-group32" >Включить группу 2 раздела 3</label></td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <td></td>
+        </tr>;
+    }
+    if(this.state.isSection3 && this.state.isGroup32){
+      group32 = 
+        <tr>
+          <th>Минимальная температура воздуха за ночь T<sub>n</sub>T<sub>n</sub>T<sub>n</sub> (°C)</th>
+          <td><input type='number' value={this.state.temperatureMin} min='-50' max='60' step="0.1" onChange={(event) => this.handleTemperatureMinChange(event)} /> </td>
+        </tr>;
+    }
+    let section34 = null;
+    let group34E = null;
+    if(this.state.isSection3){
+      section34 =
+        <tr>
+          <th>
+            <table >
+              <tbody>
+                <tr>
+                  <td width="20%"><input id="cb-group34" type="checkbox" checked={this.state.isGroup34} onChange={(event) => this.isGroup34Change(event)}/></td>
+                  <td ><label htmlFor="cb-group32" >Включить группу 4 раздела 3</label></td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <td></td>
+        </tr>;
+    }
+    if(this.state.isSection3 && this.state.isGroup34){
+      group34E = 
+        <tr>
+          <th>Состояние поверхности почвы при наличии снежного покрова</th>
+          <td><Select id="soil-snow" value={this.state.soilSnowR} onChange={this.handleSoilSnowChange} options={soilSnow}/></td>
         </tr>;
     }
     return(
@@ -614,6 +716,10 @@ export default class MakeSynopticTelegram extends React.Component{
             </tr>
             {section31}
             {group31}
+            {section32}
+            {group32}
+            {section34}
+            {group34E}
           </tbody>
         </table>
         <label htmlFor="tlg-text2">Текст телеграммы</label>
