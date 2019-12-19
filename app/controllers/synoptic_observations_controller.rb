@@ -204,6 +204,43 @@ class SynopticObservationsController < ApplicationController
     end
   end
   
+  def tpp
+    today = Time.now
+    @year = params[:year].present? ? params[:year] : today.year.to_s
+    @month = params[:month].present? ? params[:month] : today.month.to_s.rjust(2, '0')
+    if @month.to_i == today.month
+      if today.hour >= 19
+        last_day = (today.day).to_s.rjust(2,'0') # не брать текущий день ЛМБ 20191001
+      else
+        if today.day > 1
+          last_day = (today.day-1).to_s.rjust(2,'0') # до часа ночи берем позавчерашний день 20191010 КМА
+        else
+          last_day = '00'
+        end
+      end
+    else
+      last_day = Time.parse("#{@year}-#{@month}-01").end_of_month.day.to_s
+    end
+    sql = "select date, avg(temperature) temperature from synoptic_observations where date >= '#{@year}-#{@month}-01' and date <= '#{@year}-#{@month}-#{last_day}' and station_id =1 and term in (6,9,12,15) group by date;"
+    db_temperatures = SynopticObservation.find_by_sql(sql)
+    @temperatures = []
+    db_temperatures.each {|t|
+      key = t.date.day
+      @temperatures[key] = t.temperature
+    }
+    respond_to do |format|
+      format.html 
+      format.pdf do
+        variant = params[:variant]
+        pdf = Tpp.new(@temperatures, @year, @month, variant)
+        send_data pdf.render, filename: "tpp_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      end
+      format.json do 
+        render json: {temperatures: @temperatures}
+      end
+    end
+  end
+  
   def teploenergo
     today = Time.now
     @year = params[:year].present? ? params[:year] : today.year.to_s
@@ -235,13 +272,6 @@ class SynopticObservationsController < ApplicationController
       format.html 
       format.pdf do
         variant = params[:variant]
-        # if variant == 'one_page'
-        #   pdf = TeploenergoOnePage.new(@temperatures, @year, @month)
-        # elsif variant == 'portrait'
-        #   pdf = TeploenergoPortrait.new(@temperatures, @year, @month)
-        # else
-        #   pdf = Teploenergo.new(@temperatures, @year, @month, variant)
-        # end
         pdf = TeploenergoPortrait.new(@temperatures, @year, @month, variant)
         send_data pdf.render, filename: "teploenergo_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
       end

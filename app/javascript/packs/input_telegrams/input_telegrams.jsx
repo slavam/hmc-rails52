@@ -216,7 +216,7 @@ export default class InputTelegrams extends React.Component{
       </div> : '';
     return(
       <div>
-        <MakeSynopticTelegram term={this.state.tlgTerm} stations={this.props.stations} weatherInTerm={this.props.weatherInTerm} weatherPast={this.props.weatherPast}/>
+        {/*<MakeSynopticTelegram term={this.state.tlgTerm} stations={this.props.stations} weatherInTerm={this.props.weatherInTerm} weatherPast={this.props.weatherPast}/>*/}
         <h3>Новая телеграмма</h3>
         <NewTelegramForm codeStation={this.state.codeStation} currDate={this.state.currDate} tlgType={this.state.tlgType} onTelegramTypeChange={this.handleTelegramTypeChanged} onFormSubmit={this.handleFormSubmit} stations={this.props.stations} tlgTerm={this.state.tlgTerm} inputMode={this.props.inputMode} onInBuffer={this.handleInBuffer} minutes={this.state.minutes}/>
         {telegramTable}

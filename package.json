@@ -11,9 +11,7 @@
     "react": "^16.4.1",
     "react-chartjs-2": "^2.7.4",
     "react-dom": "^16.4.1",
-    "react-select": "^2.4.3",
-    "rxjs": "^6.3.2",
-    "rxjs-compat": "^6.3.2"
+    "react-select": "^2.4.3"
   },
   "devDependencies": {
     "webpack-dev-server": "2.11.2"

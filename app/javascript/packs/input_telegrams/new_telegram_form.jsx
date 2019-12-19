@@ -195,7 +195,7 @@ export default class NewTelegramForm extends React.Component{
       { value: '21', label: '21' }
     ];
     
-    let tlgDate = this.props.inputMode == 'normal' ? <td>{this.state.currDate}</td> : <td><input type="date" name="input-date" value={this.state.currDate} onChange={this.dateChange} required="true" autoComplete="on" /></td>;
+    let tlgDate = this.props.inputMode == 'normal' ? <td>{this.state.currDate}</td> : <td><input type="date" name="input-date" value={this.state.currDate} onChange={this.dateChange} required={true} autoComplete="on" /></td>;
     let term = this.state.tlgType == 'synoptic' ? <td>{this.props.inputMode == 'normal' ? this.props.tlgTerm : this.state.tlgTerm}</td> : <td></td>;
     let termSelect = this.state.tlgType == 'synoptic' ? <td><TermSynopticSelect options={terms} onUserInput={this.handleTermSelected} defaultValue={this.state.tlgTerm} readOnly="readonly"/></td> : <td></td>;
     let inBuffer = this.state.errors[0] > '' && this.state.tlgText > '' ? <button style={{float: "right"}} type="button" id="in-buffer" onClick={(event) => this.inBufferClick(event)}>В буфер</button> : '';
