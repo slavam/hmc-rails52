@@ -37,12 +37,13 @@ class Sea < Prawn::Document
       end
     end
     move_down 10
-    report_date_next = (@bulletin.report_date + 1.day).to_s(:custom_datetime)
+    # report_date_next = (@bulletin.report_date + 1.day).to_s(:custom_datetime)
     # font "./app/assets/fonts/DejaVu/DejaVuSansCondensed-Bold.ttf"
     font "OpenSans", style: :bold
     bounding_box([0, cursor], :width => bounds.width) do
-      text "ПРОГНОЗ ПОГОДЫ
-      на сутки с 21 часа #{report_date[8,2]} #{MONTH_NAME2[report_date[5,2].to_i]} до 21 часа #{report_date_next[8,2]} #{MONTH_NAME2[report_date_next[5,2].to_i]} #{report_date_next[0,4]} года", align: :center, :color => "0000FF"
+      text "ПРОГНОЗ ПОГОДЫ", align: :center
+      text @bulletin.header_daily, align: :center
+      # на сутки с 21 часа #{report_date[8,2]} #{MONTH_NAME2[report_date[5,2].to_i]} до 21 часа #{report_date_next[8,2]} #{MONTH_NAME2[report_date_next[5,2].to_i]} #{report_date_next[0,4]} года", align: :center, :color => "0000FF"
     end
     font "OpenSans"
     move_down 10
@@ -55,12 +56,13 @@ class Sea < Prawn::Document
       row(1).leading = 4
     end
     move_down 25
-    report_date_next2 = (@bulletin.report_date + 2.day).to_s(:custom_datetime)
-    report_date_next3 = (@bulletin.report_date + 3.day).to_s(:custom_datetime)
+    # report_date_next2 = (@bulletin.report_date + 2.day).to_s(:custom_datetime)
+    # report_date_next3 = (@bulletin.report_date + 3.day).to_s(:custom_datetime)
     font "OpenSans", style: :bold
-    month_p = @bulletin.start_month(2,3)
-    text "Периодный прогноз погоды на #{report_date_next2[8,2]}#{month_p}-#{report_date_next3[8,2]} #{MONTH_NAME2[report_date_next3[5,2].to_i]} #{report_date_next3[0,4]} года
-    По акватории Азовского моря (на участке с. Безыменное – пгт. Седово)", align: :center, color: "0000ff"
+    # month_p = @bulletin.start_month(2,3)
+    # text "Периодный прогноз погоды на #{report_date_next2[8,2]}#{month_p}-#{report_date_next3[8,2]} #{MONTH_NAME2[report_date_next3[5,2].to_i]} #{report_date_next3[0,4]} года
+    text @bulletin.header_period, align: :center
+    text "По акватории Азовского моря (на участке с. Безыменное – пгт. Седово)", align: :center #, color: "0000ff"
     font "OpenSans"
     move_down 10
     text @bulletin.forecast_period, :leading => 4
@@ -205,8 +207,9 @@ class Sea < Prawn::Document
 	    [
 	     # '','','','','','','','','','','','','',''
 	      {content: "Название метеостанции", rowspan: 3}, #, width: 70}, 
-	      {content: "за период с 9.00 часов #{report_date_prev[8,2]} #{MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}", 
-	        valign: :center, colspan: colspan1},
+	      {content: @bulletin.header_mdata, valign: :center, colspan: colspan1},
+	     # {content: "за период с 9.00 часов #{report_date_prev[8,2]} #{MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}", 
+	       # valign: :center, colspan: colspan1},
 	      {content: "в срок 9.00 часов #{@bulletin.report_date_as_str}", colspan: colspan2, valign: :center}
 	    ],
 	   # ['','','','','','','','','','','','','',''],
@@ -229,7 +232,7 @@ class Sea < Prawn::Document
 	    [0,1,2,9].each{|i| m_d[i] = m_d[i].to_f.round if m_d[i].present?}
 	    data_row = ['Седово', m_d[0], m_d[1], m_d[2], m_d[3], m_d[13], m_d[4], m_d[5], m_d[6], m_d[7], m_d[8], m_d[9], m_d[12], m_d[14]]
 	  end
-    review_start_date = @bulletin.review_start_date.present? ? @bulletin.review_start_date.to_s(:custom_datetime) : (@bulletin.report_date-1.day).to_s(:custom_datetime)
+    # review_start_date = @bulletin.review_start_date.present? ? @bulletin.review_start_date.to_s(:custom_datetime) : (@bulletin.report_date-1.day).to_s(:custom_datetime)
 	  [
 	    data_row,
 	    [
@@ -237,8 +240,9 @@ class Sea < Prawn::Document
 	      {content: "<color rgb='0000ff'>ОБЗОР СОСТОЯНИЯ АЗОВСКОГО МОРЯ</color>", colspan: colspan4}
 	    ],
 	    [
-	      {content: "за период с 9.00 часов #{review_start_date[8,2]} #{MONTH_NAME2[review_start_date[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}", 
-  	      colspan: 14}
+	      {content: @bulletin.header_mdata, colspan: 14}
+	     # {content: "за период с 9.00 часов #{review_start_date[8,2]} #{MONTH_NAME2[review_start_date[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}", 
+  	   #   colspan: 14}
 	    ],
 	    [
 	      {content: @bulletin.forecast_sea_day, colspan: colspan3},

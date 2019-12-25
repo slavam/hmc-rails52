@@ -31,7 +31,6 @@ class Avtodor < Prawn::Document
     bounding_box([0, y_pos], width: 300, leading: 3) do
       text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 11} № 03/"+@bulletin.curr_number
       text "К договору от 09.01.2019 № 04/19/03"
-      # text "На № 04/18/03 #{Prawn::Text::NBSP * 3}от 09.01.2018"
     end
     bounding_box([290, y_pos], width: bounds.width-290) do
       text "И.о. директора
@@ -51,23 +50,14 @@ class Avtodor < Prawn::Document
       end
     end
     move_down 10
-    font "OpenSans", style: :bold
-    # text "ПРОГНОЗ ПОГОДЫ", align: :center
-    # font "OpenSans"
     report_date = @bulletin.report_date.strftime("%Y-%m-%d")
-    report_date_next = (@bulletin.report_date + 1.day).strftime("%Y-%m-%d")
-    # text @bulletin.report_date_as_str, :color => "0000FF", align: :center
-    # text "на сутки с 21 часа #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} до 21 часа #{report_date_next[8,2]} #{Bulletin::MONTH_NAME2[report_date_next[5,2].to_i]} #{report_date_next[0,4]} года", align: :center
-    # text "в Донецкой Народной Республике", align: :center
-        report_date_next = (@bulletin.report_date + 1.day).to_s(:custom_datetime)
     font "OpenSans", style: :bold
     bounding_box([0, cursor], :width => bounds.width) do
-      # stroke_bounds
-      text "Прогноз погоды", align: :center, size: 14 #, :color => "0000FF"
+      text "Прогноз погоды", align: :center
       move_down 5
       font "OpenSans", style: :normal
-      text "на сутки с 21 часа #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} до 21 часа #{report_date_next[8,2]} #{Bulletin::MONTH_NAME2[report_date_next[5,2].to_i]} #{report_date_next[0,4]} года", align: :center #, :color => "0000FF"
-      text "в Донецкой Народной Республике", align: :center #, color: "0000FF"
+      text @bulletin.header_daily, align: :center
+      text "в Донецкой Народной Республике", align: :center
     end
     move_down 8
     font "OpenSans"

@@ -51,9 +51,7 @@ class BusStation < Prawn::Document
     text "ПРОГНОЗ ПОГОДЫ", align: :center
     move_down 20
     font "OpenSans"
-    report_date = @bulletin.report_date.strftime("%Y-%m-%d")
-    report_date_next = (@bulletin.report_date + 1.day).strftime("%Y-%m-%d")
-    text "на сутки с 21 часа #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} до 21 часа #{report_date_next[8,2]} #{Bulletin::MONTH_NAME2[report_date_next[5,2].to_i]} #{report_date_next[0,4]} года", align: :center
+    text @bulletin.header_daily, align: :center
     move_down 5
     text "в Донецкой Народной Республике", align: :center
     move_down 10
@@ -62,7 +60,6 @@ class BusStation < Prawn::Document
     chief_descr = @bulletin.chief_2_pdf
     responsible_descr = @bulletin.responsible_2_pdf
                     
-    # table_content =[[{:padding => [10,0],:content => chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]                    
     table_content =[[{:padding => [10,0],:content => chief_descr[:position]}, "", {:padding => [10,5],:content => chief_descr[:name]}]]
     table table_content, width: bounds.width, :column_widths => [200, 150], cell_style: {:overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true } do |t|
       t.cells.border_width = 0

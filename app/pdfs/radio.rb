@@ -24,12 +24,6 @@ class Radio < Prawn::Document
       text "ул. Любавина, 2, г. Донецк, 83015 тел. (062) 311-40-10 тел./факс (062)340-99-25", align: :center, size: 10
       text "web: www.dnmchs.ru  Идентификационный код 51001468  E-mail: gidromet@mail.dnmchs.ru", align: :center, size: 10
     end
-
-    # bounding_box([50, cursor], :width => 470) do
-    #   text "ул. Любавина, 2, г. Донецк, 83015 тел. (062) 311-40-10 тел./факс (062)340-99-25", align: :center, size: 10
-    #   text "web: www.dnmchs.ru  Идентификационный код 51001468  E-mail: gidromet@mail.dnmchs.ru", align: :center, size: 10
-    #   # text Bulletin::ADDRESS, align: :center, size: 10
-    # end
     stroke do
       horizontal_line 0, bounds.width, :at => cursor
     end
@@ -39,10 +33,7 @@ class Radio < Prawn::Document
     font "OpenSans", style: :bold
     text "ПРОГНОЗ ПОГОДЫ", align: :center
     font "OpenSans"
-    report_date = @bulletin.report_date.strftime("%Y-%m-%d")
-    report_date_next = (@bulletin.report_date + 1.day).strftime("%Y-%m-%d")
-    # text @bulletin.report_date_as_str, :color => "0000FF", align: :center
-    text "на сутки с 21 часа #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} до 21 часа #{report_date_next[8,2]} #{Bulletin::MONTH_NAME2[report_date_next[5,2].to_i]} #{report_date_next[0,4]} года", align: :center
+    text @bulletin.header_daily, align: :center
     text "в Донецкой Народной Республике", align: :center
     move_down 10
     text @bulletin.forecast_day, leading: 3

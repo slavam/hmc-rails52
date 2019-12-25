@@ -103,4 +103,47 @@ class Bulletin < ActiveRecord::Base
     m2 = (self.report_date + d2).month
     return m1 == m2 ? '' : ' '+MONTH_NAME2[(self.report_date+d1).month]
   end
+  def header_daily
+    curr_year = ((report_date.month == 12) and (report_date.day == 31)) ? " #{report_date.year} года" : ''
+    report_date_next = report_date+1.day
+    return "на сутки с 21 часа #{'%02d' % report_date.day} #{MONTH_NAME2[report_date.month]}#{curr_year} до 21 часа #{'%02d' % report_date_next.day} #{MONTH_NAME2[report_date_next.month]} #{report_date_next.year} года"
+  end
+  def header_period
+    rd_2 = report_date+2
+    rd_3 = report_date+3
+    curr_year = rd_2.year == rd_3.year ? '' : " #{rd_2.year} года"
+    return "Периодный прогноз погоды на #{'%02d' % rd_2.day}#{start_month(2,3)}#{curr_year} - #{'%02d' % rd_3.day} #{MONTH_NAME2[rd_3.month]} #{rd_3.year} года"
+  end
+  def header_advice
+    rd_4 = report_date + 4.day
+    rd_5 = report_date + 5.day
+    curr_year = ''
+    weather = ' погоды'
+    if (rd_4.year != rd_5.year)
+      curr_year = " #{rd_4.year} года"
+      weather = ''
+    end
+    return "Консультативный прогноз#{weather} на #{'%02d' % rd_4.day}#{start_month(4,5)}#{curr_year} - #{'%02d' % rd_5.day} #{MONTH_NAME2[rd_5.month]} #{rd_5.year} года"
+  end
+  def header_orientation
+    rd_6 = report_date+6.days
+    rd_10 = report_date+10.days
+    curr_year = ''
+    weather = ' погоды'
+    if (rd_6.year != rd_10.year)
+      curr_year = " #{rd_6.year} года"
+      weather = ''
+    end
+    return "Ориентировочный прогноз#{weather} на #{'%02d' % rd_6.day}#{start_month(6,10)}#{curr_year} - #{'%02d' % rd_10.day} #{MONTH_NAME2[rd_10.month]} #{rd_10.year} года"
+  end
+  def header_mdata
+    rd_prev = report_date - 1.day
+    curr_year = rd_prev.year == report_date.year ? '' : " #{rd_prev.year} года"
+    return "за период с 9.00 часов #{'%02d' % rd_prev.day} #{MONTH_NAME2[rd_prev.month]}#{curr_year} до 9.00 часов #{'%02d' % report_date.day} #{MONTH_NAME2[report_date.month]} #{report_date.year} года"
+  end
+  def header_review
+    rs_date = (review_start_date.present? ? review_start_date : report_date-1.day)
+    curr_year = rs_date.year == report_date.year ? '' : " #{rs_date.year} года"
+    return "за период с 9.00 часов #{'%02d' % rs_date.day} #{MONTH_NAME2[rs_date.month]}#{curr_year} до 9.00 часов #{'%02d' % report_date.day} #{MONTH_NAME2[report_date.month]} #{report_date.year} года"
+  end
 end

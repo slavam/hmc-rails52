@@ -21,12 +21,10 @@ class DailyOnePage < Prawn::Document
     report_date = @bulletin.report_date.to_s(:custom_datetime)
     font "OpenSans", style: :bold
     move_down 40
-    # bounding_box([50, cursor-10], :width => 470, :height => 30, align: :center) do
     bounding_box([0, cursor], width: bounds.width) do
       text "ГИДРОМЕТЕОРОЛОГИЧЕСКИЙ БЮЛЛЕТЕНЬ № #{@bulletin.curr_number}", :color => "0000FF", align: :center
       text @bulletin.report_date_as_str, :color => "0000FF", align: :center
     end
-
     if @bulletin.storm.present?
       bounding_box([0, cursor-10], :width => bounds.width) do
         text "ШТОРМОВОЕ ПРЕДУПРЕЖДЕНИЕ", align: :center, :color => "ff0000"
@@ -36,14 +34,11 @@ class DailyOnePage < Prawn::Document
       end
     end
     move_down 10
-    report_date_next = (@bulletin.report_date + 1.day).to_s(:custom_datetime)
     font "OpenSans", style: :bold
     bounding_box([0, cursor], :width => bounds.width, :height => 30) do
-      # stroke_bounds
       text "Прогноз погоды", align: :center, size: 14, :color => "0000FF"
-      text "на сутки с 21 часа #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} до 21 часа #{report_date_next[8,2]} #{Bulletin::MONTH_NAME2[report_date_next[5,2].to_i]} #{report_date_next[0,4]} года", align: :center, :color => "0000FF"
+      text @bulletin.header_daily, align: :center
     end
-    
     font "OpenSans"
     move_down 10
     table_content = [["<b>В Донецкой Народной Республике</b>", "<b>В городе Донецке</b>"],
@@ -61,33 +56,23 @@ class DailyOnePage < Prawn::Document
     text "Дежурный синоптик #{@bulletin.duty_synoptic}", align: :right
   
     move_down 20
-    report_date_next2 = (@bulletin.report_date + 2.day).to_s(:custom_datetime)
-    report_date_next3 = (@bulletin.report_date + 3.day).to_s(:custom_datetime)
     font "OpenSans", style: :bold
-    month_p = @bulletin.start_month(2,3)
-    text "Периодный прогноз погоды на #{report_date_next2[8,2]}#{month_p}-#{report_date_next3[8,2]} #{Bulletin::MONTH_NAME2[report_date_next3[5,2].to_i]} #{report_date_next3[0,4]} года", align: :center
+    text @bulletin.header_period, align: :center
     text "в Донецкой Народной Республике", align: :center
     font "OpenSans"
     text @bulletin.forecast_period
   
     move_down 10
-    report_date_next4 = (@bulletin.report_date + 4.day).to_s(:custom_datetime)
-    report_date_next5 = (@bulletin.report_date + 5.day).to_s(:custom_datetime)
     font "OpenSans", style: :bold
-    month_k = @bulletin.start_month(4,5)
-    text "Консультативный прогноз погоды на #{report_date_next4[8,2]}#{month_k}-#{report_date_next5[8,2]} #{Bulletin::MONTH_NAME2[report_date_next5[5,2].to_i]} #{report_date_next5[0,4]} года", align: :center
+    text @bulletin.header_advice, align: :center
     text "в Донецкой Народной Республике", align: :center
     font "OpenSans"
     text @bulletin.forecast_advice
     
     if @bulletin.forecast_orientation.present?
       move_down 10
-      report_date_next6 = (@bulletin.report_date + 6.day).to_s(:custom_datetime)
-      # report_date_next11 = (@bulletin.report_date + 11.day).to_s(:custom_datetime) 20190610 KMA
-      report_date_next11 = (@bulletin.report_date + 10.day).to_s(:custom_datetime)
       font "OpenSans", style: :bold
-      month_o = @bulletin.start_month(6,10)
-      text "Ориентировочный прогноз погоды на #{report_date_next6[8,2]}#{month_o}-#{report_date_next11[8,2]} #{Bulletin::MONTH_NAME2[report_date_next11[5,2].to_i]} #{report_date_next11[0,4]} года", align: :center
+      text @bulletin.header_orientation, align: :center
       text "в Донецкой Народной Республике", align: :center
       font "OpenSans"
       text @bulletin.forecast_orientation

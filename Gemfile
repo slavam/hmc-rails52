@@ -39,6 +39,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'webpacker'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'mini_racer', platforms: :ruby
+gem 'therubyracer', :platforms => :ruby
 
 gem 'descriptive_statistics', '~> 2.5', '>= 2.5.1'
 

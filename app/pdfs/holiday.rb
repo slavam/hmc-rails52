@@ -34,16 +34,14 @@ class Holiday < Prawn::Document
       end
     end
     
-    report_date_next = (@bulletin.report_date + 1.day).to_s(:custom_datetime)
     font "OpenSans", style: :bold
     move_down 20
     bounding_box([0, cursor], :width => bounds.width, :height => 30) do
-      # stroke_bounds
-      text "Прогноз погоды", align: :center, size: 14, :color => "0000FF"
-      text "на сутки с 21 часа #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} до 21 часа #{report_date_next[8,2]} #{Bulletin::MONTH_NAME2[report_date_next[5,2].to_i]} #{report_date_next[0,4]} года", align: :center, :color => "0000FF"
+      text "Прогноз погоды", align: :center
+      text @bulletin.header_daily, align: :center
     end
     
-        font "OpenSans"
+    font "OpenSans"
     move_down 10
     table_content = [["<b>В Донецкой Народной Республике</b>", "<b>В городе Донецке</b>"],
                     [@bulletin.forecast_day, @bulletin.forecast_day_city]]
@@ -60,11 +58,8 @@ class Holiday < Prawn::Document
     text "Дежурный синоптик #{@bulletin.duty_synoptic}", align: :right
   
     move_down 20
-    report_date_next2 = (@bulletin.report_date + 2.day).to_s(:custom_datetime)
-    report_date_next3 = (@bulletin.report_date + 3.day).to_s(:custom_datetime)
     font "OpenSans", style: :bold
-    month_p = @bulletin.start_month(2,3)
-    text "Периодный прогноз погоды на #{report_date_next2[8,2]}#{month_p}-#{report_date_next3[8,2]} #{Bulletin::MONTH_NAME2[report_date_next3[5,2].to_i]} #{report_date_next3[0,4]} года", align: :center
+    text @bulletin.header_period, align: :center
     text "в Донецкой Народной Республике", align: :center
     font "OpenSans"
     move_down 10

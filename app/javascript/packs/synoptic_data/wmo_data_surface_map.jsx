@@ -36,7 +36,7 @@ export default class WmoDataSurfaceMap extends React.Component{
       <div>
         <DateTermForm term={this.state.term} observationDate={this.state.observationDate} onDateTermSubmit={this.handleSubmit}/>
         <h3>Данные на приземной карте за {this.state.observationDate} срок {this.state.term}</h3>
-        {/*<WmoSurfaceMap telegrams={this.state.telegrams} setStations={this.state.setStations}/>*/}
+        <WmoSurfaceMap telegrams={this.state.telegrams} setStations={this.state.setStations}/>
       </div>
     );
   }  
