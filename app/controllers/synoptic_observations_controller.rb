@@ -231,8 +231,7 @@ class SynopticObservationsController < ApplicationController
     respond_to do |format|
       format.html 
       format.pdf do
-        variant = params[:variant]
-        pdf = Tpp.new(@temperatures, @year, @month, variant)
+        pdf = Tpp.new(@temperatures, @year, @month, params[:chief], params[:responsible])
         send_data pdf.render, filename: "tpp_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
       end
       format.json do 

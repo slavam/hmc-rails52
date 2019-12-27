@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Select from 'react-select';
 import TppForm from './tpp_form';
 
 const WorkShiftAvgTemperatures = ({temperatures, maxDay}) => {
@@ -22,13 +23,23 @@ export default class Teploenergo extends React.Component{
     super(props);
     let n = new Date(+this.props.year, +this.props.month, 0).getDate();
     this.state = {
+      chiefR: {value: 'Lukjanenko', label: 'Лукьяненко М.Б.'},
+      responsibleR: {value: 'Boyko', label: 'Бойко Л.Н.'},
       year: this.props.year,
       month: this.props.month,
       temperatures: this.props.temperatures,
       daysInMonth: n
     };
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleChiefSelected = this.handleChiefSelected.bind(this);
+    this.handleResponsibleSelected = this.handleResponsibleSelected.bind(this);
   }  
+  handleChiefSelected(val){
+    this.setState({chiefR: val});
+  }
+  handleResponsibleSelected(val){
+    this.setState({responsibleR: val});
+  }
   handleFormSubmit(year, month){
     this.state.year = year;
     this.state.month = month;
@@ -46,14 +57,34 @@ export default class Teploenergo extends React.Component{
   render(){
     const MONTHS = ['', 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
     let endDate = this.state.daysInMonth+' '+MONTHS[+this.state.month]+' '+this.state.year;
-    let desiredLink = "/synoptic_observations/tpp.pdf?year="+this.state.year+"&month="+this.state.month;
+    const chiefs = [
+      {value: 'Lukjanenko', label: 'Лукьяненко М.Б.'},
+      {value: 'Stec', label: 'Стец Н.В.'},
+    ];
+    const responsibles = [
+      {value: 'Boyko', label: 'Бойко Л.Н.'},
+      {value: 'Kijanenko', label: 'Кияненко М.А.'},
+    ];
+    let desiredLink = "/synoptic_observations/tpp.pdf?year="+this.state.year+"&month="+this.state.month+"&chief="+this.state.chiefR.value+"&responsible="+this.state.responsibleR.value;
     return(
       <div>
         <TppForm year={this.state.year} month={this.state.month} onFormSubmit={this.handleFormSubmit} />
         <h4>Средняя за рабочую смену (09:00-18:00) температура воздуха (°С) с 01 по {endDate} года в г. Донецке</h4>
         <br/>
         <WorkShiftAvgTemperatures temperatures={this.state.temperatures} maxDay={this.state.daysInMonth} />
-        <a href={desiredLink+'&variant=chief'} title='Подписал начальник'>Распечатать вариант 1</a>
+        <h4>Задайте параметры печати</h4>
+        <table className= "table table-hover">
+          <tbody>
+            <tr>
+              <th>Руководитель</th><th>Ответственный</th>
+            </tr>
+            <tr>
+              <td><Select id="chief" value={this.state.chiefR} onChange={this.handleChiefSelected} options={chiefs}/></td>
+              <td><Select id="responsible"value={this.state.responsibleR} onChange={this.handleResponsibleSelected} options={responsibles}/></td>
+            </tr>
+          </tbody>
+        </table>
+        <a href={desiredLink} >Распечатать</a>
       </div>
     );
   }
