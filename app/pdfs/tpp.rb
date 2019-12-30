@@ -65,9 +65,6 @@ class Tpp < Prawn::Document
     end
     move_down 10
     table [[{content: position, align: :left}, {content: name, align: :right}]], width: bounds.width, cell_style: { border_width: 0}
-    # bounding_box([0, cursor], width: bounds.width) do
-      # text_box "Начальник М.Б.Лукьяненко",at: [0, cursor], width: 500, align: :justify
-    # end
     move_cursor_to 20
     if responsible == 'Boyko'
       r = 'Бойко Любовь Николаевна'
@@ -86,8 +83,5 @@ class Tpp < Prawn::Document
       t <<[i,val1,day2,val2]
     end
     t
-    # (1..@lines).each do |i|
-      # t.push([i,"",i+@lines,""])
-    # end
   end
 end

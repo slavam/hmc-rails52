@@ -28,7 +28,7 @@ class Dte < Prawn::Document
     font "OpenSans", style: :normal
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
-      text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № 03/"+@bulletin.curr_number
+      text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № 0#{Bulletin.ogmo_code}/"+@bulletin.curr_number
       text "К договору от 01.10.2019 № 08/19-20/03"
     end
     

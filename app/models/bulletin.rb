@@ -146,4 +146,7 @@ class Bulletin < ActiveRecord::Base
     curr_year = rs_date.year == report_date.year ? '' : " #{rs_date.year} года"
     return "за период с 9.00 часов #{'%02d' % rs_date.day} #{MONTH_NAME2[rs_date.month]}#{curr_year} до 9.00 часов #{'%02d' % report_date.day} #{MONTH_NAME2[report_date.month]} #{report_date.year} года"
   end
+  def self.ogmo_code
+    (Time.now >= '2020-01-01'.to_date)? '6':'3' 
+  end
 end
