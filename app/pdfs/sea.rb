@@ -240,7 +240,8 @@ class Sea < Prawn::Document
 	      {content: "<color rgb='0000ff'>ОБЗОР СОСТОЯНИЯ АЗОВСКОГО МОРЯ</color>", colspan: colspan4}
 	    ],
 	    [
-	      {content: @bulletin.header_mdata, colspan: 14}
+	     # {content: @bulletin.header_mdata, colspan: 14}
+	      {content: @bulletin.header_review, colspan: 14}
 	     # {content: "за период с 9.00 часов #{review_start_date[8,2]} #{MONTH_NAME2[review_start_date[5,2].to_i]} до 9.00 часов #{@bulletin.report_date_as_str}", 
   	   #   colspan: 14}
 	    ],
