@@ -36,7 +36,7 @@ export default class TeploenergoForm extends React.Component{
       year2 = year1+1;
     }else{
       year2 = today.getFullYear();
-      year1 = year1-1;
+      year1 = year2-1;
     }
     const months = [
       {value: '10', label: 'Октябрь '+year1},
