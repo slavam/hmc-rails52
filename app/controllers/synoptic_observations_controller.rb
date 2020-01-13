@@ -208,16 +208,29 @@ class SynopticObservationsController < ApplicationController
     today = Time.now
     @year = params[:year].present? ? params[:year] : today.year.to_s
     @month = params[:month].present? ? params[:month] : today.month.to_s.rjust(2, '0')
+    last_day = 0
     if @month.to_i == today.month
       last_day = today.day-1 # 1 ?
     else
-      # last_day = Time.parse("#{@year}-#{@month}-01").end_of_month.day.to_s
-      last_days = Time.days_in_month(@month.to_i, @year.to_i)
+      # last_day = Time.parse("#{@year}-#{@month}-01").end_of_month.day
+      last_day = Time.days_in_month(@month.to_i, @year.to_i)
     end
+    @temperatures = []
     (1..last_day).each do |d|
-      # date_prev = ((date.to_date) - 1.day).strftime("%Y-%m-%d")+' 21'
-      # temp_local = SynopticObservation.select(:station_id, :term, :temperature).
-      #   where("observed_at > ? and observed_at < ? and station_id not in (6,9)", date_prev, date+' 20').order(:station_id, :date, :term)  
+      start = (Time.parse("#{@year}-#{@month}-#{d}")-1.day).strftime("%Y-%m-%d 21")
+      stop = Time.parse("#{@year}-#{@month}-#{d}").strftime("%Y-%m-%d 20")
+      sql = "select avg(temperature) temperature from synoptic_observations where observed_at > '"+start+"' and observed_at < '"+stop+"' and station_id in (1,2);"
+      @temperatures[d] = SynopticObservation.find_by_sql(sql)[0].temperature
+    end
+    respond_to do |format|
+      format.html 
+      format.pdf do
+        pdf = Energy.new(@temperatures, @year, @month, params[:chief], params[:responsible])
+        send_data pdf.render, filename: "energy_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      end
+      format.json do 
+        render json: {temperatures: @temperatures}
+      end
     end
   end
   
@@ -235,7 +248,8 @@ class SynopticObservationsController < ApplicationController
           last_day = '00'
         end
       end
-    
+    else
+      last_day = Time.days_in_month(@month.to_i, @year.to_i)
     end
     sql = "select date, avg(temperature) temperature from synoptic_observations where date >= '#{@year}-#{@month}-01' and date <= '#{@year}-#{@month}-#{last_day}' and station_id =1 and term in (6,9,12,15) group by date;"
     db_temperatures = SynopticObservation.find_by_sql(sql)

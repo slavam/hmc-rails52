@@ -1,4 +1,4 @@
-class Tpp < Prawn::Document
+class Energy < Prawn::Document
   def initialize(temperatures, year, month, chief, responsible)
 		super(top_margin: 40, left_margin: 95, right_margin: 50, bottom_margin: 0)
 		@temperatures = temperatures
@@ -28,23 +28,23 @@ class Tpp < Prawn::Document
     font "OpenSans", style: :normal
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
-      # text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № 03/"+@bulletin.curr_number
       text Time.now.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 30} № 03/#{Date.today.yday}"
-      text "К договору от 23.08.2019 № 25/19/03"
+      text "К договору от 06.11.2019 № 2 05/19-20/03"
     end
     
     bounding_box([250, y_pos], width: bounds.width-250) do
-      text "Председателю
-            Торгово-промышленной палаты
-            Донецкой Народной Республики
+      text "Исполняющему обязанности
+            генерального директора
+            Республиканского предприятия
+            \"Энергия Донбасса\"
 		
-            В.П. Григорьевой", leading: 3
+            А.Н. Жучкову", leading: 3
     end
     # move_down 10
     text "О предоставлении информации"
     move_down 20
     @last_day = Time.days_in_month(month.to_i, year.to_i)
-    text "Гидрометцентр МЧС ДНР предоставляет информацию о средней температуре воздуха за рабочую смену (9.00 - 18.00 час.) за период 01-#{@last_day} #{Bulletin::MONTH_NAME2[month.to_i]} #{year} г. в г. Донецке по дням (по данным метеорологической станции Донецк):", indent_paragraphs: 40, leading: 2
+    text "Гидрометцентр МЧС ДНР предоставляет информацию о средней температуре воздуха за сутки в г. Зугрэсе за период 01-#{@last_day} #{Bulletin::MONTH_NAME2[month.to_i]} #{year} г. по дням (по данным репрезентативных метеорологических станций):", indent_paragraphs: 40, leading: 2
     case @last_day
       when 28
         @lines = 14
