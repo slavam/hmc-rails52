@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_26_101940) do
+ActiveRecord::Schema.define(version: 2020_01_14_065919) do
 
   create_table "agro", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "Дата", limit: 60, null: false
@@ -466,6 +466,15 @@ ActiveRecord::Schema.define(version: 2019_11_26_101940) do
     t.string "source"
     t.string "description"
     t.string "period"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "playdays", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "pd_year"
+    t.integer "pd_month"
+    t.integer "pd_day"
+    t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

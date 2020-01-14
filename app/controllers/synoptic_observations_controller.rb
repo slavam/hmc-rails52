@@ -209,10 +209,9 @@ class SynopticObservationsController < ApplicationController
     @year = params[:year].present? ? params[:year] : today.year.to_s
     @month = params[:month].present? ? params[:month] : today.month.to_s.rjust(2, '0')
     last_day = 0
-    if @month.to_i == today.month
+    if (@month.to_i == today.month) and (@year.to_i == today.year)
       last_day = today.day-1 # 1 ?
     else
-      # last_day = Time.parse("#{@year}-#{@month}-01").end_of_month.day
       last_day = Time.days_in_month(@month.to_i, @year.to_i)
     end
     @temperatures = []
@@ -238,7 +237,7 @@ class SynopticObservationsController < ApplicationController
     today = Time.now
     @year = params[:year].present? ? params[:year] : today.year.to_s
     @month = params[:month].present? ? params[:month] : today.month.to_s.rjust(2, '0')
-    if @month.to_i == today.month
+    if (@month.to_i == today.month) and (@year.to_i == today.year)
       if today.hour >= 19
         last_day = (today.day).to_s.rjust(2,'0') # не брать текущий день ЛМБ 20191001
       else

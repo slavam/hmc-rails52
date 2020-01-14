@@ -1,0 +1,13 @@
+.container
+  %h1= "Создать праздничный/нерабочий день"
+
+  .row
+    %div{ class: "col-md-6 col-md-offset-3"}
+      = form_for(@playday) do |f|
+        = f.label :pd_year, "Год"
+        = select_date Time.now, order: [:year, :month, :day], prefix: 'playday', class: 'form-control'
+
+        = f.label :description, "Описание"
+        = f.text_field :description, class: 'form-control'
+        
+        = f.submit "Создать", class: "btn btn-primary"

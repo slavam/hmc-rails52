@@ -1,0 +1,2 @@
+class Playday < ApplicationRecord
+end

@@ -1,0 +1,17 @@
+.container
+  .row
+    %h1 Праздничные/нерабочие дни
+    = will_paginate
+    %table{class: "table table-hover"}
+      %thead
+        %tr
+          %th Дата
+          %th Описание
+      %tbody
+        - @playdays.each do |pd| 
+          %tr
+            %td= pd.pd_year.to_s+'-'+pd.pd_month.to_s+'-'+pd.pd_day.to_s
+            %td= pd.description
+            %td= link_to 'Удалить', pd, method: :delete, data: { confirm: 'Уверены?' }
+    = will_paginate
+  = link_to "Добавить день", new_playday_path
