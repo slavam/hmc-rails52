@@ -28,8 +28,6 @@ export default class Dnmu extends React.Component{
     super(props);
     let n = new Date(+this.props.year, +this.props.month, 0).getDate();
     this.state = {
-      chiefR: {value: 'Lukjanenko', label: 'Лукьяненко М.Б.'},
-      responsibleR: {value: 'Boyko', label: 'Бойко Л.Н.'},
       year: this.props.year,
       month: this.props.month,
       temperatures: this.props.temperatures,

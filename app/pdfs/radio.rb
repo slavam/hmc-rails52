@@ -43,7 +43,16 @@ class Radio < Prawn::Document
       t.column(0).align = :left
       t.row(0).column(0).align = :center
     end
-    responsible_descr = @bulletin.responsible_2_pdf
+    # responsible_descr = @bulletin.responsible_2_pdf
+    if @bulletin.chief.present?
+      chief_descr = @bulletin.chief_2_pdf
+      move_down 10
+      table_content =[[{:padding => [10,0],:content => chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, {:padding => [10,5], align: :right, :content => chief_descr[:name]}]]                    
+      table table_content, width: bounds.width, :column_widths => [200, 150], cell_style: {:overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true } do |t|
+        t.cells.border_width = 0
+      end
+    end
+    
     move_cursor_to 20
     synoptic_name = @bulletin.synoptic1.present? ? @bulletin.synoptic1 : 'Синоптик'
     text_box synoptic_name + " (062) 303-10-34", :at => [0, 30], size: 9

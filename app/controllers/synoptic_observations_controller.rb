@@ -204,6 +204,30 @@ class SynopticObservationsController < ApplicationController
     end
   end
 
+  def donsnab
+    today = Time.now
+    @year = params[:year].present? ? params[:year] : today.year.to_s
+    @month = params[:month].present? ? params[:month] : today.month.to_s.rjust(2, '0')
+    last_day = 0
+    if (@month.to_i == today.month) and (@year.to_i == today.year)
+      last_day = today.day-1 # 1 ?
+    else
+      last_day = Time.days_in_month(@month.to_i, @year.to_i)
+    end
+    sql = "select date, avg(temperature) temperature from synoptic_observations where date >= '#{@year}-#{@month}-01' and date <= '#{@year}-#{@month}-#{last_day}' and station_id =1 and term in (3,6,9,12,15) group by date;"
+    db_temperatures = SynopticObservation.find_by_sql(sql)
+    @temperatures = []
+    db_temperatures.each {|t|
+      @temperatures[t.date.day] = t.temperature
+    }
+    respond_to do |format|
+      format.html 
+      format.json do 
+        render json: {temperatures: @temperatures}
+      end
+    end
+  end
+  
   def dnmu
     today = Time.now
     @year = params[:year].present? ? params[:year] : today.year.to_s
@@ -222,10 +246,6 @@ class SynopticObservationsController < ApplicationController
     }
     respond_to do |format|
       format.html 
-      # format.pdf do
-      #   pdf = Tpp.new(@temperatures, @year, @month, params[:chief], params[:responsible])
-      #   send_data pdf.render, filename: "tpp_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
-      # end
       format.json do 
         render json: {temperatures: @temperatures}
       end

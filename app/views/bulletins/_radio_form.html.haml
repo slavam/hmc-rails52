@@ -35,5 +35,6 @@
           %td= text_field_tag "val_#{i*2+1}", m_d[i*2].present? ? m_d[i*2] : '', size: 4
           %td= text_field_tag "val_#{i*2+2}", m_d[i*2+1].present? ? m_d[i*2+1] : '', size: 4
           - i += 1
+    = render partial: 'chief'
     %br
 = link_to "Список", "/bulletins/list?bulletin_type=tv"
