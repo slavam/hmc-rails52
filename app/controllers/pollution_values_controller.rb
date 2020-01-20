@@ -146,7 +146,7 @@ class PollutionValuesController < ApplicationController
       else
         region_id = " = #{post_id}"
       end
-      my_query = "SELECT pv.value, me.wind_speed speed, me.wind_direction direction, me.date FROM pollution_values pv 
+      my_query = "SELECT pv.value, pv.concentration, me.wind_speed speed, me.wind_direction direction, me.date FROM pollution_values pv 
                     JOIN measurements me ON me.id=pv.measurement_id AND me.date >= '#{start_date}' AND me.date <= '#{end_date}'
                     WHERE me.post_id #{region_id} AND pv.material_id=#{material_id} ;"
       concentrations = PollutionValue.find_by_sql(my_query)
@@ -199,22 +199,39 @@ class PollutionValuesController < ApplicationController
       conc_by_direction[:measurement_total] = concentrations.count
       total = []
       concentrations.each do |c|
-        total.push c['value'].to_f
+        total.push c['concentration'].to_f
         if c['speed'].to_i < 3
-          conc_by_direction[:calm].push c['value'].to_f.round(4)
+          conc_by_direction[:calm].push c['concentration'].to_f.round(4)
         else
           direction = c['direction'].to_i*10
           case direction
             when 90-44..90+45
-              conc_by_direction[:east].push c['value'].to_f.round(4)
+              conc_by_direction[:east].push c['concentration'].to_f.round(4)
             when 180-44..180+45
-              conc_by_direction[:south].push c['value'].to_f.round(4)
+              conc_by_direction[:south].push c['concentration'].to_f.round(4)
             when 270-44..270+45
-              conc_by_direction[:west].push c['value'].to_f.round(4) if c['value'].present?
+              conc_by_direction[:west].push c['concentration'].to_f.round(4) if c['concentration'].present?
             else
-              conc_by_direction[:north].push c['value'].to_f.round(4)
+              conc_by_direction[:north].push c['concentration'].to_f.round(4)
           end
         end
+
+        # total.push c['value'].to_f
+        # if c['speed'].to_i < 3
+        #   conc_by_direction[:calm].push c['value'].to_f.round(4)
+        # else
+        #   direction = c['direction'].to_i*10
+        #   case direction
+        #     when 90-44..90+45
+        #       conc_by_direction[:east].push c['value'].to_f.round(4)
+        #     when 180-44..180+45
+        #       conc_by_direction[:south].push c['value'].to_f.round(4)
+        #     when 270-44..270+45
+        #       conc_by_direction[:west].push c['value'].to_f.round(4) if c['value'].present?
+        #     else
+        #       conc_by_direction[:north].push c['value'].to_f.round(4)
+        #   end
+        # end
       end
       conc_by_direction[:avg_total_math] = total.mean.round(4)
       conc_by_direction[:avg_total] = avg(total)
