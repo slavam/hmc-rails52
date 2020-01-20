@@ -20,10 +20,20 @@ class PollutionValuesController < ApplicationController
   def background_concentrations
     @start_date = params[:start_date].present? ? params[:start_date] : (Time.now - 3.years).strftime("%Y-%m-%d")
     @end_date = params[:end_date].present? ? params[:end_date] : Time.now.strftime("%Y-%m-%d")
-    @posts = Post.actual.select(:id, :name).order(:id).to_a + [Post.new(id: 0, name: 'г. Донецк (5, 7, 9, 14)')]
+    @posts = Post.actual.select(:id, :name).order(:id).to_a + [Post.new(id: 0, name: 'г. Донецк (5, 7, 9, 14)')]+ [Post.new(id: 97, name: 'г. Макеевка')]+ [Post.new(id: 98, name: 'г. Горловка')]+ [Post.new(id: 99, name: 'г. Енакиево')]
     post_id = params[:post_id].present? ? params[:post_id].to_i : 5 
     if post_id == 0
       @site_description = "г. Донецк (посты 5, 7, 9, 14)"
+      # 5,7,9,14
+    elsif post_id == 97
+      @site_description = "г. Макеевка (посты 12, 13)"
+      # 12,13
+    elsif post_id == 98
+      @site_description = "г. Горловка (посты 1, 2, 6)"
+      # 20,21,23
+    elsif post_id == 99
+      @site_description = "г. Енакиево (посты 3, 4)"
+      # 17,18
     else
       post = Post.find(post_id)
       @site_description = post.name+'. Координаты: '+post.coordinates.to_s
@@ -124,7 +134,18 @@ class PollutionValuesController < ApplicationController
     end
     
     def get_concentrations(start_date, end_date, post_id, material_id)
-      region_id = post_id == 0 ? ' in (5, 7, 9, 14) ' : ' = '+post_id.to_s
+      # region_id = post_id == 0 ? ' in (5, 7, 9, 14) ' : ' = '+post_id.to_s
+      if post_id == 0 # Donetsk
+        region_id = ' in (5, 7, 9, 14) '
+      elsif post_id == 97 # Makeevka
+        region_id = ' in (12, 13) '
+      elsif post_id == 98 # Gorlovka
+        region_id = ' in (20, 21, 23) '
+      elsif post_id == 99 # Enakievo
+        region_id = ' in (17, 18) '
+      else
+        region_id = " = #{post_id}"
+      end
       my_query = "SELECT pv.value, me.wind_speed speed, me.wind_direction direction, me.date FROM pollution_values pv 
                     JOIN measurements me ON me.id=pv.measurement_id AND me.date >= '#{start_date}' AND me.date <= '#{end_date}'
                     WHERE me.post_id #{region_id} AND pv.material_id=#{material_id} ;"
