@@ -1,0 +1,10 @@
+-#%p= @playdays.inspect
+.container
+  .row
+    .col
+      <p align="right">Дежурный синоптик (062) 303-10-34, 071-300-73-59</p>
+    .col
+      <p align="left">ГП "ДОНСНАБ"</p>        
+  #form_and_report
+  #input_params{ temperatures: @temperatures.to_json, year: @year.to_json, month: @month.to_json, playdays: @playdays}
+  = javascript_pack_tag 'heat_donbass/donsnab'

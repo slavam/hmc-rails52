@@ -9,8 +9,9 @@
         %th Объем аликвоты в см<sup>3</sup>
         %th Объем раствора в см<sup>3</sup>
         %th Объем отобраной пробы в дм<sup>3</sup>
+        %th ID
+        -#%th= ""
         -#
-          %th= ""
           %th= ""
     %tbody
       - @chem_coefficients.each do |c_c| 
@@ -21,8 +22,9 @@
           %td= c_c.aliquot_volume
           %td= c_c.solution_volume
           %td= c_c.sample_volume
+          %td= c_c.id
+          -#%td= link_to "Изменить", edit_chem_coefficient_path(c_c.id)
           -#
-            %td= link_to "Изменить", edit_chem_coefficient_path(c_c.id)
             %td= link_to 'Удалить', c_c, method: :delete, data: { confirm: 'Вы уверены?' }
   %br
   = link_to "Создать", new_chem_coefficient_path  

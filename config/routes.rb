@@ -97,6 +97,7 @@ Rails.application.routes.draw do
   get 'synoptic_observations/teploenergo', to: 'synoptic_observations#teploenergo'
   get 'synoptic_observations/tpp', to: 'synoptic_observations#tpp'
   get 'synoptic_observations/dnmu', to: 'synoptic_observations#dnmu'
+  get 'synoptic_observations/donsnab', to: 'synoptic_observations#donsnab'
   get 'synoptic_observations/energy', to: 'synoptic_observations#energy'
   get 'synoptic_observations/daily_avg_temp', to: 'synoptic_observations#daily_avg_temp'
   get 'synoptic_observations/month_avg_temp', to: 'synoptic_observations#month_avg_temp'

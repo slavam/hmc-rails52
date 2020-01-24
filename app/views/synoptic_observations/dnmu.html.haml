@@ -1,6 +1,11 @@
 -#= @temperatures.inspect
+-#<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 .container
-  <p align="right">Дежурный синоптик (062) 303-10-34, 071-300-73-59</p>
+  .row
+    .col
+      <p align="right">Дежурный синоптик (062) 303-10-34, 071-300-73-59</p>
+    .col
+      <p align="left">ГОО ВПО ДонНМУ имени М. Горького</p>        
   #form_and_report
   #input_params{ temperatures: @temperatures.to_json, year: @year.to_json, month: @month.to_json}
   = javascript_pack_tag 'heat_donbass/dnmu'

@@ -217,13 +217,14 @@ class SynopticObservationsController < ApplicationController
     sql = "select date, avg(temperature) temperature from synoptic_observations where date >= '#{@year}-#{@month}-01' and date <= '#{@year}-#{@month}-#{last_day}' and station_id =1 and term in (3,6,9,12,15) group by date;"
     db_temperatures = SynopticObservation.find_by_sql(sql)
     @temperatures = []
+    @playdays = Playday.get_playdays(@year.to_i, @month.to_i)
     db_temperatures.each {|t|
       @temperatures[t.date.day] = t.temperature
     }
     respond_to do |format|
       format.html 
       format.json do 
-        render json: {temperatures: @temperatures}
+        render json: {temperatures: @temperatures, playdays: @playdays}
       end
     end
   end
