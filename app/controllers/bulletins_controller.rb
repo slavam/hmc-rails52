@@ -297,11 +297,12 @@ class BulletinsController < ApplicationController
         when 'holiday'
           pdf = Holiday.new(@bulletin)
           @png_filename = @bulletin.png_filename(current_user.id)
-        when 'storm'
+        when 'storm', 'sea_storm'
           variant = params[:variant]
           pdf = Storm.new(@bulletin, variant)
-        when 'sea_storm'
-          pdf = Storm.new(@bulletin, nil)
+        # when 'sea_storm'
+        #   variant = params[:variant]
+        #   pdf = Storm.new(@bulletin, variant)
         when 'radiation'
           pdf = Radiation.new(@bulletin)
           # @png_filename = @bulletin.png_filename(current_user.id)

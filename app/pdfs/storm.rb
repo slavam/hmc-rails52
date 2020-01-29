@@ -25,7 +25,7 @@ class Storm < Prawn::Document
     move_down 20
     font "OpenSans", style: :bold
     warning = "ПРЕДУПРЕЖДЕНИЕ"
-    if @bulletin.bulletin_type == 'storm' && variant == 'notification'
+    if variant == 'notification'
       warning = 'ОПОВЕЩЕНИЕ'
     end
     bounding_box([0, cursor], width: bounds.width) do
