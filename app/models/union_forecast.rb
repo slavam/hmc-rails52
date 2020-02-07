@@ -1,0 +1,2 @@
+class UnionForecast < ApplicationRecord
+end

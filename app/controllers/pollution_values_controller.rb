@@ -119,7 +119,8 @@ class PollutionValuesController < ApplicationController
     def transition_function(variance)
       # (1/(1+C244^2))*EXP(1.645*КОРЕНЬ(LN(1+C244^2)))
       s = 1.0 + variance*variance
-      return ((1.0/s)*Math.exp(1.645*(Math.sqrt(Math.log(s))))).round(4)
+      # (1/(КОРЕНЬ(1+C244^2)))*EXP(1.645*КОРЕНЬ(LN(1+C244^2))) 20200205 Gorlovka
+      return ((1.0/Math.sqrt(s))*Math.exp(1.645*(Math.sqrt(Math.log(s))))).round(4)
     end
     
     def std_dev(arr)

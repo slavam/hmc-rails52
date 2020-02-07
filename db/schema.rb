@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_14_065919) do
+ActiveRecord::Schema.define(version: 2020_02_06_080240) do
 
   create_table "agro", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "Дата", limit: 60, null: false
@@ -616,6 +616,50 @@ ActiveRecord::Schema.define(version: 2020_01_14_065919) do
     t.datetime "updated_at", null: false
     t.datetime "observed_at"
     t.index ["date", "term", "station_id"], name: "index_synoptic_observations_on_date_and_term_and_station_id", unique: true
+  end
+
+  create_table "union_forecasts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.date "report_date"
+    t.string "curr_number"
+    t.text "synoptic_situation"
+    t.text "forecast_north"
+    t.string "north1_tn"
+    t.string "north1_td"
+    t.string "north2_tn"
+    t.string "north2_td"
+    t.string "north3_tn"
+    t.string "north3_td"
+    t.text "forecast_west"
+    t.string "west1_tn"
+    t.string "west1_td"
+    t.string "west2_tn"
+    t.string "west2_td"
+    t.string "west3_tn"
+    t.string "west3_td"
+    t.text "forecast_south"
+    t.string "south1_tn"
+    t.string "south1_td"
+    t.string "south2_tn"
+    t.string "south2_td"
+    t.string "south3_tn"
+    t.string "south3_td"
+    t.text "forecast_east"
+    t.string "east1_tn"
+    t.string "east1_td"
+    t.string "east2_tn"
+    t.string "east2_td"
+    t.string "east3_tn"
+    t.string "east3_td"
+    t.text "forecast_capital"
+    t.string "capital_tn"
+    t.string "capital_td"
+    t.string "capital_pd"
+    t.string "capital_pn"
+    t.string "capital_humidity"
+    t.string "chief"
+    t.string "synoptic"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "user_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

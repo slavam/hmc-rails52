@@ -104,7 +104,8 @@ class AgroObservation < ActiveRecord::Base
     self.where('date_dev LIKE ?', "#{date}%").select(:station_id, :telegram).each do |tm| 
       i = tm.telegram =~ / 924\d\d 95\d{3} 4/
       if i.present?
-        ret[tm.station_id] = tm.telegram[i+14,3].to_i
+        val = tm.telegram[i+14,3].to_i
+        ret[tm.station_id] = val if val > 0 # 20200204 KMA
       end
     end
     ret

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'union_forecasts/new'
+  get 'union_forecasts/create'
   resources :playdays
   get 'fire_dangers/daily_fire_danger', to: 'fire_dangers#daily_fire_danger'
   resources :fire_dangers

@@ -266,7 +266,7 @@ class SynopticObservationsController < ApplicationController
     @temperatures = []
     (1..last_day).each do |d|
       start = (Time.parse("#{@year}-#{@month}-#{d}")-1.day).strftime("%Y-%m-%d 21")
-      stop = Time.parse("#{@year}-#{@month}-#{d}").strftime("%Y-%m-%d 20")
+      stop = Time.parse("#{@year}-#{@month}-#{d}").strftime("%Y-%m-%d 21")
       sql = "select avg(temperature) temperature from synoptic_observations where observed_at > '"+start+"' and observed_at < '"+stop+"' and station_id in (1,2);"
       @temperatures[d] = SynopticObservation.find_by_sql(sql)[0].temperature
     end
@@ -724,7 +724,8 @@ class SynopticObservationsController < ApplicationController
   def get_daily_avg_temperatures(date)
     date_prev = ((date.to_date) - 1.day).strftime("%Y-%m-%d")+' 21'
     temp_local = SynopticObservation.select(:station_id, :term, :temperature).
-      where("observed_at > ? and observed_at < ? and station_id not in (6,9)", date_prev, date+' 20').order(:station_id, :date, :term)
+      where("observed_at > ? and observed_at < ? and station_id not in (6,9)", date_prev, date+' 21').order(:station_id, :date, :term)
+    # where("observed_at > ? and observed_at < ? and station_id not in (6,9)", date_prev, date+' 20').order(:station_id, :date, :term) 20200207
     local = calc_daily_avg_temps(temp_local)
     ret = {}
     ret[:local] = local
@@ -772,24 +773,24 @@ class SynopticObservationsController < ApplicationController
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{a.inspect}")
     a
   end
-  def get_avg_temperatures(date)
-    date_prev = ((date.to_date) - 1.day).strftime("%Y-%m-%d")+' 21'
-    temp_local = SynopticObservation.select(:station_id, :term, :temperature).
-      where("observed_at > ? and observed_at < ? and station_id not in (6,9)", date_prev, date+' 20').order(:station_id, :date, :term)
-    a = Hash.new(nil)
-    temp_local.each {|hd|
-      a[[hd.station_id, hd.term]] = hd.temperature
-    }
-    ret = {}
-    ret[:local] = a
-    temp_utc = SynopticObservation.select(:station_id, :term, :temperature).where("date = ? and station_id not in (6,9)", date).order(:station_id, :term)
-    a = Hash.new(nil)
-    temp_utc.each {|hd|
-      a[[hd.station_id, hd.term]] = hd.temperature
-    }
-    ret[:utc] =a
-    ret    
-  end
+  # def get_avg_temperatures(date)
+  #   date_prev = ((date.to_date) - 1.day).strftime("%Y-%m-%d")+' 21'
+  #   temp_local = SynopticObservation.select(:station_id, :term, :temperature).
+  #     where("observed_at > ? and observed_at < ? and station_id not in (6,9)", date_prev, date+' 20').order(:station_id, :date, :term)
+  #   a = Hash.new(nil)
+  #   temp_local.each {|hd|
+  #     a[[hd.station_id, hd.term]] = hd.temperature
+  #   }
+  #   ret = {}
+  #   ret[:local] = a
+  #   temp_utc = SynopticObservation.select(:station_id, :term, :temperature).where("date = ? and station_id not in (6,9)", date).order(:station_id, :term)
+  #   a = Hash.new(nil)
+  #   temp_utc.each {|hd|
+  #     a[[hd.station_id, hd.term]] = hd.temperature
+  #   }
+  #   ret[:utc] =a
+  #   ret    
+  # end
   
   def month_avg_temp
     @year = params[:year].present? ? params[:year] : Time.now.year.to_s
@@ -887,7 +888,8 @@ class SynopticObservationsController < ApplicationController
   def avg_temps(curr_date)
     prev_date = curr_date.to_date - 1.day
     rows = SynopticObservation.select("station_id, avg(temperature) temperature").
-      where("observed_at > ? AND observed_at < ? AND station_id NOT IN (6,9)", prev_date.strftime("%Y-%m-%d")+' 20', curr_date+' 19').group(:station_id)
+      where("observed_at > ? AND observed_at < ? AND station_id NOT IN (6,9)", prev_date.strftime("%Y-%m-%d")+' 21', curr_date+' 21').group(:station_id)
+      # where("observed_at > ? AND observed_at < ? AND station_id NOT IN (6,9)", prev_date.strftime("%Y-%m-%d")+' 20', curr_date+' 19').group(:station_id)
     ret = []
     rows.each {|r| ret[r.station_id] = r.temperature}
     ret
