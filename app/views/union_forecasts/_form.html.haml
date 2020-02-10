@@ -1,5 +1,5 @@
 .container
-  <input id="union-submit" type="submit" value="Сохранить" form="union-form">
+  <input id="union-submit1" type="submit" value="Сохранить" form="union-form">
   = form_for @union_forecast, html: {id: "union-form"} do |form|
     %table{class: "table table-hover"}
       %tr
@@ -12,24 +12,121 @@
         %th Краткая синоптическая ситуация
         %td= form.text_area :synoptic_situation, cols: "30", rows: "5"
       %tr
-        %th Температура воды, давление
-        %td= form.text_area :forecast_period, cols: "30", rows: "5"
+        %th Север, прогноз
+        %td= form.text_area :forecast_north, cols: "30", rows: "5"
+      %tr
+        %th Славянск, температура воздуха ночью
+        %td= form.text_field :north1_tn
+      %tr
+        %th Славянск, температура воздуха днем
+        %td= form.text_field :north1_td
+      %tr
+        %th Краматорск, температура воздуха ночью
+        %td= form.text_field :north2_tn
+      %tr
+        %th Краматорск, температура воздуха днем
+        %td= form.text_field :north2_td
+      %tr
+        %th Горловка, температура воздуха ночью
+        %td= form.text_field :north3_tn
+      %tr
+        %th Горловка, температура воздуха днем
+        %td= form.text_field :north3_td
+  
+      %tr
+        %th Запад, прогноз
+        %td= form.text_area :forecast_west, cols: "30", rows: "5"
+      %tr
+        %th Угледар, температура воздуха ночью
+        %td= form.text_field :west1_tn
+      %tr
+        %th Угледар, температура воздуха днем
+        %td= form.text_field :west1_td
+      %tr
+        %th Доброполье, температура воздуха ночью
+        %td= form.text_field :west2_tn
+      %tr
+        %th Доброполье, температура воздуха днем
+        %td= form.text_field :west2_td
+      %tr
+        %th Красноармейск, температура воздуха ночью
+        %td= form.text_field :west3_tn
+      %tr
+        %th Красноармейск, температура воздуха днем
+        %td= form.text_field :west3_td
+        
+      %tr
+        %th Юг, прогноз
+        %td= form.text_area :forecast_south, cols: "30", rows: "5"
+      %tr
+        %th Мариуполь, температура воздуха ночью
+        %td= form.text_field :south1_tn
+      %tr
+        %th Мариуполь, температура воздуха днем
+        %td= form.text_field :south1_td
+      %tr
+        %th Волноваха, температура воздуха ночью
+        %td= form.text_field :south2_tn
+      %tr
+        %th Волноваха, температура воздуха днем
+        %td= form.text_field :south2_td
+      %tr
+        %th Новоазовск, температура воздуха ночью
+        %td= form.text_field :south3_tn
+      %tr
+        %th Новоазовск, температура воздуха днем
+        %td= form.text_field :south3_td
+        
+      %tr
+        %th Восток, прогноз
+        %td= form.text_area :forecast_east, cols: "30", rows: "5"
+      %tr
+        %th Ясиноватая, температура воздуха ночью
+        %td= form.text_field :east1_tn
+      %tr
+        %th Ясиноватая, температура воздуха днем
+        %td= form.text_field :east1_td
+      %tr
+        %th Макеевка, температура воздуха ночью
+        %td= form.text_field :east2_tn
+      %tr
+        %th Макеевка, температура воздуха днем
+        %td= form.text_field :east2_td
+      %tr
+        %th Шахтерск, температура воздуха ночью
+        %td= form.text_field :east3_tn
+      %tr
+        %th Шахтерск, температура воздуха днем
+        %td= form.text_field :east3_td  
+        
+      %tr
+        %th Донецк, прогноз
+        %td= form.text_area :forecast_capital, cols: "30", rows: "5"
+      %tr
+        %th Донецк, температура воздуха ночью
+        %td= form.text_field :capital_tn
+      %tr
+        %th Донецк, температура воздуха днем
+        %td= form.text_field :capital_td
+      %tr
+        %th Донецк, атмосферное давление ночью
+        %td= form.text_field :capital_pn
+      %tr
+        %th Донецк, атмосферное давление днем
+        %td= form.text_field :capital_pd
+      %tr
+        %th Донецк, относительная влажность воздуха
+        %td= form.text_field :capital_humidity
+      
+      %tr
+        %th Начальник
+        %td= form.select :chief, options_for_select(Bulletin::RESPONSIBLES, @union_forecast.chief)  
       %tr
         %th Синоптик
         %td= form.select :synoptic, options_for_select(Bulletin.synoptic_list, @union_forecast.synoptic)
     -#= render partial: 'responsible' 20190718 КМА
-    %table{class: "table table-hover"}
-      %tr
-        %th Города
-        %th Температура воздуха ночью
-        %th Температура воздуха днем
-      - i = 0
-      - Bulletin::RADIO_CITIES.each do |c|
-        %tr
-          %td #{c}
-          %td= text_field_tag "val_#{i*2+1}", m_d[i*2].present? ? m_d[i*2] : '', size: 4
-          %td= text_field_tag "val_#{i*2+2}", m_d[i*2+1].present? ? m_d[i*2+1] : '', size: 4
-          - i += 1
-    = render partial: 'chief'
+    -#= render partial: 'chief'
     %br
+<input id="union-submit2" type="submit" value="Сохранить" form="union-form">
+%br
 = link_to "Список", union_forecasts_path

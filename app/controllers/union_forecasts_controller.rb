@@ -1,11 +1,12 @@
 class UnionForecastsController < ApplicationController
+  before_action :find_union_forecast, :only => [:union_forecast_show, :destroy, :edit, :update]
+  
   def index
     @union_forecasts = UnionForecast.paginate(page: params[:page], per_page: 20).order(:report_date).reverse_order
   end
   
   def union_forecast_show
-    union_forecast = UnionForecast.find(params[:id])
-    pdf = Union.new(union_forecast)
+    pdf = Union.new(@union_forecast)
     pdf_file_name = "Union_forecast_#{current_user.id}.pdf"
     respond_to do |format|
       format.pdf do
@@ -16,6 +17,8 @@ class UnionForecastsController < ApplicationController
   
   def new
     @union_forecast = UnionForecast.new
+    @union_forecast.report_date = Time.now
+    @union_forecast.curr_number = Date.today.yday()
   end
 
   def create
@@ -28,8 +31,30 @@ class UnionForecastsController < ApplicationController
     end
   end
   
+  def edit
+  end
+
+  def update
+    if not @union_forecast.update_attributes union_forecast_params
+      render :edit
+    else
+      flash[:success] = "Прогноз изменен"
+      redirect_to union_forecasts_path
+    end
+  end
+
+  def destroy
+    @union_forecast.destroy
+    flash[:success] = "Прогноз удален"
+    redirect_to union_forecasts_path
+  end
+  
   private
   
+    def find_union_forecast
+      @union_forecast = UnionForecast.find(params[:id])
+    end
+    
     def union_forecast_params
       params.require(:union_forecast).permit(:report_date, :curr_number, :synoptic_situation,
         :forecast_north, :north1_tn, :north1_td, :north2_tn, :north2_td, :north3_tn,

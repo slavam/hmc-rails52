@@ -63,4 +63,8 @@ class User < ActiveRecord::Base
     update_attribute(:remember_digest, nil)
   end
   
+  def User.fullname_by_lastname(lastname)
+    user = User.find_by_last_name(lastname)
+    user.present? ? user.full_name : ''
+  end
 end
