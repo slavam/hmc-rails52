@@ -29,14 +29,13 @@ class Union < Prawn::Document
     move_down 10
     text forecast.report_date.strftime("%d.%m.%Y")+'г.  № 06/'+forecast.curr_number
     move_down 20
-    # font "OpenSans", style: :bold
     text "ПРОГНОЗ ПОГОДЫ", align: :center
     text "по городам Донецкой Народной Республики", align: :center
     text "на сутки "+(forecast.report_date+2.days).strftime("%d.%m.%Y")+" года", align: :center
     move_down 10
     table_content = [
       [{content: "#{forecast.synoptic_situation}", colspan: 3}],
-      [{content: "Город", rowspan:2, align: :center},{content:'Температура воздуха, °С', colspan: 2, align: :center}],
+      [{content: "Город", rowspan:2, align: :center, valign: :center},{content:'Температура воздуха, °С', colspan: 2, align: :center}],
       [{content: "ночь", align: :center},{content:"день", align: :center}],
       
       ["Прогноз погоды по северу Республики",{content: "#{forecast.forecast_north}", colspan:2}],
@@ -60,20 +59,18 @@ class Union < Prawn::Document
       ["Новоазовск", {content: "#{forecast.east3_tn}", align: :center}, {content: "#{forecast.east3_td}", align: :center}],
     ]
     table table_content, width: bounds.width, :column_widths => [130], cell_style: { inline_format: true, padding: [2, 2, 2, 2], size: 11} do |t|
-      # t.column(0).align = :left
-      # t.row(0).column(0).align = :center
     end
     donetsk_content = [
       [{content: "Прогноз погоды в столице Республики", rowspan: 2},{content: "#{forecast.forecast_capital}", colspan:5}],
       [ {content:'Температура воздуха, °С', colspan: 2, align: :center},
         {content:'Атмосферное давление, мм.рт.ст', colspan: 2, align: :center},
         {content:'Относительная влажность воздуха, %', align: :center}],
-      [ {content: "Донецк", rowspan: 2},
+      [ {content: "Донецк", rowspan: 2, valign: :center},
         {content: "ночь", align: :center},
         {content: "день", align: :center},
         {content: "ночь", align: :center},
         {content: "день", align: :center},
-        {content: "#{forecast.capital_humidity}", rowspan: 2, align: :center}
+        {content: "#{forecast.capital_humidity}", rowspan: 2, align: :center, valign: :center}
       ],
       [ {content: "#{forecast.capital_tn}", align: :center},
         {content: "#{forecast.capital_td}", align: :center},
@@ -86,8 +83,8 @@ class Union < Prawn::Document
     chief = UnionForecast.ogmo_chief(forecast.chief)
 
     move_down 10
-    table_content =[[{:padding => [10,0],:content => chief[:position]}, {position: :center, image: chief[:image_name], scale: 0.6}, {:padding => [10,5], align: :right, :content => chief[:name]}]]                    
-    table table_content, width: bounds.width, :column_widths => [300, 100], cell_style: {:overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true } do |t|
+    table_content =[[{:padding => [10,0],:content => chief[:position]}, {position: :center, image: chief[:image_name], scale: 0.5}, {:padding => [10,5], align: :right, :content => chief[:name]}]]
+    table table_content, width: bounds.width, :column_widths => [310, 70], cell_style: {:overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true } do |t|
       t.cells.border_width = 0
     end
 
