@@ -69,11 +69,20 @@ class Avtodor < Prawn::Document
     font "OpenSans", style: :normal
     m_d = []
     m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
+    m_d.each.with_index do |e,i|
+      if e>' '
+        if ([1,5,9,13].index(i).present?) && (e.to_f < 1.0)
+          m_d[i] = 'менее 1'
+        else
+          m_d[i] = e.gsub('.',',')
+        end
+      end
+    end
     table_content = [["Название метеостанции", "Средняя за сутки температура воздуха, °C", "Количество осадков за сутки, мм", "Вид осадков", "Скорость ветра, м/с"],
-                     ["Донецк",       m_d[0].gsub('.',','), m_d[1].gsub('.',','), m_d[2], m_d[3]], 
-                     ["Дебальцево",   m_d[4].gsub('.',','), m_d[5].gsub('.',','), m_d[6], m_d[7]],
-                     ["Амвросиевка",  m_d[8].gsub('.',','), m_d[9].gsub('.',','), m_d[10], m_d[11]],
-                     ["Седово",       m_d[12].gsub('.',','), m_d[13].gsub('.',','), m_d[14], m_d[15]]]
+                     ["Донецк",       m_d[0],  m_d[1],  m_d[2],  m_d[3]], 
+                     ["Дебальцево",   m_d[4],  m_d[5],  m_d[6],  m_d[7]],
+                     ["Амвросиевка",  m_d[8],  m_d[9],  m_d[10], m_d[11]],
+                     ["Седово",       m_d[12], m_d[13], m_d[14], m_d[15]]]
     font "OpenSans"
     table table_content, width: bounds.width, column_widths: [90, 110,70,140], :cell_style => {overflow: :shrink_to_fit, :inline_format => true, size: 10 } do |t|
       t.cells.padding = [1, 1]

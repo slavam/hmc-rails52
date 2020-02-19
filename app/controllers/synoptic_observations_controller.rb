@@ -712,10 +712,6 @@ class SynopticObservationsController < ApplicationController
     @temperatures_local = temperatures[:local]
     respond_to do |format|
       format.html 
-      # format.pdf do
-      #   pdf = Teploenergo.new(@temperatures, @year, @month)
-      #   send_data pdf.render, filename: "teploenergo_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
-      # end
       format.json do 
         render json: {temperaturesUtc: @temperatures_utc, temperaturesLocal: @temperatures_local, calcDate: @calc_date}
       end

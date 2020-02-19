@@ -296,19 +296,16 @@ class BulletinsController < ApplicationController
           # @png_filename_page2 = @bulletin.png_page_filename(current_user.id, 1)
         when 'holiday'
           pdf = Holiday.new(@bulletin)
-          @png_filename = @bulletin.png_filename(current_user.id)
+          # @png_filename = @bulletin.png_filename(current_user.id)
         when 'storm', 'sea_storm'
           variant = params[:variant]
           pdf = Storm.new(@bulletin, variant)
-        # when 'sea_storm'
-        #   variant = params[:variant]
-        #   pdf = Storm.new(@bulletin, variant)
         when 'radiation'
           pdf = Radiation.new(@bulletin)
           # @png_filename = @bulletin.png_filename(current_user.id)
         when 'tv'
           pdf = Tv.new(@bulletin)
-          @png_filename = @bulletin.png_filename(current_user.id)
+          # @png_filename = @bulletin.png_filename(current_user.id)
         when 'avtodor'
           pdf = Avtodor.new(@bulletin)
         when 'bus_station'
@@ -443,6 +440,12 @@ class BulletinsController < ApplicationController
       m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
       # avg_24 = AgroObservation.temperature_avg_24(report_date-1.day) #.strftime("%Y-%m-%d")) 20191105 KMA
       avg_24 = AgroObservation.temperature_avg_24(report_date)
+      if avg_24[10].nil?
+        date_start = (report_date - 2.days).strftime("%Y-%m-%d")+' 21'
+        date_end = (report_date - 1.day).strftime("%Y-%m-%d")+' 21'
+        sql = "select avg(temperature) temperature from synoptic_observations where observed_at > '#{date_start}' and observed_at < '#{date_end}' and station_id=10;"
+        avg_24[10] = SynopticObservation.find_by_sql(sql)[0].temperature
+      end
       # wind_speed = AgroObservation.wind_speed_max_24(report_date-1.day)
       wind_speed = AgroObservation.wind_speed_max_24(report_date)
       precipitations = precipitation_daily(report_date-1.day, true)

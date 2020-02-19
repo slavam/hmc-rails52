@@ -31,7 +31,7 @@ class Union < Prawn::Document
     move_down 20
     text "ПРОГНОЗ ПОГОДЫ", align: :center
     text "по городам Донецкой Народной Республики", align: :center
-    text "на сутки "+(forecast.report_date+2.days).strftime("%d.%m.%Y")+" года", align: :center
+    text "на сутки "+(forecast.report_date+3.days).strftime("%d.%m.%Y")+" года", align: :center
     move_down 10
     table_content = [
       [{content: "#{forecast.synoptic_situation}", colspan: 3}],
