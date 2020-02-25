@@ -259,7 +259,7 @@
     - @actions.each do |a|
       %tr
         %td= a.version
-        %td= a.user.login
+        %td= a.user.present? ? a.user.login : 'unknown'
         %td= a.action
         %td= a.created_at
       
@@ -271,3 +271,6 @@
     = link_to 'Возврат', '/agro_observations/input_agro_telegrams?input_mode=normal'
   - else
     = link_to "Список", agro_observations_path
+  - if (current_user.role == 'admin') or (current_user.role == 'technicist')
+    %br
+    = link_to 'Удалить', @agro_observation, method: :delete, data: { confirm: 'Вы уверены?' }

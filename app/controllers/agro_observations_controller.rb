@@ -1,5 +1,5 @@
 class AgroObservationsController < ApplicationController
-  before_action :find_agro_observation, only: [:show, :update_agro_telegram]
+  before_action :find_agro_observation, only: [:show, :update_agro_telegram, :destroy]
   
   def index
     @agro_observations = AgroObservation.paginate(page: params[:page]).order(:date_dev, :created_at).reverse_order
@@ -190,6 +190,12 @@ class AgroObservationsController < ApplicationController
         render json: {observations: @agro_data}
       end
     end
+  end
+  
+  def destroy
+    @agro_observation.destroy
+    flash[:success] = "Удалена телеграмма"
+    redirect_to agro_observations_path
   end
   
   private
