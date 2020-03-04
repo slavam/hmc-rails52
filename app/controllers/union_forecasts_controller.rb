@@ -17,6 +17,7 @@ class UnionForecastsController < ApplicationController
   
   def new
     @union_forecast = UnionForecast.new
+    @union_forecast = UnionForecast.last
     @union_forecast.report_date = Time.now
     @union_forecast.curr_number = Date.today.yday()
   end
