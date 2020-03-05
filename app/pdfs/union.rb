@@ -54,9 +54,9 @@ class Union < Prawn::Document
       ["Новоазовск", {content: "#{forecast.south3_tn}", align: :center}, {content: "#{forecast.south3_td}", align: :center}],
       
       ["Прогноз погоды по востоку Республики",{content: "#{forecast.forecast_east}", colspan:2}],
-      ["Мариуполь", {content: "#{forecast.east1_tn}", align: :center}, {content: "#{forecast.east1_td}", align: :center}],
-      ["Волноваха", {content: "#{forecast.east2_tn}", align: :center}, {content: "#{forecast.east2_td}", align: :center}],
-      ["Новоазовск", {content: "#{forecast.east3_tn}", align: :center}, {content: "#{forecast.east3_td}", align: :center}],
+      ["Ясиноватая", {content: "#{forecast.east1_tn}", align: :center}, {content: "#{forecast.east1_td}", align: :center}],
+      ["Макеевка", {content: "#{forecast.east2_tn}", align: :center}, {content: "#{forecast.east2_td}", align: :center}],
+      ["Шахтерск", {content: "#{forecast.east3_tn}", align: :center}, {content: "#{forecast.east3_td}", align: :center}],
     ]
     table table_content, width: bounds.width, :column_widths => [130], cell_style: { inline_format: true, padding: [2, 2, 2, 2], size: 11} do |t|
     end
