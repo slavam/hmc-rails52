@@ -2,7 +2,7 @@ class UnionForecastsController < ApplicationController
   before_action :find_union_forecast, :only => [:union_forecast_show, :destroy, :edit, :update]
   
   def index
-    @union_forecasts = UnionForecast.paginate(page: params[:page], per_page: 20).order(:report_date).reverse_order
+    @union_forecasts = UnionForecast.paginate(page: params[:page], per_page: 20).order(:report_date, :id).reverse_order
   end
   
   def union_forecast_show
@@ -17,7 +17,14 @@ class UnionForecastsController < ApplicationController
   
   def new
     @union_forecast = UnionForecast.new
-    @union_forecast = UnionForecast.last
+    union_forecast = UnionForecast.last
+    [:report_date, :curr_number, :synoptic_situation,
+      :forecast_north, :north1_tn, :north1_td, :north2_tn, :north2_td, :north3_tn,
+      :north3_td, :forecast_west, :west1_tn, :west1_td, :west2_tn, :west2_td, :west3_tn,
+      :west3_td, :forecast_south, :south1_tn, :south1_td, :south2_tn, :south2_td,
+      :south3_tn, :south3_td, :forecast_east, :east1_tn, :east1_td, :east2_tn,
+      :east2_td, :east3_tn, :east3_td, :forecast_capital, :capital_tn, :capital_td,
+      :capital_pd, :capital_pn, :capital_humidity, :chief, :synoptic].each {|k| @union_forecast[k] = union_forecast[k]}
     @union_forecast.report_date = Time.now
     @union_forecast.curr_number = Date.today.yday()
   end
