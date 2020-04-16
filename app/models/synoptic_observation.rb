@@ -135,11 +135,11 @@ class SynopticObservation < ActiveRecord::Base
       "Сухой рассыпчатый снег 10 баллов; неравномерный слой" , #8
       "Снег с сильными заметами и заносами"  #9
       ]
-  
+
   def self.last_50_telegrams
     SynopticObservation.all.limit(50).order(:date, :term, :updated_at).reverse_order
   end
-  
+
   def self.short_last_50_telegrams(user)
     if user.role == 'specialist'
       all_fields = SynopticObservation.where("station_id = ? and observed_at > ?", user.station_id, Time.now.utc-45.days).order(:date, :term, :updated_at).reverse_order
@@ -151,7 +151,7 @@ class SynopticObservation < ActiveRecord::Base
       {id: rec.id, date: rec.observed_at, term: rec.term, station_name: stations[rec.station_id-1].name, telegram: rec.telegram}
     end
   end
-  
+
   def wind_direction_to_s
     case self.wind_direction
       when 0
@@ -194,7 +194,7 @@ class SynopticObservation < ActiveRecord::Base
         self.wind_direction.to_s
     end
   end
-    
+
   def visibility
     return "Видимость не определена" if self.visibility_range.nil?
     case self.visibility_range
@@ -216,9 +216,9 @@ class SynopticObservation < ActiveRecord::Base
         " 200 м"
       when 93
         " 500 м"
-      when 94 
+      when 94
         " 1 км"
-      when 95 
+      when 95
         " 2 км"
       when 96
         " 4 км"
@@ -232,7 +232,7 @@ class SynopticObservation < ActiveRecord::Base
         self.visibility_range.to_s
     end
   end
-  
+
   def cloud_base_height_to_s
     return "Нижняя граница не определенна" if self.cloud_base_height.nil?
     return CLOUD_HEIGHT[cloud_base_height]
@@ -259,7 +259,7 @@ class SynopticObservation < ActiveRecord::Base
     #     "> 2500 или облаков нет"
     # end
   end
-  
+
   def cloud_amount(c_a)
     return 'Определить невозможно или наблюдения не производились' if c_a.nil?
     return CLOUD_AMOUNT[c_a]
@@ -286,7 +286,7 @@ class SynopticObservation < ActiveRecord::Base
     #     'Определить невозможно (затруднена видимость)'
     # end
   end
-  
+
   def pressure_tendency_characteristic_to_s
     return '' if self.pressure_tendency_characteristic.nil?
     case self.pressure_tendency_characteristic
@@ -328,7 +328,7 @@ class SynopticObservation < ActiveRecord::Base
         'Кучевые и слоистокучевые'
     end
   end
-  
+
   def clouds_2_to_s
     return 'Облака CM не видны' if self.clouds_2.nil?
     case self.clouds_2
@@ -356,7 +356,7 @@ class SynopticObservation < ActiveRecord::Base
         'Перисто-кучевые'
     end
   end
-  
+
   def soil_surface_condition_1_to_s
     return 'Не определено' if self.soil_surface_condition_1.nil?
     return SOIL_CONDITION[soil_surface_condition_1]
@@ -383,7 +383,7 @@ class SynopticObservation < ActiveRecord::Base
     #     'Сухая чрезвычайно'
     # end
   end
-  
+
   def precipitation_to_s(value)
     case value
       when 0
@@ -398,12 +398,12 @@ class SynopticObservation < ActiveRecord::Base
         ((value - 990)*0.1).round(2).to_s
     end
   end
-  
+
   def precipitation_time_range_to_s(value)
     time_range = ['', '6', '12', '18', '24', '1', '2', '3', '9', '15']
     time_range[value]
   end
-  
+
   def snow_cover_height_to_s
     case self.snow_cover_height
       when 1..996
@@ -416,7 +416,7 @@ class SynopticObservation < ActiveRecord::Base
         "Измерить невозможно"
     end
   end
-  
+
   def clouds_form_to_s
     return 'Не определена' if self.cloud_form.nil?
     return CLOUD_FORM[cloud_form]
@@ -443,8 +443,8 @@ class SynopticObservation < ActiveRecord::Base
     #     "Кучево-дождевые"
     # end
   end
-  
-  def soil_surface_condition_2_to_s 
+
+  def soil_surface_condition_2_to_s
     return 'Не определено' if self.soil_surface_condition_2.nil?
     return SOIL_CONDITION[soil_surface_condition_2]
     # case self.cloud_form
@@ -492,7 +492,7 @@ class SynopticObservation < ActiveRecord::Base
   end
   def self.snow_cover_height(date)
     ret = []
-    self.where(term: 6, date: date).select(:station_id, :snow_cover_height).each do |tm| 
+    self.where(term: 6, date: date).select(:station_id, :snow_cover_height).each do |tm|
       # ret[tm.station_id] = tm.snow_cover_height<997 ? tm.snow_cover_height : (tm.snow_cover_height == 997 ? '<0.5' : (tm.snow_cover_height==998 ? 'Снежный покров отсутствует':'Измерить невозможно')) if tm.snow_cover_height.present?
       ret[tm.station_id] = tm.snow_cover_height<997 ? tm.snow_cover_height : (tm.snow_cover_height == 997 ? '<0.5' : (tm.snow_cover_height==998 ? '':'Измерить невозможно')) if tm.snow_cover_height.present? # 20190228 Oksana N
     end
@@ -514,6 +514,7 @@ class SynopticObservation < ActiveRecord::Base
       ap = (pressure_tendency_characteristic < 4 ? '+' : (pressure_tendency_characteristic == 4 ? '' : '-'))+pressure_tendency.to_s
       ret += "ap: #{ap}; "
     end
+    ret += "Hum: #{humidity}%; " if temperature.present? and temperature_dew_point.present?
     ret
   end
   def self.station_daily_local_avg_temp(station_id, date)
@@ -524,5 +525,9 @@ class SynopticObservation < ActiveRecord::Base
   def precipitation
     return 0 if precipitation_1.nil?
     precipitation_1>989 ? ((precipitation_1-990)*0.1).round(1) : precipitation_1
+  end
+  def humidity
+    return nil if temperature.nil? or temperature_dew_point.nil?
+    (100*(Math.exp((17.625*temperature_dew_point)/(243.04+temperature_dew_point))/Math.exp((17.625*temperature)/(243.04+temperature)))).round()
   end
 end
