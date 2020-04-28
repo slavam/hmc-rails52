@@ -1,4 +1,4 @@
-class Fire < Prawn::Document
+class Fire2 < Prawn::Document
   def initialize(bulletin)
 		super(top_margin: 40, right_margin: 40, left_margin: 80)
 		@bulletin = bulletin
@@ -9,16 +9,8 @@ class Fire < Prawn::Document
       :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
     })
     y_pos = cursor
-    image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.25
-    font "OpenSans" #, style: :bold
-    bounding_box([0, y_pos], width: bounds.width) do
-      text Bulletin::HEAD, align: :center, size: 10
-    end
-    move_down 20
-    bounding_box([0, cursor], width: bounds.width) do
-      text Bulletin::ADDRESS, align: :center, size: 9
-    end
     move_down 40
+    font "OpenSans"
     bounding_box([0, cursor], width: bounds.width) do
       text "БЮЛЛЕТЕНЬ ПОЖАРНОЙ ОПАСНОСТИ № #{@bulletin.curr_number}", align: :center, color: "ff0000", size: 12
       text "#{@bulletin.report_date.day} #{Bulletin::MONTH_NAME2[@bulletin.report_date.month]} #{@bulletin.report_date.year} года", align: :center, color: "ff0000", size: 12
@@ -77,23 +69,9 @@ class Fire < Prawn::Document
     move_down 10
     text @bulletin.forecast_day, size: 10
     # text "Бюллетень выпускается при установлении 4 класса и прогнозировании 5 класса пожарной опасности", size: 10
+    move_down 10
     bounding_box([0, cursor], :width => bounds.width) do
       text "Время выпуска 16:00", size: 10
     end
-    move_down 10
-    table signatures, width: bounds.width, :column_widths => [220,170], cell_style: {:overflow => :shrink_to_fit, size: 10, :inline_format => true } do |t|
-      t.cells.border_width = 0
-      t.row(0).height = 17
-      t.row(2).size = 11
-      t.column(1).position = :center
-      # t.cells.padding = [1, 0]
-    end
-  end
-  def signatures
-	  chief_descr = @bulletin.chief_2_pdf
-    responsible_descr = @bulletin.responsible_2_pdf
-    [ [{padding: [1,0],content: "Ответственный за выпуск:"},"",""],
-      [{padding: [10,0],content:responsible_descr[:position]}, {:image => responsible_descr[:image_name], scale: 0.6, :vposition => :center}, {:padding => [20,5],:content => responsible_descr[:name]}],
-      [{:padding => [10,0],:content => chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]
   end
 end

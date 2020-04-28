@@ -20,7 +20,7 @@ class BulletinsController < ApplicationController
       @latest_bulletins << {id: b.id, created_at: b.created_at, curr_number: b.curr_number, bulletin_type: b.bulletin_type, user_login: user_login, start_editing: start_editing}
     end
   end
-    
+
   def bulletins_select
     @tab_titles = ['Бюллетени ежедневные', 'Бюллетени морские', 'Бюллетени выходного дня']
     @bulletins = Bulletin.where(bulletin_type: 'daily').order(:created_at).reverse_order
@@ -31,14 +31,14 @@ class BulletinsController < ApplicationController
     @variant = params[:variant].present? ? params[:variant] : nil
     @bulletins = Bulletin.where(bulletin_type: @bulletin_type).paginate(page: params[:page], per_page: 20).order(:created_at).reverse_order
   end
-  
+
   def new_bulletin
     @bulletin = Bulletin.new
     @bulletin.report_date = Time.now.strftime("%Y-%m-%d")
     @bulletin.curr_number = Date.today.yday()
-    @bulletin.bulletin_type = params[:bulletin_type] 
+    @bulletin.bulletin_type = params[:bulletin_type]
     bulletin = Bulletin.last_this_type params[:bulletin_type]
-    last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307 
+    last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307
     case params[:bulletin_type]
       when 'clarification'
         if last_daily_bulletin.present?
@@ -46,7 +46,7 @@ class BulletinsController < ApplicationController
           @bulletin.forecast_day_city = last_daily_bulletin.forecast_day_city
         end
         @bulletin.forecast_period = bulletin.forecast_period if bulletin.present?
-        
+
         # if bulletin.present? 20190815 OH
         #   @bulletin.forecast_day = bulletin.forecast_day
         #   @bulletin.forecast_day_city = bulletin.forecast_day_city
@@ -55,7 +55,8 @@ class BulletinsController < ApplicationController
       when 'fire'
         if bulletin.present?
           @bulletin.curr_number = bulletin.curr_number.to_i + 1
-          @bulletin.meteo_data = bulletin.meteo_data if bulletin.present?
+          @bulletin.meteo_data = bulletin.meteo_data #if bulletin.present?
+          @bulletin.forecast_day = bulletin.forecast_day
         else
           @bulletin.curr_number = 1
         end
@@ -75,13 +76,13 @@ class BulletinsController < ApplicationController
       when 'storm', 'sea_storm'
         @bulletin.curr_number = ''
         if bulletin.present?
-          @bulletin.meteo_data = bulletin.meteo_data 
+          @bulletin.meteo_data = bulletin.meteo_data
           @bulletin.forecast_day = bulletin.forecast_day
           @bulletin.storm = bulletin.storm
         end
       when 'avtodor'
         if last_daily_bulletin.present?
-          # @bulletin.meteo_data = bulletin.meteo_data 
+          # @bulletin.meteo_data = bulletin.meteo_data
           @bulletin.forecast_day = last_daily_bulletin.forecast_day
           @bulletin.storm = last_daily_bulletin.storm
         end
@@ -127,14 +128,14 @@ class BulletinsController < ApplicationController
           (curr_set.present? ? curr_set.t_min.to_s : '') + '; ' + (curr_set.present? ? curr_set.year_min.to_s : '') + ';'
         @bulletin.forecast_day_city = bulletin.forecast_day_city
         @precipitation_day_night = []
-        @m_d = fill_meteo_data(@bulletin.report_date)      
+        @m_d = fill_meteo_data(@bulletin.report_date)
         @bulletin.meteo_data = ''
         @m_d.each do |v|
           @bulletin.meteo_data += v.present? ? "#{v};" : ';'
         end
     end
   end
-  
+
   def create
     @bulletin = Bulletin.new(bulletin_params)
     @bulletin.summer = params[:summer] if params[:summer].present?
@@ -153,7 +154,7 @@ class BulletinsController < ApplicationController
       render :new
     else
       # User.where(role: 'synoptic').each do |synoptic|
-      #   ActionCable.server.broadcast "bulletin_editing_channel_user_#{synoptic.id}", 
+      #   ActionCable.server.broadcast "bulletin_editing_channel_user_#{synoptic.id}",
       #     bulletin: {id: @bulletin.id, created_at: @bulletin.created_at, bulletin_type: @bulletin.bulletin_type, curr_number: @bulletin.curr_number, user_login: '', start_editing: nil}, mode: 'new_bulletin'
       # end 20190820
       # MeteoMailer.welcome_email(current_user).deliver_now
@@ -162,12 +163,12 @@ class BulletinsController < ApplicationController
       # redirect_to "/bulletins/#{@bulletin.id}/bulletin_show"
     end
   end
-  
+
   def edit
     # bulletin_editor = BulletinEditor.new(user_id: current_user.id, bulletin_id: @bulletin.id)
     # if bulletin_editor.save
     #   User.where(role: 'synoptic').each do |synoptic|
-    #     ActionCable.server.broadcast "bulletin_editing_channel_user_#{synoptic.id}", 
+    #     ActionCable.server.broadcast "bulletin_editing_channel_user_#{synoptic.id}",
     #       bulletin_id: @bulletin.id, user_login: current_user.login, start_editing: bulletin_editor.created_at, mode: 'start_editing'
     #   end
     # end 20190820
@@ -201,7 +202,7 @@ class BulletinsController < ApplicationController
         @bulletin.meteo_data += params["val_#{i}"].present? ? params["val_#{i}"].strip+'; ' : ';'
       end
     end
-    
+
     if @bulletin.bulletin_type == 'daily'
       @bulletin.climate_data = params[:avg_day_temp] + '; ' + params[:max_temp] + '; '+ params[:max_temp_year] + '; ' + params[:min_temp] + '; '+ params[:min_temp_year] + '; '
     end
@@ -212,7 +213,7 @@ class BulletinsController < ApplicationController
       # if bulletin_editor.present?
       #   bulletin_editor.destroy
       #   User.where(role: 'synoptic').each do |synoptic|
-      #     ActionCable.server.broadcast "bulletin_editing_channel_user_#{synoptic.id}", 
+      #     ActionCable.server.broadcast "bulletin_editing_channel_user_#{synoptic.id}",
       #       bulletin_id: @bulletin.id, mode: 'stop_editing'
       #   end
       # end 20190820
@@ -228,13 +229,13 @@ class BulletinsController < ApplicationController
     bulletin_id = @bulletin.id
     @bulletin.destroy
     # User.where(role: 'synoptic').each do |synoptic|
-    #   ActionCable.server.broadcast "bulletin_editing_channel_user_#{synoptic.id}", 
+    #   ActionCable.server.broadcast "bulletin_editing_channel_user_#{synoptic.id}",
     #     mode: 'del_bulletin', id: bulletin_id
     # end 20190820
     flash[:success] = "Бюллетень удален"
     redirect_to "/bulletins/list?bulletin_type="+bulletin_type
   end
-  
+
   # def pdf_png_delete
   #   filename = File.join(Rails.root, "app/assets/pdf_folder", @bulletin.pdf_filename)
   #   File.delete(filename) if File.exist?(filename)
@@ -244,7 +245,7 @@ class BulletinsController < ApplicationController
 
   def show
   end
-  
+
   def print_bulletin
   end
 
@@ -269,7 +270,7 @@ class BulletinsController < ApplicationController
     end
     return true
   end
-  
+
   def save_as_pdf(pdf)
     filename = File.join(Rails.root, "app/assets/pdf_folder", @bulletin.pdf_filename(current_user.id))
     pdf.render_file(filename)
@@ -288,7 +289,7 @@ class BulletinsController < ApplicationController
             else
               pdf = DailyShort.new(@bulletin)
           end
-          # @png_filename_page1 = "Bulletin_daily_#{current_user.id}-0.png" 
+          # @png_filename_page1 = "Bulletin_daily_#{current_user.id}-0.png"
           # @png_filename_page2 = "Bulletin_daily_#{current_user.id}-1.png"
         when 'sea'
           pdf = Sea.new(@bulletin)
@@ -315,7 +316,11 @@ class BulletinsController < ApplicationController
         when 'dte'
           pdf = Dte.new(@bulletin)
         when 'fire'
-          pdf = Fire.new(@bulletin)
+          if params[:variant] == 'short'
+            pdf = Fire2.new(@bulletin)
+          else
+            pdf = Fire.new(@bulletin)
+          end
         when 'clarification'
           pdf = Clarification.new(@bulletin)
       end
@@ -333,7 +338,7 @@ class BulletinsController < ApplicationController
       end
     end
   end
-  
+
   def help_show
     pdf = HelpChem.new
     respond_to do |format|
@@ -344,15 +349,15 @@ class BulletinsController < ApplicationController
   end
 
   private
-  
+
     def bulletin_params
       params.require(:bulletin).permit(:report_date, :curr_number, :duty_synoptic, :synoptic1, :synoptic2, :storm, :forecast_day, :forecast_day_city, :forecast_period, :forecast_advice, :forecast_orientation, :forecast_sea_day, :forecast_sea_period, :meteo_data, :agro_day_review, :climate_data, :summer, :bulletin_type, :storm_hour, :storm_minute, :picture, :chief, :responsible, :review_start_date)
     end
-    
+
     def find_bulletin
       @bulletin = Bulletin.find(params[:id])
     end
-    
+
     def n
       case @bulletin.bulletin_type
         when 'sea'
@@ -368,13 +373,13 @@ class BulletinsController < ApplicationController
         when 'fire'
           40
         else
-          72        
+          72
       end
     end
-    
+
     def push_in_m_d(m_d, data, offset)
       id_stations = [1,3,2,10,8,4,7,5]
-      data.each.with_index do |v,i| 
+      data.each.with_index do |v,i|
         if v.present?
           row = id_stations.index(i)
           m_d[row*9+offset] = v.to_s if row.present?
@@ -408,12 +413,12 @@ class BulletinsController < ApplicationController
           m_d[8] = '+'+m_d[8].to_s
         else
           m_d[8] = m_d[8].to_s
-        end  
+        end
       end
       value = SeaObservation.water_temperature(report_date)
       m_d[9] = value if value.present?
       syn_o = SynopticObservation.find_by(station_id: 10, term: 6, date: report_date)
-      m_d[12] = syn_o.visibility if syn_o.present? 
+      m_d[12] = syn_o.visibility if syn_o.present?
       m_d
     end
     def fill_radiation_meteo_data(report_date)
@@ -423,7 +428,7 @@ class BulletinsController < ApplicationController
       [1,3,2,10].each_with_index {|v,i| m_d[i] = radiations[v].present? ? radiations[v] : correct_radiation(report_date, v)}
       m_d
     end
-    
+
     def correct_radiation(report_date, station_id)
       r_o = RadiationObservation.find_by(date_observation: report_date, hour_observation: 0, station_id: station_id)
       # ret = r_o.present? ? r_o.telegram[20,3].to_i : nil 20190614 Boyko
@@ -449,7 +454,7 @@ class BulletinsController < ApplicationController
       # wind_speed = AgroObservation.wind_speed_max_24(report_date-1.day)
       wind_speed = AgroObservation.wind_speed_max_24(report_date)
       precipitations = precipitation_daily(report_date-1.day, true)
-      [1,3,2,10].each_with_index do |v,i| 
+      [1,3,2,10].each_with_index do |v,i|
         m_d[i*4] = avg_24[v] if avg_24[v].present?
         m_d[i*4+1] = precipitations[v] if precipitations[v].present?
         m_d[i*4+3] = wind_speed[v] if wind_speed[v].present?
@@ -457,7 +462,7 @@ class BulletinsController < ApplicationController
       m_d
       # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{m_d.inspect}")
     end
-    
+
     def fill_meteo_data(report_date)
       m_d = []
       m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
@@ -496,7 +501,7 @@ class BulletinsController < ApplicationController
       ret = []
       precipitation_day = SynopticObservation.precipitation(18, report_date-1.day)
       precipitation_night = SynopticObservation.precipitation(6, report_date)
-      (1..10).each do |i| 
+      (1..10).each do |i|
         daily = {day: nil, night: nil}
         if precipitation_day[i].present?
           daily['day'] = precipitation_day[i]>989 ? ((precipitation_day[i]-990)*0.1).round(1) : precipitation_day[i]
@@ -518,7 +523,7 @@ class BulletinsController < ApplicationController
       end
       precipitation_day = SynopticObservation.precipitation(18, date_18_clock)
       precipitation_night = SynopticObservation.precipitation(6, report_date)
-      (1..10).each do |i| 
+      (1..10).each do |i|
         if precipitation_day[i].present?
           precipitation[i] = precipitation_day[i]>989 ? ((precipitation_day[i]-990)*0.1).round(1) : precipitation_day[i]
         end

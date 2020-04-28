@@ -2,8 +2,8 @@ class SynopticObservationsController < ApplicationController
   require 'csv'
   before_action :logged_user?
   # before_filter :require_observer_or_technicist
-  before_action :find_synoptic_observation, only: [:show, :update_synoptic_telegram, :destroy, :update] 
-  
+  before_action :find_synoptic_observation, only: [:show, :update_synoptic_telegram, :destroy, :update]
+
   def get_date_term_station
     @stations = Station.all.order(:id)
   end
@@ -11,7 +11,7 @@ class SynopticObservationsController < ApplicationController
   def edit
     @synoptic_observation = SynopticObservation.find(params[:id])
   end
-  
+
   def update
     if @synoptic_observation.update_attributes observation_params(:synoptic_observation)
       redirect_to synoptic_observation_path @synoptic_observation
@@ -54,7 +54,7 @@ class SynopticObservationsController < ApplicationController
       rows = []
       web_rows.each do |t|
         if (t =~ /AAXX/) && (t.size>55)
-          rows << t 
+          rows << t
         end
       end
       our_synoptic_observations = SynopticObservation.where("date = ? and term = ? and station_id != 5", @observation_date, @term.to_i) # w/o Mariupol
@@ -91,42 +91,42 @@ class SynopticObservationsController < ApplicationController
       end
     end
     respond_to do |format|
-      format.html 
-      format.json do 
+      format.html
+      format.json do
         render json: {telegrams: @telegrams}
       end
     end
     # puts ">>>>>>>>>>>>>>>>>>>>>>"+@telegrams[0].inspect
   end
-  
+
   def make_row_as_ogimet(date, term, telegram)
     # 33088,2019,10,31,00,00,AAXX 31001 33088 32997 80000 11014 21017 30085 40284 52001 8805/ 555 1/001=
     # 	ЩЭСИД 34712 41996 61602 10144 20131 30066 40149 51004 71022 80008 555 1/022=
     return telegram[6,5]+','+date[0,4]+','+date[5,2]+','+date[8,2]+','+term+',00,AAXX '+date[8,2]+term+'1'+telegram[5..-1]
   end
-  
+
   def find_term_telegrams
     @term = params[:term].present? ? params[:term].to_i : 0
     @observation_date = params[:date].present? ? params[:date] : Time.now.utc.strftime("%Y-%m-%d")
     @telegrams = SynopticObservation.where("date = ? AND term= ?", @observation_date, @term)
     @stations = Station.all.order(:id)
     respond_to do |format|
-      format.html 
-      format.json do 
+      format.html
+      format.json do
         render json: {telegrams: @telegrams}
       end
     end
   end
-  
+
   def test_telegram
     observation_date = params[:observation_date]
     term = params[:term]
     station_id = params[:station_id]
     observation = SynopticObservation.find_by(date: observation_date, term: term, station_id: station_id)
-    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@observation.inspect}") 
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@observation.inspect}")
     if observation.present?
       respond_to do |format|
-        format.json do 
+        format.json do
           render json: {observation_id: observation.id, telegram: observation.telegram}
         end
       end
@@ -138,13 +138,13 @@ class SynopticObservationsController < ApplicationController
       end
     end
   end
-  
+
   def destroy
     @synoptic_observation.destroy
     flash[:success] = "Телеграмма удалена"
     redirect_to synoptic_observations_path
   end
-  
+
   def fire
     now_date = Time.now.utc
     if params[:date_from].present?
@@ -158,7 +158,7 @@ class SynopticObservationsController < ApplicationController
       @date_to = (@date_from.to_date + 180.days) < now_date ? (@date_from.to_date + 180.days).strftime("%Y-%m-%d") : now_date.strftime("%Y-%m-%d")
     end
     @station_id = params[:station_id].present? ? params[:station_id] : 1
-    
+
     temps = SynopticObservation.select(:date, :temperature, :temperature_dew_point).
       where("date >= ? and date <= ? and station_id = ? and term = 12", @date_from, @date_to, @station_id.to_i).order(:date)
     @fire_data = {}
@@ -198,7 +198,7 @@ class SynopticObservationsController < ApplicationController
     end
     respond_to do |format|
       format.html
-      format.json do 
+      format.json do
         render json: {fireData: @fire_data}
       end
     end
@@ -222,13 +222,13 @@ class SynopticObservationsController < ApplicationController
       @temperatures[t.date.day] = t.temperature
     }
     respond_to do |format|
-      format.html 
-      format.json do 
+      format.html
+      format.json do
         render json: {temperatures: @temperatures, playdays: @playdays}
       end
     end
   end
-  
+
   def dnmu
     today = Time.now
     @year = params[:year].present? ? params[:year] : today.year.to_s
@@ -246,8 +246,8 @@ class SynopticObservationsController < ApplicationController
       @temperatures[t.date.day] = t.temperature
     }
     respond_to do |format|
-      format.html 
-      format.json do 
+      format.html
+      format.json do
         render json: {temperatures: @temperatures}
       end
     end
@@ -271,17 +271,17 @@ class SynopticObservationsController < ApplicationController
       @temperatures[d] = SynopticObservation.find_by_sql(sql)[0].temperature
     end
     respond_to do |format|
-      format.html 
+      format.html
       format.pdf do
         pdf = Energy.new(@temperatures, @year, @month, params[:chief], params[:responsible])
         send_data pdf.render, filename: "energy_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
       end
-      format.json do 
+      format.json do
         render json: {temperatures: @temperatures}
       end
     end
   end
-  
+
   def tpp
     today = Time.now
     @year = params[:year].present? ? params[:year] : today.year.to_s
@@ -307,17 +307,17 @@ class SynopticObservationsController < ApplicationController
       @temperatures[key] = t.temperature
     }
     respond_to do |format|
-      format.html 
+      format.html
       format.pdf do
         pdf = Tpp.new(@temperatures, @year, @month, params[:chief], params[:responsible])
         send_data pdf.render, filename: "tpp_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
       end
-      format.json do 
+      format.json do
         render json: {temperatures: @temperatures}
       end
     end
   end
-  
+
   def teploenergo
     today = Time.now
     @year = params[:year].present? ? params[:year] : today.year.to_s
@@ -335,24 +335,29 @@ class SynopticObservationsController < ApplicationController
     else
       last_day = Time.parse("#{@year}-#{@month}-01").end_of_month.day.to_s
     end
+    # if (today > '2020-04-20'.to_date) and @month >= '04' and @month < '10'
+    #   last_day = '20'
+    #   @month = '04'
+    # end
     # sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date like '#{@year}-#{@month}%' and station_id in (1,2,3,4,5) group by date, station_id;"
     # sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date like '#{@year}-#{@month}%' and station_id in (1,2,3,4,10) group by date, station_id;"
     sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date >= '#{@year}-#{@month}-01' and date <= '#{@year}-#{@month}-#{last_day}' and station_id in (1,2,3,4,10) group by date, station_id;"
+    # db_temperatures = []
     db_temperatures = SynopticObservation.find_by_sql(sql)
     @temperatures = {}
     db_temperatures.each {|t|
       key = t.date.day.to_s.rjust(2, '0')+'-'+t.station_id.to_s.rjust(2, '0')
       @temperatures[key] = t.temperature
     }
-    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@temperatures.inspect}") 
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@temperatures.inspect}")
     respond_to do |format|
-      format.html 
+      format.html
       format.pdf do
         variant = params[:variant]
         pdf = TeploenergoPortrait.new(@temperatures, @year, @month, variant)
         send_data pdf.render, filename: "teploenergo_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
       end
-      format.json do 
+      format.json do
         render json: {temperatures: @temperatures}
       end
     end
@@ -361,12 +366,12 @@ class SynopticObservationsController < ApplicationController
   def telegrams_4_download
     @date = (Time.now-3.hours).utc.strftime("%Y-%m-%d") # предыдущий срок
   end
-  
+
   def arm_sin_data_fetch
     # 08001 34824 41595 80902 10068 20061 30128 40134 58003 71022 885// 55555 11005=  for arm_sin
     # ЩЭСМЮ 34712 32997 22503 10245 20175 39941 40020 53... from hmc
     # 33088,2018,08,02,00,00,AAXX 02001 33088 32997 10000 10188 20182 30034 40217 58001 81070 555 1/018= from ogimet
-    date =  params[:download][:date] 
+    date =  params[:download][:date]
     term = params[:download][:term]
     year = date[0, 4]
     month = date[5,2]
@@ -404,7 +409,7 @@ class SynopticObservationsController < ApplicationController
     flash[:success] = "Дата: #{date}; срок: #{term}; телеграмм из БД ГМЦ: #{our_telegrams_num}; телеграмм из БД ogimet: #{web_telegrams_num}; записано телеграмм: #{total}"
     redirect_to synoptic_observations_arm_sin_files_list_path(request.parameters)
   end
-  
+
   # def wmo_stations_create
   #   # CSV::Row "STATION_NUMBER":"13610" "STATION_NAME":"Kukes" "WMO_NO":"13610" "ORGANIZATION":"wmo" "Y_COORDINATE":"2162966,85479" "X_COORDINATE":"5183575,02876" "LATITUDE":"42,03330" "LONGITUDE":"20,41670" "COUNTRY":"Albania" "ALTITUDE":"354" "DISTANCE_TO_COAST":"73" "RELIABLE_STATION":"0"
   #   table = []
@@ -424,40 +429,40 @@ class SynopticObservationsController < ApplicationController
   #   puts ">>>>>>>>>>>>>>>> В справочнике WMO-станций #{WmoStation.count} записей"
   #   redirect_to synoptic_observations_path
   # end
-  
+
   def arm_sin_files_list
-    date = params[:download][:date] 
+    date = params[:download][:date]
     term = params[:download][:term]
     @list = [{date: date, term: term}]
   end
-  
+
   def download_arm_sin_file
-    date = params[:date] 
+    date = params[:date]
     term = params[:term]
     year = date[0, 4]
     month = date[5,2]
     day = date[8,2]
     send_file("#{Rails.root}/tmp/#{year}_#{month}/#{day}_#{month}/AAXX.#{term}")
   end
-  
+
   def get_meteoparams
     @year = params[:year].present? ? params[:year] :  Time.now.year.to_s
     @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
     @stations = Station.all.order(:name)
     @meteoparams = []
     respond_to do |format|
-      format.html 
+      format.html
       format.pdf do
         station_name = Station.find(params[:station_id]).name
         pdf = Meteoparams.new(fetch_meteoparams(params[:station_id]), @year, @month, station_name)
         send_data pdf.render, filename: "meteoparams_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
       end
-      format.json do 
-        render json: fetch_meteoparams(params[:station_id]) 
+      format.json do
+        render json: fetch_meteoparams(params[:station_id])
       end
     end
   end
-  
+
   def fetch_meteoparams(station_id)
     from_date = Time.parse(@year+'-'+@month+'-01 00:00:00')-3.hours
     from_date_to_s = from_date.strftime('%Y-%m-%d %H:%M:%S')
@@ -484,7 +489,7 @@ class SynopticObservationsController < ApplicationController
 
   def get_conversion_params
   end
-  
+
   def converter
     date_from = params[:interval][:date_from].tr("-", ".")+' 00:00:00'
     date_to = params[:interval][:date_to].tr("-", ".")+' 23:59:59'
@@ -505,10 +510,10 @@ class SynopticObservationsController < ApplicationController
         if telegram.present?
           observation = SynopticObservation.find_by(date: telegram.date, term: telegram.term, station_id: telegram.station_id)
           if observation.present?
-            # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{hash_telegram.inspect}") 
-            if observation.observed_at.nil? or (observation.observed_at < telegram.observed_at) 
+            # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{hash_telegram.inspect}")
+            if observation.observed_at.nil? or (observation.observed_at < telegram.observed_at)
               json_telegram = telegram.as_json.except('id', 'created_at', 'updated_at')
-              observation.update_attributes json_telegram 
+              observation.update_attributes json_telegram
               updated_telegrams += 1
             else
               skiped_telegrams += 1
@@ -532,18 +537,18 @@ class SynopticObservationsController < ApplicationController
     flash[:success] = "Входных телеграмм - #{selected_telegrams}. Корректных телеграмм - #{correct_telegrams} (создано - #{created_telegrams}; обновлено - #{updated_telegrams}; пропущено - #{skiped_telegrams}). Ошибочных телеграмм - #{wrong_telegrams}."
     redirect_to synoptic_observations_get_conversion_params_path
   end
-  
+
   def conversion_log_download
     send_file("#{Rails.root}/tmp/synoptic_conversion_protocol.txt")
   end
-  
+
   def search_synoptic_telegrams
     @date_from ||= params[:date_from].present? ? params[:date_from] : Time.now.strftime("%Y-%m-%d")
     @date_to ||= params[:date_to].present? ? params[:date_to] : Time.now.strftime("%Y-%m-%d")
     if params[:term].present?
       @term =  params[:term]
       and_term = " and term = #{@term}"
-    else 
+    else
       @term = '99'
       and_term = ''
     end
@@ -561,30 +566,30 @@ class SynopticObservationsController < ApplicationController
       @text = ''
       and_text = ''
     end
-       
+
     sql = "select * from synoptic_observations where observed_at >= '#{@date_from}' and observed_at <= '#{@date_to} 23:59:59' #{and_term} #{station} #{and_text} order by observed_at desc;"
     tlgs = SynopticObservation.find_by_sql(sql)
     @stations = Station.stations_array_with_any
     @telegrams = fields_short_list(tlgs)
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{@telegrams.inspect}")
     respond_to do |format|
-      format.html 
+      format.html
       format.json { render json: {telegrams: @telegrams} }
     end
   end
 
   # def index_on_tab
   # end
-  
+
   def index
     @synoptic_observations = SynopticObservation.paginate(page: params[:page]).order(:observed_at, :term).reverse_order
   end
-  
+
   def synoptic_storm_telegrams
     sql = "SELECT created_at, observed_at as date_rep, term as fterm, station_id, telegram from synoptic_observations union select created_at, telegram_date as date_rep, 'Ш' as fterm, station_id, telegram from storm_observations order by date_rep desc, created_at desc limit 100;"
     @telegrams = SynopticObservation.find_by_sql(sql)
   end
-    
+
   def show
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{params.inspect}")
     date_from ||= params[:date_from].present? ? params[:date_from] : Time.now.strftime("%Y-%m-%d")
@@ -595,12 +600,12 @@ class SynopticObservationsController < ApplicationController
     @search_link = "/search_synoptic_telegrams?telegram_type=synoptic&date_from=#{date_from}&date_to=#{date_to}#{station}#{text}#{term}"
     @actions = Audit.where("auditable_id = ? and auditable_type = 'SynopticObservation'", @synoptic_observation.id)
   end
-  
+
   # def new
   #   @stations = Station.all.order(:name)
   #   @last_telegrams = SynopticObservation.short_last_50_telegrams(current_user)
   # end
-  
+
   def create_synoptic_telegram
     date = params[:input_mode] == 'direct' ? params[:date] : Time.now.utc.strftime("%Y-%m-%d")
     term = params[:input_mode] == 'direct' ? params[:observation][:term].to_i : Time.now.utc.hour / 3 * 3
@@ -615,10 +620,10 @@ class SynopticObservationsController < ApplicationController
         # ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'synoptic'
         # 2018.12.29
         last_telegrams = SynopticObservation.short_last_50_telegrams(current_user)
-        render json: {telegrams: last_telegrams, 
-                      tlgType: 'synoptic', 
-                      currDate: Time.now.utc.strftime("%Y-%m-%d"), 
-                      inputMode: params[:input_mode], 
+        render json: {telegrams: last_telegrams,
+                      tlgType: 'synoptic',
+                      currDate: Time.now.utc.strftime("%Y-%m-%d"),
+                      inputMode: params[:input_mode],
                       errors: ["Телеграмма обновлена"]}
       else
         render json: {errors: ["Ошибка при сохранении изменений"]}, status: :unprocessable_entity
@@ -648,7 +653,7 @@ class SynopticObservationsController < ApplicationController
           temp = telegram.temperature
           temp_d_p = telegram.temperature_dew_point
           if fire_danger.present?
-            fire_danger[:temperature] = temp 
+            fire_danger[:temperature] = temp
             fire_danger[:temperature_dew_point] = temp_d_p
             fire_danger[:fire_danger] = (temp*(temp-temp_d_p)).round+prev_fd_value*(fire_danger[:precipitation_night].to_i>3 ? 0:1)
             # fire_danger.save
@@ -693,7 +698,7 @@ class SynopticObservationsController < ApplicationController
       end
     end
   end
-  
+
   def update_synoptic_telegram
     if @synoptic_observation.update_attributes observation_params(:observation)
       render json: {errors: []}
@@ -703,7 +708,7 @@ class SynopticObservationsController < ApplicationController
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{@synoptic_observation.inspect}")
     # Rails.logger.debug("My object+++++++++++++++: #{params[:observation].inspect}")
   end
-  
+
   def daily_avg_temp
     @calc_date = params[:calc_date].present? ? params[:calc_date] : Time.now.strftime("%Y-%m-%d")
     temperatures = get_daily_avg_temperatures(@calc_date)
@@ -711,8 +716,8 @@ class SynopticObservationsController < ApplicationController
     @temperatures_utc = temperatures[:utc]
     @temperatures_local = temperatures[:local]
     respond_to do |format|
-      format.html 
-      format.json do 
+      format.html
+      format.json do
         render json: {temperaturesUtc: @temperatures_utc, temperaturesLocal: @temperatures_local, calcDate: @calc_date}
       end
     end
@@ -731,17 +736,17 @@ class SynopticObservationsController < ApplicationController
     ret
   end
   def calc_daily_avg_temps(observations)
-    a = [] 
+    a = []
     observations.each {|tl|
       s=tl.station_id
       a[s] ||= []
       t=tl.term
       a[s][t] = tl.temperature
     }
-    a[11] = [] 
-    a[12] = [] 
-    nt = [] 
-    nr = [] 
+    a[11] = []
+    a[12] = []
+    nt = []
+    nr = []
     (1..10).each do |s|
       if a[s].present?
         arr = a[s].compact
@@ -785,20 +790,20 @@ class SynopticObservationsController < ApplicationController
   #     a[[hd.station_id, hd.term]] = hd.temperature
   #   }
   #   ret[:utc] =a
-  #   ret    
+  #   ret
   # end
-  
+
   def month_avg_temp
     @year = params[:year].present? ? params[:year] : Time.now.year.to_s
     @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
     @temperatures = get_month_avg_temp(@year, @month)
     respond_to do |format|
-      format.html 
+      format.html
       # format.pdf do
       #   pdf = Teploenergo.new(@temperatures, @year, @month)
       #   send_data pdf.render, filename: "teploenergo_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
       # end
-      format.json do 
+      format.json do
         render json: {temperatures: @temperatures}
       end
     end
@@ -824,7 +829,7 @@ class SynopticObservationsController < ApplicationController
     ret[num_days+3][0] = nil
     ret[num_days+4] = Array.new(11,0)
     ret[num_days+4][0] = nil
-    
+
     (1..num_days).each do |d|
       arr = ret[d].compact
       ret[d][11] = (arr.reduce(:+) / arr.size.to_f).round(1) if arr.size > 0
@@ -845,7 +850,7 @@ class SynopticObservationsController < ApplicationController
           else
             ret[num_days+3][s] += ret[d][s] # 3D
             i3[s] += 1
-          end  
+          end
         end
       end
     end
@@ -891,23 +896,23 @@ class SynopticObservationsController < ApplicationController
     ret
     # select station_id, avg(temperature) from synoptic_observations where station_id not in (6,9) and observed_at > '2017-02-17 20' and observed_at < '2017-02-18 19' group  by  station_id;
   end
-  
+
   def heat_donbass_show
     @calc_date = params[:calc_date].present? ? params[:calc_date] : Time.now.strftime("%Y-%m-%d")
-    @temperatures = get_temperatures(@calc_date) 
+    @temperatures = get_temperatures(@calc_date)
   end
-  
+
   def heat_donbass_rx
     @calc_date = params[:calc_date].present? ? params[:calc_date] : Time.now.strftime("%Y-%m-%d")
-    @temperatures = get_temperatures(@calc_date) 
+    @temperatures = get_temperatures(@calc_date)
   end
-  
+
   def get_temps
     calc_date = params[:calc_date].present? ? params[:calc_date] : Time.now.strftime("%Y-%m-%d")
     temperatures = get_temperatures(calc_date)
     render json: {temperatures: temperatures, calcDate: calc_date}
   end
-  
+
   def input_synoptic_telegrams
     @stations = Station.all.order(:name)
     @telegrams = SynopticObservation.short_last_50_telegrams(current_user)
@@ -917,7 +922,7 @@ class SynopticObservationsController < ApplicationController
     @weather_in_term = SynopticObservation::WEATHER_IN_TERM
     @weather_past = SynopticObservation::WEATHER_PAST
   end
-  
+
   def get_last_telegrams
     telegrams = SynopticObservation.short_last_50_telegrams(current_user)
     render json: {telegrams: telegrams, tlgType: 'synoptic'}
@@ -932,22 +937,22 @@ class SynopticObservationsController < ApplicationController
       }
       a
     end
-    
+
     def find_synoptic_observation
       @synoptic_observation = SynopticObservation.find(params[:id])
     end
-    
+
     def observation_params(model)
       params.require(model).permit(:date, :term, :telegram, :station_id, :cloud_base_height,
-        :visibility_range, :cloud_amount_1, :wind_direction, :wind_speed_avg, :temperature, :temperature_dew_point, 
+        :visibility_range, :cloud_amount_1, :wind_direction, :wind_speed_avg, :temperature, :temperature_dew_point,
         :pressure_at_station_level, :pressure_at_sea_level, :pressure_tendency_characteristic, :pressure_tendency,
         :precipitation_1, :precipitation_time_range_1, :weather_in_term, :weather_past_1, :weather_past_2,
-        :cloud_amount_2, :clouds_1, :clouds_2, :clouds_3, :temperature_dey_max, :temperature_night_min, 
+        :cloud_amount_2, :clouds_1, :clouds_2, :clouds_3, :temperature_dey_max, :temperature_night_min,
         :underlying_surface_сondition, :snow_cover_height, :sunshine_duration, :cloud_amount_3, :cloud_form,
         :cloud_height, :weather_data_add, :soil_surface_condition_1, :temperature_soil, :soil_surface_condition_2,
         :temperature_soil_min, :temperature_2cm_min, :precipitation_2, :precipitation_time_range_2, :observed_at)
     end
-    
+
     def convert_synoptic_telegram(old_telegram, stations, errors)
       groups = old_telegram["Телеграмма"].tr('=', '').split(' ')
       new_telegram = SynopticObservation.new
@@ -956,7 +961,7 @@ class SynopticObservationsController < ApplicationController
       new_telegram.term = old_telegram["Срок"].to_i
       new_telegram.telegram = old_telegram["Телеграмма"]
       if ((groups[0] == "ЩЭСМЮ" ) && (new_telegram.term % 2 == 0)) || ((groups[0] == "ЩЭСИД") && (new_telegram.term % 2 == 1))
-      else 
+      else
         errors.push("Ошибка в различительной группе");
         return nil;
       end
@@ -967,7 +972,7 @@ class SynopticObservationsController < ApplicationController
         errors << "Ошибка в коде станции - <#{code_station}>"
         return nil
       end
-      
+
       if (groups[2] =~ /^[134\/][1-4][0-9\/]([0-4][0-9]|50|5[6-9]|[6-9][0-9]|\/\/)$/).nil?
         errors << "Ошибка в группе 00"
         return nil
@@ -1158,7 +1163,7 @@ class SynopticObservationsController < ApplicationController
         end
       end
 
-      if pos555.present? #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  
+      if pos555.present? #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         len = new_telegram.telegram.size-1
         section = new_telegram.telegram[pos555+4,len-pos555-4]
         g_pos = section =~ / 1..../
@@ -1219,7 +1224,7 @@ class SynopticObservationsController < ApplicationController
 
       new_telegram
     end
-    
+
     def require_observer_or_technicist
       if current_user and ((current_user.role == 'observer') || (current_user.role == 'technicist'))
         return true
@@ -1229,18 +1234,18 @@ class SynopticObservationsController < ApplicationController
         return false
       end
     end
-    
+
     def fields_short_list(full_list)
       stations = Station.all.order(:id)
       full_list.map do |rec|
         {id: rec.id, date: rec.observed_at.utc, term: rec.term, station_name: stations[rec.station_id-1].name, telegram: rec.telegram}
       end
     end
-    
+
     def make_row_4_download(day, term, telegram)
       day+term+'1 '+telegram[6..-1].gsub(/ 333 /, " 33333 ").gsub(/ 555 /, " 55555 ")
     end
-  
+
     def logged_user?
       if current_user.present?
         return true

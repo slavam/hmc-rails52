@@ -28,13 +28,16 @@
           %th Предупреждение
           - if current_user.role != 'guest'
             %th Оповещение
+        - elsif @bulletin_type == 'fire'
+          %th Полный
+          %th Сокращенный
         - else
           %th= ""
         - if ['technicist','synoptic'].index(current_user.role)
           %th= ""
           %th= ""
     %tbody
-      - @bulletins.each do |b| 
+      - @bulletins.each do |b|
         - variant = ''
         - if (b.bulletin_type == 'sea') or (b.bulletin_type == 'daily')
           - variant = b.summer ? ' (Лето)' : ' (Зима)'
@@ -54,6 +57,9 @@
             %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=warning"
             - if current_user.role != 'guest'
               %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=notification"
+          - elsif @bulletin_type == 'fire'
+            %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=full"
+            %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf?variant=short"
           - else
             %td= link_to "Просмотреть/Распечатать", "#{b.id}/bulletin_show.pdf"
           - if ['technicist','synoptic'].index(current_user.role)

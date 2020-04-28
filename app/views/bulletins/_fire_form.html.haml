@@ -29,6 +29,9 @@
               %td #{s}
               - (0..3).each do |i|
                 %td= text_field_tag "val_"+(4*j+i+1).to_s, m_d[4*j+i].present? ? m_d[4*j+i] : '', size: 4
+      %tr
+        %th Условия выпуска
+        %td= form.text_field :forecast_day 
       = render partial: 'responsible'
       = render partial: 'chief'
     %br
