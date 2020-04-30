@@ -9,7 +9,12 @@ class Fire2 < Prawn::Document
       :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
     })
     y_pos = cursor
-    move_down 40
+    image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.25
+    font "OpenSans" #, style: :bold
+    bounding_box([0, y_pos], width: bounds.width) do
+      text Bulletin::HEAD, align: :center, size: 10
+    end
+    move_down 50
     font "OpenSans"
     bounding_box([0, cursor], width: bounds.width) do
       text "БЮЛЛЕТЕНЬ ПОЖАРНОЙ ОПАСНОСТИ № #{@bulletin.curr_number}", align: :center, color: "ff0000", size: 12
@@ -17,8 +22,8 @@ class Fire2 < Prawn::Document
     end
     move_down 20
     font "OpenSans"
-    text "Информация о фактической пожарной опасности по погодным условиям", align: :center
-    text "и прогноз классов пожарной опасности на 1-3 суток", align: :center
+    text "Информация о фактической пожарной опасности по погодным ", align: :center
+    text "условиям и прогноз классов пожарной опасности на 1-3 суток", align: :center
     text "в Донецкой Народной Республике", align: :center
     move_down 10
 
