@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   post 'other_observations/create_other_data', to: 'other_observations#create_other_data'
   get 'other_observations/get_last_telegrams', to: 'other_observations#get_last_telegrams'
   delete 'other_observations/delete_other_data/:id', to: 'other_observations#delete_other_data'
+  get 'other_observations/monthly_precipitation', to: 'other_observations#monthly_precipitation'
   resources :other_observations
   resources :donetsk_climate_sets
   get 'snow_observations/input_snow_telegrams', to: 'snow_observations#input_snow_telegrams'

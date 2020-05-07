@@ -14,6 +14,7 @@ class OtherObservation < ApplicationRecord
     OtherObservation.where('data_type = ?', data_type).limit(50).order(:obs_date, :updated_at).reverse_order
   end
   def init
-    self.data_type  ||= 'temp'
+    # self.
+    data_type  ||= 'temp'
   end
 end
