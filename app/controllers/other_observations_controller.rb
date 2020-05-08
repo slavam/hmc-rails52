@@ -83,18 +83,21 @@ class OtherObservationsController < ApplicationController
     last_day = Time.days_in_month(month.to_i, year.to_i).to_s.rjust(2, '0')
     start_date = year+'-'+month+'-01'
     end_date = year+'-'+month+'-'+last_day
-    rows = OtherObservation.select("obs_date, source, period, value").
+    rows = OtherObservation.select("obs_date, source, period, value, description").
       where("obs_date >= ? AND obs_date <= ? AND data_type='perc'", start_date, end_date).order(:obs_date, :source, :period)
     precipitation = []
     rows.each {|p|
       d = p.obs_date.day
       s = posts.index(p.source)
       precipitation[d] ||= []
-      precipitation[d][s] ||= [nil,nil]
+      precipitation[d][s] ||= [nil,nil,'','']
+
       if p.period == 'night'
         precipitation[d][s][0] = p.value
+        precipitation[d][s][2] = p.description if p.description.present? and p.description > ''
       else
         precipitation[d][s][1] = p.value
+        precipitation[d][s][3] = p.description if p.description.present? and p.description > ''
       end
       # pn = (p.period == 'night')? p.value : nil
       # pd = (p.period != 'night')? p.value : nil
