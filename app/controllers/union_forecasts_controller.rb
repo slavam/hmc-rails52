@@ -1,10 +1,10 @@
 class UnionForecastsController < ApplicationController
   before_action :find_union_forecast, :only => [:union_forecast_show, :destroy, :edit, :update]
-  
+
   def index
     @union_forecasts = UnionForecast.paginate(page: params[:page], per_page: 20).order(:report_date, :id).reverse_order
   end
-  
+
   def union_forecast_show
     pdf = Union.new(@union_forecast)
     pdf_file_name = "Union_forecast_#{current_user.id}.pdf"
@@ -14,10 +14,10 @@ class UnionForecastsController < ApplicationController
       end
     end
   end
-  
+
   def new
     @union_forecast = UnionForecast.new
-    union_forecast = UnionForecast.last
+    union_forecast = UnionForecast.count > 0 ? UnionForecast.last : UnionForecast.new
     [:report_date, :curr_number, :synoptic_situation,
       :forecast_north, :north1_tn, :north1_td, :north2_tn, :north2_td, :north3_tn,
       :north3_td, :forecast_west, :west1_tn, :west1_td, :west2_tn, :west2_td, :west3_tn,
@@ -38,7 +38,7 @@ class UnionForecastsController < ApplicationController
       render :new
     end
   end
-  
+
   def edit
   end
 
@@ -56,13 +56,13 @@ class UnionForecastsController < ApplicationController
     flash[:success] = "Прогноз удален"
     redirect_to union_forecasts_path
   end
-  
+
   private
-  
+
     def find_union_forecast
       @union_forecast = UnionForecast.find(params[:id])
     end
-    
+
     def union_forecast_params
       params.require(:union_forecast).permit(:report_date, :curr_number, :synoptic_situation,
         :forecast_north, :north1_tn, :north1_td, :north2_tn, :north2_td, :north3_tn,

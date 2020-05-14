@@ -3,18 +3,17 @@ import ReactDOM from 'react-dom';
 import MonthYearForm from './month_year_form';
 
 const MonthlyPrecipitationTable = ({precipitation, maxDay}) => {
-  let rows = [<tr key="0"><td align="center"><b></b></td><td colSpan="2" align="center"><b>Авдотьино</b></td><td colSpan="2" align="center"><b>Кировский</b></td><td colSpan="2" align="center"><b>Макеевка</b></td><td colSpan="2" align="center"><b>Старобешево</b></td><td colSpan="2" align="center"><b>Тельманово</b></td></tr>,
-              <tr key="100"><td align="center"><b>Число</b></td><td align="center"><b>Ночь</b></td><td align="center"><b>День</b></td><td align="center"><b>Ночь</b></td><td align="center"><b>День</b></td><td align="center"><b>Ночь</b></td><td align="center"><b>День</b></td><td align="center"><b>Ночь</b></td><td align="center"><b>День</b></td><td align="center"><b>Ночь</b></td><td align="center"><b>День</b></td></tr>];
+  let nightDay = [];
+  for(var k=0; k<5; ++k){
+    nightDay.push(<td key={k} style={{borderColor:"black"}} align="center"><b>Ночь</b></td>);
+    nightDay.push(<td key={k+10} style={{borderColor:"black"}} align="center"><b>День</b></td>);
+  }
+  let rows = [<tr key="0"><td style={{borderColor:"black"}}></td><td style={{borderColor:"black"}} colSpan="2" align="center"><b>Авдотьино</b></td><td style={{borderColor:"black"}} colSpan="2" align="center"><b>Кировский</b></td><td style={{borderColor:"black"}} colSpan="2" align="center"><b>Макеевка</b></td><td style={{borderColor:"black"}} colSpan="2" align="center"><b>Старобешево</b></td><td style={{borderColor:"black"}} colSpan="2" align="center"><b>Тельманово</b></td></tr>,
+              <tr key="100"><td style={{borderColor:"black"}} align="center"><b>Число</b></td>{nightDay}</tr>];
   if (precipitation){
     for(var i=1; i<=maxDay; ++i){
       let values = [];
       let tr0;
-      // for(var j=0; j<5; ++j){
-      //   let val = ((precipitation[i] == null) || (precipitation[i][j] == null)) ? '':
-      //     ((precipitation[i][j][0] && precipitation[i][j][1])? precipitation[i][j][0]+'/'+precipitation[i][j][1] :
-      //     (precipitation[i][j][0]? 'Ночь: '+precipitation[i][j][0] : 'День: '+precipitation[i][j][1]));
-      //   values.push(<td key={j} align="center" style={{backgroundColor: (j % 2 == 0)? '#ccc':'#fff'}} title={val>''? precipitation[i][j][2]:''}>{val}</td>);
-      // };
       for(var j=0; j<5; ++j){
         let vn, vd, tn, td = ''
         if((precipitation[i] != null) && (precipitation[i][j] != null)){
@@ -27,12 +26,12 @@ const MonthlyPrecipitationTable = ({precipitation, maxDay}) => {
             td=precipitation[i][j][3];
           }
         }
-        values.push(<td key={j*2} align="center" style={{backgroundColor: '#ccc'}} title={tn}>{vn}</td>);
-        values.push(<td key={j*2+1} align="center" title={td}>{vd}</td>);
+        values.push(<td style={{borderColor:"black"}} key={j*2} align="center" title={tn}>{vn}</td>);
+        values.push(<td style={{borderColor:"black"}} key={j*2+1} align="center" title={td}>{vd}</td>);
       }
-      rows.push(<tr key={i}><td key={i}>{i}</td>{values}</tr>);
+      rows.push(<tr key={i}><td style={{borderColor:"black"}} align="center" key={i}>{i}</td>{values}</tr>);
     }
-    return <table className="table table-hover"><tbody>{rows}</tbody></table>;
+    return <table className="table table-bordered" ><tbody>{rows}</tbody></table>;
   }else{
     return <div></div>
   }
@@ -71,9 +70,7 @@ export default class MonthlyPrecipitation extends React.Component {
     var objDate = new Date();
     objDate.setDate(1);
     objDate.setMonth(idx-1);
-    var locale = "ru",
-        month = objDate.toLocaleString(locale, { month: "long" });
-    return month;
+    return objDate.toLocaleString("ru", {month: "long"});
   }
   render(){
     return(

@@ -37,28 +37,28 @@ class Union < Prawn::Document
       [{content: "#{forecast.synoptic_situation}", colspan: 3}],
       [{content: "Город", rowspan:2, align: :center, valign: :center},{content:'Температура воздуха, °С', colspan: 2, align: :center}],
       [{content: "ночь", align: :center},{content:"день", align: :center}],
-      
+
       ["Прогноз погоды по северу Республики",{content: "#{forecast.forecast_north}", colspan:2}],
       ["Славянск", {content: "#{forecast.north1_tn}", align: :center}, {content: "#{forecast.north1_td}", align: :center}],
       ["Краматорск", {content: "#{forecast.north2_tn}", align: :center}, {content: "#{forecast.north2_td}", align: :center}],
       ["Горловка", {content: "#{forecast.north3_tn}", align: :center}, {content: "#{forecast.north3_td}", align: :center}],
-      
+
       ["Прогноз погоды по западу Республики",{content: "#{forecast.forecast_west}", colspan:2}],
       ["Угледар", {content: "#{forecast.west1_tn}", align: :center}, {content: "#{forecast.west1_td}", align: :center}],
       ["Доброполье", {content: "#{forecast.west2_tn}", align: :center}, {content: "#{forecast.west2_td}", align: :center}],
       ["Красноармейск", {content: "#{forecast.west3_tn}", align: :center}, {content: "#{forecast.west3_td}", align: :center}],
-      
+
       ["Прогноз погоды по югу Республики",{content: "#{forecast.forecast_south}", colspan:2}],
       ["Мариуполь", {content: "#{forecast.south1_tn}", align: :center}, {content: "#{forecast.south1_td}", align: :center}],
       ["Волноваха", {content: "#{forecast.south2_tn}", align: :center}, {content: "#{forecast.south2_td}", align: :center}],
       ["Новоазовск", {content: "#{forecast.south3_tn}", align: :center}, {content: "#{forecast.south3_td}", align: :center}],
-      
+
       ["Прогноз погоды по востоку Республики",{content: "#{forecast.forecast_east}", colspan:2}],
       ["Ясиноватая", {content: "#{forecast.east1_tn}", align: :center}, {content: "#{forecast.east1_td}", align: :center}],
       ["Макеевка", {content: "#{forecast.east2_tn}", align: :center}, {content: "#{forecast.east2_td}", align: :center}],
       ["Шахтерск", {content: "#{forecast.east3_tn}", align: :center}, {content: "#{forecast.east3_td}", align: :center}],
     ]
-    table table_content, width: bounds.width, :column_widths => [130], cell_style: { inline_format: true, padding: [2, 2, 2, 2], size: 11} do |t|
+    table table_content, width: bounds.width, :column_widths => [130,170], cell_style: { inline_format: true, padding: [2, 2, 2, 2], size: 11} do |t|
     end
     donetsk_content = [
       [{content: "Прогноз погоды в столице Республики", rowspan: 2},{content: "#{forecast.forecast_capital}", colspan:5}],
@@ -91,7 +91,7 @@ class Union < Prawn::Document
     move_cursor_to 20
     synoptic_name = 'Синоптик'
     if forecast.synoptic.present?
-      fullname = User.fullname_by_lastname(forecast.synoptic.split(' ')[0]) 
+      fullname = User.fullname_by_lastname(forecast.synoptic.split(' ')[0])
       synoptic_name = fullname if fullname>''
     end
     text_box synoptic_name + " (062) 303-10-34", :at => [0, 30], size: 9

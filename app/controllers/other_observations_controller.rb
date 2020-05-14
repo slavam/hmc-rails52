@@ -110,6 +110,35 @@ class OtherObservationsController < ApplicationController
     precipitation
   end
 
+  def monthly_temperatures
+    @year = params[:year].present? ? params[:year] : Time.now.year.to_s
+    @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
+    @variant = params[:variant].present? ? params[:variant] : 'temp'
+    @temperatures = get_month_temperatures(@year, @month, @variant)
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {temperatures: @temperatures}
+      end
+    end
+  end
+
+  def get_month_temperatures(year, month, variant)
+    last_day = Time.days_in_month(month.to_i, year.to_i).to_s.rjust(2, '0')
+    start_date = year+'-'+month+'-01'
+    end_date = year+'-'+month+'-'+last_day
+    rows = OtherObservation.select("obs_date, station_id, value").
+      where("station_id in (1,2,3,10) and obs_date >= ? AND obs_date <= ? AND data_type='#{variant}'", start_date, end_date).order(:obs_date, :station_id)
+    result = []
+    rows.each {|t|
+      d = t.obs_date.day
+      s = t.station_id == 10 ? 4 : t.station_id
+      result[d] ||= []
+      result[d][s] = t.value
+    }
+    result
+  end
+
   private
     def other_observation_params
       params.require(:other_observation).permit(:data_type, :value, :obs_date, :station_id, :source, :description, :period)
