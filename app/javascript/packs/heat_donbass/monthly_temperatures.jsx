@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import MonthYearForm from './month_year_form';
 
 const MonthlyTemperaturesTable = ({temperatures, maxDay}) => {
-  let rows = [<tr><td style={{borderColor:"black"}} align="center"><b>Число</b></td><td style={{borderColor:"black"}} align="center"><b>Донецк</b></td><td style={{borderColor:"black"}} align="center"><b>Дебальцево</b></td><td style={{borderColor:"black"}} align="center"><b>Амвросиевка</b></td><td style={{borderColor:"black"}} align="center"><b>Седово</b></td></tr>];
+  let rows = [<tr><td style={{borderColor:"black"}} align="center"><b>Число</b></td><td style={{borderColor:"black"}} align="center"><b>Донецк</b></td><td style={{borderColor:"black"}} align="center"><b>Амвросиевка</b></td><td style={{borderColor:"black"}} align="center"><b>Дебальцево</b></td><td style={{borderColor:"black"}} align="center"><b>Седово</b></td></tr>];
   if (temperatures){
     for(var i=1; i<=maxDay; ++i){
       let values = [];
