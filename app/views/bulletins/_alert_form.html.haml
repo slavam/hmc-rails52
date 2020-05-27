@@ -1,0 +1,32 @@
+.container
+  = form_for @bulletin do |form|
+    %table{ class: 'table table-hover' }
+      %tr
+        %th Отчетная дата
+        %td= form.text_field :report_date, readonly: true
+      %tr
+        %th Тип
+        %td= form.text_field :bulletin_type, readonly: true
+      %tr
+        %th Час
+        %td= form.text_field :storm_hour
+      %tr
+        %th Минуты
+        %td= form.text_field :storm_minute
+      %tr
+        %th Номер
+        %td= form.text_field :curr_number
+      %tr
+        %th Текст
+        %td= form.text_area :storm, cols: '30', rows: '5'
+      - performers = @bulletin.bulletin_type == 'alert' ? Bulletin.synoptic_list << ['Арамелева О.В.','Арамелева О.В.'] << ['Мельник Е.А.','Мельник Е.А.'] : [['Арамелева О.В.','Арамелева О.В.'], ['Мельник Е.А.','Мельник Е.А.']]
+      %tr
+        %th Исполнитель
+        %td= form.select :synoptic1, options_for_select(performers, @bulletin.synoptic1)
+      = render partial: 'chief'
+    %br
+    = submit_tag 'Сохранить'
+- if @bulletin.bulletin_type == 'alert'
+  = link_to 'Список', '/bulletins/list?bulletin_type=alert'
+- else
+  = link_to 'Список', '/bulletins/list?bulletin_type=warning'

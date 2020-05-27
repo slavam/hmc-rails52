@@ -1,0 +1,49 @@
+- m_d = []
+- m_d = @bulletin.meteo_data.split(';') if @bulletin.meteo_data.present?
+.container
+  = form_for @bulletin do |form|
+    %table{ class: 'table table-hover' }
+      %tr
+        %th Тип
+        %td= form.text_field :bulletin_type, readonly: true
+      %tr
+        %th Отчетная дата
+        %td= form.text_field :report_date, readonly: true
+      %tr
+        %th Номер бюллетеня
+        %td= form.number_field :curr_number, size: 8
+      %tr
+        %th Базовый месяц среднего многолетнего уровня
+        %td= form.text_field :forecast_period
+      %table{ class: 'table table-hover' }
+        %th{ colspan: '7' } Водный и термический режимы
+        %td
+          %tr
+            %th Река
+            %th Пост
+            %th Уровень воды в 8 часов над "0" графика (см)
+            %th Изменение уровня воды за сутки (см)
+            %th Уровень выхода воды на пойму над "0" графика (см)
+            %th Превышение над уровнем выхода воды на пойму (см)
+            %th Средний многолетний уровень над "0" графика (см)
+            %th Ледовые явления
+          - m_d = []
+          - m_d = @bulletin.meteo_data.split(';') if @bulletin.meteo_data.present?
+          - (0..6).each do |i|
+            %tr
+              - (0..7).each do |j|
+                - k = 8 * i + j
+                %td= text_field_tag 'val_' + (k + 1).to_s, m_d[k].present? ? m_d[k] : ''
+      %tr
+        %th Описание
+        %td= form.text_area :forecast_day
+      %tr
+        %th Примечание
+        %td= form.text_area :forecast_day_city
+      %tr
+        %th Базовая дата для вторичного бюллетеня
+        %td= form.date_field :review_start_date, value: @bulletin.review_start_date.strftime("%Y-%m-%d")
+      = render partial: 'chief'
+    %br
+    = submit_tag 'Сохранить'
+= link_to 'Список', '/bulletins/list?bulletin_type=hydro'

@@ -1,8 +1,7 @@
--# = @precipitation_day_night.inspect 
 .container
   <input id="daily-submit" type="submit" value="Сохранить" form="daily-form">
-  = form_for @bulletin, html: {id: "daily-form"} do |form|
-    %table{class: "table table-hover"}
+  = form_for @bulletin, html: { id: 'daily-form' } do |form|
+    %table{ class: 'table table-hover' }
       %tr
         %th Отчетная дата
         %td= form.date_field :report_date, value: @bulletin.report_date.strftime("%Y-%m-%d")
@@ -42,7 +41,7 @@
         %th Синоптик
         %td= form.select :synoptic1, options_for_select(Bulletin.synoptic_list, @bulletin.synoptic1)
       %table{class: "table table-hover"}
-        - report_date_prev = (@bulletin.report_date - 1.day) 
+        - report_date_prev = (@bulletin.report_date - 1.day)
         %th Метеорологические данные
         %td
           %tr
@@ -82,7 +81,7 @@
         %td= text_field_tag :avg_day_temp, c_d[0].present? ? c_d[0] : '', size: 5
       %tr
         %th Максимальная температура воздуха #{report_date_prev.day} #{I18n.l(report_date_prev, format: "%B")}
-        %td 
+        %td
           %tr
             %th Значение
             %td= text_field_tag :max_temp, c_d[1].present? ? c_d[1] : '', size: 5
@@ -92,7 +91,7 @@
       %tr
         - report_date = @bulletin.report_date.to_s(:custom_datetime)
         %th Минимальная температура воздуха #{@bulletin.report_date.day} #{I18n.l(@bulletin.report_date, format: "%B")}
-        %td 
+        %td
           %tr
             %th Значение
             %td= text_field_tag :min_temp, c_d[3].present? ? c_d[3] : '', size: 5
@@ -103,5 +102,4 @@
       = render partial: 'responsible'
 
     %br
-    -# = submit_tag "Сохранить"
-= link_to "Список", "/bulletins/list?bulletin_type=daily"
+= link_to 'Список', '/bulletins/list?bulletin_type=daily'

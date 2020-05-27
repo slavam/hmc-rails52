@@ -1,5 +1,5 @@
-class Storm < Prawn::Document
-  def initialize(bulletin, variant)
+class Alert < Prawn::Document
+  def initialize(bulletin)
 		super(top_margin: 40, right_margin: 40, left_margin: 80)
 		@bulletin = bulletin
     font_families.update("OpenSans" => {
@@ -24,7 +24,7 @@ class Storm < Prawn::Document
     move_down 20
     font "OpenSans", style: :bold
     warning = "ПРЕДУПРЕЖДЕНИЕ"
-    if variant == 'notification'
+    if @bulletin.bulletin_type == 'alert'
       warning = 'ОПОВЕЩЕНИЕ'
     end
     bounding_box([0, cursor], width: bounds.width) do
@@ -39,7 +39,7 @@ class Storm < Prawn::Document
       t.cells.border_width = 0
     end
     text_box @bulletin.synoptic1 + " (062) 303-10-34", :at => [0, 30], size: 9
-    image "./app/assets/images/storm.png", at: [380, 100], :scale => 0.75
+    # image "./app/assets/images/storm.png", at: [380, 100], :scale => 0.75
     move_to 0, 15
     line_to 500, 15
     stroke_color '0000ff'

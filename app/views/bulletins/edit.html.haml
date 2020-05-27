@@ -1,14 +1,14 @@
-%h1= "Изменить бюллетень"
-- case @bulletin.bulletin_type 
+%h1 Изменить бюллетень
+- case @bulletin.bulletin_type
   - when 'daily'
-    = render 'form' 
+    = render 'form'
   - when 'storm', 'sea_storm'
     = render 'storm_form'
-  - when 'holiday'  
+  - when 'holiday'
     = render 'holiday_form'
   - when 'tv'
     = render 'tv_form'
-  - when 'radiation'  
+  - when 'radiation'
     = render 'radiation_form'
   - when 'avtodor'
     = render 'avtodor_form'
@@ -22,5 +22,13 @@
     = render 'clarification_form'
   - when 'bus_station'
     = render 'bus_station_form'
+  - when 'hydro'
+    = render 'hydro_form'
+  - when 'hydro2'
+    = render 'hydro2_form'
+  - when 'alert', 'warning'
+    = render 'alert_form'
+  -# - when 'warning'
+  -#   = render 'warning_form'
   - else
     = render 'sea_form'

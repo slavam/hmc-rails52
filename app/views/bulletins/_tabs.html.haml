@@ -1,22 +1,26 @@
-%div{ :class=>"container"}
-  %ul{ :class=>"nav nav-tabs"}
+.container
+  %ul{ class: 'nav nav-tabs' }
     - case current_user.role
       - when 'chemist'
-        %li= link_to "Ежедневные", "/bulletins/list?bulletin_type=daily"
-        %li= link_to "Шторма", "/bulletins/list?bulletin_type=storm"
+        %li= link_to 'Ежедневные', '/bulletins/list?bulletin_type=daily'
+        %li= link_to 'Шторма', '/bulletins/list?bulletin_type=storm'
       - when 'spasatel'
-        %li= link_to "Морские", "/bulletins/list?bulletin_type=sea"
-        %li= link_to "Шторма на море", "/bulletins/list?bulletin_type=sea_storm"
+        %li= link_to 'Морские', '/bulletins/list?bulletin_type=sea'
+        %li= link_to 'Шторма на море', '/bulletins/list?bulletin_type=sea_storm'
       - else
-        %li= link_to "Ежедневные", "/bulletins/list?bulletin_type=daily"
-        %li= link_to "Морские", "/bulletins/list?bulletin_type=sea"
-        %li= link_to "Выходного дня", "/bulletins/list?bulletin_type=holiday"
-        %li= link_to "Шторма", "/bulletins/list?bulletin_type=storm"
-        %li= link_to "Шторма на море", "/bulletins/list?bulletin_type=sea_storm"
-        %li= link_to "Радиация", "/bulletins/list?bulletin_type=radiation"
-        %li= link_to "АВТОДОР", "/bulletins/list?bulletin_type=avtodor"
-        %li= link_to "Радио", "/bulletins/list?bulletin_type=radio"
-        %li= link_to "ДТЭ", "/bulletins/list?bulletin_type=dte"
-        %li= link_to "Пожароопасность", "/bulletins/list?bulletin_type=fire"
-        %li= link_to "Уточнения", "/bulletins/list?bulletin_type=clarification"
-        %li= link_to "Автовокзалы", "/bulletins/list?bulletin_type=bus_station"
+        %li= link_to 'Ежедневные', '/bulletins/list?bulletin_type=daily'
+        %li= link_to 'Морские', '/bulletins/list?bulletin_type=sea'
+        %li= link_to 'Выходного дня', '/bulletins/list?bulletin_type=holiday'
+        %li= link_to 'Гидрологические', '/bulletins/list?bulletin_type=hydro'
+        %li= link_to 'Гидрологические 2', '/bulletins/list?bulletin_type=hydro2'
+        %li= link_to 'Шторма', '/bulletins/list?bulletin_type=storm'
+        %li= link_to 'Шторма на море', '/bulletins/list?bulletin_type=sea_storm'
+        %li= link_to 'Радиация', '/bulletins/list?bulletin_type=radiation'
+        %li= link_to 'АВТОДОР', '/bulletins/list?bulletin_type=avtodor'
+        %li= link_to 'Радио', '/bulletins/list?bulletin_type=radio'
+        %li= link_to 'ДТЭ', '/bulletins/list?bulletin_type=dte'
+        %li= link_to 'Пожароопасность', '/bulletins/list?bulletin_type=fire'
+        %li= link_to 'Уточнения', '/bulletins/list?bulletin_type=clarification'
+        %li= link_to 'Автовокзалы', '/bulletins/list?bulletin_type=bus_station'
+        %li= link_to 'Оповещения (гидро)', '/bulletins/list?bulletin_type=alert'
+        %li= link_to 'Предупреждения (гидро)', '/bulletins/list?bulletin_type=warning'

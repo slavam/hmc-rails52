@@ -1,6 +1,13 @@
 class HydroObservation < ApplicationRecord
   belongs_to :hydro_post
-  
+  ICE_PHENOMENA = { 13 => 'Забереги',
+                    19 => 'Шугоход',
+                    39 => 'Закраины',
+                    46 => 'Забереги остаточные',
+                    63 => 'Ледостав неполный',
+                    64 => 'Ледостав с полыньями',
+                    65 => 'Ледостав'
+                  }
   def self.short_last_50_telegrams(user)
     all_fields = HydroObservation.all.limit(50).order(:date_observation, :updated_at).reverse_order
     hydro_posts = HydroPost.all.order(:id)
@@ -21,5 +28,13 @@ class HydroObservation < ApplicationRecord
     else
       return direct == '1' ? "Рост уровня +#{value}" : "Спад уровня -#{value}"
     end
+  end
+  def self.water_level(obs_date)
+    rows = self.select(:hydro_post_id, :telegram).where("hydro_type IN ('ЩЭРЕИ','ЩЭРЕХ','ЩЭРЕА') AND date_observation='#{obs_date}' AND hour_obs=8").order(:hydro_post_id)
+    ret = []
+    rows.each {|wl|
+      ret[wl.hydro_post_id] = wl.telegram[19,4].to_i
+    }
+    ret
   end
 end
