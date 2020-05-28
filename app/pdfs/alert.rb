@@ -16,7 +16,7 @@ class Alert < Prawn::Document
     end
     move_down 20
     bounding_box([0, cursor], width: bounds.width) do
-      text Bulletin::ADDRESS, align: :center, size: 9
+      text Bulletin::ADDRESS.sub('34','48'), align: :center, size: 9 # телефон гидрологов
     end
 
     move_down 90
@@ -24,8 +24,12 @@ class Alert < Prawn::Document
     move_down 20
     font "OpenSans", style: :bold
     warning = "ПРЕДУПРЕЖДЕНИЕ"
+    executor = @bulletin.synoptic1 + ' (062) 303-10-48'
     if @bulletin.bulletin_type == 'alert'
       warning = 'ОПОВЕЩЕНИЕ'
+      if (@bulletin.synoptic1 != 'Арамелева О.В.') && (@bulletin.synoptic1 != 'Мельник Е.А.')
+        executor = @bulletin.synoptic1 + ' (062) 303-10-34'
+      end
     end
     bounding_box([0, cursor], width: bounds.width) do
       text "ШТОРМОВОЕ #{warning} № #{@bulletin.curr_number}", align: :center, color: "ff0000", size: 13
@@ -38,7 +42,8 @@ class Alert < Prawn::Document
     table signatures, width: bounds.width, :column_widths => [170,170], cell_style: {:overflow => :shrink_to_fit, :inline_format => true } do |t|
       t.cells.border_width = 0
     end
-    text_box @bulletin.synoptic1 + " (062) 303-10-34", :at => [0, 30], size: 9
+    # text_box @bulletin.synoptic1 + " (062) 303-10-34", :at => [0, 30], size: 9
+    text_box executor, :at => [0, 30], size: 9
     # image "./app/assets/images/storm.png", at: [380, 100], :scale => 0.75
     move_to 0, 15
     line_to 500, 15

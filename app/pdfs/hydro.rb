@@ -16,7 +16,7 @@ class Hydro < Prawn::Document
     end
     move_down 20
     bounding_box([0, cursor], width: bounds.width) do
-      text Bulletin::ADDRESS, align: :center, size: 9
+      text Bulletin::ADDRESS.sub('34','48'), align: :center, size: 9 # телефон гидрологов
     end
     move_down 40
     bounding_box([0, cursor], width: bounds.width) do
