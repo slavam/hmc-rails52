@@ -12,7 +12,7 @@
       - else
         = link_to 'Создать', "new_bulletin?bulletin_type=#{@bulletin_type}"
   - elsif %w[technicist hydro].index(current_user.role)
-    - if %w[hydro hydro2 warning].index(@bulletin_type)
+    - if %w[hydro hydro2 warning alert].index(@bulletin_type)
       = link_to 'Создать', "new_bulletin?bulletin_type=#{@bulletin_type}"
   %br
   = will_paginate

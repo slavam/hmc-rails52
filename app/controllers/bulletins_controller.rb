@@ -152,7 +152,7 @@ class BulletinsController < ApplicationController
         end
       when 'hydro2'
         last_hydro = Bulletin.last_this_type 'hydro' # have base date
-        @bulletin.review_start_date = last_hydro.review_start_date.present? ? last_hydro.review_start_date : Date.today
+        @bulletin.review_start_date = (last_hydro.present? && last_hydro.review_start_date.present?) ? last_hydro.review_start_date : Date.today
         if bulletin.present?
           @bulletin.curr_number = bulletin.curr_number.to_i + 1
           @bulletin.meteo_data = bulletin.meteo_data
