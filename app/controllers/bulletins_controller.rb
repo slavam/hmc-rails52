@@ -543,7 +543,7 @@ class BulletinsController < ApplicationController
       m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
       base_level = HydroObservation.water_level(base_date)
       rows = HydroObservation.select(:date_observation, :hydro_post_id, :telegram).
-        where("hydro_type IN ('ЩЭРЕИ','ЩЭРЕХ','ЩЭРЕА') AND date_observation='#{report_date}' AND hour_obs=8 AND hydro_post_id != 7").order(:hydro_post_id)
+        where("hydro_type IN ('ЩЭРЕИ','ЩЭРЕХ','ЩЭРЕА') AND date_observation='#{report_date}' AND hour_obs=8 AND hydro_post_id < 7").order(:hydro_post_id)
       rows.each do |h|
         i = (h.hydro_post_id.to_i-1)*7
         m_d[i] = h.hydro_post.river
@@ -563,7 +563,7 @@ class BulletinsController < ApplicationController
       m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
       # level_yesterday = HydroObservation.water_level(report_date-1.day)
       rows = HydroObservation.select(:date_observation, :hydro_post_id, :telegram).
-        where("hydro_type IN ('ЩЭРЕИ','ЩЭРЕХ','ЩЭРЕА') AND date_observation='#{report_date}' AND hour_obs=8 AND hydro_post_id != 7").order(:hydro_post_id)
+        where("hydro_type IN ('ЩЭРЕИ','ЩЭРЕХ','ЩЭРЕА') AND date_observation='#{report_date}' AND hour_obs=8 AND hydro_post_id < 7").order(:hydro_post_id)
       rows.each do |h|
         i = (h.hydro_post_id.to_i-1)*7
         m_d[i] = h.hydro_post.river
