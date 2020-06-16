@@ -8,7 +8,7 @@ class Clarification < Prawn::Document
       :bold => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Bold.ttf"),
       :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
     })
-    image "./app/assets/images/eagle.png", :scale => 0.4, position: :center # at: [235, y_pos], 
+    image "./app/assets/images/eagle.png", :scale => 0.4, position: :center # at: [235, y_pos],
     font "OpenSans", style: :bold
     move_down 20
     bounding_box([0, cursor], width: bounds.width) do
@@ -20,17 +20,17 @@ class Clarification < Prawn::Document
       text "ул. Любавина, 2, г. Донецк, 83015 тел. (062) 311-40-10 тел./факс (062)340-99-25", align: :center, size: 10
       text "web: www.dnmchs.ru  Идентификационный код 51001468  E-mail: gidromet@mail.dnmchs.ru", align: :center, size: 10
     end
-    
+
     stroke do
       horizontal_line 0, bounds.width, :at => cursor
     end
     move_down 10
     font "OpenSans", style: :normal
     # y_pos = cursor
-    text @bulletin.report_date.strftime("%d.%m.%Y")
+    text "#{@bulletin.report_date.strftime("%d.%m.%Y")} № #{@bulletin.curr_number}-у"
     move_down 20
     report_date = @bulletin.report_date.strftime("%Y-%m-%d")
-    text "ПРОГНОЗ ПОГОДЫ", align: :center
+    text "УТОЧНЕНИЕ ПРОГНОЗА ПОГОДЫ", align: :center
     text "на день с 09.00 до 21.00 часа #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} #{report_date[0,4]} года", align: :center
     move_down 20
     text "В Донецкой Народной Республике"
