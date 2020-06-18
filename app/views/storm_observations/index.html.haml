@@ -7,25 +7,16 @@
       %tr
         %th Дата/время явления
         %th Дата/время создания
+        %th Интервал в минутах
         %th Метеостанция
         %th Телеграмма
-        /
-          %th= ""
-          %th= ""
-          %th= ""
     %tbody
       - name_stations = Station.name_stations_as_array
       - @storm_observations.each do |s_o|
         %tr
           %td= s_o.telegram_date.utc.strftime('%d-%m-%Y %H:%M UTC')
-          %td= s_o.created_at.utc.strftime('%d-%m-%Y %H:%M:%S UTC')
+          %td= s_o.created_at.utc.strftime('%d-%m-%Y %H:%M UTC')
+          %td= s_o.created_at > '2018-11-20' ? ((s_o.created_at - s_o.telegram_date) / 60).to_i : ''
           %td= name_stations[s_o.station_id]
           %td= link_to s_o.telegram, storm_observation_path(s_o)
-          /
-            %td= link_to "Просмотр", storm_observation_path(s_o)
-            %td= link_to "Изменить", edit_storm_observation_path(s_o.id)
-            %td= link_to 'Destroy', s_o, method: :delete, data: { confirm: 'Are you sure?' }
   = will_paginate
-/
-  %br
-  = link_to "Создать", new_storm_observation_path
