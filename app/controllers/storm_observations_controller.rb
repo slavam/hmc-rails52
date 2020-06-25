@@ -13,12 +13,12 @@ class StormObservationsController < ApplicationController
   def storms_4_download
     @init_date = Time.now.strftime("%Y-%m-%d")
   end
-  
+
   def storm_to_arm_syn
-    storm_date = params[:download][:storm_date] 
+    storm_date = params[:download][:storm_date]
     # telegrams = StormObservation.where("created_at LIKE ?", storm_date+'%').order(:id)
     telegrams = StormObservation.where("telegram_date LIKE ?", storm_date+'%').order(:id)
-    
+
     total = telegrams.size
     curr_time = Time.now.strftime("%H:%M")
     File.open("tmp/Storm_#{storm_date}.txt",'w+') do |f|
@@ -29,13 +29,13 @@ class StormObservationsController < ApplicationController
     flash[:success] = "Дата: #{storm_date}; Преобразовано телеграмм из БД ГМЦ: #{total}"
     redirect_to storm_observations_storms_4_arm_syn_path(request.parameters)
   end
-  
+
   def puts_storm(file, storm, curr_time)
     if storm.station_id == 1 # Donetsk
-      icao_code =  'UKCC' 
+      icao_code =  'UKCC'
       gild_code = '31'
     else
-      icao_code = 'UKDC' 
+      icao_code = 'UKDC'
       gild_code = '40'
     end
     if storm.telegram_type == 'ЩЭОЗМ' # finish
@@ -45,20 +45,20 @@ class StormObservationsController < ApplicationController
       sign_group = 'WWUR'+gild_code
       start_stop = 'STORM'
     end
-    
+
     file.puts "    >>> #{curr_time} <<<"
     file.puts "333 #{sign_group} #{icao_code} #{storm.created_at.strftime("%d%H%M")}"
     file.puts start_stop
     file.puts storm.telegram[6..-1]
     file.puts "    ============================"
   end
-  
+
   def storms_4_arm_syn
-    @storm_date = params[:download][:storm_date] 
+    @storm_date = params[:download][:storm_date]
   end
-  
+
   def storms_download_2_arm_syn
-    storm_date = params[:storm_date] 
+    storm_date = params[:storm_date]
     send_file("#{Rails.root}/tmp/Storm_#{storm_date}.txt")
   end
 
@@ -84,10 +84,10 @@ class StormObservationsController < ApplicationController
         if telegram.present?
           observation = StormObservation.find_by(telegram_date: telegram.telegram_date, station_id: telegram.station_id)
           if observation.present?
-            # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{hash_telegram.inspect}") 
-            if observation.telegram_date.nil? or (observation.telegram_date < telegram.telegram_date) 
+            # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{hash_telegram.inspect}")
+            if observation.telegram_date.nil? or (observation.telegram_date < telegram.telegram_date)
               json_telegram = telegram.as_json.except('id', 'created_at', 'updated_at')
-              observation.update_attributes json_telegram 
+              observation.update_attributes json_telegram
               updated_telegrams += 1
             else
               skiped_telegrams += 1
@@ -111,13 +111,77 @@ class StormObservationsController < ApplicationController
     flash[:success] = "Входных телеграмм - #{selected_telegrams}. Корректных телеграмм - #{correct_telegrams} (создано - #{created_telegrams}; обновлено - #{updated_telegrams}; пропущено - #{skiped_telegrams}). Ошибочных телеграмм - #{wrong_telegrams}."
     redirect_to storm_observations_get_conversion_params_path
   end
-  
+
+  def storm_description
+    @date_from ||= params[:date_from].present? ? params[:date_from] : Time.now.strftime("%Y-%m-%d")
+    @date_to ||= params[:date_to].present? ? params[:date_to] : Time.now.strftime("%Y-%m-%d")
+    if params[:station_id].present?
+      @station_id = params[:station_id]
+      station = " and station_id = #{@station_id}"
+    else
+      @station_id = '0'
+      station = ''
+    end
+    sql = "select * from storm_observations where telegram_type in ('ЩЭОЯЮ','ЩЭОЗМ') and telegram_date >= '#{@date_from}' and telegram_date <= '#{@date_to} 23:59:59' #{station} order by telegram_date;"
+    data = StormObservation.find_by_sql(sql)
+    stops = []
+    data.map do |so|
+      if so.telegram[24] == '1' # убрать агро-шторма => 2
+        # key = so.station_id.to_s.rjust(2, '0')+so.telegram[26,2] # станция явление
+        fact = {}
+        if so.telegram_type == 'ЩЭОЗМ' # stop
+          fact['station_id'] = so.station_id
+          fact['warep_code'] = so.telegram[26,2]
+          fact['fact_date'] = so.telegram_date
+          fact['text'] = so.telegram
+          stops << fact
+        end
+      end
+    end
+    @telegrams = []
+    data.map do |so|
+      if so.telegram[24] == '1'
+        telegram = {}
+        # telegram = {station_id: so.station_id, warep_code: so.telegram[26,2]}
+        if so.telegram_type == 'ЩЭОЯЮ' # start
+          telegram = {'station_id' => so.station_id, 'warep_code' => so.telegram[26,2], 'start_date' => so.telegram_date, 'start_text' => so.telegram}
+          stops.each do |f|
+            if telegram['station_id'] == f['station_id'] and telegram['warep_code'] == f['warep_code'] and telegram['start_date'] < f['fact_date']
+              telegram['stop_date'] = f['fact_date']
+              telegram['stop_text'] = f['text']
+              break
+            end
+          end
+          @telegrams << telegram
+        else
+          telegram = {station_id: so.station_id, warep_code: so.telegram[26,2], stop_date: so.telegram_date, stop_text: so.telegram}
+          if not stop_telegram_used(telegram, @telegrams)
+            @telegrams << telegram
+          end
+        end
+      end
+    end
+    @stations = Station.stations_array_with_any
+    respond_to do |format|
+      format.html
+      format.json { render json: {telegrams: @telegrams} }
+    end
+  end
+
+  def stop_telegram_used(telegram, telegrams)
+    # puts '>>>>>>>>>>>>>'+telegram.inspect
+    # puts '+++++++++++++'+telegrams.inspect
+    telegrams.each do |t|
+      if t['station_id'] == telegram[:station_id] and t['warep_code'] == telegram[:warep_code] and t['stop_date'] == telegram[:stop_date]
+        return true
+      end
+    end
+    return false
+  end
+
   def search_storm_telegrams
     @date_from ||= params[:date_from].present? ? params[:date_from] : Time.now.strftime("%Y-%m-%d")
     @date_to ||= params[:date_to].present? ? params[:date_to] : Time.now.strftime("%Y-%m-%d")
-    # station_id = params[:station_code].present? ? Station.find_by_code(params[:station_code]).id : nil
-    # station = station_id.present? ? " and station_id = #{station_id}" : ''
-    # text = params[:text].present? ? " and telegram like '%#{params[:text]}%'" : ''
     if params[:storm_type].present?
       if params[:storm_type] == 'Агро'
         and_storm_type = " and telegram REGEXP '.{5} WAREP [0-9]{5} [0-9]{6}2'"
@@ -143,7 +207,7 @@ class StormObservationsController < ApplicationController
       @text = ''
       and_text = ''
     end
-       
+
     sql = "select * from storm_observations where telegram_date >= '#{@date_from}' and telegram_date <= '#{@date_to} 23:59:59' #{station} #{and_storm_type} #{and_text} order by telegram_date desc;"
     # 20190610 Prach
     # 20190618 KMA
@@ -152,11 +216,11 @@ class StormObservationsController < ApplicationController
     @stations = Station.stations_array_with_any
     @telegrams = storm_fields_short_list(tlgs)
     respond_to do |format|
-      format.html 
+      format.html
       format.json { render json: {telegrams: @telegrams} }
     end
   end
-  
+
   def storm_fields_short_list(full_list)
     # stations = Station.all.order(:id)
     full_list.map do |rec|
@@ -168,7 +232,7 @@ class StormObservationsController < ApplicationController
   def index
     @storm_observations = StormObservation.paginate(page: params[:page]).order(:telegram_date, :created_at).reverse_order
   end
-  
+
   def show
     # code_warep = @storm_observation.telegram[26,2].to_i
     # case code_warep
@@ -186,17 +250,17 @@ class StormObservationsController < ApplicationController
     @search_link = "/storm_observations/search_storm_telegrams?telegram_type=storm&date_from=#{date_from}&date_to=#{date_to}#{station}#{text}#{add_param}"
     @actions = Audit.where("auditable_id = ? and auditable_type = 'StormObservation'", @storm_observation.id)
   end
-  
+
   def new
     @storm_observation = StormObservation.new
   end
-  
+
   def input_storm_telegrams
     @stations = Station.all.order(:name)
     @telegrams = StormObservation.short_last_50_telegrams(current_user)
     @input_mode = params[:input_mode]
   end
-  
+
   def create
     @storm_observation = StormObservation.new(storm_observation_params)
     tlg_as_array = @storm_observation.telegram.split(' ')
@@ -216,12 +280,12 @@ class StormObservationsController < ApplicationController
     end
   end
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{telegram.inspect}")
-  
+
   def create_storm_telegram
     date_dev = params[:input_mode] == 'direct' ? Time.parse(params[:date]+' 00:01:00 UTC') : Time.now.utc
     # yyyy_mm = date_dev.year.to_s + '-' + date_dev.month.to_s.rjust(2, '0') + '%'
     # с Н.В. 2018.03.13 согласован интервал в 20 минут
-    
+
     # sql = "select * from storm_observations where station_id = #{params[:storm_observation][:station_id]} and telegram_type = '#{params[:storm_observation][:telegram_type]}' and day_event = #{params[:storm_observation][:day_event]} and hour_event = #{params[:storm_observation][:hour_event]} and minute_event = #{params[:storm_observation][:minute_event]} and telegram_date > '#{left_time}' order by telegram_date desc"
     # 20181121
     if params[:input_mode] == 'direct'
@@ -236,10 +300,10 @@ class StormObservationsController < ApplicationController
     if telegram.present?
       if telegram.update_attributes storm_observation_params
         last_telegrams = StormObservation.short_last_50_telegrams(current_user)
-        render json: {telegrams: last_telegrams, 
-                      tlgType: 'storm', 
+        render json: {telegrams: last_telegrams,
+                      tlgType: 'storm',
                       inputMode: params[:input_mode],
-                      currDate: telegram.telegram_date, 
+                      currDate: telegram.telegram_date,
                       errors: ["Телеграмма изменена"]}
       else
         render json: {errors: telegram.errors.messages}, status: :unprocessable_entity
@@ -257,17 +321,17 @@ class StormObservationsController < ApplicationController
             sound: true, telegram_id: telegram.id
         end
         last_telegrams = StormObservation.short_last_50_telegrams(current_user)
-        render json: {telegrams: last_telegrams, 
-                      tlgType: 'storm', 
+        render json: {telegrams: last_telegrams,
+                      tlgType: 'storm',
                       inputMode: params[:input_mode],
-                      currDate: telegram.telegram_date, 
+                      currDate: telegram.telegram_date,
                       errors: ["Телеграмма корректна"]}
       else
         render json: {errors: telegram.errors.messages}, status: :unprocessable_entity
       end
     end
   end
-  
+
   def get_event_date(telegram, date_dev)
     if date_dev.day == telegram.day_event
       year = date_dev.year
@@ -281,10 +345,10 @@ class StormObservationsController < ApplicationController
     end
     return Time.parse("#{year}-#{month}-#{day} #{telegram.hour_event}:#{telegram.minute_event}:00 UTC")
   end
-  
+
   def storm_4_arm_syn storm
     curr_time = Time.now.strftime("%H:%M")
-    storm_date = storm.telegram_date.strftime("%Y-%m-%d") 
+    storm_date = storm.telegram_date.strftime("%Y-%m-%d")
     year = storm_date[0,4]
     month = storm_date[5,2]
     day = storm_date[8,2]
@@ -297,15 +361,15 @@ class StormObservationsController < ApplicationController
       session.scp.download! "/tmp/Storm_#{storm_date}.txt", "d:/DATA/ARM_SIN/INPUT/#{year}_#{month}/#{day}_#{month}/Storm_#{day}.txt"
     end
   end
-  
+
   def get_last_telegrams
     telegrams = StormObservation.short_last_50_telegrams(current_user)
     render json: {telegrams: telegrams, tlgType: 'storm'}
   end
-  
+
   def edit
   end
-  
+
   def update
     if not @storm_observation.update_attributes storm_observation_params
       render :action => :edit
@@ -313,7 +377,7 @@ class StormObservationsController < ApplicationController
       redirect_to '/storm_observations/input_storm_telegrams'
     end
   end
-  
+
   def update_storm_telegram
     if @storm_observation.update_attributes storm_observation_params
       render json: {errors: []}
@@ -321,24 +385,24 @@ class StormObservationsController < ApplicationController
       render json: {errors: ["Ошибка при сохранении изменений"]}, status: :unprocessable_entity
     end
   end
-  
+
   def destroy
     @storm_observation.destroy
     flash[:success] = "Удалена штормовая телеграмма"
     redirect_to storm_observations_path
   end
-  
+
   private
     def storm_observation_params
       params.require(:storm_observation).permit(:telegram_type, :station_id, :day_event, :hour_event, :minute_event, :telegram, :telegram_date) #, :code_warep)
       # params.require(:storm_observation).permit(:registred_at, :telegram_type, :station_id, :day_event, :hour_event, :minute_event, :telegram, :telegram_date)
       # :code_warep, :wind_direction, :wind_speed_avg, :wind_speed_max
     end
-    
+
     def find_storm_observation
       @storm_observation = StormObservation.find(params[:id])
     end
-    
+
     def convert_storm_telegram(old_telegram, stations, errors)
       groups = old_telegram["Телеграмма"].tr('=', '').split(' ')
       new_telegram = StormObservation.new
@@ -372,7 +436,7 @@ class StormObservationsController < ApplicationController
       end
       new_telegram
     end
-    
+
     # def fields_short_list(full_list)
     #   full_list.map do |rec|
     #     {id: rec.id, date: rec.telegram_date, station_name: rec.station.name, telegram: rec.telegram}

@@ -75,6 +75,7 @@ Rails.application.routes.draw do
   post 'storm_observations/storm_to_arm_syn', to: 'storm_observations#storm_to_arm_syn'
   get 'storm_observations/storms_4_arm_syn', to: 'storm_observations#storms_4_arm_syn'
   get 'storm_observations/storms_download_2_arm_syn', to: 'storm_observations#storms_download_2_arm_syn'
+  get 'storm_observations/storm_description', to: 'storm_observations#storm_description'
   resources :storm_observations
   # get 'synoptic_observations/:id/edit_synoptic_data', to: 'synoptic_observations#edit_synoptic_data'
   # get 'synoptic_observations/new_synoptic_data', to: 'synoptic_observations#new_synoptic_data'
