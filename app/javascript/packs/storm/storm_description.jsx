@@ -3,6 +3,24 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ParamsForm from './params_form';
 
+function fancyTimeFormat(duration)
+{
+    // Hours, minutes and seconds
+    var hrs = ~~(duration / 3600);
+    var mins = ~~((duration % 3600) / 60);
+    var secs = ~~duration % 60;
+
+    // Output like "1:01" or "4:03:59" or "123:03:59"
+    var ret = "";
+
+    if (hrs > 0) {
+        ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
+    }
+
+    ret += "" + mins + ":" + (secs < 10 ? "0" : "");
+    ret += "" + secs;
+    return ret;
+}
 const Storms = (props) => {
   const fact = {
     11: "Ветер",
@@ -26,7 +44,9 @@ const Storms = (props) => {
   props.telegrams.forEach( (t,i) => {
     let startDate = t.start_date ? t.start_date.substr(0,16).replace(/T/, " "):'';
     let stopDate = t.stop_date ? t.stop_date.substr(0,16).replace(/T/, " "):'';
-    let duration = (t.start_date && t.stop_date) ? Math.floor((Date.parse(t.stop_date) - Date.parse(t.start_date)) / (1000*60)): '';
+    // let duration = (t.start_date && t.stop_date) ? Math.floor((Date.parse(t.stop_date) - Date.parse(t.start_date)) / (1000*60)): '';
+    let duration = (t.start_date && t.stop_date) ? fancyTimeFormat((Date.parse(t.stop_date) - Date.parse(t.start_date))/1000) : '';
+
     rows.push(<tr key={i}><td>{props.stations[+t.station_id].name}</td><td>{fact[+t.warep_code]}</td><td>{startDate}</td><td>{t.start_text}</td><td>{stopDate}</td><td>{t.stop_text}</td><td>{duration}</td></tr>);
   });
   return (
@@ -39,7 +59,7 @@ const Storms = (props) => {
           <th>Телеграмма</th>
           <th>Время окончания UTC</th>
           <th>Телеграмма</th>
-          <th>Продолжительность в минутах</th>
+          <th>Продолжительность (часы:минуты:секунды)</th>
         </tr>
       </thead>
       <tbody>

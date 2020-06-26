@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 export function checkStormTelegram(tlg, stations, errors, observation){
   if(~tlg.indexOf("ЩЭОЗМ ") || ~tlg.indexOf("ЩЭОЯЮ ") ){
     observation.telegram_type = tlg.substr(0, 5);
@@ -10,7 +11,7 @@ export function checkStormTelegram(tlg, stations, errors, observation){
     return false;
   }
   var codeStation = tlg.substr(12,5);
-  var isStation = false; 
+  var isStation = false;
   var idStation = -1;
   isStation = stations.some(function(s){
     idStation = s.id;
@@ -48,12 +49,22 @@ export function checkStormTelegram(tlg, stations, errors, observation){
     errors.push("Ошибка вида телеграммы (a=1)");
     return false;
   }
-  
+  let nowLocal = new Date();
+  let year = nowLocal.getUTCFullYear();
+  let month = nowLocal.getUTCMonth()+1;
+  month = month < 10 ? '0'+month : month;
+  let mlsNowUtc = new Date(nowLocal.getTime()+nowLocal.getTimezoneOffset()*1000*60).getTime();
+  let mlsEventDateUtc = Date.parse(''+year+'-'+month+'-'+tlg.substr(18,2)+' '+tlg.substr(20,2)+':'+tlg.substr(22,2)+':00');
+  if(mlsEventDateUtc > mlsNowUtc){
+    errors.push("Ошибка в дате/времени явления");
+    return false;
+  }
+
   var windDirections = Array.from({ length: 37 }, (v, k) => k);
   windDirections.push(99);
   var codeWAREP = +tlg.substr(26,2);
   var currentPos = 29;
-  
+
   while (currentPos <= tlg.length){
     if (isCodeWAREP()) {
       if (tlg[currentPos-1] == '=' && observation.telegram_type == 'ЩЭОЗМ') return true;
@@ -74,8 +85,8 @@ export function checkStormTelegram(tlg, stations, errors, observation){
   }
   errors.push("Ошибка в окончании телеграммы");
   return false;
-  
-  function isCodeWAREP(){ 
+
+  function isCodeWAREP(){
     return [11, 12, 17, 18, 19, 30, 36, 40, 41, 50, 51, 52, 53, 54, 55, 56, 57, 61, 62, 64, 65, 66, 68, 71, 75, 78, 90, 91, 92, 95].some(s => {
       return codeWAREP == s;
     });
@@ -136,8 +147,9 @@ export function checkStormTelegram(tlg, stations, errors, observation){
             errors.push("Ошибка в группе 7");
             return false;
           }
-        else 
+        else
           return true;
+        break;
       case 30:
         if (isGroup8(currentPos)){
           currentPos = currentPos+6;
@@ -146,6 +158,7 @@ export function checkStormTelegram(tlg, stations, errors, observation){
           errors.push("Ошибка в группе 8");
           return false;
         }
+        break;
       case 40:
       case 41:
         if (isGroup7(currentPos)){
@@ -171,6 +184,7 @@ export function checkStormTelegram(tlg, stations, errors, observation){
           errors.push("Ошибка в группе 7");
           return false;
         }
+        break;
       case 50:
       case 51:
       case 52:
@@ -186,6 +200,7 @@ export function checkStormTelegram(tlg, stations, errors, observation){
           errors.push("Ошибка в группе 'Гололед'");
           return false;
         }
+        break;
       case 61:
       case 62:
       case 64:
@@ -200,6 +215,7 @@ export function checkStormTelegram(tlg, stations, errors, observation){
           errors.push("Ошибка в группе 3");
           return false;
         }
+        break;
       case 68:
         if (/^[01]\d{2}$/.test(tlg.substr(currentPos,3))){
           currentPos += 4;
@@ -208,6 +224,7 @@ export function checkStormTelegram(tlg, stations, errors, observation){
           errors.push("Ошибка в группе 'Ледяной дождь'");
           return false;
         }
+        break;
       case 90:
       case 92:
         if(/^932\d{2}$/.test(tlg.substr(currentPos,5))){
@@ -217,6 +234,7 @@ export function checkStormTelegram(tlg, stations, errors, observation){
           errors.push("Ошибка в группе 932");
           return false;
         }
+        break;
       case 91:
         if(isGroup2(currentPos)){
           currentPos += 6;
@@ -225,6 +243,7 @@ export function checkStormTelegram(tlg, stations, errors, observation){
           errors.push("Ошибка в группе 2");
           return false;
         }
+        break;
       case 95:
         if(/^950\d{2}$/.test(tlg.substr(currentPos,5))){
           currentPos += 6;

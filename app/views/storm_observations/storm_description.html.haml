@@ -1,7 +1,8 @@
 -# %p= @telegrams.inspect
+%h3 Текущие грозы
 <iframe src="https://map.blitzortung.org/index.php?interactive=0&NavigationControl=0&FullScreenControl=0&Cookies=0&InfoDiv=0&MenuButtonDiv=0&ScaleControl=0&LinksCheckboxChecked=1&LinksRangeValue=10&MapStyle=1&MapStyleRangeValue=1&Advertisment=0#3/40/15" width="600" height="400"></iframe>
 %br
-= link_to 'Грозы подробнее', 'http://www.lmaps.org/#36.9;47.95;6'
+= link_to 'Грозы подробнее', 'http://www.lmaps.org/#36.9;47.95;6', target: :_blank
 .container
   %h3 Динамика штормов
   -# map{ style: 'height: 300px' }
