@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import FireMap from '../map/fire_map';
@@ -6,23 +7,36 @@ import ReportDateForm from './report_date_form';
 const FireDangersTable = ({fireDangers, stations}) => {
   var rows = [];
   if(fireDangers)
-  fireDangers.forEach((fd) => {
-    rows.push(
-      <tr key = {fd.id}>
-        <td>{stations[fd.station_id-1].name}</td>
-        <td>{fd.fire_danger}</td>
-        <td>{fd.temperature}</td>
-        <td>{fd.temperature_dew_point}</td>
-        <td>{fd.precipitation_day}</td>
-        <td>{fd.precipitation_night}</td>
-      </tr>
-    );
-  });
+    fireDangers.forEach((fd) => {
+      var fireClass = 1;
+      if(fd.fire_danger < 401)
+        fireClass = 1;
+      else if(fd.fire_danger < 1001)
+        fireClass = 2;
+      else if(fd.fire_danger < 3001)
+        fireClass = 3;
+      else if(fd.fire_danger < 5001)
+        fireClass = 4;
+      else
+        fireClass = 5;
+      rows.push(
+        <tr key = {fd.id}>
+          <td>{stations[fd.station_id-1].name}</td>
+          <td>{fireClass}</td>
+          <td>{fd.fire_danger}</td>
+          <td>{fd.temperature}</td>
+          <td>{fd.temperature_dew_point}</td>
+          <td>{fd.precipitation_day}</td>
+          <td>{fd.precipitation_night}</td>
+        </tr>
+      );
+    });
   return (
     <table className="table table-hover">
       <thead>
         <tr>
           <th>Метеостанция</th>
+          <th>Класс</th>
           <th>Пожароопасность</th>
           <th>Температура (°С)</th>
           <th>Точка росы (°С)</th>
@@ -44,7 +58,7 @@ export default class DailyFireDanger extends React.Component{
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-  
+
   handleSubmit(date){
     this.state.reportDate = date;
     $.ajax({
@@ -56,9 +70,9 @@ export default class DailyFireDanger extends React.Component{
       }.bind(this))
       .fail(function(res) {
         this.setState({errors: ["Ошибка выборки из базы"]});
-      }.bind(this)); 
+      }.bind(this));
   }
-  
+
   render(){
     let map = <FireMap stations={this.props.stations} fireDangers={this.state.fireDangers}/>;
     return (
@@ -82,10 +96,10 @@ $(function () {
     const reportDate = JSON.parse(node.getAttribute('reportDate'));
     const stations = JSON.parse(node.getAttribute('stations'));
     const fireDangers = JSON.parse(node.getAttribute('fireDangers'));
-  
+
     ReactDOM.render(
       <DailyFireDanger fireDangers={fireDangers} stations={stations} reportDate={reportDate}  />,
       document.getElementById('form_and_result')
     );
-  } 
+  }
 })
