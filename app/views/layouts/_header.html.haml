@@ -122,11 +122,11 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Измерения <b class="caret"></b></a>
                 %ul{class: "dropdown-menu"}
                   %li= link_to 'Создать измерение', new_measurement_path
-                  %li= link_to 'Список', measurements_path 
+                  %li= link_to 'Список', measurements_path
               %li
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Справочники <b class="caret"></b></a>
                 %ul{class: "dropdown-menu"}
-                  %li= link_to 'Города',  cities_path 
+                  %li= link_to 'Города',  cities_path
                   %li= link_to 'Посты',  posts_path
                   %li= link_to 'Вещества',  materials_path
                   %li= link_to 'Метеостанции', stations_path
@@ -161,6 +161,8 @@
                   %li= link_to 'Ввод гидро-телеграмм с любой датой', '/hydro_observations/input_hydro_telegrams?input_mode=direct'
                   %li= link_to 'Снегосъемка', '/snow_observations/input_snow_telegrams?input_mode=normal'
                   %li= link_to 'Снегосъемка с любой датой', '/snow_observations/input_snow_telegrams?input_mode=direct'
+                  %li= link_to 'Ввод дополнительных данных', '/other_observations/input_other_telegrams?input_mode=normal'
+                  %li= link_to 'Ввод дополнительных данных с любой датой', '/other_observations/input_other_telegrams?input_mode=direct'
                   %li{ class: "divider"}
                   %li= link_to 'Буфер', '/applicants/applicants_list'
               %li
@@ -168,7 +170,7 @@
               %li
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Сервис <b class="caret"></b></a>
                 %ul{class: "dropdown-menu"}
-                  = render 'layouts/list_telegrams'   
+                  = render 'layouts/list_telegrams'
                   %li{ class: "divider"}
                   %li= link_to 'Конвертор телеграмм МОРЕ', '/sea_observations/get_conversion_interval'
             - when 'railman'
