@@ -645,7 +645,12 @@ class BulletinsController < ApplicationController
         end
         if precipitation_night[i].present?
           precipitation[i] ||= 0
-          precipitation[i] += precipitation_night[i]>989 ? ((precipitation_night[i]-990)*0.1).round(1) : precipitation_night[i]
+          if precipitation_night[i]>989
+            precipitation[i] = (precipitation[i] + (precipitation_night[i]-990)*0.1).round(1)
+          else
+            precipitation[i] = precipitation[i] + precipitation_night[i]
+          end
+          # precipitation[i] += precipitation_night[i]>989 ? ((precipitation_night[i]-990)*0.1).round(1) : precipitation_night[i]
         end
       end
       precipitation
