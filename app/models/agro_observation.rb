@@ -2,11 +2,11 @@ class AgroObservation < ActiveRecord::Base
   belongs_to :station
   has_many :crop_conditions, :dependent => :destroy
   has_many :crop_damages, :dependent => :destroy
-  audited
+#  audited
   def self.last_50_telegrams
     AgroObservation.all.limit(50).order(:date_dev, :updated_at).reverse_order
   end
-  
+
   def self.short_last_50_telegrams(user)
     if user.role == 'specialist'
       all_fields = AgroObservation.where("station_id = ? and date_dev > ?", user.station_id, Time.now.utc-45.days).order(:date_dev, :updated_at).reverse_order
@@ -18,7 +18,7 @@ class AgroObservation < ActiveRecord::Base
         {id: rec.id, date: rec.date_dev, station_name: stations[rec.station_id-1].name, telegram: rec.telegram}
       end
   end
-  
+
   # def precipitation_to_s(value)
   #   case value
   #     when 0
@@ -33,7 +33,7 @@ class AgroObservation < ActiveRecord::Base
   #       ((value - 990)*0.1).round(2).to_s
   #   end
   # end
-  
+
   def percipitation_type_to_s
     case self.percipitation_type
       when 1
@@ -48,7 +48,7 @@ class AgroObservation < ActiveRecord::Base
         "Снег"
     end
   end
-  
+
   def dew_intensity_to_s(value)
     if value == 0
       return "Слабая"
@@ -56,11 +56,11 @@ class AgroObservation < ActiveRecord::Base
       return "Умеренная"
     elsif value == 2
       return "Сильная"
-    else 
+    else
       return ''
     end
   end
-  
+
   def state_top_layer_soil_to_s
     case self.state_top_layer_soil
       when 0
@@ -76,7 +76,7 @@ class AgroObservation < ActiveRecord::Base
       when 5
         "Сухой. Твердый или сыпучий"
       when 6
-        "Мерзлый. Смерзшийся"    
+        "Мерзлый. Смерзшийся"
     end
   end
   def self.temperature_avg_24(date)
@@ -101,7 +101,7 @@ class AgroObservation < ActiveRecord::Base
   end
   def self.depth_freezing(date)
     ret = []
-    self.where('date_dev LIKE ?', "#{date}%").select(:station_id, :telegram).each do |tm| 
+    self.where('date_dev LIKE ?', "#{date}%").select(:station_id, :telegram).each do |tm|
       i = tm.telegram =~ / 924\d\d 95\d{3} 4/
       if i.present?
         val = tm.telegram[i+14,3].to_i
@@ -112,7 +112,7 @@ class AgroObservation < ActiveRecord::Base
   end
   def self.radiations(report_date)
     ret = []
-    self.where('station_id IN (1,2,3,10) AND date_dev LIKE ?', "#{report_date}%").select(:station_id, :telegram).each do |tm| 
+    self.where('station_id IN (1,2,3,10) AND date_dev LIKE ?', "#{report_date}%").select(:station_id, :telegram).each do |tm|
       i = tm.telegram =~ / \/\/\/\d\d/
       if i.present?
         ret[tm.station_id] = tm.telegram[i+4,2].to_i

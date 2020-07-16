@@ -2,7 +2,7 @@ class OtherObservation < ApplicationRecord
   after_initialize :init
 
   # belongs_to :station
-  audited
+#  audited
   OTHER_TYPES = {
     'temp' => "Температура на 8 часов",
     'temp16' => "Температура на 16 часов",

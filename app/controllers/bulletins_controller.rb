@@ -601,7 +601,7 @@ class BulletinsController < ApplicationController
         push_in_m_d(m_d, temperature_min_soil,5)
         relative_humidity_min = AgroObservation.relative_humidity_min_24(@bulletin.report_date)
         push_in_m_d(m_d, relative_humidity_min,6)
-        o_o = OtherObservation.find_by(data_type: 'min_hum', station_id: 10, obs_date: @bulletin.report_date)
+        o_o = OtherObservation.find_by(data_type: 'min_hum', station_id: 10, obs_date: @bulletin.report_date-1.day)
         m_d[3*9+6] = o_o.value if o_o.present? # мин влажность по Седово 20190529
       else
         snow_height = SynopticObservation.snow_cover_height(@bulletin.report_date)

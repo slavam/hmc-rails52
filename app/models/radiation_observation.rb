@@ -1,7 +1,7 @@
 class RadiationObservation < ApplicationRecord
   belongs_to :station
-  audited
-  
+#  audited
+
   def self.short_last_50_telegrams(user, factor)
     if user.role == 'specialist'
       all_fields = RadiationObservation.where("station_id = ?", user.station_id).limit(50).order(:date_observation, :updated_at).reverse_order
