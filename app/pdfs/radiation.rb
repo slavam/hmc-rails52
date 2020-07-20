@@ -1,7 +1,7 @@
 require 'prawn'
 class Radiation < Prawn::Document
   def initialize(bulletin)
-		super(top_margin: 40, right_margin: 50, left_margin: 55)		
+		super(top_margin: 40, right_margin: 50, left_margin: 55)
 		@bulletin = bulletin
     font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),
@@ -29,10 +29,16 @@ class Radiation < Prawn::Document
     # image "./app/assets/images/rhumbs.png", at: [0, cursor]
     font "OpenSans" #, style: :italic
     bounding_box([300, cursor], width: bounds.width-300) do
-      text "Начальнику центра управления в кризисных ситуациях Министерства по делам гражданской обороны, чрезвычайным ситуациям и ликвидации последствий стихийных бедствий 
+      # text "Начальнику центра управления в кризисных ситуациях Министерства по делам гражданской обороны, чрезвычайным ситуациям и ликвидации последствий стихийных бедствий
+      # Донецкой Народной Республики
+      #
+      # В.В. Вовку"
+      text "Министру
+      по делам гражданской обороны, чрезвычайным ситуациям и ликвидации последствий стихийных бедствий
       Донецкой Народной Республики
-      
-      В.В. Вовку"
+
+      генерал-лейтенанту службы гражданской защиты
+      А.А. Кострубицкому"
     end
     move_down 20
     # text "Сообщаем данные о состоянии радиационного фона (мкР/ч) на 09.00 часов <b>#{@bulletin.report_date_as_str}</b>:", :inline_format => true, :indent_paragraphs => 40
@@ -47,7 +53,7 @@ class Radiation < Prawn::Document
     # avg = (m_d[0].to_i+m_d[1].to_i+m_d[2].to_i+m_d[3].to_i) / 4
     avg = 0
     n = 0
-    m_d.each do |md| 
+    m_d.each do |md|
       if md.present?
         avg += md.to_i
         n += 1
