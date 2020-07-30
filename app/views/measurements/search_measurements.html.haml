@@ -1,0 +1,5 @@
+.container
+  %h3 Поиск измерений
+  #root
+  #search-params{ measurements: @measurements.to_json, posts: @posts.to_json, dateFrom: @date_from.to_json, dateTo: @date_to.to_json, term: @term.to_json, postId: @post_id.to_json }
+  = javascript_pack_tag 'input_measurements/search_measurements'
