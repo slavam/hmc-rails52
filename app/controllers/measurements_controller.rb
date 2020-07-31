@@ -31,9 +31,13 @@ class MeasurementsController < ApplicationController
       post = ''
     end
     @posts = Post.actual
+    @materials = Material.actual_materials
     @measurements = []
     sql = "select * from measurements where date >= '#{@date_from}' and date <= '#{@date_to}' #{and_term} #{post} order by date desc, post_id;"
-    @measurements = Measurement.find_by_sql(sql)
+    rows = Measurement.find_by_sql(sql)
+    rows.each do |m|
+      @measurements << {measurement: m, pollutions: m.pollution_values}
+    end
 
     respond_to do |format|
       format.html

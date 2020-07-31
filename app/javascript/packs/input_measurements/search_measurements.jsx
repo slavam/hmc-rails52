@@ -38,8 +38,7 @@ export default class SearchMeasurements extends React.Component{
       <div>
         {/*}<SearchParams onParamsSubmit={this.handleFormSubmit} dateFrom={this.props.dateFrom} dateTo={this.props.dateTo} errors={this.state.errors} posts={this.props.posts} term={this.state.term}  postId={this.state.postId} />*/}
         <SearchParams onParamsSubmit={this.handleFormSubmit} dateFrom={this.props.dateFrom} dateTo={this.props.dateTo} posts={this.props.posts} />
-        <h3>Найденные измерения ({this.state.measurements.length})</h3>
-        <FoundMeasurements measurements={this.state.measurements} dateFrom={this.state.dateFrom} dateTo={this.state.dateTo}/>
+        <FoundMeasurements measurements={this.state.measurements} dateFrom={this.state.dateFrom} dateTo={this.state.dateTo} materials={this.props.materials} posts={this.props.posts}/>
       </div>
     );
   }
@@ -51,11 +50,11 @@ $(function () {
     const posts = JSON.parse(node.getAttribute('posts'));
     const dateFrom = JSON.parse(node.getAttribute('dateFrom'));
     const dateTo = JSON.parse(node.getAttribute('dateTo'));
-    // const term = JSON.parse(node.getAttribute('term'));
+    const materials = JSON.parse(node.getAttribute('materials'));
     // const postId = JSON.parse(node.getAttribute('postId'));
 
     ReactDOM.render(
-      <SearchMeasurements measurements={measurements} posts={posts} dateFrom={dateFrom} dateTo={dateTo} />,
+      <SearchMeasurements measurements={measurements} materials={materials} posts={posts} dateFrom={dateFrom} dateTo={dateTo} />,
       document.getElementById('root')
     );
   }
