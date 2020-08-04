@@ -2,17 +2,19 @@
 .container
   %h3 Телеграммы агрометеорологические декадные
   = will_paginate
-  %table{class: "table table-hover"}
+  %table{ class: 'table table-hover' }
     %thead
       %tr
-        %th{width: "100px"} Дата
+        %th{ width: '100px' } Дата
+        %th Дата ввода
         %th Метеостанция
         %th Телеграмма
     %tbody
       - name_stations = Station.name_stations_as_array
-      - @agro_dec_observations.each do |a_o| 
+      - @agro_dec_observations.each do |a_o|
         %tr
-          %td= a_o.date_dev.strftime("%d-%m-%Y")
+          %td= a_o.date_dev.strftime('%d-%m-%Y')
+          %td= a_o.created_at.localtime.strftime('%d-%m-%Y %H:%M:%S')
           %td= name_stations[a_o.station_id]
           %td= link_to a_o.telegram, agro_dec_observation_path(a_o)
   = will_paginate

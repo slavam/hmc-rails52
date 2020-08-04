@@ -2,6 +2,26 @@
 import React from 'react';
 
 export default class FoundMeasurements extends React.Component{
+  // constructor(props){
+  //   super(props);
+  //   this.state = {
+  //     measurements: [] //this.props.measurements
+  //   };
+  // }
+  // componentDidMount() {
+  //   this.setState({measurements: this.props.measurements});
+  // }
+  //
+  // componentDidUpdate() {
+  //   console.log('componentDidUpdate');
+  // }
+  handleDeleteMeasurementClick(e){
+    e.preventDefault();
+    if (!confirm("Удалить?")) {
+      return;
+    }
+    this.props.onDeleteMeasurement(e.target.id);
+  }
   render(){
     const materials = [];
     this.props.materials.forEach(mt => {
@@ -17,7 +37,7 @@ export default class FoundMeasurements extends React.Component{
           <td >{posts[+m.measurement.post_id]}</td>
           <td >Дата: {m.measurement.date}</td>
           <td >Срок: {m.measurement.term}</td>
-          <td>Удалить</td>
+          <td><input id={m.measurement.id} type="submit" value="Удалить" onClick={(event) => this.handleDeleteMeasurementClick(event)}/></td>
         </tr>);
       if(m.pollutions.length>0){
         let pollutions = [];
@@ -54,14 +74,6 @@ export default class FoundMeasurements extends React.Component{
       <div>
         <h3>Найденные измерения ({this.props.measurements.length})</h3>
         <table className='table table-striped'>
-          {/*<thead className='thead-dark'>
-            <tr>
-              <th>Пост</th>
-              <th>Дата</th>
-              <th>Срок</th>
-              <th></th>
-            </tr>
-          </thead>*/}
           <tbody>
           {rows}
           </tbody>

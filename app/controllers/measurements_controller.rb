@@ -570,8 +570,14 @@ class MeasurementsController < ApplicationController
 
   def destroy
     @measurement.destroy
-    flash[:success] = "Измерение удалено"
-    redirect_to measurements_path
+    respond_to do |format|
+      format.html do
+        flash[:success] = "Измерение удалено"
+        redirect_to measurements_path
+      end
+      format.json { render json: {status: 200} }
+    end
+    # redirect_to measurements_path
   end
 
   def station_by_post(post_id) # converter only

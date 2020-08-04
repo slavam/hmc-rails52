@@ -15,6 +15,7 @@ export default class SearchMeasurements extends React.Component{
       errors: {}
     };
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.deleteMeasurement = this.deleteMeasurement.bind(this);
   }
   handleFormSubmit(params) {
     this.state.dateFrom = params.dateFrom;
@@ -33,12 +34,29 @@ export default class SearchMeasurements extends React.Component{
         this.setState({errors: ["Ошибка записи в базу"]});
       }.bind(this));
   }
+  deleteMeasurement(measurementId){
+    let measurements = [];
+    $.ajax({
+      type: 'DELETE',
+      dataType: 'json',
+      url: "/measurements/"+measurementId //+'.json'
+    }).done(data => {
+      measurements = [...this.state.measurements];
+      let id = this.state.measurements.findIndex((element, index, array) => element.measurement.id == +measurementId);
+      if(id > -1){
+        measurements.splice(id, 1);
+      }
+      this.setState({measurements: measurements});
+    }).fail(res => { // RecordNotFound
+      alert('Проблема с удалением измерения');
+    });
+  }
   render(){
     return (
       <div>
         {/*}<SearchParams onParamsSubmit={this.handleFormSubmit} dateFrom={this.props.dateFrom} dateTo={this.props.dateTo} errors={this.state.errors} posts={this.props.posts} term={this.state.term}  postId={this.state.postId} />*/}
         <SearchParams onParamsSubmit={this.handleFormSubmit} dateFrom={this.props.dateFrom} dateTo={this.props.dateTo} posts={this.props.posts} />
-        <FoundMeasurements measurements={this.state.measurements} dateFrom={this.state.dateFrom} dateTo={this.state.dateTo} materials={this.props.materials} posts={this.props.posts}/>
+        <FoundMeasurements onDeleteMeasurement={this.deleteMeasurement} measurements={this.state.measurements} dateFrom={this.state.dateFrom} dateTo={this.state.dateTo} materials={this.props.materials} posts={this.props.posts}/>
       </div>
     );
   }

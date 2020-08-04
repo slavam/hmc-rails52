@@ -1,4 +1,4 @@
-%tr{:style => "background: lightgray;"}
+%tr{ style: 'background: lightgray;' }
   %td= measurement.post.name
   %td= measurement.date
   %td= measurement.term
@@ -6,7 +6,7 @@
   %td= measurement.wind_speed
   %td= measurement.temperature
   %td= measurement.atmosphere_pressure
-  %td= link_to 'Удалить', measurement_path(measurement), :method => :delete, data: {:confirm => "Вы действительно хотите удалить измерение?"}
-  - if measurement.pollution_values.count > 0
+  %td= link_to 'Удалить', measurement_path(measurement), method: :delete, data: { confirm: 'Вы действительно хотите удалить измерение?' }
+  - if measurement.pollution_values.count.positive?
     - @m = measurement
     = render measurement.pollution_values

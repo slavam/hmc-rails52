@@ -69,14 +69,14 @@ export default class InputMeasurements extends React.Component{
     this.get_weather();
   }
   get_weather(){
-    var date = this.state.date; 
+    var date = this.state.date;
     $.ajax({
       type: 'GET',
       url: "get_weather_and_concentrations?date="+date+"&term="+this.state.term+"&post_id="+this.state.postId
       }).done(function(data) {
         var vs = {};
         var cs = {};
-        if (Object.keys(data.concentrations).length > 0) 
+        if (Object.keys(data.concentrations).length > 0)
           Object.keys(data.concentrations).forEach( k => {vs[k] = data.concentrations[k].value; cs[k] = data.concentrations[k].concentration});
         this.setState({
           weather: data.weather,
@@ -155,7 +155,7 @@ export default class InputMeasurements extends React.Component{
     }.bind(this))
     .fail(function(res){});
   }
-  
+
   render(){
     const terms = [
       { value: '01', label: '01' },
@@ -186,7 +186,7 @@ export default class InputMeasurements extends React.Component{
       <div>
         <InputError visible="true" errorMessage={this.state.error} />
         <form className="pollutionsForm" onSubmit={this.handleSubmit}>
-          
+
           <h3>Создать/изменить запись</h3>
           <table className="table table-hover">
             <thead>
@@ -200,10 +200,10 @@ export default class InputMeasurements extends React.Component{
               <tr>
                 <td><StationSelect options={this.props.posts} onUserInput={this.handlePostSelected} defaultValue={this.state.postId}/></td>
                 <td><TermSynopticSelect options={terms} onUserInput={this.handleTermSelected} defaultValue={this.state.term}/></td>
-                <td><input type="date" name="measurement-date" value={this.state.date} onChange={this.dateChange} required="true" autoComplete="on"/></td>
+                <td><input type="date" name="measurement-date" value={this.state.date} onChange={this.dateChange} required={true} autoComplete="on"/></td>
               </tr>
             </tbody>
-          </table>  
+          </table>
           <table className="table table-hover">
             <thead>
               <tr>
@@ -218,7 +218,7 @@ export default class InputMeasurements extends React.Component{
                 {tds2}
               </tr>
             </tbody>
-          </table>  
+          </table>
           <input type="submit" value="Сохранить" />
         </form>
         <h4>Данные о погоде (дата: {this.state.date}; срок: {this.state.term}; {this.state.postName})</h4>
@@ -257,14 +257,14 @@ $(function(){
   const node = document.getElementById('input_params');
   if(node){
     const date = JSON.parse(node.getAttribute('date'));
-    const term = JSON.parse(node.getAttribute('term')); 
+    const term = JSON.parse(node.getAttribute('term'));
     const materials = JSON.parse(node.getAttribute('materials'));
-    const posts = JSON.parse(node.getAttribute('posts')); 
-    const postId = JSON.parse(node.getAttribute('postId')); 
+    const posts = JSON.parse(node.getAttribute('posts'));
+    const postId = JSON.parse(node.getAttribute('postId'));
     const weather = JSON.parse(node.getAttribute('weather'));
     const concentrations = JSON.parse(node.getAttribute('concentrations'));
     const error = JSON.parse(node.getAttribute('error'));
-    
+
     ReactDOM.render(
       <InputMeasurements date={date} term={term} materials={materials} posts={posts} postId={postId} weather={weather} concentrations={concentrations} error={[error]}/>,
       document.getElementById('form_and_measurement')
