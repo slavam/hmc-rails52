@@ -17,10 +17,20 @@ export default class FoundMeasurements extends React.Component{
   // }
   handleDeleteMeasurementClick(e){
     e.preventDefault();
-    if (!confirm("Удалить?")) {
+    if (!confirm("Удалить?"))
       return;
-    }
     this.props.onDeleteMeasurement(e.target.id);
+  }
+  handleDeletePollutionClick(e){
+    var measurementId;
+    e.preventDefault();
+    let i = document.getElementById(e.target.id);
+    if(i){
+      measurementId = i.getAttribute('data-measurementid');
+    }
+    if (!confirm("Удалить?"))
+      return;
+    this.props.onDeletePollution(measurementId, e.target.id);
   }
   render(){
     const materials = [];
@@ -46,8 +56,8 @@ export default class FoundMeasurements extends React.Component{
             <td>{materials[+p.material_id]}</td>
             <td>{p.value}</td>
             <td>{p.concentration}</td>
-            <td>Изменить</td>
-            <td>Удалить</td>
+            {/*<td><input id={p.id} data-measurementid={m.measurement.id} type="submit" value="Удалить" onClick={this.handleDeletePollutionClick(m.measurement.id, p.id)}/></td>*/}
+            <td><input id={p.id} data-measurementid={m.measurement.id} type="submit" value="Удалить" onClick={(event) => this.handleDeletePollutionClick(event)}/></td>
           </tr>);
         });
         rows.push(<tr key={100000+m.measurement.id}>
@@ -58,7 +68,6 @@ export default class FoundMeasurements extends React.Component{
                   <th>Вещество</th>
                   <th>Плотность</th>
                   <th>Концентрация</th>
-                  <th></th>
                   <th></th>
                 </tr>
               </thead>
