@@ -2,19 +2,6 @@
 import React from 'react';
 
 export default class FoundMeasurements extends React.Component{
-  // constructor(props){
-  //   super(props);
-  //   this.state = {
-  //     measurements: [] //this.props.measurements
-  //   };
-  // }
-  // componentDidMount() {
-  //   this.setState({measurements: this.props.measurements});
-  // }
-  //
-  // componentDidUpdate() {
-  //   console.log('componentDidUpdate');
-  // }
   handleDeleteMeasurementClick(e){
     e.preventDefault();
     if (!confirm("Удалить?"))
@@ -24,12 +11,12 @@ export default class FoundMeasurements extends React.Component{
   handleDeletePollutionClick(e){
     var measurementId;
     e.preventDefault();
+    if (!confirm("Удалить?"))
+      return;
     let i = document.getElementById(e.target.id);
     if(i){
       measurementId = i.getAttribute('data-measurementid');
     }
-    if (!confirm("Удалить?"))
-      return;
     this.props.onDeletePollution(measurementId, e.target.id);
   }
   render(){
@@ -56,7 +43,6 @@ export default class FoundMeasurements extends React.Component{
             <td>{materials[+p.material_id]}</td>
             <td>{p.value}</td>
             <td>{p.concentration}</td>
-            {/*<td><input id={p.id} data-measurementid={m.measurement.id} type="submit" value="Удалить" onClick={this.handleDeletePollutionClick(m.measurement.id, p.id)}/></td>*/}
             <td><input id={p.id} data-measurementid={m.measurement.id} type="submit" value="Удалить" onClick={(event) => this.handleDeletePollutionClick(event)}/></td>
           </tr>);
         });

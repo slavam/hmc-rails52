@@ -518,7 +518,7 @@ class MeasurementsController < ApplicationController
       date_utc = Time.now.utc.strftime("%Y-%m-%d")
       post_name = Post.find(@post_id).name
       @weather = get_weather_from_synoptic_observatios(@post_id, date_utc, syn_term)
-      @error = @weather.nil? ? "В базе не найдена погода для поста: #{post_name}, дата: #{@date_loc}, срок: #{@chem_term}" : ''
+      @error = @weather.nil? ? "В базе не найдена погода (или нет давления воздуха) для поста: #{post_name}, дата: #{@date_loc}, срок: #{@chem_term}" : ''
     end
   end
 
@@ -594,7 +594,7 @@ class MeasurementsController < ApplicationController
     synoptic_date = params[:term].to_i == 1 ? (params[:date].to_date-1.day).strftime("%Y-%m-%d") : params[:date]
     weather = get_weather_from_synoptic_observatios(params[:post_id].to_i, synoptic_date, synoptic_term)
     concentrations = {}
-    err = "В базе не найдена погода для поста: #{params[:post_id]}, дата: #{params[:date]}, срок: #{params[:term]}"
+    err = "В базе не найдена погода (или нет давления воздуха) для поста: #{params[:post_id]}, дата: #{params[:date]}, срок: #{params[:term]}"
     if weather.present?
       # measurement_id = Measurement.get_id_by_date_term_post(params[:date], params[:term], params[:post_id])
       measurement = Measurement.find_by(date: params[:date], term: params[:term], post_id: params[:post_id])
@@ -616,7 +616,7 @@ class MeasurementsController < ApplicationController
       synoptic_date = params[:term].to_i == 1 ? (params[:date].to_date-1.day).strftime("%Y-%m-%d") : params[:date]
       weather = get_weather_from_synoptic_observatios(params[:post_id].to_i, synoptic_date, synoptic_term)
       post = Post.find(params[:post_id])
-      err = "В базе не найдена погода для поста: #{post.name}, дата: #{params[:date]}, срок: #{params[:term]}" if weather.nil?
+      err = "В базе не найдена погода (или нет давления воздуха) для поста: #{post.name}, дата: #{params[:date]}, срок: #{params[:term]}" if weather.nil?
     end
     render json: {weather: weather, error: err, concentrations: concentrations}
   end
@@ -744,7 +744,7 @@ class MeasurementsController < ApplicationController
       station_id = post_id < 15 ? 1 : 7
       weather = {}
       observation = SynopticObservation.find_by(date: date, term: term, station_id: station_id)
-      return nil if observation.nil?
+      return nil if observation.nil? or observation.pressure_at_station_level.nil? # mwm 20200806
       weather[:wind_speed] = observation.wind_speed_avg
       weather[:wind_direction] = observation.wind_direction
       weather[:temperature] = observation.temperature
