@@ -7,10 +7,11 @@
   %li= link_to 'Температура на 8 часов', '/other_observations/monthly_temperatures?variant=temp'
   %li= link_to 'Температура на 16 часов', '/other_observations/monthly_temperatures?variant=temp16'
   %li= link_to 'Донбасстеплоэнерго', synoptic_observations_teploenergo_path
+  %li= link_to 'Среднесуточная температура до 8 градусов', '/synoptic_observations/temperatures_lower8?city=Donetsk'
   %li= link_to 'Торгово-промышленная палата', synoptic_observations_tpp_path
-  %li= link_to 'Энергия Донбасса', synoptic_observations_energy_path
-  %li= link_to 'Медуниверситет', synoptic_observations_dnmu_path
-  %li= link_to 'Донснаб', synoptic_observations_donsnab_path
+  -# %li= link_to 'Энергия Донбасса', synoptic_observations_energy_path
+  -# %li= link_to 'Медуниверситет', synoptic_observations_dnmu_path
+  -# %li= link_to 'Донснаб', synoptic_observations_donsnab_path
   %li= link_to 'ЮНИОН', union_forecasts_path
   %li{ class: "divider"}
   %li= link_to 'Пожароопасность (график)', synoptic_observations_fire_path

@@ -363,6 +363,49 @@ class SynopticObservationsController < ApplicationController
     end
   end
 
+  def temperatures_lower8
+    @city = params[:city].present? ? params[:city] : 'Дебальцево'
+    threshold = 8.0
+    today = Time.now
+    @year = today.year
+    start_date = '2017-10-01' #@year.to_s+'-10-01'
+    end_date = '2017-12-31' #today.hour >= 1 ? (today - 1.day).strftime("%Y-%m-%d") : (today - 2.days).strftime("%Y-%m-%d")
+    sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date >= '#{start_date}' and date <= '#{end_date}' and station_id in (1,2,3,4,10) group by date, station_id order by date, station_id;"
+    db_temperatures = SynopticObservation.find_by_sql(sql)
+    @temperatures = []
+    check_dates = []
+    day_09_30 = 273 #Date.new(@year,9,30).yday
+    db_temperatures.each {|t|
+      j = t.date.yday - day_09_30
+      i = t.station_id
+      @temperatures[i] ||= []
+      @temperatures[i][j] = t.temperature
+      if t.temperature <= threshold
+        if check_dates[i].present?
+          if ((t.date - check_dates[i]).to_i > 4) and @temperatures[i][0].nil?
+            @temperatures[i][0] = check_dates[i].to_s
+          end
+        else
+          check_dates[i] = t.date
+        end  
+      else
+        check_dates[i] = nil
+      end
+    }
+
+    respond_to do |format|
+      format.html
+      format.pdf do
+        variant = params[:variant]
+        pdf = TeploenergoPortrait.new(@temperatures, @year, @month, variant)
+        send_data pdf.render, filename: "teploenergo_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      end
+      format.json do
+        render json: {temperatures: @temperatures, city: @city}
+      end
+    end
+  end
+
   def telegrams_4_download
     @date = (Time.now-3.hours).utc.strftime("%Y-%m-%d") # предыдущий срок
   end

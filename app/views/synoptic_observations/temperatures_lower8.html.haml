@@ -1,0 +1,9 @@
+= @temperatures.inspect
+.container
+  .row
+    .col
+      <p align="right">Дежурный синоптик (062) 303-10-34, 071-300-73-59</p>
+  #root
+  #init-params{ temperatures: @temperatures.to_json, city: 'Харцызск'.to_json} 
+  -# @city.to_json}
+  = javascript_pack_tag 'heat_donbass/temperatures_lower8'
