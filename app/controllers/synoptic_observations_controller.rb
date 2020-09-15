@@ -365,45 +365,89 @@ class SynopticObservationsController < ApplicationController
 
   def temperatures_lower8
     @city = params[:city].present? ? params[:city] : 'Дебальцево'
+    case @city
+      when 'Тельманово'
+        @region = 'Тельмановском районе'
+      when 'Старобешево'
+        @region = 'Старобешевском районе'
+      when 'Амвросиевка'
+        @region = 'Амвросиевском районе'
+      else
+        @region = 'г. '+@city
+    end
     threshold = 8.0
     today = Time.now
-    @year = today.year
-    start_date = '2017-10-01' #@year.to_s+'-10-01'
-    end_date = '2017-12-31' #today.hour >= 1 ? (today - 1.day).strftime("%Y-%m-%d") : (today - 2.days).strftime("%Y-%m-%d")
+    @year = 2017 #today.year
+    @start_date = Date.new(@year,10,1)
+    # @end_date = Date.new(@year,11,10)
+    start_date = @year.to_s+'-10-01'
+    end_date = @year.to_s+'-11-30' #today.hour >= 1 ? (today - 1.day).strftime("%Y-%m-%d") : (today - 2.days).strftime("%Y-%m-%d")
     sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date >= '#{start_date}' and date <= '#{end_date}' and station_id in (1,2,3,4,10) group by date, station_id order by date, station_id;"
     db_temperatures = SynopticObservation.find_by_sql(sql)
     @temperatures = []
-    check_dates = []
-    day_09_30 = 273 #Date.new(@year,9,30).yday
+    @check_dates = []
+    day_09_30 = Date.new(@year,9,30).yday
     db_temperatures.each {|t|
       j = t.date.yday - day_09_30
       i = t.station_id
       @temperatures[i] ||= []
       @temperatures[i][j] = t.temperature
       if t.temperature <= threshold
-        if check_dates[i].present?
-          if ((t.date - check_dates[i]).to_i > 4) and @temperatures[i][0].nil?
-            @temperatures[i][0] = check_dates[i].to_s
+        if @check_dates[i].present?
+          if ((t.date - @check_dates[i]).to_i > 4) and @temperatures[i][0].nil?
+            @temperatures[i][0] = @check_dates[i] #.to_s
           end
         else
-          check_dates[i] = t.date
+          @check_dates[i] = t.date
         end  
       else
-        check_dates[i] = nil
+        @check_dates[i] = nil
       end
     }
-
-    respond_to do |format|
-      format.html
-      format.pdf do
-        variant = params[:variant]
-        pdf = TeploenergoPortrait.new(@temperatures, @year, @month, variant)
-        send_data pdf.render, filename: "teploenergo_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
-      end
-      format.json do
-        render json: {temperatures: @temperatures, city: @city}
-      end
+    @temperatures[11] = calc_other_cities(1,3,11,threshold)
+    @temperatures[12] = calc_other_cities(2,3,12,threshold)
+    @temperatures[13] = calc_other_cities(2,3,13,threshold)
+    @temperatures[14] = calc_other_cities(1,2,14,threshold)
+    
+    @contract_date = '_____________'
+    @contract_num = '_____________'
+    case @city
+      when 'Харцызск', 'Ясиноватая'
+        i = 1
+      when 'Старобешево', 'Амвросиевка'
+        i = 2
+      when 'Дебальцево'
+        i = 3
+      when 'Докучаевск'
+        i = 4
+      when 'Тельманово'
+        i = 4
+        @contract_date = '15.09.2020'
+        @contract_num = '34/20/06'
+      when 'Новоазовск'
+        i = 10
+      when 'Горловка', 'Енакиево'
+        i = 11
+      when 'Шахтерск', 'Торез', 'Снежное'
+        i = 12
+      when 'Кировское'
+        i = 13
+      when 'Зугрэс'
+        i = 14
     end
+    @data_by_city = @temperatures[i]
+    @end_date = @data_by_city[0].present? ? @data_by_city[0]+4.days : Date.new(@year,11,10)
+    # respond_to do |format|
+    #   format.html
+    #   format.pdf do
+    #     variant = params[:variant]
+    #     pdf = TeploenergoPortrait.new(@temperatures, @year, @month, variant)
+    #     send_data pdf.render, filename: "teploenergo_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+    #   end
+    #   format.json do
+    #     render json: {temperatures: @temperatures, city: @city}
+    #   end
+    # end
   end
 
   def telegrams_4_download
@@ -1301,5 +1345,30 @@ class SynopticObservationsController < ApplicationController
     def is_3mm(day, night)
       # puts day, night
       return (day.to_f+night.to_f)>=3.0 ? 0 : 1
+    end
+
+    def calc_other_cities(i1,i2,ir,threshold)
+      res = []
+      (1..@temperatures[1].size-1).each do |i|
+        if ir == 13
+          t = (@temperatures[i1][i] - ((@temperatures[i1][i] - @temperatures[i2][i]) / 3)).round(1)
+        else
+          t = (@temperatures[i1][i] + @temperatures[i2][i]) / 2
+        end
+        res[i] = t
+        if t <= threshold
+          curr_date = Date.new(@year,9,30)+i.days
+          if @check_dates[ir].present?
+            if ((curr_date - @check_dates[ir]).to_i > 4) and res[0].nil?
+              res[0] = @check_dates[ir] 
+            end
+          else
+            @check_dates[ir] = curr_date
+          end  
+        else
+          @check_dates[ir] = nil
+        end
+      end
+      res
     end
 end

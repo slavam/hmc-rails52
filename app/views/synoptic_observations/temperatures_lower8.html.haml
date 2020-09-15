@@ -1,9 +1,24 @@
-= @temperatures.inspect
+-#= @temperatures.inspect
 .container
   .row
     .col
-      <p align="right">Дежурный синоптик (062) 303-10-34, 071-300-73-59</p>
+      <p align="right">К договору от #{@contract_date} № #{@contract_num}</p>
+  %h3 Средняя за сутки (00:01-24:00) температура воздуха (°С), при ее значении +8°С и ниже, в #{@region} октябрь #{@year} года
+  %table{class:'table table-hover'}
+    %thead
+      %tr
+        %th Числа месяца
+        - n=0
+        -(@start_date..@end_date).each do |d| 
+          -n += 1
+          %th #{d.day}
+    %tbody
+      %tr
+        %td
+        -(1..n).each do |i|
+          %td #{@data_by_city[i]<=8 ? @data_by_city[i] : '-'}
+  %h4 Примечание: "-" - значения средней за сутки температуры воздуха выше +8°С
+    
   #root
-  #init-params{ temperatures: @temperatures.to_json, city: 'Харцызск'.to_json} 
-  -# @city.to_json}
-  = javascript_pack_tag 'heat_donbass/temperatures_lower8'
+  #init-params{ temperatures: @temperatures.to_json, city: @city.to_json}
+  -#= javascript_pack_tag 'heat_donbass/temperatures_lower8'
