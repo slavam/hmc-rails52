@@ -375,24 +375,33 @@ class SynopticObservationsController < ApplicationController
       else
         @region = 'г. '+@city
     end
-    threshold = 8.0
+    @threshold = params[:threshold].present? ? params[:threshold].to_f : 8.0
+    start_date = params[:start_date].present? ? params[:start_date] : Time.now.year.to_s+'-10-01'
+    @year = start_date[0,4]
+    day_09_30 = Date.new(@year.to_i,9,30).yday
     today = Time.now
-    @year = 2017 #today.year
-    @start_date = Date.new(@year,10,1)
+    if @year.to_i == today.year
+      end_date = today.hour >= 1 ? (today - 1.day).strftime("%Y-%m-%d") : (today - 2.days).strftime("%Y-%m-%d")
+    else
+      end_date = @year+'-12-31'
+    end
+    # today = Time.now
+    # @year = 2017 #today.year
+    # @start_date = Date.new(@year,10,1)
     # @end_date = Date.new(@year,11,10)
-    start_date = @year.to_s+'-10-01'
-    end_date = @year.to_s+'-11-30' #today.hour >= 1 ? (today - 1.day).strftime("%Y-%m-%d") : (today - 2.days).strftime("%Y-%m-%d")
+    # start_date = @year.to_s+'-10-01'
+    # end_date = @year.to_s+'-11-30' #today.hour >= 1 ? (today - 1.day).strftime("%Y-%m-%d") : (today - 2.days).strftime("%Y-%m-%d")
     sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date >= '#{start_date}' and date <= '#{end_date}' and station_id in (1,2,3,4,10) group by date, station_id order by date, station_id;"
     db_temperatures = SynopticObservation.find_by_sql(sql)
     @temperatures = []
     @check_dates = []
-    day_09_30 = Date.new(@year,9,30).yday
+    
     db_temperatures.each {|t|
       j = t.date.yday - day_09_30
       i = t.station_id
       @temperatures[i] ||= []
       @temperatures[i][j] = t.temperature
-      if t.temperature <= threshold
+      if t.temperature <= @threshold
         if @check_dates[i].present?
           if ((t.date - @check_dates[i]).to_i > 4) and @temperatures[i][0].nil?
             @temperatures[i][0] = @check_dates[i] #.to_s
@@ -404,11 +413,12 @@ class SynopticObservationsController < ApplicationController
         @check_dates[i] = nil
       end
     }
-    @temperatures[11] = calc_other_cities(1,3,11,threshold)
-    @temperatures[12] = calc_other_cities(2,3,12,threshold)
-    @temperatures[13] = calc_other_cities(2,3,13,threshold)
-    @temperatures[14] = calc_other_cities(1,2,14,threshold)
-    
+    if db_temperatures.present?
+      @temperatures[11] = calc_other_cities(1,3,11)
+      @temperatures[12] = calc_other_cities(2,3,12)
+      @temperatures[13] = calc_other_cities(2,3,13)
+      @temperatures[14] = calc_other_cities(1,2,14)
+    end
     @contract_date = '_____________'
     @contract_num = '_____________'
     case @city
@@ -436,7 +446,8 @@ class SynopticObservationsController < ApplicationController
         i = 14
     end
     @data_by_city = @temperatures[i]
-    @end_date = @data_by_city[0].present? ? @data_by_city[0]+4.days : Date.new(@year,11,10)
+    @start_date = start_date.to_date
+    @stop_date = (@data_by_city.present? && @data_by_city[0].present?) ? @data_by_city[0]+4.days : Date.new(@year.to_i,12,31)
     # respond_to do |format|
     #   format.html
     #   format.pdf do
@@ -1347,26 +1358,28 @@ class SynopticObservationsController < ApplicationController
       return (day.to_f+night.to_f)>=3.0 ? 0 : 1
     end
 
-    def calc_other_cities(i1,i2,ir,threshold)
+    def calc_other_cities(i1,i2,ir)
       res = []
       (1..@temperatures[1].size-1).each do |i|
-        if ir == 13
-          t = (@temperatures[i1][i] - ((@temperatures[i1][i] - @temperatures[i2][i]) / 3)).round(1)
-        else
-          t = (@temperatures[i1][i] + @temperatures[i2][i]) / 2
-        end
-        res[i] = t
-        if t <= threshold
-          curr_date = Date.new(@year,9,30)+i.days
-          if @check_dates[ir].present?
-            if ((curr_date - @check_dates[ir]).to_i > 4) and res[0].nil?
-              res[0] = @check_dates[ir] 
-            end
+        if @temperatures[i1][i].present? and @temperatures[i2][i].present?
+          if ir == 13
+            t = (@temperatures[i1][i] - ((@temperatures[i1][i] - @temperatures[i2][i]) / 3)).round(1)
           else
-            @check_dates[ir] = curr_date
-          end  
-        else
-          @check_dates[ir] = nil
+            t = (@temperatures[i1][i] + @temperatures[i2][i]) / 2 if @temperatures[i1][i].present? and @temperatures[i2][i].present?
+          end
+          res[i] = t
+          if t <= @threshold
+            curr_date = Date.new(@year.to_i,9,30)+i.days
+            if @check_dates[ir].present?
+              if ((curr_date - @check_dates[ir]).to_i > 4) and res[0].nil?
+                res[0] = @check_dates[ir] 
+              end
+            else
+              @check_dates[ir] = curr_date
+            end  
+          else
+            @check_dates[ir] = nil
+          end
         end
       end
       res

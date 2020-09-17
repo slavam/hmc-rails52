@@ -9,14 +9,15 @@
       %tr
         %th Числа месяца
         - n=0
-        -(@start_date..@end_date).each do |d| 
+        -(@start_date..@stop_date).each do |d| 
           -n += 1
           %th #{d.day}
     %tbody
-      %tr
-        %td
-        -(1..n).each do |i|
-          %td #{@data_by_city[i]<=8 ? @data_by_city[i] : '-'}
+      - if @data_by_city.present?
+        %tr
+          %td
+          -(1..n).each do |i|
+            %td #{@data_by_city[i].present? && @data_by_city[i] <= @threshold ? @data_by_city[i] : '-'}
   %h4 Примечание: "-" - значения средней за сутки температуры воздуха выше +8°С
     
   #root
