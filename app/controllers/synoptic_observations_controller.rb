@@ -400,11 +400,11 @@ class SynopticObservationsController < ApplicationController
       j = t.date.yday - day_09_30
       i = t.station_id
       @temperatures[i] ||= []
-      @temperatures[i][j] = t.temperature
+      @temperatures[i][j] = t.temperature.round(1)
       if t.temperature <= @threshold
         if @check_dates[i].present?
           if ((t.date - @check_dates[i]).to_i > 4) and @temperatures[i][0].nil?
-            @temperatures[i][0] = @check_dates[i] #.to_s
+            @temperatures[i][0] = @check_dates[i]
           end
         else
           @check_dates[i] = t.date
@@ -448,17 +448,16 @@ class SynopticObservationsController < ApplicationController
     @data_by_city = @temperatures[i]
     @start_date = start_date.to_date
     @stop_date = (@data_by_city.present? && @data_by_city[0].present?) ? @data_by_city[0]+4.days : Date.new(@year.to_i,12,31)
-    # respond_to do |format|
-    #   format.html
-    #   format.pdf do
-    #     variant = params[:variant]
-    #     pdf = TeploenergoPortrait.new(@temperatures, @year, @month, variant)
-    #     send_data pdf.render, filename: "teploenergo_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
-    #   end
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = TemperaturesLower8.new(@data_by_city, @year, @region, @contract_date, @contract_num)
+        send_data pdf.render, filename: "lower8_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      end
     #   format.json do
     #     render json: {temperatures: @temperatures, city: @city}
     #   end
-    # end
+    end
   end
 
   def telegrams_4_download
@@ -1365,7 +1364,7 @@ class SynopticObservationsController < ApplicationController
           if ir == 13
             t = (@temperatures[i1][i] - ((@temperatures[i1][i] - @temperatures[i2][i]) / 3)).round(1)
           else
-            t = (@temperatures[i1][i] + @temperatures[i2][i]) / 2 if @temperatures[i1][i].present? and @temperatures[i2][i].present?
+            t = ((@temperatures[i1][i] + @temperatures[i2][i]) / 2).round(1) if @temperatures[i1][i].present? and @temperatures[i2][i].present?
           end
           res[i] = t
           if t <= @threshold
