@@ -1,4 +1,4 @@
-class TeploenergoPortrait < Prawn::Document
+class Teploenergo5 < Prawn::Document
   def initialize(temperatures, year, month, signatory)
     super :page_size => "A4", left_margin: 95 #, :page_layout => :landscape
 		# super(top_margin: 40)	
@@ -28,11 +28,11 @@ class TeploenergoPortrait < Prawn::Document
     font "OpenSans", style: :normal
     table table_data, width: bounds.width, cell_style: { border_width: 0.3, :overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true, size: 9, align: :center } do |t|
       t.cells.padding = [2,2]
-      t.row(0).size = 7
-      t.row(0).rotate = 90
-      t.row(0).column(1).rotate = -90
-      t.row(0).column(3).rotate = -90
-      t.column(9).width = 30
+      # t.row(0).size = 7
+      # t.row(0).rotate = 90
+      # t.row(0).column(1).rotate = -90
+      # t.row(0).column(3).rotate = -90
+      # t.column(9).width = 30
       # t.column(1).width = 75
       # t.column(2).width = 60
       # t.column(4).width = 50
@@ -65,42 +65,17 @@ class TeploenergoPortrait < Prawn::Document
         key = day+'-'+s.to_s.rjust(2,'0')
         row << (@temperatures[key].present? ? @temperatures[key] : '')
       end
-      if @temperatures[day+'-01'] and @temperatures[day+'-03'] 
-        v = ((@temperatures[day+'-01']+@temperatures[day+'-03'])/2).round(1);
-        row << v
-      else
-        row << ''
-      end
-      if @temperatures[day+'-02'] and @temperatures[day+'-03']
-        db = @temperatures[day+'-03']
-        a = @temperatures[day+'-02']
-        v = ((a+db)/2).round(1)
-        row << v
-        v = (db-(db-a)/3).round(1)
-        row << v
-      else
-        row << '' << ''
-      end
-      if @temperatures[day+'-01'] and @temperatures[day+'-02'] 
-        v = ((@temperatures[day+'-01']+@temperatures[day+'-02'])/2).round(1);
-        row << v
-      else
-        row << ''
-      end
+      
       table << row
     end
     [
       [
         '<b>Число месяца</b>',
-        '<b>Донецк<br/>Пантелеймоновка<br/>Моспино<br/>Еленовка<br/>Макеевка<br/>Харцызск<br/>Ясиноватая</b>', 
-        '<b>Дебальцево<br/>Углегорск</b>', 
-        '<b>Амвросиевка<br/>Иловайск<br/>Старобешево<br/>Комсомольское</b>', 
-        '<b>Докучаевск<br/>Тельманово</b>', 
-        '<b>Новоазовск</b>',
-        '<b>Горловка<br/>Енакиево</b>',
-        '<b>Снежное<br/>Торез<br/>Шахтерск</b>',
-        '<b>Ждановка<br/>Кировское</b>',
-        '<b>Зугрэс</b>'
+        '<b>Донецк</b>', 
+        '<b>Дебальцево</b>', 
+        '<b>Амвросиевка</b>', 
+        '<b>Докучаевск</b>', 
+        '<b>Седово</b>'
       ]
     ] + table
   end
