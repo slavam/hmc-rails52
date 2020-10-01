@@ -29,7 +29,7 @@ class Dte < Prawn::Document
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
       text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № 0#{Bulletin.ogmo_code}/"+@bulletin.curr_number
-      text "К договору от 01.10.2019 № 08/19-20/03"
+      text "К договору от 03.09.2020 № 08/20-21/06"
     end
     
     bounding_box([290, y_pos], width: bounds.width-290) do
