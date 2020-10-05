@@ -47,3 +47,6 @@
   - when 'warning'
   %h3{ align: :center } Создать штормовое предупреждение (гидро)
   = render partial: 'alert_form'
+  - when 'railway'
+  %h3{ align: :center } Создать прогноз для Железной дороги
+  = render partial: 'railway_form'

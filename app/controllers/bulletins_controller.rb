@@ -40,6 +40,12 @@ class BulletinsController < ApplicationController
     bulletin = Bulletin.last_this_type params[:bulletin_type]
     last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307
     case params[:bulletin_type]
+      when 'railway'
+        if last_daily_bulletin.present?
+          @bulletin.storm = last_daily_bulletin.storm
+          @bulletin.forecast_day = last_daily_bulletin.forecast_day
+          @bulletin.forecast_period = last_daily_bulletin.forecast_period
+        end
       when 'clarification'
         if last_daily_bulletin.present?
           @bulletin.forecast_day = last_daily_bulletin.forecast_day
@@ -268,7 +274,7 @@ class BulletinsController < ApplicationController
 
   def destroy
     bulletin_type = @bulletin.bulletin_type
-    bulletin_id = @bulletin.id
+    # bulletin_id = @bulletin.id
     @bulletin.destroy
     # User.where(role: 'synoptic').each do |synoptic|
     #   ActionCable.server.broadcast "bulletin_editing_channel_user_#{synoptic.id}",
@@ -371,8 +377,8 @@ class BulletinsController < ApplicationController
           pdf = Hydro2.new(@bulletin)
         when 'alert', 'warning'
           pdf = Alert.new(@bulletin)
-        # when 'warning'
-        #   pdf = Alert.new(@bulletin)
+        when 'railway'
+          pdf = Railway.new(@bulletin)
       end
       format.html do
         save_as_pdf(pdf)
