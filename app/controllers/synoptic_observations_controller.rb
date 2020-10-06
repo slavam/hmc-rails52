@@ -481,6 +481,8 @@ class SynopticObservationsController < ApplicationController
         @contract_date = '15.09.2020'
         @contract_num = '34/20/06'
       when 'Новоазовск'
+        @contract_date = '01.10.2020'
+        @contract_num = '35/20/06'
         i = 10
       when 'Горловка', 'Енакиево'
         i = 11
@@ -1404,8 +1406,11 @@ class SynopticObservationsController < ApplicationController
     end
 
     def calc_other_cities(i1,i2,ir)
+      if @temperatures[i1].nil? or @temperatures[i2].nil?
+        return []
+      end
       res = []
-      (1..@temperatures[1].size-1).each do |i|
+      (1..@temperatures[i1].size-1).each do |i|
         if @temperatures[i1][i].present? and @temperatures[i2][i].present?
           if ir == 13
             t = (@temperatures[i1][i] - ((@temperatures[i1][i] - @temperatures[i2][i]) / 3)).round(1)
