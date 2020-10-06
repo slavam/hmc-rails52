@@ -57,6 +57,7 @@ class Railway < Prawn::Document
       text @bulletin.header_daily, align: :center
       text "в Донецкой Народной Республике", align: :center
     end
+    text @bulletin.forecast_day
     move_down 20
     text @bulletin.header_period, align: :center
     text "в Донецкой Народной Республике", align: :center
