@@ -8,7 +8,8 @@ class TemperaturesLower8 < Prawn::Document
       :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
     })
     font "OpenSans"
-    text "К договору от #{contract_date} № #{contract_num}", align: :right
+    text "На Поручение Главы ДНР от 06.10.2020 № 01-33/815", align: :right
+    # text "К договору от #{contract_date} № #{contract_num}", align: :right
     move_down 20
     text "Средняя за сутки (00:01-24:00) температура воздуха (°С), при ее значении +8°С и ниже, в #{region} c #{(temperatures[0]+1.day).to_s}", align: :center, size: 14
     move_down 20
