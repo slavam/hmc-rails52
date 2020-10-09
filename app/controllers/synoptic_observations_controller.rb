@@ -422,9 +422,11 @@ class SynopticObservationsController < ApplicationController
         @region = 'г. '+@city
     end
     @threshold = params[:threshold].present? ? params[:threshold].to_f : 8.0
-    start_date = params[:start_date].present? ? params[:start_date] : Time.now.year.to_s+'-10-01'
+    start_date = params[:start_date].present? ? params[:start_date] : Time.now.year.to_s+'-10-15' #01'
+    @start_date = start_date.to_date
     @year = start_date[0,4]
-    day_09_30 = Date.new(@year.to_i,9,30).yday
+    # day_09_30 = Date.new(@year.to_i,9,30).yday
+    first_day_number = @start_date.yday-1
     today = Time.now
     if @year.to_i == today.year
       end_date = today.hour >= 1 ? (today - 1.day).strftime("%Y-%m-%d") : (today - 2.days).strftime("%Y-%m-%d")
@@ -443,7 +445,7 @@ class SynopticObservationsController < ApplicationController
     @check_dates = []
     
     db_temperatures.each {|t|
-      j = t.date.yday - day_09_30
+      j = t.date.yday - first_day_number #day_09_30
       i = t.station_id
       @temperatures[i] ||= []
       @temperatures[i][j] = t.temperature.round(1)
@@ -494,12 +496,14 @@ class SynopticObservationsController < ApplicationController
         i = 14
     end
     @data_by_city = @temperatures[i]
-    @start_date = start_date.to_date
+    # @start_date = start_date.to_date
     @stop_date = (@data_by_city.present? && @data_by_city[0].present?) ? @data_by_city[0]+4.days : Date.new(@year.to_i,12,31)
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = TemperaturesLower8.new(@data_by_city, @year, @region, @contract_date, @contract_num)
+        # puts '>>>>>>>>>>>>>>>>>'+@data_by_city.inspect
+        # pdf = TemperaturesLower8.new(@data_by_city, @year, @region, @contract_date, @contract_num)
+        pdf = TemperaturesLower8.new(@data_by_city, first_day_number, @region, @contract_date, @contract_num)
         send_data pdf.render, filename: "lower8_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
       end
     #   format.json do
