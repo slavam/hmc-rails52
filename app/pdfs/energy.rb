@@ -28,23 +28,24 @@ class Energy < Prawn::Document
     font "OpenSans", style: :normal
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
-      text Time.now.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 30} № 03/#{Date.today.yday}"
-      text "К договору от 06.11.2019 № 2 05/19-20/03"
+      # text Time.now.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 30} № 03/#{Date.today.yday}"
+      # text "К договору от 06.11.2019 № 2 05/19-20/03"
+      text "_____________2020_______    № 06/________"
+      text "К договору от 15.10.2020 № 05/20-21/06"
     end
     
     bounding_box([250, y_pos], width: bounds.width-250) do
-      text "Исполняющему обязанности
-            генерального директора
-            Республиканского предприятия
-            \"Энергия Донбасса\"
+      text "Директору
+            ОП \"ЗУЕВСКАЯ ТЭС\"
+            РП \"Энергия Донбасса\"
 		
-            А.Н. Жучкову", leading: 3
+            Е.В. Железняку", leading: 3
     end
     # move_down 10
     text "О предоставлении информации"
     move_down 20
     @last_day = Time.days_in_month(month.to_i, year.to_i)
-    text "Гидрометцентр МЧС ДНР предоставляет информацию о средней температуре воздуха за сутки в г. Зугрэсе за период 01-#{@last_day} #{Bulletin::MONTH_NAME2[month.to_i]} #{year} г. по дням (по данным репрезентативных метеорологических станций):", indent_paragraphs: 40, leading: 2
+    text "Гидрометцентр МЧС ДНР предоставляет информацию о средней за сутки температуре воздуха в г. Зугрэсе за период 01-#{@last_day} #{Bulletin::MONTH_NAME2[month.to_i]} #{year} г. по дням (по данным репрезентативных метеорологических станций):", indent_paragraphs: 40, leading: 2
     case @last_day
       when 28
         @lines = 14
@@ -80,7 +81,7 @@ class Energy < Prawn::Document
       day2 = i+@lines <= @last_day ? i+@lines : nil
       val1 = @temperatures[i].present? ? @temperatures[i] : ''
       val2 = (day2.present? and @temperatures[day2].present?) ? @temperatures[@lines+i] : ''
-      t <<[i,val1,day2,val2]
+      t << [i,val1,day2,val2]
     end
     t
   end

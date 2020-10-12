@@ -253,6 +253,46 @@ class SynopticObservationsController < ApplicationController
     end
   end
 
+  def energy_1510
+    today = Time.now
+    @year = params[:year].present? ? params[:year] : today.year.to_s
+    @month = params[:month].present? ? params[:month] : today.month.to_s.rjust(2, '0')
+    last_day = ''
+    first_day = '01'
+    if (@month.to_i == today.month) and (@year.to_i == today.year)
+      first_day = '15' if @month == '10'
+      if today.hour >= 1
+        last_day = (today.day-1).to_s.rjust(2,'0') # не брать текущий день ЛМБ 20191001
+      else
+        if today.day > 1
+          last_day = (today.day-2).to_s.rjust(2,'0') # до часа ночи берем позавчерашний день 20191010 КМА
+        else
+          last_day = '00'
+        end
+      end
+    else
+      last_day = Time.parse("#{@year}-#{@month}-01").end_of_month.day.to_s
+    end
+    
+    sql = "select date, ROUND(avg(temperature),1) temperature from synoptic_observations where date >= '#{@year}-#{@month}-#{first_day}' and date <= '#{@year}-#{@month}-#{last_day}' and station_id in (1,2) group by date;"
+    db_temperatures = SynopticObservation.find_by_sql(sql)
+    @temperatures = []
+    db_temperatures.each {|t|
+      key = t.date.day
+      @temperatures[key] = t.temperature
+    }
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = Energy.new(@temperatures, @year, @month, params[:chief], params[:responsible])
+        send_data pdf.render, filename: "energy2_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      end
+      format.json do
+        render json: {temperatures: @temperatures}
+      end
+    end
+  end
+
   def energy
     today = Time.now
     @year = params[:year].present? ? params[:year] : today.year.to_s
@@ -271,7 +311,7 @@ class SynopticObservationsController < ApplicationController
     #   sql = "select avg(temperature) temperature from synoptic_observations where observed_at > '"+start+"' and observed_at < '"+stop+"' and station_id in (1,2);"
     #   @temperatures[d] = SynopticObservation.find_by_sql(sql)[0].temperature
     # end
-    sql = "select date, avg(temperature) temperature from synoptic_observations where date >= '#{@year}-#{@month}-01' and date <= '#{@year}-#{@month}-#{last_day}' and station_id in (1,2) group by date;"
+    sql = "select date, ROUND(avg(temperature),1) temperature from synoptic_observations where date >= '#{@year}-#{@month}-01' and date <= '#{@year}-#{@month}-#{last_day}' and station_id in (1,2) group by date;"
     db_temperatures = SynopticObservation.find_by_sql(sql)
     @temperatures = []
     db_temperatures.each {|t|
@@ -418,6 +458,8 @@ class SynopticObservationsController < ApplicationController
         @region = 'Старобешевском районе'
       when 'Амвросиевка'
         @region = 'Амвросиевском районе'
+      when 'Новоазовск'
+        @region = 'Новоазовском районе'
       else
         @region = 'г. '+@city
     end
