@@ -512,7 +512,7 @@ class SynopticObservationsController < ApplicationController
     @contract_date = '_____________'
     @contract_num = '_____________'
     case @city
-      when 'Харцызск', 'Ясиноватая'
+      when 'Харцызск', 'Ясиноватая', 'Донецк', 'Макеевка'
         i = 1
       when 'Старобешево', 'Амвросиевка'
         i = 2
