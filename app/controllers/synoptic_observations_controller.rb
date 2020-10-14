@@ -532,7 +532,7 @@ class SynopticObservationsController < ApplicationController
         i = 11
       when 'Шахтерск', 'Торез', 'Снежное'
         i = 12
-      when 'Кировское'
+      when 'Кировское','Ждановка'
         i = 13
       when 'Зугрэс'
         i = 14
