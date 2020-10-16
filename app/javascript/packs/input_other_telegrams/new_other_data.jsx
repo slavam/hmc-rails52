@@ -12,12 +12,14 @@ export default class NewOtherData extends React.Component{
       message: '',
       point: { value: 'Макеевка',  label: 'Макеевка' },
       period: { value: 'day',  label: 'День' },
+      term: { value: '00',  label: '00:00' },
       errors: []
     };
     this.handleTypeSelected = this.handleTypeSelected.bind(this);
     this.handleStationSelected = this.handleStationSelected.bind(this);
     this.handlePointSelected = this.handlePointSelected.bind(this);
     this.handlePeriodSelected = this.handlePeriodSelected.bind(this);
+    // this.handleTermSelected = this.handleTermSelected.bind(this);
   }
   
   handleTypeSelected(val){
@@ -34,9 +36,14 @@ export default class NewOtherData extends React.Component{
   }
   
   handlePeriodSelected(val){
-    this.setState({period: val});
+    if(this.state.dataType == 'perc')
+      this.setState({period: val});
+    else
+      this.setState({term: val});
   }
-  
+  // handleTermSelected(val){
+  //   this.setState({period: val});
+  // }
   handleDescriptionChange(e){
     this.setState({message: e.target.value});
   }
@@ -68,6 +75,15 @@ export default class NewOtherData extends React.Component{
           description: this.state.message
         };
         break;
+      case 'wind':
+        this.observation = {
+          data_type: this.state.dataType.value,
+          value: this.state.value,
+          obs_date: this.state.observationDate,
+          period: this.state.term.value,
+          station_id: this.state.station.value
+        };
+        break;
       default:
         this.observation = {
           data_type: this.state.dataType.value,
@@ -83,6 +99,7 @@ export default class NewOtherData extends React.Component{
       message: '',
       point: { value: 'Макеевка',  label: 'Макеевка' },
       period: { value: 'day',  label: 'День' },
+      term: { value: '00',  label: '00:00' },
       errors: []
     });
     this.props.onFormSubmit({other_observation: this.observation});
@@ -104,6 +121,16 @@ export default class NewOtherData extends React.Component{
       { value: 'day',  label: 'День' },
       { value: 'night',  label: 'Ночь' }
     ];
+    const terms = [
+      {value: '00', label: '00:00'},
+      {value: '03', label: '03:00'},
+      {value: '06', label: '06:00'},
+      {value: '09', label: '09:00'},
+      {value: '12', label: '12:00'},
+      {value: '15', label: '15:00'},
+      {value: '18', label: '18:00'},
+      {value: '21', label: '21:00'}
+    ];
     let obsDate = this.props.inputMode == 'normal' ? <td>{this.state.observationDate}</td> : <td><input type="date" name="input-date" value={this.state.observationDate} onChange={(event) => this.dateChange(event)} required="true" autoComplete="on" /></td>;
     let hdr = '';
     let dat = '';
@@ -115,6 +142,15 @@ export default class NewOtherData extends React.Component{
               <td><Select id='points' options={points} onChange={this.handlePointSelected} value={this.state.point}/></td>
               <td><Select id='periods' options={periods} onChange={this.handlePeriodSelected} value={this.state.period}/></td>
               <td><input type="text" value={this.state.message} onChange={(event) => this.handleDescriptionChange(event)}/></td>
+              <td><input type="number" value={this.state.value} onChange={(event) => this.handleValueChange(event)}/></td>
+            </tr>;
+    }else if(this.state.dataType.value == 'wind'){
+      hdr = <tr><th width="220px">Тип данных</th><th width="140px">Дата наблюдения</th><th>Время</th><th>Метеостанция</th><th>Значение</th></tr>;
+      dat = <tr>
+              <td><Select id='types' options={types} onChange={this.handleTypeSelected} value={this.state.dataType}/></td>
+              {obsDate}
+              <td><Select id='terms' options={terms} onChange={this.handlePeriodSelected} value={this.state.term}/></td>
+              <td><Select value={this.state.station} onChange={this.handleStationSelected} options={stations}/></td>
               <td><input type="number" value={this.state.value} onChange={(event) => this.handleValueChange(event)}/></td>
             </tr>;
     }else{

@@ -1,0 +1,5 @@
+-#= @winds.inspect
+.container
+  #root
+  #init-params{ winds: @winds.to_json, calcDate: @calc_date.to_json}
+  = javascript_pack_tag 'heat_donbass/winds'

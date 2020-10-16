@@ -25,8 +25,8 @@
                 = render 'layouts/bulletins'
               %li
                 = render 'layouts/synoptic_reports'
-              -#%li
-                -#= render 'layouts/forecast_links'
+              %li
+                = render 'layouts/t_lower_8'
                 -# = render 'layouts/synoptic_links' 20190718 Boyko
             - when 'agro'
               %li
@@ -83,8 +83,9 @@
                 = render 'layouts/bulletins'
               %li
                 = render 'layouts/synoptic_reports'
-              %li= link_to 'Карты',  "http://suleiman.rshu.ru/gifmaps/", target: :_blank
-              /
+              %li 
+                = render 'layouts/t_lower_8'
+              / 
                 %li
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Справочники <b class="caret"></b></a>
                   %ul{class: "dropdown-menu"}
@@ -107,7 +108,7 @@
                   %li{ class: "divider"}
                   = render 'layouts/list_telegrams'
               %li
-                = render 'layouts/bulletins'
+                = render 'layouts/bulletins_observer'
               %li
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Сервис <b class="caret"></b></a>
                 %ul{class: "dropdown-menu"}

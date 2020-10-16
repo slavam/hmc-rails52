@@ -7,6 +7,8 @@ const LastData = ({observations, tlgType, stations, onClickDelete}) => {
   observations.forEach((o) => {
     if (tlgType == 'perc')
       rows.push(<tr key={o.id}><td>{o.obs_date}</td><td>{o.source}</td><td>{o.period}</td><td>{o.value}</td><td>{o.description}</td><td><button id={o.id} onClick={o => onClickDelete(o)}>Удалить</button></td></tr>);
+    else if (tlgType == 'wind')
+      rows.push(<tr key={o.id}><td>{o.obs_date}</td><td>{o.period}</td><td>{stations[o.station_id]}</td><td>{o.value}</td><td><button id={o.id} onClick={o => onClickDelete(o)}>Удалить</button></td></tr>);
     else
       rows.push(<tr key={o.id}><td>{o.obs_date}</td><td>{stations[o.station_id]}</td><td>{o.value}</td><td><button id={o.id} onClick={o => onClickDelete(o)}>Удалить</button></td></tr>);
   });
@@ -20,6 +22,14 @@ const LastData = ({observations, tlgType, stations, onClickDelete}) => {
           <th>Описание</th>
           <th>Действия</th>
         </tr>;
+  else if(tlgType == 'wind')
+    hdr = <tr>
+      <th width = "200px">Дата наблюдения</th>
+      <th>Срок</th>
+      <th>Метеостанция</th>
+      <th>Значение</th>
+      <th>Действия</th>
+    </tr>;
   else
     hdr = <tr>
           <th width = "200px">Дата наблюдения</th>

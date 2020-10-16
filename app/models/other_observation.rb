@@ -8,7 +8,8 @@ class OtherObservation < ApplicationRecord
     'temp16' => "Температура на 16 часов",
     'perc' => "Осадки",
     'min_hum' => "Минимальная влажность",
-    'freezing' => "Критическая температура вымерзания"
+    'freezing' => "Критическая температура вымерзания",
+    'wind' => 'Порывы ветра'
   }
   def self.last_50_telegrams(data_type)
     OtherObservation.where('data_type = ?', data_type).limit(50).order(:obs_date, :updated_at).reverse_order

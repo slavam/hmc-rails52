@@ -514,7 +514,7 @@ class SynopticObservationsController < ApplicationController
     case @city
       when 'Харцызск', 'Ясиноватая', 'Донецк', 'Макеевка'
         i = 1
-      when 'Старобешево', 'Амвросиевка'
+      when 'Старобешево', 'Амвросиевка','Иловайск'
         i = 2
       when 'Дебальцево'
         i = 3

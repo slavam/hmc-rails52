@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :playdays
   get 'fire_dangers/daily_fire_danger', to: 'fire_dangers#daily_fire_danger'
   resources :fire_dangers
+  get 'other_observations/winds', to: 'other_observations#winds'
   get 'other_observations/input_other_telegrams', to: 'other_observations#input_other_telegrams'
   post 'other_observations/create_other_data', to: 'other_observations#create_other_data'
   get 'other_observations/get_last_telegrams', to: 'other_observations#get_last_telegrams'
