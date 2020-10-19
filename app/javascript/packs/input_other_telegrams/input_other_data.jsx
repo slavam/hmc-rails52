@@ -25,7 +25,7 @@ const LastData = ({observations, tlgType, stations, onClickDelete}) => {
   else if(tlgType == 'wind')
     hdr = <tr>
       <th width = "200px">Дата наблюдения</th>
-      <th>Срок</th>
+      <th>Время</th>
       <th>Метеостанция</th>
       <th>Значение</th>
       <th>Действия</th>

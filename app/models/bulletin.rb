@@ -31,7 +31,7 @@ class Bulletin < ActiveRecord::Base
     'warning' => 'Штормовые предупреждения (гидро)',
     'railway' => 'Бюллетени для Железной дороги'
   }
-  CHIEFS = {"Лукьяненко" => "М.Б. Лукьяненко", "Стец" => "Н.В. Стец"}
+  CHIEFS = {"Лукьяненко" => "М.Б. Лукьяненко", "Стец" => "Н.В. Стец", "Арамелева" => "О.В. Арамелева"}
   RESPONSIBLES = {"Бойко" => "Л.Н. Бойко", "Кияненко" => "М.А. Кияненко"}
   REGIONS = ["Донецк",
             "Макеевка, Харцызск, Ясиноватая",
@@ -79,6 +79,9 @@ class Bulletin < ActiveRecord::Base
     if self.chief == "М.Б. Лукьяненко"
       ret[:position] = "Начальник"
       ret[:image_name] = "./app/assets/images/chief.png"
+    elsif self.chief == "О.В. Арамелева"
+      ret[:position] = "Врио начальника"
+      ret[:image_name] = "./app/assets/images/arameleva2.png"
     else
       ret[:position] = "Врио начальника"
       ret[:image_name] = "./app/assets/images/stec.png"
