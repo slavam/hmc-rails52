@@ -1459,9 +1459,9 @@ class SynopticObservationsController < ApplicationController
       (1..@temperatures[i1].size-1).each do |i|
         if @temperatures[i1][i].present? and @temperatures[i2][i].present?
           if ir == 13
-            t = (@temperatures[i1][i] - ((@temperatures[i1][i] - @temperatures[i2][i]) / 3)).round(1)
+            t = (@temperatures[i2][i] - ((@temperatures[i2][i] - @temperatures[i1][i]) / 3)).round(1)
           else
-            t = ((@temperatures[i1][i] + @temperatures[i2][i]) / 2).round(1) if @temperatures[i1][i].present? and @temperatures[i2][i].present?
+            t = ((@temperatures[i1][i] + @temperatures[i2][i]) / 2).round(1) # if @temperatures[i1][i].present? and @temperatures[i2][i].present?
           end
           res[i] = t
           if t <= @threshold
