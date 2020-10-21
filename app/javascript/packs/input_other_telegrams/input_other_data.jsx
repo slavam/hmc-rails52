@@ -8,7 +8,7 @@ const LastData = ({observations, tlgType, stations, onClickDelete}) => {
     if (tlgType == 'perc')
       rows.push(<tr key={o.id}><td>{o.obs_date}</td><td>{o.source}</td><td>{o.period}</td><td>{o.value}</td><td>{o.description}</td><td><button id={o.id} onClick={o => onClickDelete(o)}>Удалить</button></td></tr>);
     else if (tlgType == 'wind')
-      rows.push(<tr key={o.id}><td>{o.obs_date}</td><td>{o.period}</td><td>{stations[o.station_id]}</td><td>{o.value}</td><td><button id={o.id} onClick={o => onClickDelete(o)}>Удалить</button></td></tr>);
+      rows.push(<tr key={o.id}><td>{o.obs_date}</td><td>{o.period+':00'}</td><td>{stations[o.station_id]}</td><td>{parseInt(o.value,10)}</td><td><button id={o.id} onClick={o => onClickDelete(o)}>Удалить</button></td></tr>);
     else
       rows.push(<tr key={o.id}><td>{o.obs_date}</td><td>{stations[o.station_id]}</td><td>{o.value}</td><td><button id={o.id} onClick={o => onClickDelete(o)}>Удалить</button></td></tr>);
   });
@@ -105,16 +105,12 @@ export default class InputOtherData extends React.Component{
     }.bind(this));
   }
   render(){
-    var dataTypes = {
-      'temp': 'Температура воздуха (°C)',
-      'perc': 'Осадки (мм)'
-    };
     return(
       <div>
         <h3>Ввод дополнительных данных</h3>
-        <NewOtherData tlgType={this.state.tlgType} currDate={this.state.currDate} inputMode={this.state.inputMode} onFormSubmit={this.handleFormSubmit} onDataTypeChange={this.handleDataTypeChanged} otherTypes={this.props.otherTypes} stations={this.props.stations}/>
-        {dataTypes[this.state.tlgType]}
-        <LastData observations={this.state.observations} tlgType={this.state.tlgType} stations={this.props.stations} onClickDelete={this.deleteOtherData}/>
+        <NewOtherData tlgType={this.state.tlgType} currDate={this.state.currDate} inputMode={this.state.inputMode} onFormSubmit={this.handleFormSubmit} onDataTypeChange={this.handleDataTypeChanged} otherTypes={this.props.otherTypes} stations={this.props.stations} localTime={this.props.localTime} />
+        <h3>{this.props.otherTypes[this.state.tlgType]}</h3>
+        <LastData observations={this.state.observations} tlgType={this.state.tlgType} stations={this.props.stations} onClickDelete={this.deleteOtherData} />
       </div>
     );
   }
@@ -129,9 +125,9 @@ $(function () {
     const stations = JSON.parse(node.getAttribute('stations'));
     const inputMode = JSON.parse(node.getAttribute('inputMode'));
     const otherTypes = JSON.parse(node.getAttribute('otherTypes'));
-    
+    const localTime = JSON.parse(node.getAttribute('localTime'));
     ReactDOM.render(
-      <InputOtherData observations={observations} stations={stations} currDate={currDate} tlgType={tlgType} inputMode={inputMode} otherTypes={otherTypes}/>,
+      <InputOtherData observations={observations} stations={stations} currDate={currDate} tlgType={tlgType} inputMode={inputMode} otherTypes={otherTypes} localTime={localTime}/>,
       document.getElementById('form_and_last_telegrams')
     );
   }

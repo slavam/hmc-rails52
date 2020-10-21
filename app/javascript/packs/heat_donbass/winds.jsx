@@ -11,7 +11,7 @@ const WindsTable = ({winds}) => {
     let val;
     [0, 3, 6, 9, 12, 15, 18, 21].forEach( t =>{
       if(winds[s] != null && winds[s][t] != null){
-        val = winds[s][t];
+        val = parseInt(winds[s][t], 10);
         tdsl.push(<td style={{borderLeft: 'solid 1px #ddd'}} key={t}>{val}</td>);
       }else
         tdsl.push(<td style={{borderLeft: 'solid 1px #ddd'}} key={t}></td>);
@@ -24,14 +24,14 @@ const WindsTable = ({winds}) => {
       <thead>
         <tr>
           <th>Метеостанция</th>
-          <th>00</th>
-          <th>03</th>
-          <th>06</th>
-          <th>09</th>
-          <th>12</th>
-          <th>15</th>
-          <th>18</th>
-          <th>21</th>
+          <th>00:00</th>
+          <th>03:00</th>
+          <th>06:00</th>
+          <th>09:00</th>
+          <th>12:00</th>
+          <th>15:00</th>
+          <th>18:00</th>
+          <th>21:00</th>
         </tr>
       </thead>
       <tbody>{rows}</tbody>

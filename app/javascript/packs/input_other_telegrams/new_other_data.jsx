@@ -4,7 +4,10 @@ import Select from 'react-select';
 export default class NewOtherData extends React.Component{
   constructor(props){
     super(props);
+    let hour = Math.floor(+this.props.localTime.substr(11) / 3) * 3;
     this.state = {
+      localDate: this.props.localTime.substr(0, 10),
+      localHour: hour < 10 ? '0'+hour : hour, 
       station: { value: '1',  label: 'Донецк' },
       dataType: { value: 'temp',  label: this.props.otherTypes['temp'] },
       value: '',
@@ -79,8 +82,8 @@ export default class NewOtherData extends React.Component{
         this.observation = {
           data_type: this.state.dataType.value,
           value: this.state.value,
-          obs_date: this.state.observationDate,
-          period: this.state.term.value,
+          obs_date: this.props.inputMode == 'normal' ? this.state.localDate : this.state.observationDate,
+          period: this.props.inputMode == 'normal' ? this.state.localHour : this.state.term.value,
           station_id: this.state.station.value
         };
         break;
@@ -131,9 +134,10 @@ export default class NewOtherData extends React.Component{
       {value: '18', label: '18:00'},
       {value: '21', label: '21:00'}
     ];
-    let obsDate = this.props.inputMode == 'normal' ? <td>{this.state.observationDate}</td> : <td><input type="date" name="input-date" value={this.state.observationDate} onChange={(event) => this.dateChange(event)} required="true" autoComplete="on" /></td>;
+    let obsDate = this.props.inputMode == 'normal' ? <td>{this.state.observationDate}</td> : <td><input type="date" name="input-date" value={this.state.observationDate} onChange={(event) => this.dateChange(event)} required={true} autoComplete="on" /></td>;
     let hdr = '';
     let dat = '';
+    
     if(this.state.dataType.value == 'perc'){
       hdr = <tr><th width="220px">Тип данных</th><th>Дата наблюдения</th><th width="140px">Пост</th><th width="110px">Период</th><th>Дополнение</th><th>Значение</th></tr>;
       dat = <tr>
@@ -145,11 +149,21 @@ export default class NewOtherData extends React.Component{
               <td><input type="number" value={this.state.value} onChange={(event) => this.handleValueChange(event)}/></td>
             </tr>;
     }else if(this.state.dataType.value == 'wind'){
+      let o_date = obsDate;
+      let o_hour = <td>{this.state.localHour}</td>
+      if (this.props.inputMode == 'normal')
+        o_date = <td>{this.state.localDate}</td>;
+      else
+        o_hour = <td><Select id='terms' options={terms} onChange={this.handlePeriodSelected} value={this.state.term}/></td>;
       hdr = <tr><th width="220px">Тип данных</th><th width="140px">Дата наблюдения</th><th>Время</th><th>Метеостанция</th><th>Значение</th></tr>;
       dat = <tr>
               <td><Select id='types' options={types} onChange={this.handleTypeSelected} value={this.state.dataType}/></td>
-              {obsDate}
-              <td><Select id='terms' options={terms} onChange={this.handlePeriodSelected} value={this.state.term}/></td>
+              {o_date}
+              {o_hour}
+              {/*obsDate
+              <td>{this.state.localDate}</td>
+              <td>{this.state.localHour}</td>
+              <td><Select id='terms' options={terms} onChange={this.handlePeriodSelected} value={this.state.term}/></td>*/}
               <td><Select value={this.state.station} onChange={this.handleStationSelected} options={stations}/></td>
               <td><input type="number" value={this.state.value} onChange={(event) => this.handleValueChange(event)}/></td>
             </tr>;

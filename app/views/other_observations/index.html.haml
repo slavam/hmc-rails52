@@ -20,10 +20,10 @@
         %tr
           %td= o_o.obs_date.strftime('%d-%m-%Y') + (o_o.data_type == 'perc' ? (o_o.period == 'day' ? '/День' : '/Ночь') : '')
           - if @factor == 'wind'
-            %td= o_o.period
+            %td= o_o.period+':00'
           %td= o_o.created_at.localtime.strftime('%d-%m-%Y %H:%M:%S')
           %td= o_o.data_type == 'perc' ? o_o.source : Station.find(o_o.station_id).name
-          %td= @factor == 'min_hum' ? o_o.value.round : o_o.value
+          %td= (@factor == 'min_hum' or @factor == 'wind') ? o_o.value.round : o_o.value
           - if @factor == 'perc'
             %td= o_o.description
   = will_paginate

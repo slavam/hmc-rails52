@@ -1,13 +1,18 @@
 class OtherObservationsController < ApplicationController
   def index
     @factor = params[:factor]
-    @other_observations = OtherObservation.where('data_type = ?', @factor).paginate(page: params[:page]).order(:obs_date, :id).reverse_order
+    if @factor == 'wind'
+      @other_observations = OtherObservation.where('data_type = ?', @factor).paginate(page: params[:page]).order(:obs_date, :period).reverse_order
+    else
+      @other_observations = OtherObservation.where('data_type = ?', @factor).paginate(page: params[:page]).order(:obs_date, :id).reverse_order
+    end
   end
 
   def input_other_telegrams
     @stations =  Station.name_stations_as_array #all.order(:name)
     @observations = OtherObservation.last_50_telegrams('temp') #.to_json
     @input_mode = params[:input_mode]
+    @local_time = Time.now.localtime.strftime("%Y-%m-%d %H")
   end
 
   def get_last_telegrams
