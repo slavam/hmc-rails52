@@ -99,7 +99,6 @@ export default class StormDescription extends React.Component{
       }.bind(this));
   }
   render(){
-
     // let map;
     // map = <DNRMap fact={fact} telegrams={this.state.telegrams} stations={this.props.stations} markerCoords={this.stationCoords()}/>;
     return (
@@ -114,7 +113,8 @@ export default class StormDescription extends React.Component{
 
 }
 
-document.addEventListener('turbolinks:load', () => {
+// document.addEventListener('turbolinks:load', () => {
+$(function () {
   const node = document.getElementById('init-params');
   if(node){
     const telegrams = JSON.parse(node.getAttribute('telegrams'));

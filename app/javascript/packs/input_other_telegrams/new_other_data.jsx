@@ -22,46 +22,35 @@ export default class NewOtherData extends React.Component{
     this.handleStationSelected = this.handleStationSelected.bind(this);
     this.handlePointSelected = this.handlePointSelected.bind(this);
     this.handlePeriodSelected = this.handlePeriodSelected.bind(this);
-    // this.handleTermSelected = this.handleTermSelected.bind(this);
+    this.handleTermSelected = this.handleTermSelected.bind(this);
   }
-  
   handleTypeSelected(val){
     this.props.onDataTypeChange(val.value);
     this.setState({dataType: val, errors: []});
   }
-
   handleStationSelected(val){
     this.setState({station: val});
   }
-  
   handlePointSelected(val){
     this.setState({point: val});
   }
-  
   handlePeriodSelected(val){
-    if(this.state.dataType == 'perc')
-      this.setState({period: val});
-    else
-      this.setState({term: val});
+    this.setState({period: val});
   }
-  // handleTermSelected(val){
-  //   this.setState({period: val});
-  // }
+  handleTermSelected(val){
+    this.setState({term: val});
+  }
   handleDescriptionChange(e){
     this.setState({message: e.target.value});
   }
-  
   handleValueChange(e){
     this.setState({value: e.target.value, errors: []});  
   }
-  
   dateChange(e){
     this.setState({observationDate: e.target.value, errors: []});
   }
-  
   handleSubmit(e) {
     e.preventDefault();
-
     this.state.errors = [];
     if (!this.state.value) {
       this.setState({errors: ["Не задано значение"]});
@@ -154,16 +143,12 @@ export default class NewOtherData extends React.Component{
       if (this.props.inputMode == 'normal')
         o_date = <td>{this.state.localDate}</td>;
       else
-        o_hour = <td><Select id='terms' options={terms} onChange={this.handlePeriodSelected} value={this.state.term}/></td>;
+        o_hour = <td><Select id='terms' options={terms} onChange={this.handleTermSelected} value={this.state.term}/></td>;
       hdr = <tr><th width="220px">Тип данных</th><th width="140px">Дата наблюдения</th><th>Время</th><th>Метеостанция</th><th>Значение</th></tr>;
       dat = <tr>
               <td><Select id='types' options={types} onChange={this.handleTypeSelected} value={this.state.dataType}/></td>
               {o_date}
               {o_hour}
-              {/*obsDate
-              <td>{this.state.localDate}</td>
-              <td>{this.state.localHour}</td>
-              <td><Select id='terms' options={terms} onChange={this.handlePeriodSelected} value={this.state.term}/></td>*/}
               <td><Select value={this.state.station} onChange={this.handleStationSelected} options={stations}/></td>
               <td><input type="number" value={this.state.value} onChange={(event) => this.handleValueChange(event)}/></td>
             </tr>;

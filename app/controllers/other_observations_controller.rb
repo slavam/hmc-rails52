@@ -13,6 +13,7 @@ class OtherObservationsController < ApplicationController
     @observations = OtherObservation.last_50_telegrams('temp') #.to_json
     @input_mode = params[:input_mode]
     @local_time = Time.now.localtime.strftime("%Y-%m-%d %H")
+    # @local_time = (Time.now.localtime-6.hours).strftime("%Y-%m-%d %H")
   end
 
   def get_last_telegrams
