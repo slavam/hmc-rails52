@@ -3,17 +3,18 @@ import ReactDOM from 'react-dom';
 import MonthYearForm from './month_year_form';
 
 const MonthlyTemperaturesTable = ({temperatures, maxDay}) => {
-  let rows = [<tr><td style={{borderColor:"black"}} align="center"><b>Число</b></td><td style={{borderColor:"black"}} align="center"><b>Донецк</b></td><td style={{borderColor:"black"}} align="center"><b>Амвросиевка</b></td><td style={{borderColor:"black"}} align="center"><b>Дебальцево</b></td><td style={{borderColor:"black"}} align="center"><b>Седово</b></td></tr>];
+  let rows = [<tr><td style={{borderColor:"black"}} align="center"><b>Число</b></td><td style={{borderColor:"black"}} align="center"><b>Донецк</b></td><td style={{borderColor:"black"}} align="center"><b>Дебальцево</b></td><td style={{borderColor:"black"}} align="center"><b>Амвросиевка</b></td><td style={{borderColor:"black"}} align="center"><b>Седово</b></td></tr>];
   if (temperatures){
     for(var i=1; i<=maxDay; ++i){
       let values = [];
-      for(var j=1; j<5; ++j){
+      [1,3,2,4].forEach((j) => {
+      // for(var j=1; j<5; ++j){
         let val = '';
         if((temperatures[i] != null) && (temperatures[i][j] != null)){
           val = temperatures[i][j];
         }
         values.push(<td style={{borderColor:"black"}} key={j} align="center">{val}</td>);
-      }
+      })
       rows.push(<tr key={i}><td style={{borderColor:"black"}} align="center" key={i}>{i}</td>{values}</tr>);
     }
     return <table className="table table-bordered" ><tbody>{rows}</tbody></table>;
