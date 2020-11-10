@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   delete 'other_observations/delete_other_data/:id', to: 'other_observations#delete_other_data'
   get 'other_observations/monthly_precipitation', to: 'other_observations#monthly_precipitation'
   get 'other_observations/monthly_temperatures', to: 'other_observations#monthly_temperatures'
+  get 'other_observations/temperatures_8_16', to: 'other_observations#temperatures_8_16'
   resources :other_observations
   resources :donetsk_climate_sets
   get 'snow_observations/input_snow_telegrams', to: 'snow_observations#input_snow_telegrams'

@@ -121,6 +121,68 @@ class OtherObservationsController < ApplicationController
     precipitation
   end
 
+  def temperatures_8_16
+    @year = params[:year].present? ? params[:year] : Time.now.year.to_s
+    @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
+    last_day = Time.days_in_month(@month.to_i, @year.to_i).to_s.rjust(2, '0')
+    start_date = @year+'-'+@month+'-01'
+    end_date = @year+'-'+@month+'-'+last_day
+    rows = OtherObservation.select("obs_date, station_id, data_type, value").
+      where("station_id in (1,2,3,10) and obs_date >= ? AND obs_date <= ? AND data_type in ('temp', 'temp16')", start_date, end_date).order(:obs_date, :station_id)
+    @temperatures = []
+    rows.each {|t|
+      d = t.obs_date.day
+      s = t.station_id
+      @temperatures[d] ||= []
+      @temperatures[d][s] ||= []
+      # @temperatures[d][4] ||= []
+      @temperatures[d][5] ||= []
+      @temperatures[d][6] ||= []
+      @temperatures[d][7] ||= []
+      if t.data_type == 'temp'
+        @temperatures[d][s][0] = t.value
+      else
+        @temperatures[d][s][1] = t.value
+      end
+    }
+    (1..last_day.to_i).each{|i|
+      @temperatures[i] ||= []
+      if @temperatures[i].present? && @temperatures[i][1].present? && @temperatures[i][1][0].present?
+        if @temperatures[i][3].present? && @temperatures[i][3][0].present?
+          @temperatures[i][5][0] = ((@temperatures[i][1][0]+@temperatures[i][3][0])/2).round(1) # Gorlovka
+        end
+        if @temperatures[i][2].present? && @temperatures[i][2][0].present?
+          @temperatures[i][7][0] = ((@temperatures[i][1][0]+@temperatures[i][2][0])/2).round(1) # Starobeshevo
+        end
+      end
+      if @temperatures[i].present? && @temperatures[i][2].present? && @temperatures[i][2][0].present?
+        if @temperatures[i][3].present? && @temperatures[i][3][0].present?
+          @temperatures[i][6][0] = ((@temperatures[i][2][0]+@temperatures[i][3][0])/2).round(1) # Shahtersk
+        end
+      end
+      # 16
+      if @temperatures[i].present? && @temperatures[i][1].present? && @temperatures[i][1][1].present?
+        if @temperatures[i][3].present? && @temperatures[i][3][1].present?
+          @temperatures[i][5][1] = ((@temperatures[i][1][1]+@temperatures[i][3][1])/2).round(1) # Gorlovka
+        end
+        if @temperatures[i][2].present? && @temperatures[i][2][1].present?
+          @temperatures[i][7][1] = ((@temperatures[i][1][1]+@temperatures[i][2][1])/2).round(1) # Starobeshevo
+        end
+      end
+      if @temperatures[i].present? && @temperatures[i][2].present? && @temperatures[i][2][1].present?
+        if @temperatures[i][3].present? && @temperatures[i][3][1].present?
+          @temperatures[i][6][1] = ((@temperatures[i][2][1]+@temperatures[i][3][1])/2).round(1) # Shahtersk
+        end
+      end
+    }
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {temperatures: @temperatures}
+      end
+    end
+  end
+
   def monthly_temperatures
     @year = params[:year].present? ? params[:year] : Time.now.year.to_s
     @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
@@ -157,7 +219,8 @@ class OtherObservationsController < ApplicationController
     @winds = []
     rows.each {|o_o|
       t = o_o.period.to_i
-      s = o_o.station_id == 10 ? 4 : o_o.station_id
+      # s = o_o.station_id == 10 ? 4 : o_o.station_id
+      s = o_o.station_id
       @winds[s] ||= []
       @winds[s][t] = o_o.value
     }

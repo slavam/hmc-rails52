@@ -1,0 +1,5 @@
+-#= @temperatures.inspect
+.container
+  #root
+  #init-params{ temperatures: @temperatures.to_json, year: @year.to_json, month: @month.to_json}
+  = javascript_pack_tag 'heat_donbass/temperatures_8_16'
