@@ -45,14 +45,33 @@ export default class Temperatures816 extends React.Component{
       temperatures: this.props.temperatures,
       daysInMonth: n
     }
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+  }
+  handleFormSubmit(year, month){
+    this.state.year = year;
+    this.state.month = month;
+    this.state.daysInMonth = new Date(+year, +month, 0).getDate();
+    $.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: "/other_observations/temperatures_8_16?year="+year+"&month="+month
+      }).done((data) => {
+        this.setState({temperatures: data.temperatures});
+      }).fail((res) => {
+        this.setState({errors: ["Проблемы с чтением данных из БД"]});
+      }); 
   }
   render(){
     let month = new Date(+this.state.year, +this.state.month-1).toLocaleString('ru',{month:'long'});
+    let desiredLink = "/other_observations/temperatures_8_16.pdf?year="+this.state.year+"&month="+this.state.month;
     return(
       <div>
         <TeploenergoForm year={this.state.year} month={this.state.month} onFormSubmit={this.handleFormSubmit} />
-        <h4>Температура воздуха (°С) в 8 часов и 16 часов за {month} месяц {this.state.year} года</h4>
+        <h4>Температура воздуха (°С) в 8 часов и 16 часов за {month} месяц {this.state.year} года (по данным наблюдений репрезентативных метеорологических станций)</h4>
         <TableTemperatures816 temperatures={this.state.temperatures} maxDay={this.state.daysInMonth} />
+        <a href={desiredLink+'&variant=chief'} title='Подписал начальник'>Распечатать вариант 1</a>
+        <br/>
+        <a href={desiredLink+'&variant=deputy_chief'} title='Подписал заместитель'>Распечатать вариант 2</a>
       </div>
     );
   }

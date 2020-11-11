@@ -135,7 +135,6 @@ class OtherObservationsController < ApplicationController
       s = t.station_id
       @temperatures[d] ||= []
       @temperatures[d][s] ||= []
-      # @temperatures[d][4] ||= []
       @temperatures[d][5] ||= []
       @temperatures[d][6] ||= []
       @temperatures[d][7] ||= []
@@ -177,6 +176,10 @@ class OtherObservationsController < ApplicationController
     }
     respond_to do |format|
       format.html
+      format.pdf do
+        pdf = Temp816.new(@temperatures, @year, @month, params[:variant])
+        send_data pdf.render, filename: "energy2_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      end
       format.json do
         render json: {temperatures: @temperatures}
       end

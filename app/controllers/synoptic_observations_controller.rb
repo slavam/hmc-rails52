@@ -1465,7 +1465,8 @@ class SynopticObservationsController < ApplicationController
           end
           res[i] = t
           if t <= @threshold
-            curr_date = Date.new(@year.to_i,9,30)+i.days
+            # curr_date = Date.new(@year.to_i,9,30)+i.days
+            curr_date = @start_date+(i-1).days
             if @check_dates[ir].present?
               if ((curr_date - @check_dates[ir]).to_i > 4) and res[0].nil?
                 res[0] = @check_dates[ir] 
