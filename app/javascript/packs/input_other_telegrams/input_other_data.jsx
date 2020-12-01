@@ -105,10 +105,15 @@ export default class InputOtherData extends React.Component{
     }.bind(this));
   }
   render(){
+    let stationName = '';
+    if(this.props.stationId!=''){
+      let ss = [null, "Донецк", "Амвросиевка", "Дебальцево",,,,,,,"Седово"]
+      stationName = ss[+this.props.stationId]
+    }
     return(
       <div>
         <h3>Ввод дополнительных данных</h3>
-        <NewOtherData tlgType={this.state.tlgType} currDate={this.state.currDate} inputMode={this.state.inputMode} onFormSubmit={this.handleFormSubmit} onDataTypeChange={this.handleDataTypeChanged} otherTypes={this.props.otherTypes} stations={this.props.stations} localTime={this.props.localTime} />
+        <NewOtherData stationId={this.props.stationId} stationName={stationName} tlgType={this.state.tlgType} currDate={this.state.currDate} inputMode={this.state.inputMode} onFormSubmit={this.handleFormSubmit} onDataTypeChange={this.handleDataTypeChanged} otherTypes={this.props.otherTypes} stations={this.props.stations} localTime={this.props.localTime} />
         <h3>{this.props.otherTypes[this.state.tlgType]}</h3>
         <LastData observations={this.state.observations} tlgType={this.state.tlgType} stations={this.props.stations} onClickDelete={this.deleteOtherData} />
       </div>
@@ -126,8 +131,9 @@ $(function () {
     const inputMode = JSON.parse(node.getAttribute('inputMode'));
     const otherTypes = JSON.parse(node.getAttribute('otherTypes'));
     const localTime = JSON.parse(node.getAttribute('localTime'));
+    const stationId = JSON.parse(node.getAttribute('stationId'));
     ReactDOM.render(
-      <InputOtherData observations={observations} stations={stations} currDate={currDate} tlgType={tlgType} inputMode={inputMode} otherTypes={otherTypes} localTime={localTime}/>,
+      <InputOtherData stationId={stationId} observations={observations} stations={stations} currDate={currDate} tlgType={tlgType} inputMode={inputMode} otherTypes={otherTypes} localTime={localTime}/>,
       document.getElementById('form_and_last_telegrams')
     );
   }

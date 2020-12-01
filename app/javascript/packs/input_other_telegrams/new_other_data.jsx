@@ -5,10 +5,15 @@ export default class NewOtherData extends React.Component{
   constructor(props){
     super(props);
     let hour = Math.floor(+this.props.localTime.substr(11) / 3) * 3;
+    let st = { value: '1',  label: 'Донецк' }; 
+    if(this.props.stationId!=''){
+      st.value = this.props.stationId; 
+      st.label = this.props.stationName;
+    }
     this.state = {
       localDate: this.props.localTime.substr(0, 10),
       localHour: hour < 10 ? '0'+hour : hour, 
-      station: { value: '1',  label: 'Донецк' },
+      station: st,
       dataType: { value: 'temp',  label: this.props.otherTypes['temp'] },
       value: '',
       observationDate: this.props.currDate,
@@ -87,7 +92,7 @@ export default class NewOtherData extends React.Component{
     }
     this.setState({
       value: '',
-      station: { value: '1',  label: 'Донецк' },
+      station: (this.props.stationId=='' ? { value: '1',  label: 'Донецк' } : {value: this.props.stationId, label: this.props.stationName}),
       message: '',
       point: { value: 'Макеевка',  label: 'Макеевка' },
       period: { value: 'day',  label: 'День' },
@@ -126,7 +131,12 @@ export default class NewOtherData extends React.Component{
     let obsDate = this.props.inputMode == 'normal' ? <td>{this.state.observationDate}</td> : <td><input type="date" name="input-date" value={this.state.observationDate} onChange={(event) => this.dateChange(event)} required={true} autoComplete="on" /></td>;
     let hdr = '';
     let dat = '';
-    
+    let station;
+    if(this.props.stationId==''){
+      station = <td><Select value={this.state.station} onChange={this.handleStationSelected} options={stations}/></td>
+    }else{
+      station = <td>{this.state.station.label}</td>
+    }
     if(this.state.dataType.value == 'perc'){
       hdr = <tr><th width="220px">Тип данных</th><th>Дата наблюдения</th><th width="140px">Пост</th><th width="110px">Период</th><th>Дополнение</th><th>Значение</th></tr>;
       dat = <tr>
@@ -149,7 +159,7 @@ export default class NewOtherData extends React.Component{
               <td><Select id='types' options={types} onChange={this.handleTypeSelected} value={this.state.dataType}/></td>
               {o_date}
               {o_hour}
-              <td><Select value={this.state.station} onChange={this.handleStationSelected} options={stations}/></td>
+              {station}
               <td><input type="number" value={this.state.value} onChange={(event) => this.handleValueChange(event)}/></td>
             </tr>;
     }else{
@@ -157,7 +167,7 @@ export default class NewOtherData extends React.Component{
       dat = <tr>
               <td><Select id='types' options={types} onChange={this.handleTypeSelected} value={this.state.dataType}/></td>
               {obsDate}
-              <td><Select value={this.state.station} onChange={this.handleStationSelected} options={stations}/></td>
+              {station}
               <td><input type="number" value={this.state.value} onChange={(event) => this.handleValueChange(event)}/></td>    
             </tr>;
     }
