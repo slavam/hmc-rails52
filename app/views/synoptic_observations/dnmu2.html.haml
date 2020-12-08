@@ -1,0 +1,18 @@
+- last_day = Time.days_in_month(@month.to_i, @year.to_i)
+.container
+  <p>ГОО ВПО ДонНМУ имени М. Горького</>
+  %h4 Средняя за рабочую смену (07.00-19.00) температура воздуха (°С) с 1 по #{last_day} #{I18n.l(Time.now, format: '%B')} #{@year} года в г. Донецк
+  %table{class:'table table-hover'}
+    %thead
+      %tr
+        %th Числа месяца
+        - (1..last_day).each do |d| 
+          %th #{d}
+    %tbody
+      %tr
+        %td <b>Температура</b>
+        -(1..last_day).each do |i|
+          - if @temperatures[i].present? 
+            %td= @temperatures[i]
+          - else
+            %td

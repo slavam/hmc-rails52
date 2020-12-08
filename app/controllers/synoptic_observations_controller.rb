@@ -229,17 +229,25 @@ class SynopticObservationsController < ApplicationController
     end
   end
 
+  def dnmu2
+    dnmu
+  end
+
   def dnmu
     today = Time.now
     @year = params[:year].present? ? params[:year] : today.year.to_s
     @month = params[:month].present? ? params[:month] : today.month.to_s.rjust(2, '0')
     last_day = 0
     if (@month.to_i == today.month) and (@year.to_i == today.year)
-      last_day = today.day-1 # 1 ?
+      if today.hour >= 19
+        last_day = today.day
+      else
+        last_day = today.day-1
+      end
     else
       last_day = Time.days_in_month(@month.to_i, @year.to_i)
     end
-    sql = "select date, avg(temperature) temperature from synoptic_observations where date >= '#{@year}-#{@month}-01' and date <= '#{@year}-#{@month}-#{last_day}' and station_id =1 and term in (3,6,9,12,15) group by date;"
+    sql = "select date, ROUND(avg(temperature),1) temperature from synoptic_observations where date >= '#{@year}-#{@month}-01' and date <= '#{@year}-#{@month}-#{last_day}' and station_id =1 and term in (3,6,9,12,15) group by date;"
     db_temperatures = SynopticObservation.find_by_sql(sql)
     @temperatures = []
     db_temperatures.each {|t|

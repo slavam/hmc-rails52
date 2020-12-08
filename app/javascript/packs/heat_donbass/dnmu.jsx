@@ -16,7 +16,7 @@ const WorkShiftAvgTemperatures = ({temperatures, maxDay, year, month}) => {
   let values = [];
   for(i=1; i<=maxDay; i++){
     currDate.setDate(i);
-    if(currDate.getDay() == 0) temperatures[i] = null;
+    // if(currDate.getDay() == 0) temperatures[i] = null; // KMA 20201208
     let val = temperatures[i] == null ? '': temperatures[i];
     values.push(<td key={i}>{val}</td>);
   }

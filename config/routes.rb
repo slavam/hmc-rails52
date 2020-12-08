@@ -106,6 +106,7 @@ Rails.application.routes.draw do
   get 'synoptic_observations/teploenergo5', to: 'synoptic_observations#teploenergo5'
   get 'synoptic_observations/tpp', to: 'synoptic_observations#tpp'
   get 'synoptic_observations/dnmu', to: 'synoptic_observations#dnmu'
+  get 'synoptic_observations/dnmu2', to: 'synoptic_observations#dnmu2'
   get 'synoptic_observations/donsnab', to: 'synoptic_observations#donsnab'
   get 'synoptic_observations/energy', to: 'synoptic_observations#energy'
   get 'synoptic_observations/energy_1510', to: 'synoptic_observations#energy_1510'
