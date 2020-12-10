@@ -33,11 +33,11 @@ class Avtodor < Prawn::Document
       text "К договору от 18.12.2019 № 04/20/03"
     end
     bounding_box([290, y_pos], width: bounds.width-290) do
-      text "И.о. директора
+      text "Директору
             Государственного предприятия
             \"АВТОДОР\"
 		
-            В.И. Георгиеву", leading: 3
+            А.Р. Доброрезу", leading: 3
     end
     move_down 15
     font "OpenSans", style: :bold
@@ -50,7 +50,7 @@ class Avtodor < Prawn::Document
       end
     end
     move_down 10
-    report_date = @bulletin.report_date.strftime("%Y-%m-%d")
+    # report_date = @bulletin.report_date.strftime("%Y-%m-%d")
     font "OpenSans", style: :bold
     bounding_box([0, cursor], :width => bounds.width) do
       text "Прогноз погоды", align: :center
