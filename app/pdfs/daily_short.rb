@@ -1,6 +1,6 @@
 class DailyShort < Prawn::Document
   def initialize(bulletin)
-		super(top_margin: 40, left_margin: 80, right_margin: 50)
+		super(top_margin: 30, left_margin: 80, right_margin: 50)
 		@bulletin = bulletin
     font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),
@@ -9,23 +9,22 @@ class DailyShort < Prawn::Document
       :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
     })
     y_pos = cursor
-    image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.25
+    image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.23
     font "OpenSans"
     bounding_box([0, y_pos], width: bounds.width) do
       text Bulletin::HEAD, align: :center, size: 10
     end
-    move_down 20
+    move_down 15
     bounding_box([0, cursor], width: bounds.width) do
       text Bulletin::ADDRESS, align: :center, size: 9
     end
     report_date = @bulletin.report_date.to_s(:custom_datetime)
     font "OpenSans", style: :bold
-    move_down 40
+    move_down 20
     bounding_box([0, cursor], width: bounds.width) do
       text "ГИДРОМЕТЕОРОЛОГИЧЕСКИЙ БЮЛЛЕТЕНЬ № #{@bulletin.curr_number}", :color => "0000FF", align: :center
       text @bulletin.report_date_as_str, :color => "0000FF", align: :center
     end
-
     if @bulletin.storm.present?
       bounding_box([0, cursor-10], :width => bounds.width) do
         text "ШТОРМОВОЕ ПРЕДУПРЕЖДЕНИЕ", align: :center, :color => "ff0000"
@@ -35,14 +34,11 @@ class DailyShort < Prawn::Document
       end
     end
     move_down 10
-    report_date_next = (@bulletin.report_date + 1.day).to_s(:custom_datetime)
     font "OpenSans", style: :bold
     bounding_box([0, cursor], :width => bounds.width, :height => 30) do
       text "Прогноз погоды", align: :center
       text @bulletin.header_daily, align: :center
-      # text "на сутки с 21 часа #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} до 21 часа #{report_date_next[8,2]} #{Bulletin::MONTH_NAME2[report_date_next[5,2].to_i]} #{report_date_next[0,4]} года", align: :center, :color => "0000FF"
     end
-    
     font "OpenSans"
     move_down 10
     table_content = [["<b>В Донецкой Народной Республике</b>", "<b>В городе Донецке</b>"],
@@ -60,44 +56,22 @@ class DailyShort < Prawn::Document
     text "Дежурный синоптик #{@bulletin.duty_synoptic}", align: :right
   
     move_down 20
-    # report_date_next2 = (@bulletin.report_date + 2.day).to_s(:custom_datetime)
-    # report_date_next3 = (@bulletin.report_date + 3.day).to_s(:custom_datetime)
     font "OpenSans", style: :bold
-    # month_p = @bulletin.start_month(2,3)
-    # text "Периодный прогноз погоды на #{report_date_next2[8,2]}#{month_p}-#{report_date_next3[8,2]} #{Bulletin::MONTH_NAME2[report_date_next3[5,2].to_i]} #{report_date_next3[0,4]} года", align: :center
+    text "В Донецкой Народной Республике", align: :center
     text @bulletin.header_period, align: :center
-    text "в Донецкой Народной Республике", align: :center
     font "OpenSans"
     text @bulletin.forecast_period
   
     move_down 10
-    # report_date_next4 = (@bulletin.report_date + 4.day).to_s(:custom_datetime)
-    # report_date_next5 = (@bulletin.report_date + 5.day).to_s(:custom_datetime)
     font "OpenSans", style: :bold
-    # month_k = @bulletin.start_month(4,5)
-    # text "Консультативный прогноз погоды на #{report_date_next4[8,2]}#{month_k}-#{report_date_next5[8,2]} #{Bulletin::MONTH_NAME2[report_date_next5[5,2].to_i]} #{report_date_next5[0,4]} года", align: :center
     text @bulletin.header_advice, align: :center
-    text "в Донецкой Народной Республике", align: :center
     font "OpenSans"
     text @bulletin.forecast_advice
     
     if @bulletin.forecast_orientation.present?
       move_down 10
-      # report_date_next6 = (@bulletin.report_date + 6.day).to_s(:custom_datetime)
-      # # report_date_next11 = (@bulletin.report_date + 11.day).to_s(:custom_datetime) 20190610 KMA
-      # report_date_next11 = (@bulletin.report_date + 10.day).to_s(:custom_datetime)
-      # font "OpenSans", style: :bold
-      # month_o = @bulletin.start_month(6,10)
-      # if ((@bulletin.report_date + 6.day).year == (@bulletin.report_date + 10.day).year) 
-      #   text "Ориентировочный прогноз погоды на #{report_date_next6[8,2]}#{month_o}-#{report_date_next11[8,2]} #{Bulletin::MONTH_NAME2[report_date_next11[5,2].to_i]} #{report_date_next11[0,4]} года", align: :center
-      # else
-      #   text "Ориентировочный прогноз на #{report_date_next6[8,2]}#{month_o} #{(@bulletin.report_date + 6.day).year} года - #{report_date_next11[8,2]} #{Bulletin::MONTH_NAME2[report_date_next11[5,2].to_i]} #{report_date_next11[0,4]} года", align: :center
-      # end
-
-      # text "Ориентировочный прогноз погоды на #{report_date_next6[8,2]}#{month_o}-#{report_date_next11[8,2]} #{Bulletin::MONTH_NAME2[report_date_next11[5,2].to_i]} #{report_date_next11[0,4]} года", align: :center
       font "OpenSans", style: :bold
       text @bulletin.header_orientation, align: :center
-      text "в Донецкой Народной Республике", align: :center
       font "OpenSans"
       text @bulletin.forecast_orientation
     end
@@ -113,9 +87,6 @@ class DailyShort < Prawn::Document
     text "ОБЗОР ПОГОДЫ И АГРОМЕТЕОРОЛОГИЧЕСКИХ УСЛОВИЙ", align: :center, :color => "0000FF"
     text "в Донецкой Народной Республике", align: :center, :color => "0000FF"
     text @bulletin.header_review, align: :center, :color => "0000FF"
-    # review_start_date = @bulletin.review_start_date.present? ? @bulletin.review_start_date : (@bulletin.report_date-1.day)
-    # text "за период с 9.00 часов #{review_start_date.strftime("%d")} #{Bulletin::MONTH_NAME2[review_start_date.month]} до 9.00 часов #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} #{report_date[0,4]} года", align: :center, :color => "0000FF"
-    # text "за период с 9.00 часов #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} #{report_date[0,4]} года", align: :center, :color => "0000FF"
     font "OpenSans"
     text @bulletin.agro_day_review  
     
