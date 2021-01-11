@@ -571,7 +571,7 @@ class BulletinsController < ApplicationController
       rows = HydroObservation.select(:date_observation, :hydro_post_id, :telegram).
         where("hydro_type IN ('ЩЭРЕИ','ЩЭРЕХ','ЩЭРЕА') AND date_observation='#{report_date}' AND hour_obs=8 AND hydro_post_id < 7").order(:hydro_post_id)
       rows.each do |h|
-        i = (h.hydro_post_id.to_i-1)*7
+        i = (h.hydro_post_id.to_i-1)*8
         m_d[i] = h.hydro_post.river
         m_d[i+1] = h.hydro_post.town
         m_d[i+2] = h.telegram[19,4].to_i # water level

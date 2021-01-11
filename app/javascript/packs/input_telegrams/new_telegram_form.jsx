@@ -96,6 +96,7 @@ export default class NewTelegramForm extends React.Component{
               return;
             }
           }else{
+            this.observation.telegram_date = this.state.currDate;
             if (!checkStormTelegram(text, this.props.stations, errors, this.observation)){
               this.setState({errors: errors});
               return;
