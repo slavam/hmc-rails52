@@ -30,7 +30,7 @@ class Energy < Prawn::Document
     bounding_box([0, y_pos], width: 300, leading: 3) do
       # text Time.now.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 30} № 03/#{Date.today.yday}"
       # text "К договору от 06.11.2019 № 2 05/19-20/03"
-      text "_____________________ 2020 № 06/________"
+      text "_____________________ 2021 № 06/________"
       text "К договору от 15.10.2020 № 05/20-21/06"
     end
     
