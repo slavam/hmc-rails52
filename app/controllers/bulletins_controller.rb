@@ -154,7 +154,7 @@ class BulletinsController < ApplicationController
         @m_d = fill_hydro_data(@bulletin.report_date)
         @bulletin.meteo_data = ''
         @m_d.each do |v|
-          @bulletin.meteo_data += v.present? ? "#{v};" : ';'
+          @bulletin.meteo_data += v.present? ? "#{v.strip};" : ';'
         end
       when 'hydro2'
         last_hydro = Bulletin.last_this_type 'hydro' # have base date
@@ -163,13 +163,14 @@ class BulletinsController < ApplicationController
           @bulletin.curr_number = bulletin.curr_number.to_i + 1
           @bulletin.meteo_data = bulletin.meteo_data
           @bulletin.forecast_day = bulletin.forecast_day
+          @bulletin.forecast_period = last_hydro.forecast_period #bulletin.forecast_period if bulletin.forecast_period.present?
         else
           @bulletin.curr_number = 1
         end
         @m_d = fill_hydro2_data(@bulletin.report_date, @bulletin.review_start_date)
         @bulletin.meteo_data = ''
         @m_d.each do |v|
-          @bulletin.meteo_data += v.present? ? "#{v};" : ';'
+          @bulletin.meteo_data += v.present? ? "#{v.strip};" : ';'
         end
       when 'alert', 'warning'
         @bulletin.curr_number = 1
@@ -545,26 +546,29 @@ class BulletinsController < ApplicationController
     end
 
     def fill_hydro2_data(report_date, base_date)
+      j = Date.today.month()
       m_d = []
       m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
       base_level = HydroObservation.water_level(base_date)
       rows = HydroObservation.select(:date_observation, :hydro_post_id, :telegram).
-        where("hydro_type IN ('ЩЭРЕИ','ЩЭРЕХ','ЩЭРЕА') AND date_observation='#{report_date}' AND hour_obs=8 AND hydro_post_id < 7").order(:hydro_post_id)
+        where("hydro_type IN ('ЩЭРЕИ','ЩЭРЕХ','ЩЭРЕА') AND date_observation='#{report_date}' AND hour_obs=8 AND hydro_post_id <= 7").order(:hydro_post_id)
       rows.each do |h|
-        i = (h.hydro_post_id.to_i-1)*7
+        i = (h.hydro_post_id.to_i-1)*8
         m_d[i] = h.hydro_post.river
         m_d[i+1] = h.hydro_post.town
         m_d[i+2] = h.telegram[19,4].to_i # water level
         m_d[i+3] = h.telegram[28] == '0' ? '0' : (h.telegram[28] == '1' ? "+#{h.telegram[25,3].to_i}": "-#{h.telegram[25,3].to_i}")
         m_d[i+4] = base_level[h.hydro_post_id.to_i].present? ? (h.telegram[19,4].to_i-base_level[h.hydro_post_id.to_i]):nil # water level change on base date
         # m_d[i+5] постоянное значение берется из предыдущего бюллетеня
-        m_d[i+6] = (m_d[i+2]-m_d[i+5].to_i)>0 ? (m_d[i+2]-m_d[i+5].to_i) : '-' if m_d[i+5].present?
+        # m_d[i+6] = (m_d[i+2]-m_d[i+5].to_i)>0 ? (m_d[i+2]-m_d[i+5].to_i) : '-' if m_d[i+5].present?
         # m_d[i+7] постоянное значение берется из предыдущего бюллетеня
+        m_d[i+7] = HydroObservation::LONGTERM_LEVEL_AVG[h.hydro_post_id][j]
       end
       m_d
     end
 
     def fill_hydro_data(report_date)
+      j = Date.today.month()
       m_d = []
       m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
       # level_yesterday = HydroObservation.water_level(report_date-1.day)
@@ -579,8 +583,9 @@ class BulletinsController < ApplicationController
         m_d[i+3] = h.telegram[28] == '0' ? '0' : (h.telegram[28] == '1' ? "+#{h.telegram[25,3].to_i}": "-#{h.telegram[25,3].to_i}")
         # m_d[i+4] постоянное значение берется из предыдущего бюллетеня
         m_d[i+5] = (m_d[i+2]-m_d[i+4].to_i)>0 ? (m_d[i+2]-m_d[i+4].to_i) : '-' if m_d[i+4].present?
-        # m_d[i+6] постоянное значение берется из предыдущего бюллетеня
-        m_d[i+7] = h.telegram[30] == '5' ? (HydroObservation::ICE_PHENOMENA.key?(h.telegram[31,2].to_i) ? HydroObservation::ICE_PHENOMENA[h.telegram[31,2].to_i]:'') : 'отсутствуют'
+        m_d[i+6] = HydroObservation::LONGTERM_LEVEL_AVG[h.hydro_post_id][j]
+        # m_d[i+7] = h.telegram[30] == '5' ? (HydroObservation::ICE_PHENOMENA.key?(h.telegram[31,2].to_i) ? HydroObservation::ICE_PHENOMENA[h.telegram[31,2].to_i]:'') : 'отсутствуют'
+        m_d[i+7] = h.telegram[36] == '5' ? (m_d[i+7].nil? ? ' ': m_d[i+7]) : 'отсутствуют'
       end
       m_d
     end

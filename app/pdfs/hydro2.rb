@@ -31,11 +31,11 @@ class Hydro2 < Prawn::Document
         {content: '№ п/п', valign: :center},
         {content: 'Река', valign: :center},
         {content: 'Пост', valign: :center},
-        {content: 'Уровень воды в 8 часов над "0" графика (см)', rotate: 90, height: 110},
+        {content: 'Уровень воды в  08:00 часов над "0" графика (см)', rotate: 90, height: 110},
         {content: 'Изменение уровня воды за сутки (см)', rotate: 90},
         {content: "Изменение уровня воды (см) от #{@bulletin.review_start_date.strftime('%d.%m.%Y')}", rotate: 90},
         {content: 'Уровень выхода воды на пойму над "0" графика (см)', rotate: 90},
-        {content: 'Превышение над уровнем выхода воды на пойму (см)', rotate: 90},
+        {content: 'Уровень начала затопления над "0" графика (см)', rotate: 90},
         {content: "Средний многолетний уровень (#{@bulletin.forecast_period}) над '0' графика (см)", rotate: 90}
       ]
     ]

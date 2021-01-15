@@ -33,7 +33,7 @@
             %tr
               - (0..7).each do |j|
                 - k = 8 * i + j
-                %td= text_field_tag 'val_' + (k + 1).to_s, m_d[k].present? ? m_d[k] : ''
+                %td= text_field_tag 'val_' + (k + 1).to_s, m_d[k].present? ? m_d[k] : '', readonly: !!(j == 6)
       %tr
         %th Описание
         %td= form.text_area :forecast_day

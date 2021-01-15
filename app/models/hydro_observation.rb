@@ -8,6 +8,15 @@ class HydroObservation < ApplicationRecord
                     64 => 'Ледостав с полыньями',
                     65 => 'Ледостав'
                   }
+  LONGTERM_LEVEL_AVG = [ [],
+    [nil,135,135,139,137,134,137,134,129,130,132,132,133], # Donetsk                
+    [nil, 60, 63, 64, 63, 69, 68, 57, 51, 53, 58, 61, 60], # Razdolnoe
+    [nil,118,123,131,128,121,116,112,108,108,112,113,116], # Strukovo
+    [nil,388,415,445,434,397,369,353,337,338,344,345,366], # Dmitrovka
+    [nil,239,242,250,246,238,235,232,230,231,233,235,236], # Novoselovka
+    [nil,142,153,145,133,123,115,108,100,104,115,119,128], # Blagodatnoe
+    [nil,138,141,147,145,140,138,133,128,128,130,130,132]  # Alexeevo-Orlovka
+  ]
   def self.short_last_50_telegrams(user)
     all_fields = HydroObservation.all.limit(50).order(:date_observation, :updated_at).reverse_order
     hydro_posts = HydroPost.all.order(:id)
