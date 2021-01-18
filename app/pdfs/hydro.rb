@@ -78,7 +78,7 @@ class Hydro < Prawn::Document
   end
   def signatures
 	  chief_descr = @bulletin.chief_2_pdf
-    responsible_descr = @bulletin.responsible_2_pdf
+    # responsible_descr = @bulletin.responsible_2_pdf
     [ [{padding: [1,0],content: "Ответственный за выпуск:"},"",""],
       [{padding: [10,0],content: 'Начальник отдела гидрологии'}, {image: "./app/assets/images/arameleva.png", scale: 0.15, vposition: :center}, {padding: [20,5],content: 'О.В. Арамелева'}],
       [{padding: [10,0],content: chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, {padding: [10,5], content: chief_descr[:name]}]]

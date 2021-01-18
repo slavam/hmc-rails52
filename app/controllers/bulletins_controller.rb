@@ -154,7 +154,7 @@ class BulletinsController < ApplicationController
         @m_d = fill_hydro_data(@bulletin.report_date)
         @bulletin.meteo_data = ''
         @m_d.each do |v|
-          @bulletin.meteo_data += v.present? ? "#{v.strip};" : ';'
+          @bulletin.meteo_data += v.present? ? "#{v};" : ';'
         end
       when 'hydro2'
         last_hydro = Bulletin.last_this_type 'hydro' # have base date
@@ -170,7 +170,7 @@ class BulletinsController < ApplicationController
         @m_d = fill_hydro2_data(@bulletin.report_date, @bulletin.review_start_date)
         @bulletin.meteo_data = ''
         @m_d.each do |v|
-          @bulletin.meteo_data += v.present? ? "#{v.strip};" : ';'
+          @bulletin.meteo_data += v.present? ? "#{v};" : ';'
         end
       when 'alert', 'warning'
         @bulletin.curr_number = 1
@@ -558,7 +558,8 @@ class BulletinsController < ApplicationController
         m_d[i+1] = h.hydro_post.town
         m_d[i+2] = h.telegram[19,4].to_i # water level
         m_d[i+3] = h.telegram[28] == '0' ? '0' : (h.telegram[28] == '1' ? "+#{h.telegram[25,3].to_i}": "-#{h.telegram[25,3].to_i}")
-        m_d[i+4] = base_level[h.hydro_post_id.to_i].present? ? (h.telegram[19,4].to_i-base_level[h.hydro_post_id.to_i]):nil # water level change on base date
+        b_l = base_level[h.hydro_post_id.to_i].present? ? (h.telegram[19,4].to_i-base_level[h.hydro_post_id.to_i]):nil
+        m_d[i+4] = b_l.present? ? (b_l <= 0 ? b_l.to_s : "+#{b_l}"):'' # water level change on base date
         # m_d[i+5] постоянное значение берется из предыдущего бюллетеня
         # m_d[i+6] = (m_d[i+2]-m_d[i+5].to_i)>0 ? (m_d[i+2]-m_d[i+5].to_i) : '-' if m_d[i+5].present?
         # m_d[i+7] постоянное значение берется из предыдущего бюллетеня
