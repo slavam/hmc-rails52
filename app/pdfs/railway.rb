@@ -29,8 +29,8 @@ class Railway < Prawn::Document
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
       text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 11} № 0#{Bulletin.ogmo_code}/"+@bulletin.curr_number
-      text "К договору от"
-      text "№ 03/21/06"
+      text "К договору от 14.01.2021"
+      text "№ 03/21/06/Д/П-21004/НЮ"
     end
     bounding_box([290, y_pos], width: bounds.width-290) do
       text "И.о. Генерального директора
