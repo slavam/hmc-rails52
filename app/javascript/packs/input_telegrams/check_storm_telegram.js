@@ -49,18 +49,15 @@ export function checkStormTelegram(tlg, stations, errors, observation){
     errors.push("Ошибка вида телеграммы (a=1)");
     return false;
   }
-  let nowLocal = new Date();
-  // let year = nowLocal.getUTCFullYear();
-  // let month = nowLocal.getUTCMonth()+1;
-  // month = month < 10 ? '0'+month : month;
-  let mlsNowUtc = new Date(nowLocal.getTime()+nowLocal.getTimezoneOffset()*1000*60).getTime();
-  // let mlsEventDateUtc = Date.parse(''+year+'-'+month+'-'+tlg.substr(18,2)+' '+tlg.substr(20,2)+':'+tlg.substr(22,2)+':00');
-  let mlsEventDateUtc = Date.parse(observation.telegram_date.substr(0,8)+tlg.substr(18,2)+' '+tlg.substr(20,2)+':'+tlg.substr(22,2)+':00');
-  if(mlsEventDateUtc > mlsNowUtc){
-    errors.push("Ошибка в дате/времени явления");
-    return false;
+  if(observation.telegram_date){
+    let nowLocal = new Date();
+    let mlsNowUtc = new Date(nowLocal.getTime()+nowLocal.getTimezoneOffset()*1000*60).getTime();
+    let mlsEventDateUtc = Date.parse(observation.telegram_date.substr(0,8)+tlg.substr(18,2)+' '+tlg.substr(20,2)+':'+tlg.substr(22,2)+':00');
+    if(mlsEventDateUtc > mlsNowUtc){
+      errors.push("Ошибка в дате/времени явления");
+      return false;
+    }
   }
-
   var windDirections = Array.from({ length: 37 }, (v, k) => k);
   windDirections.push(99);
   var codeWAREP = +tlg.substr(26,2);

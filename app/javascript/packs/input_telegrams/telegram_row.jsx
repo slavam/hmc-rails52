@@ -63,7 +63,6 @@ export default class TelegramRow extends React.Component{
         tlgData = {agro_dec_observation: observation, crop_conditions: c_c};
         if (observation.state_crops)
           delete observation.state_crops;
-
         desiredLink = "/agro_dec_observations/update_agro_dec_telegram?id="+this.props.telegram.id;
         break;
       case 'storm':

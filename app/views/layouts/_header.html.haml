@@ -25,7 +25,7 @@
                 = render 'layouts/bulletins'
               %li
                 = render 'layouts/synoptic_reports'
-              %li
+              -# %li
                 = render 'layouts/t_lower_8'
                 -# = render 'layouts/synoptic_links' 20190718 Boyko
             - when 'agro'
@@ -83,7 +83,7 @@
                 = render 'layouts/bulletins'
               %li
                 = render 'layouts/synoptic_reports'
-              %li 
+              -# %li 
                 = render 'layouts/t_lower_8'
               / 
                 %li
@@ -113,6 +113,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Сервис <b class="caret"></b></a>
                 %ul{class: "dropdown-menu"}
                   = render 'layouts/search_telegrams'
+                  %li= link_to 'Средняя температура за сутки', synoptic_observations_daily_avg_temp_path
                   %li{ class: "divider"}
                   %li= link_to 'Метеостанции', stations_path
             - when 'specialist'
