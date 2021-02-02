@@ -67,7 +67,7 @@ class Energy < Prawn::Document
       position = "Начальник"
       name = "М.Б. Лукьяненко"
     end
-    move_down 10
+    move_down 30
     table [[{content: position, align: :left}, {content: name, align: :right}]], width: bounds.width, cell_style: { border_width: 0}
     move_cursor_to 20
     if responsible == 'Boyko'
