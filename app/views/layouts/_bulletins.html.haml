@@ -20,6 +20,7 @@
   %li= link_to 'Оповещения (гидро)', '/bulletins/list?bulletin_type=alert'
   %li= link_to 'Предупреждения (гидро)', '/bulletins/list?bulletin_type=warning'
   %li= link_to 'Железная дорога', '/bulletins/list?bulletin_type=railway'
+  %li= link_to 'Шторма для ЖД', '/bulletins/list?bulletin_type=rw_storm'
   -# - if current_user.role == 'synoptic'
     -# %li{ class: 'divider'}
     -# %li= link_to 'Текущие бюллетени', bulletins_latest_bulletins_path

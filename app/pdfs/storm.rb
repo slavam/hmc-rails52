@@ -49,5 +49,5 @@ class Storm < Prawn::Document
 	  chief_descr = @bulletin.chief_2_pdf
 	  [[{:padding => [10,5],:content => chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6, position: :center}, {:padding => [10,5],:content => chief_descr[:name]}]]
     # [[chief_descr[:position], {padding: -5, position: :center, image: chief_descr[:image_name], scale: 0.6}, chief_descr[:name]]]
-	end
+  end
 end

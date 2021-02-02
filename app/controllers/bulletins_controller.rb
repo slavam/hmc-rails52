@@ -40,6 +40,12 @@ class BulletinsController < ApplicationController
     bulletin = Bulletin.last_this_type params[:bulletin_type]
     last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307
     case params[:bulletin_type]
+      when 'rw_storm'
+        last_storm = Bulletin.last_this_type 'storm'
+        @bulletin.curr_number = ''
+        if last_storm.present?
+          @bulletin.storm = last_storm.storm
+        end
       when 'railway'
         if last_daily_bulletin.present?
           @bulletin.storm = last_daily_bulletin.storm
@@ -347,8 +353,8 @@ class BulletinsController < ApplicationController
         when 'holiday'
           pdf = Holiday.new(@bulletin)
           # @png_filename = @bulletin.png_filename(current_user.id)
-        when 'storm', 'sea_storm'
-          variant = params[:variant]
+        when 'storm', 'sea_storm', 'rw_storm'
+          variant = params[:variant].present? ? params[:variant] : ''
           pdf = Storm.new(@bulletin, variant)
         when 'radiation'
           pdf = Radiation.new(@bulletin)
