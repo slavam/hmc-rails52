@@ -289,10 +289,21 @@ class StormObservationsController < ApplicationController
     # sql = "select * from storm_observations where station_id = #{params[:storm_observation][:station_id]} and telegram_type = '#{params[:storm_observation][:telegram_type]}' and day_event = #{params[:storm_observation][:day_event]} and hour_event = #{params[:storm_observation][:hour_event]} and minute_event = #{params[:storm_observation][:minute_event]} and telegram_date > '#{left_time}' order by telegram_date desc"
     # 20181121
     if params[:input_mode] == 'direct'
-      sql = "select * from storm_observations where station_id = #{params[:storm_observation][:station_id]} and telegram_type = '#{params[:storm_observation][:telegram_type]}' and day_event = #{params[:storm_observation][:day_event]} and hour_event = #{params[:storm_observation][:hour_event]} and minute_event = #{params[:storm_observation][:minute_event]} order by telegram_date desc"
+      sql =  "select * from storm_observations where station_id = #{params[:storm_observation][:station_id]} 
+              and telegram_type = '#{params[:storm_observation][:telegram_type]}' 
+              and substr(telegram,27,2) = #{params[:storm_observation][:telegram][27,2]} # BLN 2021.02.11
+              and day_event = #{params[:storm_observation][:day_event]} 
+              and hour_event = #{params[:storm_observation][:hour_event]} 
+              and minute_event = #{params[:storm_observation][:minute_event]} order by telegram_date desc"
     else
       left_time = date_dev-20.minutes
-      sql = "select * from storm_observations where station_id = #{params[:storm_observation][:station_id]} and telegram_type = '#{params[:storm_observation][:telegram_type]}' and day_event = #{params[:storm_observation][:day_event]} and hour_event = #{params[:storm_observation][:hour_event]} and minute_event = #{params[:storm_observation][:minute_event]} and created_at > '#{left_time}' order by telegram_date desc"
+      sql =  "select * from storm_observations where station_id = #{params[:storm_observation][:station_id]} 
+              and telegram_type = '#{params[:storm_observation][:telegram_type]}' 
+              and day_event = #{params[:storm_observation][:day_event]} 
+              and hour_event = #{params[:storm_observation][:hour_event]} 
+              and minute_event = #{params[:storm_observation][:minute_event]} 
+              and substr(telegram,27,2) = #{params[:storm_observation][:telegram][27,2]} # BLN 2021.02.11
+              and created_at > '#{left_time}' order by telegram_date desc"
     end
     telegram = StormObservation.find_by_sql(sql).first
     # telegram = StormObservation.find_by(station_id: params[:storm_observation][:station_id], telegram_type: params[:storm_observation][:telegram_type], day_event: params[:storm_observation][:day_event], hour_event: params[:storm_observation][:hour_event], minute_event: params[:storm_observation][:minute_event])
