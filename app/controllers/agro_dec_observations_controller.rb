@@ -1,8 +1,13 @@
 class AgroDecObservationsController < ApplicationController
   include AgroObservationsHelper
-  # helper AgroObservationsHelper
-  before_action :find_agro_dec_observation, only: [:show, :update_agro_dec_telegram]
+  before_action :find_agro_dec_observation, only: [:show, :update_agro_dec_telegram, :destroy]
   
+  def destroy
+    @agro_dec_observation.destroy
+    flash[:success] = "Удалена декадная агротелеграмма"
+    redirect_to agro_dec_observations_path
+  end
+
   def index
     @agro_dec_observations = AgroDecObservation.paginate(page: params[:page]).order(:date_dev, :created_at).reverse_order
   end
