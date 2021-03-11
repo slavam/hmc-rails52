@@ -299,9 +299,13 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
         return false;
       }
       if(section.length>6) // 20190408 
-        if(section[0] < section[6])
+        if(section[0] < section[6]){
           section = section.substr(6).trim();
-        else{
+          if(section.length<5){ // 20210311
+            errors.push("Нарушен размер группы в разделе 1 => "+section);
+            return false;
+          }
+        }else{
           errors.push("Нарушена последовательность групп в разделе 1 => "+section);
           return false;  
         }
