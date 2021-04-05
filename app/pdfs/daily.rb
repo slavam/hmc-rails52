@@ -99,7 +99,9 @@ class Daily < Prawn::Document
       h7 = {content: "Высота снежного покрова (см)", rowspan: 2} 
       h8 = {content: "Глубина промерзания (см)", rowspan: 2} 
     end
-    stations = ["Донецк", "Дебальцево", "Амвросиевка", "Седово", "Красноармейск", "Волноваха", "Артемовск", "Мариуполь"]
+    stations = ["Донецк", "Дебальцево", "Амвросиевка", "Седово", 
+      "Красноармейск", 
+      "Волноваха", "Артемовск", "Мариуполь"]
     report_date_prev = (@bulletin.report_date - 1.day).to_s(:custom_datetime)
     table_content = 
     [
@@ -122,21 +124,21 @@ class Daily < Prawn::Document
     ]
     table_data = []
     stations.each.with_index do |s, j|
-      a = [s]
-      (0..8).each do |i| 
-        if i==4 and m_d[j*9+4].present? # 20190801 KMA
-          if m_d[j*9+4].to_f>1
-            m_d[j*9+4] = m_d[j*9+4].to_f.round
-          else
-            m_d[j*9+4] = m_d[j*9+4].to_s.tr(".",",")
+      if j != 4 # Pokrovsk
+        a = [s]
+        (0..8).each do |i| 
+          if i==4 and m_d[j*9+4].present? # 20190801 KMA
+            if m_d[j*9+4].to_f>1
+              m_d[j*9+4] = m_d[j*9+4].to_f.round
+            else
+              m_d[j*9+4] = m_d[j*9+4].to_s.tr(".",",")
+            end
           end
+          m_d[i*9+2] = m_d[i*9+2].gsub('.',',') if m_d[i*9+2].present?
+          a << ((i!=2 and i!=4 and i!=5 and i!=8 and m_d[j*9+i].present?) ? ((m_d[j*9+i].to_f<0 and m_d[j*9+i].to_f>-0.5) ? '-0' : m_d[j*9+i].to_f.round) : m_d[j*9+i])
         end
-        m_d[i*9+2] = m_d[i*9+2].gsub('.',',') if m_d[i*9+2].present?
-        # m_d[i*9+4] = m_d[i*9+4].gsub('.',',') if m_d[i*9+4].present?
-        a << ((i!=2 and i!=4 and i!=5 and i!=8 and m_d[j*9+i].present?) ? ((m_d[j*9+i].to_f<0 and m_d[j*9+i].to_f>-0.5) ? '-0' : m_d[j*9+i].to_f.round) : m_d[j*9+i])
+        table_data << a
       end
-      # table_content << a
-      table_data << a
     end
   
     font "OpenSans"

@@ -54,7 +54,8 @@ class Energy < Prawn::Document
       else
         @lines = 15
     end
-    table table_data, width: bounds.width, cell_style: { border_width: 0.3, :overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true, size: 9, align: :center } do |t|
+    # font "OpenSans", size: 10
+    table table_data, width: bounds.width, cell_style: { border_width: 0.3, :overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true, align: :center } do |t|
       t.cells.padding = [2,2,4,2]
     end
     if chief == 'Stec'
