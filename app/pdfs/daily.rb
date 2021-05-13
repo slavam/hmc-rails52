@@ -124,7 +124,7 @@ class Daily < Prawn::Document
     ]
     table_data = []
     stations.each.with_index do |s, j|
-      if j != 4 # Pokrovsk
+      if (j != 4) and (j != 5) # Pokrovsk, Volnovaha 20210513 KMA
         a = [s]
         (0..8).each do |i| 
           if i==4 and m_d[j*9+4].present? # 20190801 KMA

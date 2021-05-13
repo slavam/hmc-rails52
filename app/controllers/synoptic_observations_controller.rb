@@ -185,7 +185,8 @@ class SynopticObservationsController < ApplicationController
         @fire_data[np.date.strftime("%Y-%m-%d")][:night] = night_prec
       end
     end
-    @stations = Station.all.order(:id)
+    # @stations = Station.all.order(:id)
+    @stations = Station.where("id not in (4, 8)").order(:id)
     first_day = true
     fire_danger = 0
     @fire_data.sort.each do |key,value|
