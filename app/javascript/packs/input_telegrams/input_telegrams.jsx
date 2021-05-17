@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import NewTelegramForm from './new_telegram_form';
 import TelegramRow from './telegram_row';
-import MakeSynopticTelegram from './make_synoptic_telegram';
+// import MakeSynopticTelegram from './make_synoptic_telegram';
 
 // import { Observable} from 'rxjs/Observable';
 // import { range } from 'rxjs/observable/range';

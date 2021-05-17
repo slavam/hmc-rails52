@@ -31,6 +31,11 @@ export function checkStormTelegram(tlg, stations, errors, observation){
     errors.push("Ошибка в номере дня");
     return false;
   }
+  // 20210517 mwm
+  if(observation.telegram_date.substr(8,2) != tlg.substr(18,2)){
+    errors.push("Номер дня не соответствует дате явления");
+    return false;
+  }
   value = +tlg.substr(20,2);
   if ((value >= 0) && (value < 24)){
     observation.hour_event = value;
