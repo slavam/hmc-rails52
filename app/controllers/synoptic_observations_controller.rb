@@ -855,7 +855,7 @@ class SynopticObservationsController < ApplicationController
           if fire_danger.present?
             fire_danger[:temperature] = temp
             fire_danger[:temperature_dew_point] = temp_d_p
-            fire_danger[:fire_danger] = (temp*(temp-temp_d_p)).round+prev_fd_value*(fire_danger[:precipitation_night].to_i>3 ? 0:1)
+            fire_danger[:fire_danger] = (temp*(temp-temp_d_p)).round+prev_fd_value*(fire_danger[:precipitation_night].to_i>=3 ? 0:1)
             # fire_danger.save
           else
             observation = SynopticObservation.find_by(date: date, term: 6, station_id: station_id)
