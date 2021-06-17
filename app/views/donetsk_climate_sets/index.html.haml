@@ -3,7 +3,7 @@
   %ul{ :class=>"nav nav-tabs"}
     - (1..12).each do |m| 
       %li= link_to mns[m], "/donetsk_climate_sets/?mm=#{m}"
-  %h3 Климатические данные по г. Донецку (с 1945г. по 2019г.). #{mns[@month.to_i]} месяц
+  %h3 Климатические данные по г. Донецку с 1945г. #{mns[@month.to_i]} месяц
   %table{class: "table table-hover"}
     %thead
       %tr
