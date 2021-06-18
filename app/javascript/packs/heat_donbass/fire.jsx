@@ -2,13 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import FireForm from './fire_form';
 import {Bar} from 'react-chartjs-2';
-// import 'chartjs-plugin-annotation';
 
 const FireTable = ({fireData}) => {
   let row = [<tr key="0"><td>Дата</td><td>ПО</td><td>Температура</td><td>Точка росы</td><td>Осадки ночью</td><td>Осадки днем</td></tr>];
-  // Object.keys(fireData).forEach( (k) => {
-  //   row.push(<tr key={k}><td>{k}</td><td>{fireData[k]['fire_danger']}</td><td>{fireData[k]['temp']}</td><td>{fireData[k]['temp_d_p']}</td><td>{fireData[k]['night']}</td><td>{fireData[k]['day']}</td></tr>);
-  // });
   let fds = [];
   let l = Object.keys(fireData).length;
   let i = 0;
@@ -21,7 +17,6 @@ const FireTable = ({fireData}) => {
   fds.forEach((e) => {
 		row.push(<tr key={e['obsDate']}><td>{e['obsDate']}</td><td>{e['fire_danger']}</td><td>{e['temp']}</td><td>{e['temp_d_p']}</td><td>{e['night']}</td><td>{e['day']}</td></tr>);
 	});
-  
   return <table className="table table-hover"><tbody>{row}</tbody></table>;
 };
 
@@ -51,7 +46,12 @@ export default class Fire extends React.Component{
     }); 
   }
   render(){
-    let stationName = this.props.stations[this.state.stationId-1].name;
+    let stationName = '';
+    let stationId = +this.state.stationId;
+    this.props.stations.some(function(s){
+      stationName = s.name;
+      return stationId == s.id;
+    });
     let periodDays = [];
     let fireDanger = [];
     let precipitation = [];
