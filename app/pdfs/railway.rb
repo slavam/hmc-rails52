@@ -37,7 +37,7 @@ class Railway < Prawn::Document
             ГП \"ДОНЕЦКАЯ ЖЕЛЕЗНАЯ
             ДОРОГА\"
 		
-            В.В. Кабацию", leading: 3
+            О.Н. Калеватых", leading: 3
     end
     move_down 15
     font "OpenSans", style: :bold
