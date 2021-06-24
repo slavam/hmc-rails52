@@ -104,6 +104,7 @@ Rails.application.routes.draw do
   get 'synoptic_observations/get_meteoparams', to: 'synoptic_observations#get_meteoparams'
   get 'synoptic_observations/teploenergo', to: 'synoptic_observations#teploenergo'
   get 'synoptic_observations/teploenergo5', to: 'synoptic_observations#teploenergo5'
+  get 'synoptic_observations/temperatures_12local', to: 'synoptic_observations#temperatures_12local'
   get 'synoptic_observations/tpp', to: 'synoptic_observations#tpp'
   get 'synoptic_observations/dnmu', to: 'synoptic_observations#dnmu'
   get 'synoptic_observations/dnmu2', to: 'synoptic_observations#dnmu2'

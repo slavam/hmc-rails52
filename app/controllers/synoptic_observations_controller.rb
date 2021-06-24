@@ -458,6 +458,59 @@ class SynopticObservationsController < ApplicationController
     end
   end
 
+  def temperatures_12local
+    today = Time.now
+    @year = params[:year].present? ? params[:year] : today.year.to_s
+    @month = params[:month].present? ? params[:month] : today.month.to_s.rjust(2, '0')
+    last_day = Time.parse("#{@year}-#{@month}-01").end_of_month.day #.to_s
+    sql = "select date, station_id, temperature from synoptic_observations where date like '#{@year}-#{@month}%' and term = 9 and station_id in (1,2,3,10) order by date, station_id;"
+    db_temperatures = SynopticObservation.find_by_sql(sql)
+    @temperatures = []
+    (1..6).each {|k| @temperatures[k] = []}
+    t = []
+    db_temperatures.each {|r|
+      j = r.date.day
+      i = r.station_id
+      if t[i].nil?
+        t[i] = []
+      end
+      t[i][j] = r.temperature
+    }
+    [1,10].each {|i|
+      (1..last_day).each {|j|
+        if i == 1
+          if t[1].present? && t[1][j].present?
+            @temperatures[1][j] = t[1][j] # Donetsk
+            @temperatures[2][j] = t[1][j] # Makeevka
+            if t[3].present? and t[3][j].present? # Debalcevo
+              @temperatures[3][j] = ((t[1][j]+t[3][j])/2).round(1) # Gorlovka
+            end
+            if t[2].present? and t[2][j].present? # Amvrosievka
+              @temperatures[5][j] = ((t[1][j]+t[2][j])/2).round(1) # Starobeshevo
+            end
+          end  
+          if t[3].present? and t[2].present? and t[3][j].present? and t[2][j].present? 
+            @temperatures[4][j] = ((t[3][j]+t[2][j])/2).round(1) # Shahtersk
+          end
+        else
+          if t[10].present? and t[10][j].present? # Sedovo
+            @temperatures[6][j] = t[10][j] # Novoazovsk
+          end
+        end
+      }
+    }
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = Temperatures12local.new(@temperatures, @year, @month)
+        send_data pdf.render, filename: "temperatures12local_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      end
+      format.json do
+        render json: {temperatures: @temperatures}
+      end
+    end
+  end
+
   def temperatures_lower8
     @city = params[:city].present? ? params[:city] : 'Дебальцево'
     case @city
