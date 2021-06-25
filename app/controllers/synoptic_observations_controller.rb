@@ -502,7 +502,8 @@ class SynopticObservationsController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = Temperatures12local.new(@temperatures, @year, @month)
+        variant = params[:variant]
+        pdf = Temperatures12local.new(@temperatures, @year, @month, variant)
         send_data pdf.render, filename: "temperatures12local_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
       end
       format.json do

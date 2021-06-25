@@ -5,7 +5,7 @@
   %table{class: "table table-hover"}
     %thead
       %tr
-        %th Дата
+        %th Дата наблюдения
         %th Срок
         %th Метеостанция
         %th Телеграмма
@@ -15,8 +15,10 @@
     %tbody
       - name_stations = Station.name_stations_as_array
       - @synoptic_observations.each do |s_o| 
+        -# cl = (((s_o.created_at == s_o.updated_at) and (s_o.created_at == s_o.observed_at)) ? 'black' : 'lime') # 
+        - cl = (s_o.created_at - Time.parse(s_o.date.to_s+' '+s_o.term.to_s+':00:00 UTC'))/60 > 20 ? 'red' : (((s_o.created_at == s_o.updated_at) and (s_o.created_at == s_o.observed_at)) ? 'black' : 'lime') # просрочена
         %tr
-          %td= s_o.observed_at.utc.strftime("%d-%m-%Y %H:%M:%S UTC")
+          %td{style: "color: #{cl}"}= s_o.observed_at.utc.strftime("%d-%m-%Y %H:%M:%S UTC")
           %td= s_o.term.to_s.rjust(2, '0')
           %td= name_stations[s_o.station_id]
           %td= link_to s_o.telegram, synoptic_observation_path(s_o), title: s_o.title
