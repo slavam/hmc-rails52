@@ -64,7 +64,7 @@ export default class Temperatures12 extends React.Component{
       <div>
         {/*<Temperatures12Form year={this.state.year} month={this.state.month} onFormSubmit={this.handleFormSubmit} />*/}
         <MonthYearForm year={this.state.year} month={this.state.month} onFormSubmit={this.handleFormSubmit} />
-        <h5>Температура воздуха (°С) в 12.00 с 01 по {endDate} года для населенных пунктов Донецкой Народной Республики</h5>
+        <h5>Температура воздуха (°С) в 12:00 часов с 01 по {endDate} года для населенных пунктов Донецкой Народной Республики</h5>
         
         <ResultTable temperatures={this.state.temperatures} maxDay={this.state.daysInMonth}/>
         <a href={desiredLink+'&variant=chief'} title='Подписал начальник'>Распечатать вариант 1</a>

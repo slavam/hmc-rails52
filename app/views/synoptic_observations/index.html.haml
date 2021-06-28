@@ -15,7 +15,6 @@
     %tbody
       - name_stations = Station.name_stations_as_array
       - @synoptic_observations.each do |s_o| 
-        -# cl = (((s_o.created_at == s_o.updated_at) and (s_o.created_at == s_o.observed_at)) ? 'black' : 'lime') # 
         - cl = (s_o.created_at - Time.parse(s_o.date.to_s+' '+s_o.term.to_s+':00:00 UTC'))/60 > 20 ? 'red' : (((s_o.created_at == s_o.updated_at) and (s_o.created_at == s_o.observed_at)) ? 'black' : 'lime') # просрочена
         %tr
           %td{style: "color: #{cl}"}= s_o.observed_at.utc.strftime("%d-%m-%Y %H:%M:%S UTC")

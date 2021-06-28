@@ -85,7 +85,7 @@ class BulletinsController < ApplicationController
         @m_d.each do |v|
           @bulletin.meteo_data += v.present? ? "#{v};" : ';'
         end
-      when 'storm', 'sea_storm'
+      when 'storm', 'sea_storm', 'fire_storm'
         @bulletin.curr_number = ''
         if bulletin.present?
           @bulletin.meteo_data = bulletin.meteo_data
@@ -353,7 +353,7 @@ class BulletinsController < ApplicationController
         when 'holiday'
           pdf = Holiday.new(@bulletin)
           # @png_filename = @bulletin.png_filename(current_user.id)
-        when 'storm', 'sea_storm', 'rw_storm'
+        when 'storm', 'sea_storm', 'rw_storm', 'fire_storm'
           variant = params[:variant].present? ? params[:variant] : ''
           pdf = Storm.new(@bulletin, variant)
         when 'radiation'

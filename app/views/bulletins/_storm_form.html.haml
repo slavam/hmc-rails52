@@ -25,7 +25,4 @@
       = render partial: 'chief'
     %br
     = submit_tag "Сохранить"
-- if @bulletin.bulletin_type == 'storm'
-  = link_to "Список", "/bulletins/list?bulletin_type=storm"
-- else
-  = link_to "Список", "/bulletins/list?bulletin_type=sea_storm"
+= link_to "Список", "/bulletins/list?bulletin_type=#{@bulletin.bulletin_type}"    
