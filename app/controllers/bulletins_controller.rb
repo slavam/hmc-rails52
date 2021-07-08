@@ -467,6 +467,7 @@ class BulletinsController < ApplicationController
 
     def push_in_m_d(m_d, data, offset)
       id_stations = [1,3,2,10,8,4,7,5]
+      # id_stations = [1,3,2,10,7,5]
       data.each.with_index do |v,i|
         if v.present?
           row = id_stations.index(i)
