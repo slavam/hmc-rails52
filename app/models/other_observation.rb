@@ -9,6 +9,8 @@ class OtherObservation < ApplicationRecord
     'freezing' => "Критическая температура вымерзания",
     'wind' => 'Порывы ветра'
   }
+  POSTS = ['Авдотьино', 'Кировский', 'Макеевка', 'Старобешево', 'Тельманово', 
+    'Раздольное', 'Стрюково', 'Дмитровка', 'Новоселовка', 'Благодатное', 'Алексеево-Орловка']
   def self.last_50_telegrams(data_type)
     if data_type == 'wind'
       OtherObservation.where('data_type = ?', data_type).limit(50).order(:obs_date, :period).reverse_order

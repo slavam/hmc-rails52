@@ -1,0 +1,5 @@
+-#= @precipitation.inspect
+.container
+  #root
+  #init_params{ precipitation: @precipitation.to_json, year: @year.to_json, month: @month.to_json}
+  = javascript_pack_tag 'heat_donbass/total_monthly_precipitation'

@@ -77,6 +77,64 @@ class OtherObservationsController < ApplicationController
     end
   end
 
+  def total_monthly_precipitation
+    @year = params[:year].present? ? params[:year] : Time.now.year.to_s
+    @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
+    last_day = Time.days_in_month(@month.to_i, @year.to_i)
+    precipitation_posts = get_month_precipitation(@year, @month)
+    precipitation_stations = get_month_precipitation_stations(@year, @month)
+    @precipitation = []
+    @precipitation = precipitation_fill(precipitation_posts, precipitation_stations, last_day)
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = Precipitation.new(@precipitation, @year, @month)
+        send_data pdf.render, filename: "percipitation_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4" #, :page_layout => :landscape
+      end
+      format.json do
+        render json: {precipitation: @precipitation}
+      end
+    end
+  end
+
+  def get_month_precipitation_stations(year, month)
+    start_date = year+'-'+month+'-01'
+    last_day = Time.days_in_month(month.to_i, year.to_i).to_s
+    end_date = year+'-'+month+'-'+last_day
+    rows = SynopticObservation.select("date, station_id, term, precipitation_1").
+      where("date >= ? AND date <= ? AND station_id IN (1,2,3,10) AND term IN (6,18) AND precipitation_1 > 0", start_date, end_date).order(:date, :station_id, :term)
+      num_row = [nil,1,7,6,nil,nil,nil,nil,nil,nil,15]
+    ret = []
+    rows.each do |p|
+      i = num_row[p.station_id]
+      j = p.date.day
+      ret[i] ||= []
+      ret[i][j] ||= [nil, nil,'','']
+      if p.term == 6
+        ret[i][j][0] = p.precipitation
+      else
+        ret[i][j][1] = p.precipitation
+      end
+    end
+    ret
+  end
+
+  def precipitation_fill(posts_data, stations_data, last_day)
+  #   ['Авдотьино', 'Кировский', 'Макеевка', 'Старобешево', 'Тельманово', 
+  #     'Раздольное', 'Стрюково', 'Дмитровка', 'Новоселовка', 'Благодатное', 'Алексеево-Орловка']
+    post_num_row = [3,2,4,12,14,13,9,10,5,8,11]
+    (1..last_day.to_i).each{|i|
+      (0..10).each{|j|
+      if posts_data[i].present? and posts_data[i][j].present?
+        stations_data[post_num_row[j]] ||= []
+        stations_data[post_num_row[j]][i] ||= [nil, nil,'','']
+        stations_data[post_num_row[j]][i] = posts_data[i][j]
+      end
+      }
+    }
+    stations_data
+  end
+
   def monthly_precipitation
     @year = params[:year].present? ? params[:year] : Time.now.year.to_s
     @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
@@ -90,8 +148,8 @@ class OtherObservationsController < ApplicationController
   end
 
   def get_month_precipitation(year, month)
-    posts = ['Авдотьино', 'Кировский', 'Макеевка', 'Старобешево', 'Тельманово']
-    last_day = Time.days_in_month(month.to_i, year.to_i).to_s.rjust(2, '0')
+    posts = OtherObservation::POSTS
+    last_day = Time.days_in_month(month.to_i, year.to_i).to_s
     start_date = year+'-'+month+'-01'
     end_date = year+'-'+month+'-'+last_day
     rows = OtherObservation.select("obs_date, source, period, value, description").
@@ -110,13 +168,6 @@ class OtherObservationsController < ApplicationController
         precipitation[d][s][1] = p.value
         precipitation[d][s][3] = p.description if p.description.present? and p.description > ''
       end
-      # pn = (p.period == 'night')? p.value : nil
-      # pd = (p.period != 'night')? p.value : nil
-      # val = []
-      # val[0] = pn
-      # val[1] = pd
-      #
-      # precipitation[d][s] = val
     }
     precipitation
   end
