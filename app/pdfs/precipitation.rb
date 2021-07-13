@@ -7,14 +7,11 @@ class Precipitation < Prawn::Document
 		@max_day = Time.days_in_month(@month.to_i, @year.to_i)
 		font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),
-      # :italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-Italic.ttf"),
       :bold => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Bold.ttf"),
-      # :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
     })
     move_down 20
     font "OpenSans", style: :bold
-    text "Количество осадков (мм) за период", size: 12, align: :center
-    text "с 01 по #{@max_day} #{Bulletin::MONTH_NAME2[@month.to_i]} #{@year} года", size: 12, align: :center
+    text "Количество осадков (мм) за период с 01 по #{@max_day} #{Bulletin::MONTH_NAME2[@month.to_i]} #{@year} года", size: 12, align: :center
     move_down 20
     font "OpenSans", style: :normal
     table table_data, width: bounds.width, cell_style: { border_width: 0.3, :overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true, size: 9, align: :center } do |t|
