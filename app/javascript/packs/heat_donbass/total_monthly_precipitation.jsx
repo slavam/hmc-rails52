@@ -7,11 +7,10 @@ const TotalMonthlyPrecipitationTable = ({precipitation, maxDay}) => {
     'Стрюково','Дмитровка','Алексеево-Орловка','Старобешево','Раздольное','Тельманово','Седово']
   let daysNum = [];
   for(var i=1; i<=maxDay; ++i){ 
-    daysNum.push(<td key={i}><b>{i}</b></td>);
+    daysNum.push(<td style={{borderWidth:"1px", borderColor:"#555555", borderStyle:'solid'}} key={i}><b>{i}</b></td>);
   }
-  let row0 = <tr key='0'><td colspan="2" key="0"></td>{daysNum}</tr>;
-  let rows = [];
-  
+  let row0 = <tr key='0' ><td style={{borderWidth:"1px", borderColor:"#555555", borderStyle:'solid'}} colSpan="2" ></td>{daysNum}</tr>;
+  let rows = [];  
   if (precipitation){
     rows.push(row0);
     for(var j=1; j<names.length; ++j){
@@ -33,14 +32,15 @@ const TotalMonthlyPrecipitationTable = ({precipitation, maxDay}) => {
           vd = '';
           td = '';
         }
-        valuesN.push(<td style={{backgroundColor:"#dddddd"}} key={i*2} align="center" title={tn}>{vn}</td>);
-        valuesD.push(<td key={i} align="center" title={td}>{vd}</td>);
+        valuesN.push(<td style={{borderWidth:"1px", backgroundColor: '#dddddd', borderColor:"#555555", borderStyle:'solid'}} key={i*2} align="center" title={tn}>{vn}</td>);
+        valuesD.push(<td style={{borderWidth:"1px", borderColor:"#555555", borderStyle:'solid'}} key={i} align="center" title={td}>{vd}</td>);
       }
-      rows.push(<tr key={j}><td rowspan="2">{names[j]}</td><td>Ночь</td>{valuesN}</tr>);
-      rows.push(<tr key={j}><td>День</td>{valuesD}</tr>);
+      rows.push(<tr key={j} ><td style={{borderWidth:"1px", borderColor:"#555555", borderStyle:'solid'}} rowSpan="2"><b>{names[j]}</b></td><td style={{borderWidth:"1px", backgroundColor: '#dddddd', borderColor:"#555555", borderStyle:'solid'}} >Ночь</td>{valuesN}</tr>);
+      rows.push(<tr key={j*2+20}><td style={{borderWidth:"1px", borderColor:"#555555", borderStyle:'solid'}} >День</td>{valuesD}</tr>);
     }
+    row0 = <tr key='00'><td style={{borderWidth:"1px", borderColor:"#555555", borderStyle:'solid'}} colSpan="2" ></td>{daysNum}</tr>;
     rows.push(row0);
-    return <table className="table table-bordered" ><tbody>{rows}</tbody></table>;
+    return <table className="table table-bordered"><tbody>{rows}</tbody></table>;
   }else{
     return <div></div>
   }
@@ -94,13 +94,13 @@ export default class TotalMonthlyPrecipitation extends React.Component {
     );
   }
 }
+
 $(() => {
   const node = document.getElementById('init_params');
   if(node) {
     const precipitation = JSON.parse(node.getAttribute('precipitation'));
     const year = JSON.parse(node.getAttribute('year'));
     const month = JSON.parse(node.getAttribute('month'));
-
     ReactDOM.render(
       <TotalMonthlyPrecipitation precipitation={precipitation} year={year} month={month} />,
       document.getElementById('root')
