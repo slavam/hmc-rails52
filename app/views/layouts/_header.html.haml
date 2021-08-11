@@ -177,6 +177,7 @@
                 %ul{class: "dropdown-menu"}
                   = render 'layouts/list_telegrams'
                   %li{ class: "divider"}
+                  %li= link_to 'Осадки обобщенные', other_observations_total_monthly_precipitation_path
                   %li= link_to 'Конвертор телеграмм МОРЕ', '/sea_observations/get_conversion_interval'
             - when 'railman'
               %li
