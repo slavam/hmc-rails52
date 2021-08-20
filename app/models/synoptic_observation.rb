@@ -524,6 +524,7 @@ class SynopticObservation < ActiveRecord::Base
   end
   def precipitation
     return 0 if precipitation_1.nil?
+    # return 0.01 if precipitation_1 == 990
     precipitation_1>989 ? ((precipitation_1-990)*0.1).round(1) : precipitation_1
   end
   def humidity
