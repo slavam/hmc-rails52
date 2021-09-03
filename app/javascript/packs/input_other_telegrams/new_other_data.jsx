@@ -152,7 +152,7 @@ export default class NewOtherData extends React.Component{
               <td><Select id='points' options={points} onChange={this.handlePointSelected} value={this.state.point}/></td>
               <td><Select id='periods' options={periods} onChange={this.handlePeriodSelected} value={this.state.period}/></td>
               <td><input type="text" value={this.state.message} onChange={(event) => this.handleDescriptionChange(event)}/></td>
-              <td><input type="number" value={this.state.value} onChange={(event) => this.handleValueChange(event)}/></td>
+              <td><input lang="en" step="0.1" type="number" value={this.state.value} onChange={(event) => this.handleValueChange(event)}/></td>
             </tr>;
     }else if(this.state.dataType.value == 'wind'){
       let o_date = obsDate;
