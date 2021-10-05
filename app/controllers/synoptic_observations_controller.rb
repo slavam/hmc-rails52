@@ -269,7 +269,7 @@ class SynopticObservationsController < ApplicationController
     last_day = ''
     first_day = '01'
     if (@month.to_i == today.month) and (@year.to_i == today.year)
-      first_day = '15' if @month == '10'
+      # first_day = '15' if @month == '10' 20211005 KMA
       if today.hour >= 1
         last_day = (today.day-1).to_s.rjust(2,'0') # не брать текущий день ЛМБ 20191001
       else
