@@ -541,7 +541,10 @@ class BulletinsController < ApplicationController
         avg_24[10] = SynopticObservation.find_by_sql(sql)[0].temperature
       end
       # wind_speed = AgroObservation.wind_speed_max_24(report_date-1.day)
-      wind_speed = AgroObservation.wind_speed_max_24(report_date)
+      # wind = OtherObservation.select("station_id, max(value), period").
+      #   where("station_id in (1,2,3,10) and obs_date = ? AND data_type='wind'", prev_day).group(:station_id)
+      # wind_speed = AgroObservation.wind_speed_max_24(report_date)
+      wind_speed = OtherObservation.wind_gusts(report_date)
       precipitations = precipitation_daily(report_date-1.day, true)
       [1,3,2,10].each_with_index do |v,i|
         m_d[i*4] = avg_24[v] if avg_24[v].present?

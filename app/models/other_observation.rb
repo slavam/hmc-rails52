@@ -21,4 +21,13 @@ class OtherObservation < ApplicationRecord
   def init
     data_type  ||= 'temp'
   end
+
+  def self.wind_gusts(report_date)
+    prev_day = (report_date-1.day).strftime("%Y-%m-%d")
+    rows = OtherObservation.select("station_id, max(value) max_value").
+      where("data_type='wind' and station_id in (1,2,3,10) and obs_date = ?", prev_day).group(:station_id)
+    ret = []
+    rows.each {|w_g| ret[w_g['station_id']] = w_g['max_value']}
+    ret
+  end
 end
