@@ -262,6 +262,47 @@ class SynopticObservationsController < ApplicationController
     end
   end
 
+  def get_last_day(year, month)
+    today = Time.now
+    ret = '00'
+    if (month.to_i == today.month) and (year.to_i == today.year)
+      if today.hour >= 1
+        ret = (today.day-1).to_s.rjust(2,'0') # не брать текущий день ЛМБ 20191001
+      else
+        if today.day > 1
+          ret = (today.day-2).to_s.rjust(2,'0') # до часа ночи берем позавчерашний день 20191010 КМА
+        end
+      end
+    else
+      ret = Time.parse("#{year}-#{month}-01").end_of_month.day.to_s
+    end
+    ret
+  end
+
+  def amvrosievka_daily_avg_temp
+    @year = params[:year].present? ? params[:year] : Time.now.year.to_s
+    @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
+    first_day = '01'
+    last_day = get_last_day(@year, @month)
+    sql = "select date, ROUND(avg(temperature),1) temperature from synoptic_observations where date >= '#{@year}-#{@month}-#{first_day}' and date <= '#{@year}-#{@month}-#{last_day}' and station_id = 2 group by date;"
+    db_temperatures = SynopticObservation.find_by_sql(sql)
+    @temperatures = []
+    db_temperatures.each do |t|
+      key = t.date.day
+      @temperatures[key] = t.temperature
+    end
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = AmvrosievkaTemp.new(@temperatures, @year, @month, params[:chief], params[:responsible])
+        send_data pdf.render, filename: "amvrosievka_temp_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      end
+      format.json do
+        render json: {temperatures: @temperatures}
+      end
+    end
+  end
+
   def energy_1510
     today = Time.now
     @year = params[:year].present? ? params[:year] : today.year.to_s
