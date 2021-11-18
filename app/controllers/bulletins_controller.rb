@@ -2,9 +2,7 @@ class BulletinsController < ApplicationController
   before_action :logged_in_user, only: [:list] # 20190819
   before_action :find_bulletin, :only => [:bulletin_show, :show, :destroy, :print_bulletin, :edit, :update]
   # after_filter :pdf_png_delete, :only => [:holiday_show]
-  # def index
-  #   @bulletins = Bulletin.all.order(:created_at).reverse_order
-  # end
+
   def latest_bulletins
     bulletins = Bulletin.all.limit(50).order(:id).reverse_order
     @latest_bulletins = []
@@ -27,6 +25,7 @@ class BulletinsController < ApplicationController
   end
 
   def list
+    flash.delete(:danger)
     @bulletin_type = params[:bulletin_type]
     @variant = params[:variant].present? ? params[:variant] : nil
     @bulletins = Bulletin.where(bulletin_type: @bulletin_type).paginate(page: params[:page], per_page: 20).order(:created_at).reverse_order
@@ -38,6 +37,9 @@ class BulletinsController < ApplicationController
     @bulletin.curr_number = Date.today.yday()
     @bulletin.bulletin_type = params[:bulletin_type]
     bulletin = Bulletin.last_this_type params[:bulletin_type]
+    if bulletin.report_date == @bulletin.report_date
+      flash[:danger] = "Бюллетень за #{bulletin.report_date.strftime("%Y-%m-%d")} уже существует"
+    end
     last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307
     case params[:bulletin_type]
       when 'rw_storm'
@@ -190,7 +192,6 @@ class BulletinsController < ApplicationController
   def create
     @bulletin = Bulletin.new(bulletin_params)
     @bulletin.summer = params[:summer] if params[:summer].present?
-    # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{@bulletin.inspect}")
     if !params[:val_1].nil?
       @bulletin.meteo_data = ''
       (1..n).each do |i|
