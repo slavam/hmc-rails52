@@ -26,6 +26,9 @@ class UnionForecastsController < ApplicationController
       :east2_td, :east3_tn, :east3_td, :forecast_capital, :capital_tn, :capital_td,
       :capital_pd, :capital_pn, :capital_humidity, :chief, :synoptic].each {|k| @union_forecast[k] = union_forecast[k]}
     @union_forecast.report_date = Time.now
+    if UnionForecast.last.report_date == @union_forecast.report_date
+      flash.now[:danger] = "Прогноз погоды на #{@union_forecast.report_date.strftime("%Y-%m-%d")} уже существует"
+    end
     @union_forecast.curr_number = Date.today.yday()
   end
 

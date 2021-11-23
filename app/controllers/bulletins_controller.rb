@@ -25,7 +25,6 @@ class BulletinsController < ApplicationController
   end
 
   def list
-    flash.delete(:danger)
     @bulletin_type = params[:bulletin_type]
     @variant = params[:variant].present? ? params[:variant] : nil
     @bulletins = Bulletin.where(bulletin_type: @bulletin_type).paginate(page: params[:page], per_page: 20).order(:created_at).reverse_order
@@ -38,7 +37,7 @@ class BulletinsController < ApplicationController
     @bulletin.bulletin_type = params[:bulletin_type]
     bulletin = Bulletin.last_this_type params[:bulletin_type]
     if bulletin.report_date == @bulletin.report_date
-      flash[:danger] = "Бюллетень за #{bulletin.report_date.strftime("%Y-%m-%d")} уже существует"
+      flash.now[:danger] = "Бюллетень за #{bulletin.report_date.strftime("%Y-%m-%d")} уже существует"
     end
     last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307
     case params[:bulletin_type]
