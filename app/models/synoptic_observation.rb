@@ -531,4 +531,9 @@ class SynopticObservation < ActiveRecord::Base
     return nil if temperature.nil? or temperature_dew_point.nil?
     (100*(Math.exp((17.625*temperature_dew_point)/(243.04+temperature_dew_point))/Math.exp((17.625*temperature)/(243.04+temperature)))).round()
   end
+  def self.telegram_present?(wmo_index, observation_date, term)
+    # stations = Station.station_id_by_code
+    station_id = Station.find_by(code: wmo_index).id
+    find_by(station_id: station_id, date: observation_date, term: term).present?
+  end
 end

@@ -18,6 +18,7 @@ export default class NewTelegramForm extends React.Component{
       tlgType: this.props.tlgType,
       tlgTerm: this.props.tlgTerm,  
       tlgText: '',
+      isMariupol: false,
       errors: [] 
     };
     
@@ -26,6 +27,7 @@ export default class NewTelegramForm extends React.Component{
     this.dateChange = this.dateChange.bind(this);
     this.inBufferClick = this.inBufferClick.bind(this);
     this.state.tlgText = this.initText(this.props.tlgType);
+    this.handleFromOgimet = this.handleFromOgimet.bind(this);
   }
   
   initText(tlgType){
@@ -144,12 +146,10 @@ export default class NewTelegramForm extends React.Component{
       errors: []
     });
   }
-
   dateChange(e){
     this.state.currDate = e.target.value;
     this.setState({tlgText: this.initText(this.state.tlgType)});
   }
-
   handleTypeSelected(value){
     if (this.props.inputMode == 'normal'){
       let t = Math.floor(new Date().getUTCHours() / 3) * 3;
@@ -158,21 +158,22 @@ export default class NewTelegramForm extends React.Component{
     this.state.tlgType = value;
     this.props.onTelegramTypeChange(value, this.state.tlgTerm);
     this.setState({tlgType: value, tlgText: this.initText(value), errors: []});
-  }
-  
+  }  
   handleTermSelected(value){
     this.state.tlgTerm = value;
     this.state.tlgText = this.initText(this.state.tlgType);
     this.setState({errors: []});
-  }
-  
+  }  
   handleTextChange(e) {
     this.setState({tlgText: e.target.value, errors: []});
-  }
-  
+  }  
   inBufferClick(e){
     this.props.onInBuffer({tlgText: this.state.tlgText, message: this.state.errors[0], tlgType: this.state.tlgType});
     this.setState({tlgText: this.initText(this.state.tlgType), errors: []});
+  }
+  handleFromOgimet(e){
+    this.props.onGetOgimet({term: this.state.tlgTerm, date: this.state.currDate})
+    this.setState({isMariupol: true, errors: []})
   }
 
   render() {
@@ -196,10 +197,25 @@ export default class NewTelegramForm extends React.Component{
       { value: '21', label: '21' }
     ];
     
+    let currValue = '';
+    if(this.state.isMariupol && this.props.telegramMariupol){
+      this.state.tlgText = this.props.telegramMariupol;
+      this.state.isMariupol = false;
+    }
     let tlgDate = this.props.inputMode == 'normal' ? <td>{this.state.currDate}</td> : <td><input type="date" name="input-date" value={this.state.currDate} onChange={this.dateChange} required={true} autoComplete="on" /></td>;
     let term = this.state.tlgType == 'synoptic' ? <td>{this.props.inputMode == 'normal' ? this.props.tlgTerm : this.state.tlgTerm}</td> : <td></td>;
     let termSelect = this.state.tlgType == 'synoptic' ? <td><TermSynopticSelect options={terms} onUserInput={this.handleTermSelected} defaultValue={this.state.tlgTerm} readOnly="readonly"/></td> : <td></td>;
     let inBuffer = this.state.errors[0] > '' && this.state.tlgText > '' ? <button style={{float: "right"}} type="button" id="in-buffer" onClick={(event) => this.inBufferClick(event)}>В буфер</button> : '';
+    let textButton = this.state.tlgType == 'synoptic' ? 
+    <table className="table table-hover">
+      <tbody>
+        <tr>
+          <td width="90%"><input type="text" value={this.state.tlgText} onChange={(event) => this.handleTextChange(event)}/></td>
+          <td><input type="button" value="Мариуполь" onClick={this.handleFromOgimet}/></td>
+        </tr>
+      </tbody>
+    </table> : <input type="text" value={this.state.tlgText} onChange={(event) => this.handleTextChange(event)}/>
+    
     return (
     <div className="col-md-12">
       <form className="telegramForm" onSubmit={(event) => this.handleSubmit(event)}>
@@ -219,11 +235,11 @@ export default class NewTelegramForm extends React.Component{
             </tr>
           </tbody>
         </table>
-        <p>Текст 
-          <input type="text" value={this.state.tlgText} onChange={(event) => this.handleTextChange(event)}/>
+        <div>Текст 
+          {textButton}
           <span style={{color: 'red'}}>{this.state.errors[0]}</span>
           {inBuffer}
-        </p>
+        </div>
         <input type="submit" value="Сохранить" />
       </form>
     </div>

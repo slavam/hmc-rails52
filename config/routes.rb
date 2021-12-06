@@ -119,6 +119,7 @@ Rails.application.routes.draw do
   get 'synoptic_observations/conversion_log_download', to: 'synoptic_observations#conversion_log_download'
   # get 'synoptic_observations/wmo_stations_create', to: 'synoptic_observations#wmo_stations_create'
   get 'synoptic_observations/surface_map_show', to: 'synoptic_observations#surface_map_show'
+  get 'synoptic_observations/from_ogimet', to: 'synoptic_observations#from_ogimet'
   resources :synoptic_observations
   get 'sessions/new'
   get    '/login',   to: 'sessions#new'

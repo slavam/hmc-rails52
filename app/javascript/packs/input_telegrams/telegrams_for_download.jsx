@@ -23,8 +23,6 @@ export default class TelegramsForDownload extends React.Component{
       url: "/synoptic_observations/arm_sin_data_fetch?date="+date+'&term='+term
       }).done((data) => {
         this.setState({date: date, term: term, total: data.total, ourTelegramsNum: data.ourTelegramsNum, webTelegramsNum: data.webTelegramsNum});
-        // alert(date+'<==>'+this.state.date)
-        // alert(this.state.errors[0]);
       }).fail((res) => {
         alert(this.state.errors[0]);
         this.setState({errors: ["Ошибка записи в базу"]});
