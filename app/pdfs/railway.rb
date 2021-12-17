@@ -33,8 +33,8 @@ class Railway < Prawn::Document
       text "№ 03/21/06/Д/П-21004/НЮ"
     end
     bounding_box([290, y_pos], width: bounds.width-290) do
-      text "И.о. Генерального директора
-            ГП \"ДОНЕЦКАЯ ЖЕЛЕЗНАЯ
+      text "Генеральному директору
+            ГУП ДНР \"ДОНЕЦКАЯ ЖЕЛЕЗНАЯ
             ДОРОГА\"
 		
             О.Н. Калеватых", leading: 3
