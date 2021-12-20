@@ -151,11 +151,11 @@ class AgroDecObservationsController < ApplicationController
 
     telegram = AgroDecObservation.where("station_id = ? and day_obs = ? and month_obs = ? and telegram_num = ? and date_dev like ?", station_id, day_obs, month_obs, telegram_num, yyyy_mm).order(:date_dev).reverse_order.first
     if telegram.present? 
-      if telegram.update_attributes agro_dec_observation_params
+      if telegram.update agro_dec_observation_params
         params[:crop_dec_conditions].each do |k, v|
           c_c = CropDecCondition.find_by(agro_dec_observation_id: telegram.id, crop_code: v[:crop_code].to_i)
           if c_c.present?
-            c_c.update_attributes crop_dec_conditions_params(v)
+            c_c.update crop_dec_conditions_params(v)
           else
             telegram.crop_dec_conditions.build(crop_dec_conditions_params(v)).save
           end
@@ -181,7 +181,7 @@ class AgroDecObservationsController < ApplicationController
           telegram.crop_dec_conditions.build(crop_dec_conditions_params(v)).save
         end if params[:crop_dec_conditions].present?
         new_telegram = {id: telegram.id, date: telegram.date_dev, station_name: telegram.station.name, telegram: telegram.telegram}
-        ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'agro_dec'
+        ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: new_telegram, tlgType: 'agro_dec'})
         last_telegrams = AgroDecObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams, 
                       tlgType: 'agro_dec', 
@@ -206,11 +206,11 @@ class AgroDecObservationsController < ApplicationController
   
   def update_agro_dec_telegram
 # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{params[:agro_observation][:telegram].inspect}") 
-    if @agro_dec_observation.update_attributes agro_dec_observation_params
+    if @agro_dec_observation.update agro_dec_observation_params
       params[:crop_dec_conditions].each do |k, v|
         c_c = CropDecCondition.find_by(agro_dec_observation_id: @agro_dec_observation.id, crop_code: v[:crop_code].to_i)
         if c_c.present?
-          c_c.update_attributes crop_dec_conditions_params(v)
+          c_c.update crop_dec_conditions_params(v)
         else
           @agro_observation.crop_dec_conditions.build(crop_dec_conditions_params(v)).save
         end

@@ -261,7 +261,7 @@ class BulletinsController < ApplicationController
     if @bulletin.bulletin_type == 'daily'
       @bulletin.climate_data = params[:avg_day_temp] + '; ' + params[:max_temp] + '; '+ params[:max_temp_year] + '; ' + params[:min_temp] + '; '+ params[:min_temp_year] + '; '
     end
-    if not @bulletin.update_attributes bulletin_params
+    if not @bulletin.update bulletin_params
       render :action => :edit
     else
       # bulletin_editor = BulletinEditor.find_by(bulletin_id: @bulletin.id)

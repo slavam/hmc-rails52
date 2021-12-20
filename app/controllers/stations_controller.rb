@@ -9,7 +9,7 @@ class StationsController < ApplicationController
   end
   
   def update
-    if not @station.update_attributes station_params
+    if not @station.update station_params
       render :action => :edit
     else
       redirect_to stations_path

@@ -23,7 +23,7 @@ class ChemCoefficientsController < ApplicationController
   end
   
   def update
-    if not @chem_coefficient.update_attributes chem_coefficient_params
+    if not @chem_coefficient.update chem_coefficient_params
       render :action => :edit
     else
       redirect_to chem_coefficients_path

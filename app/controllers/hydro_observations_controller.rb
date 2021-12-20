@@ -24,7 +24,7 @@ class HydroObservationsController < ApplicationController
         content_factor: params[:hydro_observation][:content_factor])
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{telegram.inspect}")
     if telegram.present?
-      if telegram.update_attributes hydro_observation_params
+      if telegram.update hydro_observation_params
         last_telegrams = HydroObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams, 
                       tlgType: 'hydro', 
@@ -52,7 +52,7 @@ class HydroObservationsController < ApplicationController
   end
   
   def update_hydro_telegram
-    if @hydro_observation.update_attributes hydro_observation_params
+    if @hydro_observation.update hydro_observation_params
       render json: {errors: []}
     else
       render json: {errors: ["Ошибка при сохранении изменений"]}, status: :unprocessable_entity

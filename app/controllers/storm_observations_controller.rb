@@ -87,7 +87,7 @@ class StormObservationsController < ApplicationController
             # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{hash_telegram.inspect}")
             if observation.telegram_date.nil? or (observation.telegram_date < telegram.telegram_date)
               json_telegram = telegram.as_json.except('id', 'created_at', 'updated_at')
-              observation.update_attributes json_telegram
+              observation.update json_telegram
               updated_telegrams += 1
             else
               skiped_telegrams += 1
@@ -309,7 +309,7 @@ class StormObservationsController < ApplicationController
     # telegram = StormObservation.find_by(station_id: params[:storm_observation][:station_id], telegram_type: params[:storm_observation][:telegram_type], day_event: params[:storm_observation][:day_event], hour_event: params[:storm_observation][:hour_event], minute_event: params[:storm_observation][:minute_event])
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{telegram.inspect}")
     if telegram.present?
-      if telegram.update_attributes storm_observation_params
+      if telegram.update storm_observation_params
         last_telegrams = StormObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams,
                       tlgType: 'storm',
@@ -326,10 +326,10 @@ class StormObservationsController < ApplicationController
         # storm_4_arm_syn(telegram)
         # new_telegram = {id: telegram.id, date: telegram.telegram_date, station_name: telegram.station.name, telegram: telegram.telegram}
         new_telegram = {id: telegram.id, date: telegram.telegram_date.utc, station_name: telegram.station.name, telegram: telegram.telegram, created_at: telegram.created_at.utc, station_id: telegram.station_id}
-        ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'storm'
+        ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: new_telegram, tlgType: 'storm'})
         User.where(role: 'synoptic').each do |synoptic|
-          ActionCable.server.broadcast "storm_telegram_user_#{synoptic.id}", # "storm_telegram_created",         #20190724 sound: true, telegram: new_telegram 20190806
-            sound: true, telegram_id: telegram.id
+          # "storm_telegram_created",         #20190724 sound: true, telegram: new_telegram 20190806
+          ActionCable.server.broadcast("storm_telegram_user_#{synoptic.id}", {sound: true, telegram_id: telegram.id})
         end
         last_telegrams = StormObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams,
@@ -382,7 +382,7 @@ class StormObservationsController < ApplicationController
   end
 
   def update
-    if not @storm_observation.update_attributes storm_observation_params
+    if not @storm_observation.update storm_observation_params
       render :action => :edit
     else
       redirect_to '/storm_observations/input_storm_telegrams'
@@ -390,7 +390,7 @@ class StormObservationsController < ApplicationController
   end
 
   def update_storm_telegram
-    if @storm_observation.update_attributes storm_observation_params
+    if @storm_observation.update storm_observation_params
       render json: {errors: []}
     else
       render json: {errors: ["Ошибка при сохранении изменений"]}, status: :unprocessable_entity

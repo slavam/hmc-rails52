@@ -10,7 +10,7 @@ class UserMenusController < ApplicationController
   def edit
   end
   def update
-    if not @user_menu.update_attributes(user_menu_params)
+    if not @user_menu.update(user_menu_params)
       render 'edit'
     else
       flash[:success] = "Название изменено"

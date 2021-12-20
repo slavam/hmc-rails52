@@ -5,7 +5,7 @@ class MaterialsController < ApplicationController
   end  
   
   def update
-    if not @material.update_attributes material_params
+    if not @material.update material_params
       render :action => :edit
     else
       redirect_to materials_path

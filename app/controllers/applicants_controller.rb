@@ -42,7 +42,7 @@ class ApplicantsController < ApplicationController
     applicant.telegram_type = params[:tlgType]
     if applicant.save
       # ActionCable.server.broadcast "candidate_channel", {id: applicant.id, telegram: applicant.telegram, created_at: applicant.created_at, message: applicant.message, telegram_type: applicant.telegram_type} #, currentRole: current_user.role
-      ActionCable.server.broadcast "candidate_channel", applicant: applicant, action: 'insert'
+      ActionCable.server.broadcast("candidate_channel", {applicant: applicant, action: 'insert'})
       # User.where(role: 'synoptic').each do |synoptic|
         # Rails.logger.debug("My object>>>>>>>>>>>>>>>: Brodcast=>"+params[:tlgText])
       #   ActionCable.server.broadcast "candidate_channel_user_#{synoptic.id}", 
@@ -71,7 +71,7 @@ class ApplicantsController < ApplicationController
   end
 
   def update
-    if not @applicant.update_attributes applicant_params
+    if not @applicant.update applicant_params
       render :action => :edit
     else
       redirect_to applicants_path
@@ -80,7 +80,7 @@ class ApplicantsController < ApplicationController
   
   def delete_applicant
     if @applicant.destroy
-      ActionCable.server.broadcast "candidate_channel", applicant: @applicant, action: 'delete'
+      ActionCable.server.broadcast("candidate_channel", {applicant: @applicant, action: 'delete'})
       applicants = Applicant.all.order(:created_at).reverse_order
       render json: {applicants: applicants, errors: ["Запись удалена из буфера с ID=#{@applicant.id}"]}
     else

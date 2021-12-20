@@ -80,7 +80,7 @@ class SeaObservationsController < ApplicationController
     telegram = SeaObservation.find_by(station_id: params[:sea_observation][:station_id], term: params[:sea_observation][:term], date_dev: params[:sea_observation][:date_dev])
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{telegram.inspect}")
     if telegram.present?
-      if telegram.update_attributes sea_observation_params
+      if telegram.update sea_observation_params
         last_telegrams = SeaObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams, 
                       tlgType: 'sea', 
@@ -96,7 +96,7 @@ class SeaObservationsController < ApplicationController
       if telegram.save
         # new_telegram = {id: telegram.id, date: telegram.date_observation, station_name: telegram.station.name, telegram: telegram.telegram}
         new_telegram = {id: telegram.id, date: telegram.date_dev, station_name: telegram.station.name, telegram: telegram.telegram}
-        ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'sea'
+        ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: new_telegram, tlgType: 'sea'})
         last_telegrams = SeaObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams, 
                       tlgType: 'sea', 
@@ -115,7 +115,7 @@ class SeaObservationsController < ApplicationController
   end
   
   def update_sea_telegram
-    if @sea_observation.update_attributes sea_observation_params
+    if @sea_observation.update sea_observation_params
       render json: {errors: []}
     else
       render json: {errors: ["Ошибка при сохранении изменений"]}, status: :unprocessable_entity

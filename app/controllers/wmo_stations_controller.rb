@@ -11,7 +11,7 @@ class WmoStationsController < ApplicationController
   end
   
   def update
-    if @wmo_station.update_attributes wmo_station_params
+    if @wmo_station.update wmo_station_params
       redirect_to wmo_stations_path
     else
       render action: :edit
@@ -31,7 +31,7 @@ class WmoStationsController < ApplicationController
   end
   
   def edit_station
-    if @wmo_station.update_attributes wmo_station_params
+    if @wmo_station.update wmo_station_params
       render json: {errors: []}
     else
       render json: {errors: ["Ошибка при сохранении изменений"]}, status: :unprocessable_entity

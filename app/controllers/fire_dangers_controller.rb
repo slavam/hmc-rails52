@@ -21,7 +21,7 @@ class FireDangersController < ApplicationController
   end
   
   def update
-    if not @fire_danger.update_attributes fire_danger_params
+    if not @fire_danger.update fire_danger_params
       render :action => :edit
     else
       flash[:success] = "Изменено значение пожарной опасности"

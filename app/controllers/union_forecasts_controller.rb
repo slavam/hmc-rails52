@@ -46,7 +46,7 @@ class UnionForecastsController < ApplicationController
   end
 
   def update
-    if not @union_forecast.update_attributes union_forecast_params
+    if not @union_forecast.update union_forecast_params
       render :edit
     else
       flash[:success] = "Прогноз изменен"

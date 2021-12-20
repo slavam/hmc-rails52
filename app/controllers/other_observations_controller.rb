@@ -40,7 +40,7 @@ class OtherObservationsController < ApplicationController
     end
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{telegram.inspect}")
     if observation.present?
-      if observation.update_attributes other_observation_params
+      if observation.update other_observation_params
         last_telegrams = OtherObservation.last_50_telegrams(params[:other_observation][:data_type])
         render json: {observations: last_telegrams,
                       errors: ["Данные изменены"]}

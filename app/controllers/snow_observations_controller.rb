@@ -21,7 +21,7 @@ class SnowObservationsController < ApplicationController
         date_observation: params[:snow_observation][:date_observation])
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{telegram.inspect}")
     if telegram.present?
-      if telegram.update_attributes snow_observation_params
+      if telegram.update snow_observation_params
         last_telegrams = SnowObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams, 
                       tlgType: 'snow', 
@@ -49,7 +49,7 @@ class SnowObservationsController < ApplicationController
   end
   
   def update_snow_telegram
-    if @snow_observation.update_attributes snow_observation_params
+    if @snow_observation.update snow_observation_params
       render json: {errors: []}
     else
       render json: {errors: ["Ошибка при сохранении изменений"]}, status: :unprocessable_entity

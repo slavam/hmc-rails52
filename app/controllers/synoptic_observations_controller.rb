@@ -13,7 +13,7 @@ class SynopticObservationsController < ApplicationController
   end
 
   def update
-    if @synoptic_observation.update_attributes observation_params(:synoptic_observation)
+    if @synoptic_observation.update observation_params(:synoptic_observation)
       redirect_to synoptic_observation_path @synoptic_observation
     else
       render action: :edit
@@ -681,7 +681,8 @@ class SynopticObservationsController < ApplicationController
       first5 = term.to_i % 2 == 0 ? "ЩЭСМЮ" : "ЩЭСИД"
       csv_data = Net::HTTP.get(URI.parse(url))
       if csv_data.size > 0
-        ogimet_telegram = first5 + csv_data[33..-2]
+        ogimet_telegram = first5 + csv_data[33..-2].gsub(/=/,"")+"="
+        # puts ">>>>>>>>>>>#{ogimet_telegram}<<<<<<<<<<<"
         respond_to do |format|  
           format.json do
             render json: {telegram: ogimet_telegram, message: ''}
@@ -843,7 +844,7 @@ class SynopticObservationsController < ApplicationController
             # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{hash_telegram.inspect}")
             if observation.observed_at.nil? or (observation.observed_at < telegram.observed_at)
               json_telegram = telegram.as_json.except('id', 'created_at', 'updated_at')
-              observation.update_attributes json_telegram
+              observation.update json_telegram
               updated_telegrams += 1
             else
               skiped_telegrams += 1
@@ -945,7 +946,7 @@ class SynopticObservationsController < ApplicationController
       if telegram.telegram[0,5] != params[:observation][:telegram][0,5] # 20190827
         render json: {errors: ["Несовпадение различительных групп (различие во времени)"]}, status: :unprocessable_entity
       end
-      if telegram.update_attributes observation_params(:observation)
+      if telegram.update observation_params(:observation)
         # new_telegram = {id: telegram.id, date: telegram.observed_at, term: term, station_name: telegram.station.name, telegram: telegram.telegram}
         # ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'synoptic'
         # 2018.12.29
@@ -986,27 +987,20 @@ class SynopticObservationsController < ApplicationController
             fire_danger[:temperature] = temp
             fire_danger[:temperature_dew_point] = temp_d_p
             fire_danger[:fire_danger] = (temp*(temp-temp_d_p)).round+prev_fd_value*(fire_danger[:precipitation_night].to_i>=3 ? 0:1)
-            # fire_danger.save
           else
             observation = SynopticObservation.find_by(date: date, term: 6, station_id: station_id)
-            # precipitation_1 = observation.precipitation_1 if observation.present?
-            # precipitation_night = precipitation_1.present? ? (precipitation_1>989 ? ((precipitation_1-990)*0.1).round(1) : precipitation_1) : 0
             precipitation_night = observation.present? ? precipitation(observation.precipitation_1) : 0
             f_d = (temp*(temp-temp_d_p)).round+prev_fd_value*(precipitation_night>=3 ? 0:1)
             fire_danger = FireDanger.new(observation_date: date, station_id: station_id, temperature: temp, temperature_dew_point: temp_d_p, fire_danger: f_d, precipitation_night: precipitation_night)
           end
           fire_danger.save
         elsif telegram.term == 18
-          # precipitation_day = telegram.precipitation_1.present? ? (telegram.precipitation_1>989 ? ((telegram.precipitation_1-990)*0.1).round(1) : telegram.precipitation_1) : 0
           precipitation_day = precipitation(telegram.precipitation_1)
           if fire_danger.present?
             fire_danger[:precipitation_day] = precipitation_day
             if (fire_danger[:precipitation_night]+fire_danger[:precipitation_day]>=3)
               fire_danger[:fire_danger] = (fire_danger.temperature*(fire_danger.temperature-fire_danger.temperature_dew_point)).round if (fire_danger.temperature.present? and fire_danger.temperature_dew_point.present?)
             end
-            # if fire_danger.temperature.present? and fire_danger.temperature_dew_point.present?
-            #   fire_danger[:fire_danger] = fire_danger.temperature*(fire_danger.temperature-fire_danger.temperature_dew_point)+prev_fd_value*((fire_danger.precipitation_night.to_f+precipitation_day).to_i>3 ? 0:1)
-            # end
             fire_danger.save
           else
             # precipitation_night = SynopticObservation.select(:precipitation_1).find_by(date: date, term: 6, station_id: station_id)
@@ -1020,7 +1014,7 @@ class SynopticObservationsController < ApplicationController
           end
         end
         new_telegram = {id: telegram.id, date: telegram.observed_at, term: term, station_name: telegram.station.name, telegram: telegram.telegram}
-        ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'synoptic'
+        ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: new_telegram, tlgType: 'synoptic'})
         last_telegrams = SynopticObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams, tlgType: 'synoptic', currDate: telegram.date, inputMode: params[:input_mode], errors: ["Телеграмма корректна"]}
       else
@@ -1030,7 +1024,7 @@ class SynopticObservationsController < ApplicationController
   end
 
   def update_synoptic_telegram
-    if @synoptic_observation.update_attributes observation_params(:observation)
+    if @synoptic_observation.update observation_params(:observation)
       render json: {errors: []}
     else
       render json: {errors: ["Ошибка при сохранении изменений"]}, status: :unprocessable_entity

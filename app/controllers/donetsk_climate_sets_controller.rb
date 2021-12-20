@@ -25,7 +25,7 @@ class DonetskClimateSetsController < ApplicationController
   end
   
   def update
-    if not @donetsk_climate_set.update_attributes donetsk_climate_set_params
+    if not @donetsk_climate_set.update donetsk_climate_set_params
       render :action => :edit
     else
       flash[:success] = "Набор изменен"

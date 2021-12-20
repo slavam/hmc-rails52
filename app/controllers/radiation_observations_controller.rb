@@ -30,7 +30,7 @@ class RadiationObservationsController < ApplicationController
     factor = params[:factor].present? ? params[:factor] : 'monthly'
     telegram_type = factor == 'monthly' ? 'radiation':'radiation_daily'
     if telegram.present?
-      if telegram.update_attributes radiation_observation_params
+      if telegram.update radiation_observation_params
         last_telegrams = RadiationObservation.short_last_50_telegrams(current_user,factor)
         render json: {telegrams: last_telegrams, 
                       tlgType: telegram_type, 
@@ -45,7 +45,7 @@ class RadiationObservationsController < ApplicationController
       # telegram.telegram_date = date_dev 
       if telegram.save
         new_telegram = {id: telegram.id, date: telegram.date_observation, station_name: telegram.station.name, telegram: telegram.telegram}
-        ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: telegram_type
+        ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: new_telegram, tlgType: telegram_type})
         last_telegrams = RadiationObservation.short_last_50_telegrams(current_user, factor)
         render json: {telegrams: last_telegrams, 
                       tlgType: telegram_type, 
@@ -65,7 +65,7 @@ class RadiationObservationsController < ApplicationController
   end
   
   def update_radiation_telegram
-    if @radiation_observation.update_attributes radiation_observation_params
+    if @radiation_observation.update radiation_observation_params
       render json: {errors: []}
     else
       render json: {errors: ["Ошибка при сохранении изменений"]}, status: :unprocessable_entity

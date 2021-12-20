@@ -30,7 +30,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    if not @user.update_attributes user_params
+    if not @user.update user_params
       render 'edit'
     else
       flash[:success] = "Параметры пользователя изменены"

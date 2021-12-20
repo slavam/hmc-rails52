@@ -145,6 +145,8 @@ export default class NewTelegramForm extends React.Component{
       tlgText: this.initText(this.props.tlgType),
       errors: []
     });
+    // if([...this.state.tlgText.matchAll(new RegExp('=','gi'))].map(a => a.index).length>1)
+    //   alert(this.state.tlgText);
   }
   dateChange(e){
     this.state.currDate = e.target.value;

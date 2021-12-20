@@ -5,7 +5,7 @@ class PostsController < ApplicationController
   end  
   
   def update
-    if not @post.update_attributes post_params
+    if not @post.update post_params
       render :action => :edit
     else
       redirect_to posts_path

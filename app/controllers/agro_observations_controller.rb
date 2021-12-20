@@ -87,11 +87,11 @@ class AgroObservationsController < ApplicationController
     #                                     telegram_num: telegram_num)
     telegram = AgroObservation.where("telegram_type = ? and station_id = ? and day_obs = ? and month_obs = ? and telegram_num = ? and date_dev like ?", telegram_type, station_id, day_obs, month_obs, telegram_num, yyyy_mm).order(:date_dev).reverse_order.first
     if telegram.present? # and (telegram.date_dev.year == date_dev.year) and (telegram.date_dev.month == date_dev.month)
-      if telegram.update_attributes agro_observation_params
+      if telegram.update agro_observation_params
         params[:crop_conditions].each do |k, v|
           c_c = CropCondition.find_by(agro_observation_id: telegram.id, crop_code: v[:crop_code].to_i)
           if c_c.present?
-            c_c.update_attributes crop_conditions_params(v)
+            c_c.update crop_conditions_params(v)
           else
             telegram.crop_conditions.build(crop_conditions_params(v)).save
           end
@@ -99,7 +99,7 @@ class AgroObservationsController < ApplicationController
         params[:crop_damages].each do |k, v|
           c_d = CropDamage.find_by(agro_observation_id: telegram.id, crop_code: v[:crop_code].to_i)
           if c_d.present?
-            c_d.update_attributes crop_damages_params(v)
+            c_d.update crop_damages_params(v)
           else
             telegram.crop_damages.build(crop_damages_params(v)).save
           end
@@ -129,7 +129,7 @@ class AgroObservationsController < ApplicationController
           telegram.crop_damages.build(crop_damages_params(v)).save
         end if params[:crop_damages].present?
         new_telegram = {id: telegram.id, date: telegram.date_dev, station_name: telegram.station.name, telegram: telegram.telegram}
-        ActionCable.server.broadcast "synoptic_telegram_channel", telegram: new_telegram, tlgType: 'agro'
+        ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: new_telegram, tlgType: 'agro'})
         last_telegrams = AgroObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams, 
                       tlgType: 'agro', 
@@ -154,11 +154,11 @@ class AgroObservationsController < ApplicationController
   
   def update_agro_telegram
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{params[:agro_observation][:telegram].inspect}") 
-    if @agro_observation.update_attributes agro_observation_params
+    if @agro_observation.update agro_observation_params
       params[:crop_conditions].each do |k, v|
           c_c = CropCondition.find_by(agro_observation_id: @agro_observation.id, crop_code: v[:crop_code].to_i)
           if c_c.present?
-            c_c.update_attributes crop_conditions_params(v)
+            c_c.update crop_conditions_params(v)
           else
             @agro_observation.crop_conditions.build(crop_conditions_params(v)).save
           end
@@ -166,7 +166,7 @@ class AgroObservationsController < ApplicationController
         params[:crop_damages].each do |k, v|
           c_d = CropDamage.find_by(agro_observation_id: @agro_observation.id, crop_code: v[:crop_code].to_i)
           if c_d.present?
-            c_d.update_attributes crop_damages_params(v)
+            c_d.update crop_damages_params(v)
           else
             @agro_observation.crop_damages.build(crop_damages_params(v)).save
           end

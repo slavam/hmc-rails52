@@ -21,7 +21,7 @@ class SnowPointsController < ApplicationController
   end
   
   def update
-    if not @snow_point.update_attributes snow_point_params
+    if not @snow_point.update snow_point_params
       render :action => :edit
     else
       redirect_to snow_points_path

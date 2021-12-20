@@ -23,7 +23,7 @@ class MeteoLinksController < ApplicationController
   end
   
   def update
-    if not @meteo_link.update_attributes meteo_link_params
+    if not @meteo_link.update meteo_link_params
       render :action => :edit
     else
       flash[:success] = "Ссылка изменена"
