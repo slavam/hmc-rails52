@@ -143,6 +143,7 @@ export default class NewTelegramForm extends React.Component{
     this.props.onFormSubmit({observation: this.observation, currDate: date, tlgType: this.state.tlgType, tlgText: this.state.tlgText});
     this.setState({
       tlgText: this.initText(this.props.tlgType),
+      isMariupol: false,
       errors: []
     });
     // if([...this.state.tlgText.matchAll(new RegExp('=','gi'))].map(a => a.index).length>1)

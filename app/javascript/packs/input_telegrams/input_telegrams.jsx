@@ -166,8 +166,8 @@ export default class InputTelegrams extends React.Component{
       url: "from_ogimet"
       }).done((data) => {
         if(data.message){
-          alert(data.message);
           this.setState({telegramMariupol: ''});
+          alert(data.message);
         }else
           this.setState({telegramMariupol: data.telegram});
       }).fail((res) => {
