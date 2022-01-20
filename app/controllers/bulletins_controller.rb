@@ -487,7 +487,7 @@ class BulletinsController < ApplicationController
       value = SynopticObservation.current_temperatures(6, report_date)[sedovo_id]
       m_d[2] = value if value.present?
       value = precipitation_daily(report_date, false)[sedovo_id]
-      m_d[3] = value if value.present?
+      m_d[3] = value.round if value.present?
       if @bulletin.summer
       else
         value = SynopticObservation.snow_cover_height(report_date)[sedovo_id]
