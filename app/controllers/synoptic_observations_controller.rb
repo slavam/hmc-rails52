@@ -38,6 +38,55 @@ class SynopticObservationsController < ApplicationController
     end
   end
 
+  def wind_per_year
+    @year = params[:year].present? ? params[:year].to_i : 2021 #Date.today.year
+    @station_id = params[:station_id].present? ? params[:station_id].to_i : 1
+    start = Time.new(@year-1,12,31,21,0,0)
+    stop = Time.new(@year,12,31,20,59,59)
+    recs = SynopticObservation.select(:observed_at, :term, :wind_direction, :wind_speed_avg).
+      where(station_id: @station_id, observed_at: start..stop).order(:observed_at)
+    # puts ">>>>>>>>>>>>>>>#{recs.size}<<<<<<<<<<<<<<<<<<<<<<<<"
+    wind = []
+    recs.each do |w|
+      m = (w.observed_at + 3.hours).month
+      wind[m] ||= Array.new(12,0)
+      wind[m][11] += 1 # total
+      if (w.wind_direction == 0) && (w.wind_speed_avg == 0) # calm
+        wind[m][10] += 1
+      else
+        wind[m][9] += 1
+        case w.wind_direction
+          when 3..6
+            wind[m][2] += 1
+          when 7..11
+            wind[m][3] += 1
+          when 12..15
+            wind[m][4] += 1
+          when 16..20
+            wind[m][5] += 1
+          when 21..24
+            wind[m][6] += 1
+          when 25..29
+            wind[m][7] += 1
+          when 30..33
+            wind[m][8] += 1
+          else
+            wind[m][1] += 1
+        end
+      end
+    end
+    @wind_data = wind
+    @stations = Station.all.select(:id, :name).order(:id)
+    
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {wind: wind}
+      end
+    end
+    # puts ">>>>>>>>>>>>>>>>>>>>>>"+@telegrams[0].inspect
+  end
+
   def surface_map_show
     set_stations = params[:set_stations].present? ? params[:set_stations] : 'set2500'
     @term = params[:term].present? ? params[:term] : '00'

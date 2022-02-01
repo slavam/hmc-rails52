@@ -120,6 +120,7 @@ Rails.application.routes.draw do
   # get 'synoptic_observations/wmo_stations_create', to: 'synoptic_observations#wmo_stations_create'
   get 'synoptic_observations/surface_map_show', to: 'synoptic_observations#surface_map_show'
   get 'synoptic_observations/from_ogimet', to: 'synoptic_observations#from_ogimet'
+  get 'synoptic_observations/wind_per_year', to: 'synoptic_observations#wind_per_year'
   resources :synoptic_observations
   get 'sessions/new'
   get    '/login',   to: 'sessions#new'
