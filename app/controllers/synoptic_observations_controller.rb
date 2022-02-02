@@ -39,7 +39,7 @@ class SynopticObservationsController < ApplicationController
   end
 
   def wind_per_year
-    @year = params[:year].present? ? params[:year].to_i : 2021 #Date.today.year
+    @year = params[:year].present? ? params[:year].to_i : Date.today.year
     @station_id = params[:station_id].present? ? params[:station_id].to_i : 1
     start = Time.new(@year-1,12,31,21,0,0)
     stop = Time.new(@year,12,31,20,59,59)
@@ -80,6 +80,11 @@ class SynopticObservationsController < ApplicationController
     
     respond_to do |format|
       format.html
+      format.pdf do
+        station = Station.find(@station_id).name
+        pdf = WindPerYear.new(@wind_data, @year, station)
+        send_data pdf.render, filename: "wind_per_year_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      end
       format.json do
         render json: {wind: wind}
       end

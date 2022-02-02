@@ -1,15 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import Select from 'react-select';
-// import TeploenergoForm from
+import StationYearForm from './station_year_form';
 
 const WindByRhumb = ({wind}) => {
   let rows = [];
-  // let row = [<td key="0"><b>Числа месяца</b></td>];
-  // for(var i=1; i<=maxDay; ++i){
-  //   row.push(<td key={i}><b>{i}</b></td>);
-  // }
-  // rows[0] = <tr key="0">{row}</tr>;
   const MONTHS = ['', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
   for(let m=1; m<=12; m++){
     let values = [];
@@ -17,7 +11,7 @@ const WindByRhumb = ({wind}) => {
       let val = wind[m] ? wind[m][i]+' '+(wind[m][i]>0 && (i<9 || i==10)? '/'+Math.round(wind[m][i]*1000/(i==10? wind[m][11]:wind[m][9]))/10:'') : '';
       values.push(<td key={i}>{val}</td>);
     }
-    rows.push(<tr key={m}><td key="0">{MONTHS[m]}</td>{values}</tr>)
+    rows.push(<tr key={m}><td key="0"><b>{MONTHS[m]}</b></td>{values}</tr>)
   }  
   return <table className="table table-hover">
     <thead>
@@ -43,13 +37,34 @@ export default class WindPerYear extends React.Component{
   constructor(props){
     super(props);
     this.state = {
+      stationId: this.props.stationId,
+      year: this.props.year,
       wind: this.props.wind
     }
   }
+  handleFormSubmit= (stationId, year) =>{
+    this.state.year = year;
+    this.state.stationId = stationId;
+    $.ajax({
+      type: 'GET',
+      dataType: 'json',
+      url: "/synoptic_observations/wind_per_year?year="+year+"&station_id="+stationId
+      }).done((data) => {
+        this.setState({wind: data.wind});
+      }).fail((res) => {
+        this.setState({errors: ["Проблемы с чтением данных из БД"]});
+      }); 
+  }
   render(){
+    const stationName = this.props.stations.find(s => s.id == this.state.stationId).name;
+    let desiredLink = "/synoptic_observations/wind_per_year.pdf?year="+this.state.year+"&station_id="+this.state.stationId;
     return(
       <div className='container'>
+        <h4>Задайте год и станцию</h4>
+        <StationYearForm stations={this.props.stations} year={this.state.year} onParamsSubmit={this.handleFormSubmit} />
+        <h4>Распределение ветра по направлениям на станции {stationName} за {this.state.year} год</h4>
         <WindByRhumb wind={this.state.wind} />
+        <a href={desiredLink}>Распечатать</a>
       </div>
     );
   }
