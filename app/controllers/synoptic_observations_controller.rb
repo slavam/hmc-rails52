@@ -735,7 +735,7 @@ class SynopticObservationsController < ApplicationController
       first5 = term.to_i % 2 == 0 ? "ЩЭСМЮ" : "ЩЭСИД"
       csv_data = Net::HTTP.get(URI.parse(url))
       if csv_data.size > 0
-        ogimet_telegram = first5 + csv_data[33..-2].gsub(/=/,"")+"="
+        ogimet_telegram = first5.force_encoding("UTF-8") + csv_data[33..-2].force_encoding("UTF-8").gsub(/=/,"")+"="
         # puts ">>>>>>>>>>>#{ogimet_telegram}<<<<<<<<<<<"
         respond_to do |format|  
           format.json do
