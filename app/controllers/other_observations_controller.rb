@@ -1,4 +1,5 @@
 class OtherObservationsController < ApplicationController
+  skip_before_action :verify_authenticity_token, :only => [:create_other_data]
   def index
     @factor = params[:factor]
     if @factor == 'wind'
@@ -19,6 +20,28 @@ class OtherObservationsController < ApplicationController
   def get_last_telegrams
     observations = OtherObservation.last_50_telegrams(params[:data_type])
     render json: {observations: observations}
+  end
+
+  def wind_monthly_data
+    @year = params[:year].present? ? params[:year].to_i : 1991
+    @month = params[:month].present? ? params[:month].to_i : 1
+    @station_id = params[:station_id].present? ? params[:station_id] : 1
+    last_day = Time.days_in_month(@month, @year)
+    start_date = "#{@year}-#{@month}-1"
+    stop_date = "#{@year}-#{@month}-#{last_day}"
+    @monthly_data = [nil] # null element
+    recs = OtherObservation.select(:description).where('station_id = ? AND obs_date BETWEEN ? AND ?', @station_id, start_date, stop_date).order(:obs_date)
+    recs.each{|w| @monthly_data << w.description.split(';')}
+    respond_to do |format|
+      format.html
+      # format.pdf do
+      #   pdf = Precipitation.new(@precipitation, @year, @month)
+      #   send_data pdf.render, filename: "percipitation_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4" #, :page_layout => :landscape
+      # end
+      format.json do
+        render json: {wind: @wind_monthly_data}
+      end
+    end
   end
 
   def create_other_data
@@ -43,7 +66,7 @@ class OtherObservationsController < ApplicationController
       if observation.update other_observation_params
         last_telegrams = OtherObservation.last_50_telegrams(params[:other_observation][:data_type])
         render json: {observations: last_telegrams,
-                      errors: ["Данные изменены"]}
+                      errors: ["Данные изменены"]}, status: :ok
       else
         render json: {errors: observation.errors.messages}, status: :unprocessable_entity
       end

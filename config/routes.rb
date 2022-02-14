@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get 'other_observations/monthly_temperatures', to: 'other_observations#monthly_temperatures'
   get 'other_observations/temperatures_8_16', to: 'other_observations#temperatures_8_16'
   get 'other_observations/total_monthly_precipitation', to: 'other_observations#total_monthly_precipitation'
+  get 'other_observations/wind_monthly_data', to: 'other_observations#wind_monthly_data'
   resources :other_observations
   resources :donetsk_climate_sets
   get 'snow_observations/input_snow_telegrams', to: 'snow_observations#input_snow_telegrams'
