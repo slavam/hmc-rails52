@@ -1,6 +1,6 @@
 class OtherObservation < ApplicationRecord
   after_initialize :init
-  audited
+  # audited 20220217 mwm for wind direction archive
   OTHER_TYPES = {
     'temp' => "Температура на 8 часов",
     'temp16' => "Температура на 16 часов",

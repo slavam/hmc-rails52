@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import WindSearchForm from './wind_search_form';
+import WindMonthlyForm from './wind_monthly_form';
 
 const stations = ['','Донецк','Амвросиевка','Дебальцево','','','','','','','Седово'];
 const MONTHS = ['', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
@@ -27,7 +28,21 @@ export default class WindMonthly extends React.Component{
       }).done((data) => {
         this.setState({wind: data.wind});
       }).fail((res) => {
+        alert("Проблемы с чтением данных из БД")
         this.setState({errors: ["Проблемы с чтением данных из БД"]});
+      }); 
+  }
+  handleWindSubmit = (wind) => {
+    $.ajax({
+      type: 'POST',
+      dataType: 'json',
+      data: {wind: wind, year: this.state.year, month: this.state.month, station_id: this.state.stationId}, 
+      url: "/other_observations/create_wind_data"
+      }).done((data) => {
+        this.setState({wind: wind}); 
+        alert(data.message);
+      }).fail((res) => {
+        this.setState({errors: ["Ошибка записи в базу"]});
       }); 
   }
   render(){
@@ -99,7 +114,8 @@ export default class WindMonthly extends React.Component{
             </tr>
           </thead>
           <tbody>{rows}</tbody>
-        </table>;
+        </table>
+        <WindMonthlyForm wind={this.state.wind} numDays={daysInMonth} onWindSubmit={this.handleWindSubmit}/>
       </div>
     );
   }

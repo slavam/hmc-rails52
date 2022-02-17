@@ -1,5 +1,5 @@
 -#= @winds.inspect
 .container
   #root
-  #init-params{ wind: @wind_monthly_data.to_json, stationId: @station_id.to_json, year: @year.to_json, month: @month.to_json}
+  #init-params{ wind: @monthly_data.to_json, stationId: @station_id.to_json, year: @year.to_json, month: @month.to_json}
   = javascript_pack_tag 'heat_donbass/wind_monthly'

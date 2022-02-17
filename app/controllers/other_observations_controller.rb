@@ -29,9 +29,16 @@ class OtherObservationsController < ApplicationController
     last_day = Time.days_in_month(@month, @year)
     start_date = "#{@year}-#{@month}-1"
     stop_date = "#{@year}-#{@month}-#{last_day}"
-    @monthly_data = [nil] # null element
-    recs = OtherObservation.select(:description).where('station_id = ? AND obs_date BETWEEN ? AND ?', @station_id, start_date, stop_date).order(:obs_date)
-    recs.each{|w| @monthly_data << w.description.split(';')}
+    @monthly_data = [] 
+    recs = OtherObservation.select(:description).where('data_type = "windd" AND station_id = ? AND obs_date BETWEEN ? AND ?', @station_id, start_date, stop_date).order(:obs_date)
+    if recs.size > 0
+      recs.each{|r| r.description == ';;;;;;;;' ? @monthly_data << Array.new(8) : @monthly_data << r.description.split(';')}
+      # recs.each{|w| @monthly_data << w.description.split(';')}
+    else
+      last_day.times {|i| @monthly_data[i] = Array.new(8)}
+    end
+    # puts "++++++++++++++++++++++++++++++++++++"
+    # puts @monthly_data.inspect
     respond_to do |format|
       format.html
       # format.pdf do
@@ -39,8 +46,41 @@ class OtherObservationsController < ApplicationController
       #   send_data pdf.render, filename: "percipitation_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4" #, :page_layout => :landscape
       # end
       format.json do
-        render json: {wind: @wind_monthly_data}
+        render json: {wind: @monthly_data}
       end
+    end
+  end
+
+  def create_wind_data
+    wind = params[:wind]
+    year = params[:year].to_i
+    month = params[:month].to_i
+    station_id = params[:station_id]
+    last_day = Time.days_in_month(month, year)
+    updated = 0
+    created = 0
+    last_day.times do |i|
+      obs_date = "#{year}-#{month}-#{i+1}"
+      observation = OtherObservation.find_by(data_type: 'windd', station_id: station_id, obs_date: obs_date)
+      if observation.present? 
+        observation.description = wind[i.to_s].present? ? wind[i.to_s].join(';') : ";;;;;;;;"
+        observation.save
+        updated += 1
+      else
+        observation = OtherObservation.new(
+          data_type: 'windd', 
+          station_id: station_id, 
+          obs_date: obs_date,
+          description: wind[i].join(';')
+        )
+        observation.save
+        created += 1
+      end
+    end
+    if (created+updated) == last_day
+      render json: {message: "За #{month}-#{year} обновлено #{updated} и создано #{created}"}, status: :ok
+    else
+      render json: {errors: observation.errors.messages}, status: :unprocessable_entity
     end
   end
 
