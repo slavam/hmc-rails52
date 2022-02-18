@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import WindSearchForm from './wind_search_form';
-import WindMonthlyForm from './wind_monthly_form';
+// import WindMonthlyForm from './wind_monthly_form';
 
 const stations = ['','Донецк','Амвросиевка','Дебальцево','','','','','','','Седово'];
 const MONTHS = ['', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
@@ -27,6 +27,7 @@ export default class WindMonthly extends React.Component{
       url: `/other_observations/wind_monthly_data?year=${year}&month=${month}&station_id=${stationId}`
       }).done((data) => {
         this.setState({wind: data.wind});
+        // alert(JSON.stringify(this.state.wind[0]))
       }).fail((res) => {
         alert("Проблемы с чтением данных из БД")
         this.setState({errors: ["Проблемы с чтением данных из БД"]});
@@ -44,6 +45,13 @@ export default class WindMonthly extends React.Component{
       }).fail((res) => {
         this.setState({errors: ["Ошибка записи в базу"]});
       }); 
+  }
+  handleWindChange = (e) => {
+    const i = parseInt(e.target.id / 8);
+    const j = e.target.id % 8;
+    // this.setState({wind[i][j]: e.target.value})
+    this.state.wind[i][j] = e.target.value;
+    this.setState({wind: this.state.wind})
   }
   render(){
     const stationName = stations[this.state.stationId];
@@ -90,6 +98,14 @@ export default class WindMonthly extends React.Component{
         }
       }
     rows = <tr><td>{rows[0]}</td><td>{rows[1]}</td><td>{rows[2]}</td><td>{rows[3]}</td><td>{rows[4]}</td><td>{rows[5]}</td><td>{rows[6]}</td><td>{rows[7]}</td><td>{rows[8]}</td><td>{rows[9]}</td><td>{rows[10]}</td></tr>
+    let rowsWind = [];
+    for (let i=0; i<daysInMonth; i++){
+      let row = [];
+      for (let j=0; j<8; j++){
+        row.push(<td key={i*8+j}><input key={i*8+j} id={i*8+j} value={this.state.wind[i][j]} type='number' min='0' max='360' onChange={(event) => this.handleWindChange(event)} /></td>)
+      }
+      rowsWind.push(<tr key={i}><td>{i+1}</td>{row}</tr>)
+    }
     return(
       <div className='container'>
         <h4>Задайте год, месяц и станцию</h4>
@@ -115,7 +131,27 @@ export default class WindMonthly extends React.Component{
           </thead>
           <tbody>{rows}</tbody>
         </table>
-        <WindMonthlyForm wind={this.state.wind} numDays={daysInMonth} onWindSubmit={this.handleWindSubmit}/>
+        {/* <WindMonthlyForm wind={this.state.wind} numDays={daysInMonth} onWindSubmit={this.handleWindSubmit}/> */}
+        <h4>Введите данные за месяц</h4>
+        <form className="windForm" onSubmit={(event) => this.handleWindSubmit(event)}>
+          <table className="table table-hover">
+            <thead>
+              <tr>
+                <th>Число</th>
+                <th>С</th>
+                <th>СВ</th>
+                <th>В</th>
+                <th>ЮВ</th>
+                <th>Ю</th>
+                <th>ЮЗ</th>
+                <th>З</th>
+                <th>СЗ</th>
+              </tr>
+            </thead>
+            <tbody>{rowsWind}</tbody>
+          </table>
+          <input type="submit" value="Сохранить" />
+        </form>
       </div>
     );
   }

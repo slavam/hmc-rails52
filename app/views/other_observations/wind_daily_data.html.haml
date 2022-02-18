@@ -1,0 +1,5 @@
+-#= @wind.inspect
+.container
+  #root
+  #init-params{ wind: @wind.to_json, stationId: @station_id.to_json, obsDate: @observation_date.to_json }
+  = javascript_pack_tag 'heat_donbass/wind_daily'

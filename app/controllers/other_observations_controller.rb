@@ -22,6 +22,23 @@ class OtherObservationsController < ApplicationController
     render json: {observations: observations}
   end
 
+  def wind_daily_data
+    @observation_date = params[:obs_date].present? ? params[:obs_date] : '1991-01-01'
+    @station_id = params[:station_id].present? ? params[:station_id].to_i : 1
+    observation = OtherObservation.find_by(data_type: 'windd', station_id: @station_id, obs_date: @observation_date)
+    if observation.present?
+      @wind = observation.description.split(';')
+    else
+      @wind = Array.new(8)
+    end
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {wind: @wind}
+      end
+    end
+  end
+
   def wind_monthly_data
     @year = params[:year].present? ? params[:year].to_i : 1991
     @month = params[:month].present? ? params[:month].to_i : 1
