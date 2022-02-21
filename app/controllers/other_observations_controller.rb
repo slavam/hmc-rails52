@@ -49,13 +49,13 @@ class OtherObservationsController < ApplicationController
     @monthly_data = [] 
     recs = OtherObservation.select(:description).where('data_type = "windd" AND station_id = ? AND obs_date BETWEEN ? AND ?', @station_id, start_date, stop_date).order(:obs_date)
     if recs.size > 0
-      recs.each{|r| r.description == ';;;;;;;;' ? @monthly_data << Array.new(8) : @monthly_data << r.description.split(';')}
+      recs.each{|r| r.description == ';;;;;;;' ? @monthly_data << Array.new(8) : @monthly_data << r.description.split(';')}
       # recs.each{|w| @monthly_data << w.description.split(';')}
     else
       last_day.times {|i| @monthly_data[i] = Array.new(8)}
     end
-    # puts "++++++++++++++++++++++++++++++++++++"
-    # puts @monthly_data.inspect
+    puts "++++++++++++++++++++++++++++++++++++"
+    puts @monthly_data.inspect
     respond_to do |format|
       format.html
       # format.pdf do
@@ -70,6 +70,8 @@ class OtherObservationsController < ApplicationController
 
   def create_wind_data
     wind = params[:wind]
+    puts "+++++++++++++++++++"
+    puts wind.inspect
     year = params[:year].to_i
     month = params[:month].to_i
     station_id = params[:station_id]
