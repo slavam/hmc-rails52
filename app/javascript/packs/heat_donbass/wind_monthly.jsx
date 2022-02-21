@@ -58,53 +58,45 @@ export default class WindMonthly extends React.Component{
     let rows = [0,0,0,0,0,0,0,0,0,0,0];
     const daysInMonth = new Date(+this.state.year, +this.state.month, 0).getDate();
     if(this.state.wind)
-      for(let j=1; j<=daysInMonth; j++){
+      for(let j=0; j<daysInMonth; j++){
         for(let i=0; i<8; i++){
-          let val = this.state.wind[j] ? (this.state.wind[j][i]>'' ? this.state.wind[j][i] : null) : null;
+          let val = this.state.wind[j] ? (this.state.wind[j][i]>'' ? +this.state.wind[j][i] : null) : null;
           rows[10] += 1  // total
           if(val == 0){
             rows[9] += 1; // calm
           } else {
             rows[8] += 1;
-            switch (val){
-              case val < 23 :
-                rows[0] += 1;
-                break;
-              case (val < 68) :
-                rows[1] += 1;
-                break;
-              case val < 113 :
-                rows[2] += 1;
-                break;
-              case val < 158 :
+            if(val < 23)
+              rows[0] += 1;
+            else if (val < 68)
+              rows[1] += 1;
+            else if (val < 113)
+              rows[2] += 1;
+            else if(val < 158)
                 rows[3] += 1;
-                break;
-              case val < 203 :
-                rows[4] += 1;
-                break;
-              case val < 248 :
-                rows[5] += 1;
-                break;
-              case val < 293 :
-                rows[6] += 1;
-                break;
-              case val < 338 :
-                rows[7] += 1;
-                break;
-              default :
-                rows[0] += 1;
-            }
+            else if(val < 203)
+              rows[4] += 1;
+            else if (val < 248)
+              rows[5] += 1;
+            else if (val < 293)
+              rows[6] += 1;
+            else if (val < 338)
+              rows[7] += 1;
+            else
+              rows[0] += 1;
           }
         }
       }
+    // alert(JSON.stringify(rows))
     rows = <tr><td>{rows[0]}</td><td>{rows[1]}</td><td>{rows[2]}</td><td>{rows[3]}</td><td>{rows[4]}</td><td>{rows[5]}</td><td>{rows[6]}</td><td>{rows[7]}</td><td>{rows[8]}</td><td>{rows[9]}</td><td>{rows[10]}</td></tr>
     let rowsWind = [];
-    for (let i=0; i<daysInMonth; i++){
+    for (let k=0; k<daysInMonth; k++){
       let row = [];
-      for (let j=0; j<8; j++){
-        row.push(<td key={i*8+j}><input key={i*8+j} id={i*8+j} value={this.state.wind[i][j]} type='number' min='0' max='360' onChange={(event) => this.handleWindChange(event)} /></td>)
+      for (let l=0; l<8; l++){
+        let v = this.state.wind[k][l]===null ? '' : this.state.wind[k][l];
+        row.push(<td key={k*8+l}><input key={k*8+l} id={k*8+l} value={v} type='number' min='0' max='360' onChange={(event) => this.handleWindChange(event)} /></td>)
       }
-      rowsWind.push(<tr key={i}><td>{i+1}</td>{row}</tr>)
+      rowsWind.push(<tr key={k}><td>{k+1}</td>{row}</tr>)
     }
     return(
       <div className='container'>
@@ -138,14 +130,14 @@ export default class WindMonthly extends React.Component{
             <thead>
               <tr>
                 <th>Число</th>
-                <th>С</th>
-                <th>СВ</th>
-                <th>В</th>
-                <th>ЮВ</th>
-                <th>Ю</th>
-                <th>ЮЗ</th>
-                <th>З</th>
-                <th>СЗ</th>
+                <th>00</th>
+                <th>03</th>
+                <th>06</th>
+                <th>09</th>
+                <th>12</th>
+                <th>15</th>
+                <th>18</th>
+                <th>21</th>
               </tr>
             </thead>
             <tbody>{rowsWind}</tbody>
