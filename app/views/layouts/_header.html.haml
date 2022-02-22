@@ -116,6 +116,7 @@
                   = render 'layouts/search_telegrams'
                   %li= link_to 'Средняя температура за сутки', synoptic_observations_daily_avg_temp_path
                   %li= link_to 'Средняя температура за месяц', synoptic_observations_month_avg_temp_path
+                  %li= link_to 'Архив ветра', other_observations_wind_monthly_data_path
                   %li{ class: "divider"}
                   %li= link_to 'Метеостанции', stations_path
             - when 'specialist'

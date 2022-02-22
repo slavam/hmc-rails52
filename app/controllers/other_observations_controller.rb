@@ -50,18 +50,11 @@ class OtherObservationsController < ApplicationController
     recs = OtherObservation.select(:description).where('data_type = "windd" AND station_id = ? AND obs_date BETWEEN ? AND ?', @station_id, start_date, stop_date).order(:obs_date)
     if recs.size > 0
       recs.each{|r| r.description == ';;;;;;;' ? @monthly_data << Array.new(8) : @monthly_data << r.description.split(';')}
-      # recs.each{|w| @monthly_data << w.description.split(';')}
     else
       last_day.times {|i| @monthly_data[i] = Array.new(8)}
     end
-    puts "++++++++++++++++++++++++++++++++++++"
-    puts @monthly_data.inspect
     respond_to do |format|
       format.html
-      # format.pdf do
-      #   pdf = Precipitation.new(@precipitation, @year, @month)
-      #   send_data pdf.render, filename: "percipitation_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4" #, :page_layout => :landscape
-      # end
       format.json do
         render json: {wind: @monthly_data}
       end
@@ -82,7 +75,7 @@ class OtherObservationsController < ApplicationController
       obs_date = "#{year}-#{month}-#{i+1}"
       observation = OtherObservation.find_by(data_type: 'windd', station_id: station_id, obs_date: obs_date)
       if observation.present? 
-        observation.description = wind[i.to_s].present? ? wind[i.to_s].join(';') : ";;;;;;;;"
+        observation.description = wind[i.to_s].present? ? wind[i.to_s].join(';') : ";;;;;;;"
         observation.save
         updated += 1
       else
@@ -90,7 +83,7 @@ class OtherObservationsController < ApplicationController
           data_type: 'windd', 
           station_id: station_id, 
           obs_date: obs_date,
-          description: wind[i].join(';')
+          description: wind[i.to_s].join(';')
         )
         observation.save
         created += 1
