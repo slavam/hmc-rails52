@@ -25,6 +25,11 @@
                 = render 'layouts/bulletins'
               %li
                 = render 'layouts/synoptic_reports'
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Справочник <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  %li= link_to 'Ветер за год', synoptic_observations_wind_per_year_path
+                  %li= link_to 'Архив ветра', other_observations_wind_monthly_data_path
               -# %li
                 = render 'layouts/t_lower_8'
                 -# = render 'layouts/synoptic_links' 20190718 Boyko

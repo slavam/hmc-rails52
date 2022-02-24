@@ -19,7 +19,7 @@ export default class WindSearchForm extends Component{
     this.setState({station: val});
   }
   dateChange = (e) => {
-    this.setState({year: e.target.value.substr(0,4), month: e.target.value.substr(5,2)});
+    this.setState({year: e.target.value.substr(0,4), month: +e.target.value.substr(5,2)});
   }
   render() {
     return (
