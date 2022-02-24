@@ -24,7 +24,6 @@ export default class WindSearchForm extends Component{
   render() {
     return (
         <div className="col-md-12">
-          <h4 align="center">Задайте месяц и год</h4>
           <form className="searchForm" onSubmit={(event) => this.handleSubmit(event)}>
             <Select value={this.state.station} onChange={this.handleStationSelected} options={this.props.stations}/>
             <input type="month" name="input-date" value={this.state.year+'-'+this.state.month} onChange={(event) => this.dateChange(event)} autoComplete="on" />
