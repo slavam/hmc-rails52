@@ -6,27 +6,44 @@ export default class WindSearchForm extends Component{
     super(props);
     this.state = {
       station: {label: 'Донецк', value: 1},
-      year:  this.props.year,
-      month: this.props.month
+      year: 1991, 
+      month: {label: 'Январь', value: 1}
     };
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.onSearchSubmit(this.state.station.value, this.state.year, this.state.month);
+    this.props.onSearchSubmit(this.state.station.value, this.state.year, this.state.month.value);
   }
   handleStationSelected = (val) => {
     this.setState({station: val});
   }
-  dateChange = (e) => {
-    this.setState({year: e.target.value.substr(0,4), month: +e.target.value.substr(5,2)});
+  handleMonthSelected = (val) =>{
+    this.setState({month: val});
+  }
+  handleYearChange = (e) =>{
+    this.setState({year: e.target.value});
   }
   render() {
     return (
         <div className="col-md-12">
           <form className="searchForm" onSubmit={(event) => this.handleSubmit(event)}>
-            <Select value={this.state.station} onChange={this.handleStationSelected} options={this.props.stations}/>
-            <input type="month" name="input-date" value={this.state.year+'-'+this.state.month} onChange={(event) => this.dateChange(event)} autoComplete="on" />
+            <table className="table table-hover">
+              <thead>
+                <tr>
+                  <th>Станция</th>
+                  <th>Год</th>
+                  <th>Месяц</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><Select value={this.state.station} onChange={this.handleStationSelected} options={this.props.stations}/></td>
+                  <td><input type="number" name="input-year" value={this.state.year} onChange={(event) => this.handleYearChange(event)} min="1991" /></td>
+                  <td><Select value={this.state.month} onChange={this.handleMonthSelected} options={this.props.months}/></td>
+                </tr>
+              </tbody>
+            </table>
             <input type="submit" value="Найти" />
           </form>
         </div>

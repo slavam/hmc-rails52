@@ -2,8 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import WindSearchForm from './wind_search_form';
 
-const stations = ['','Донецк','Амвросиевка','Дебальцево','','','','','','','Седово'];
 const MONTHS = ['', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+const monthsArray = [];
+MONTHS.map((m,i) => {return monthsArray.push({label: m, value: i})});
+const stations = ['','Донецк','Амвросиевка','Дебальцево','','','','','','','Седово'];
 const stationsArray = [];
 stations.map((s,i) => {return (s !== '') ? stationsArray.push({label: s, value: i}) : null});
 export default class WindMonthly extends React.Component{
@@ -107,8 +109,8 @@ export default class WindMonthly extends React.Component{
     }
     return(
       <div className='container'>
-        <h4>Задайте станцию, год и месяц</h4>
-        <WindSearchForm stations={stationsArray} month={this.state.month} year={this.state.year} onSearchSubmit={this.handleSearchSubmit} />
+        <h4>Задайте параметры</h4>
+        <WindSearchForm stations={stationsArray} months={monthsArray} onSearchSubmit={this.handleSearchSubmit} />
         
         <h4>Распределение ветра по направлениям на станции {stationName} за {MONTHS[this.state.month]} {this.state.year} года</h4>
         <table className="table table-hover">
