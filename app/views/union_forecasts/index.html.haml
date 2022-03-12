@@ -2,7 +2,7 @@
 -#  = render 'bulletins/tabs'
 .container
   %h3 Прогноз погоды по городам ДНР (Телекомпания "ЮНИОН")
-  - if ['technicist','synoptic'].index(current_user.role)
+  - if ['vip'].index(current_user.role)
     = link_to "Создать", new_union_forecast_path
   %br
   = will_paginate
@@ -12,7 +12,7 @@
         %th Дата
         %th Номер
         %th= ""
-        - if ['technicist','synoptic'].index(current_user.role)
+        - if ['vip'].index(current_user.role)
           %th= ""
           %th= ""
     %tbody
@@ -21,7 +21,7 @@
           %td= u_f.report_date.strftime("%d-%m-%Y")
           %td= u_f.curr_number
           %td= link_to "Просмотреть/Распечатать", "union_forecasts/#{u_f.id}/union_forecast_show.pdf"
-          - if ['technicist','synoptic'].index(current_user.role)
+          - if ['vip'].index(current_user.role)
             %td= link_to "Изменить", edit_union_forecast_path(u_f.id)
             %td= link_to 'Удалить', u_f, method: :delete, data: { confirm: 'Вы уверены?' }
   = will_paginate
