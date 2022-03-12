@@ -2,7 +2,7 @@
   = render 'bulletins/tabs'
 .container
   %h3= Bulletin::BULLETIN_TYPES[@bulletin_type]
-  - if %w[technicist synoptic].index(current_user.role)
+  - if %w[vip].index(current_user.role)
     - case @bulletin_type
       - when 'sea', 'daily'
         = link_to 'Создать (Лето)',
@@ -11,7 +11,7 @@
           "new_bulletin?variant=winter&bulletin_type=#{@bulletin_type}"
       - else
         = link_to 'Создать', "new_bulletin?bulletin_type=#{@bulletin_type}"
-  - elsif %w[technicist hydro].index(current_user.role)
+  - elsif %w[hydro].index(current_user.role)
     - if %w[hydro hydro2 warning alert].index(@bulletin_type)
       = link_to 'Создать', "new_bulletin?bulletin_type=#{@bulletin_type}"
   %br
@@ -37,7 +37,7 @@
           %th Сокращенный
         - else
           %th= ''
-        - if %w[technicist synoptic].index(current_user.role)
+        - if %w[vip].index(current_user.role)
           %th= ''
           %th= ''
     %tbody
@@ -74,7 +74,7 @@
               "#{b.id}/bulletin_show.pdf?variant=short"
           - else
             %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf"
-          - if %w[technicist synoptic].index(current_user.role) || (current_user.role == 'hydro' && %w[hydro hydro2 warning].index(@bulletin_type))
+          - if %w[vip].index(current_user.role) || (current_user.role == 'hydro' && %w[hydro hydro2 warning].index(@bulletin_type))
             %td= link_to 'Изменить', edit_bulletin_path(b.id)
             %td= link_to 'Удалить', b, method: :delete,
               data: { confirm: 'Вы уверены?' }

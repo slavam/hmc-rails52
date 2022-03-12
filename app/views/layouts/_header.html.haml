@@ -10,7 +10,8 @@
       %ul{ :class=>"nav navbar-nav navbar-right"}
         - if logged_in?
           - case current_user.role
-            - when 'synoptic'
+            
+            - when 'synoptic','vip'
               = javascript_pack_tag 'beep-beep'
               %li
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Телеграммы <b class="caret"></b></a>
