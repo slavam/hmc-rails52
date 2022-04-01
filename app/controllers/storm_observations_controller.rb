@@ -327,7 +327,7 @@ class StormObservationsController < ApplicationController
         # new_telegram = {id: telegram.id, date: telegram.telegram_date, station_name: telegram.station.name, telegram: telegram.telegram}
         new_telegram = {id: telegram.id, date: telegram.telegram_date.utc, station_name: telegram.station.name, telegram: telegram.telegram, created_at: telegram.created_at.utc, station_id: telegram.station_id}
         ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: new_telegram, tlgType: 'storm'})
-        User.where(role: 'synoptic').each do |synoptic|
+        User.where(role: ['synoptic', 'vip']).each do |synoptic|
           # "storm_telegram_created",         #20190724 sound: true, telegram: new_telegram 20190806
           ActionCable.server.broadcast("storm_telegram_user_#{synoptic.id}", {sound: true, telegram_id: telegram.id})
         end
