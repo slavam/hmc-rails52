@@ -11,8 +11,8 @@ class Union < Prawn::Document
     y_pos = cursor
     font "OpenSans"
     bounding_box([300, y_pos], width: bounds.width-290) do
-      text "Приложение
-            к Плану передачи информации", leading: 3
+      text "Информация к Плану передачи
+            от 03.02.2020 № 06/2020", leading: 3
     end
     move_down 20
     font "OpenSans", style: :bold
@@ -27,7 +27,7 @@ class Union < Prawn::Document
       horizontal_line 0, bounds.width, :at => cursor
     end
     move_down 10
-    text forecast.report_date.strftime("%d.%m.%Y")+'г.  № 06/'+forecast.curr_number
+    text forecast.report_date.strftime("%d.%m.%Y")+'  № 06/'+forecast.curr_number
     move_down 20
     text "ПРОГНОЗ ПОГОДЫ", align: :center
     text "по городам Донецкой Народной Республики", align: :center
@@ -80,11 +80,12 @@ class Union < Prawn::Document
     ]
     table donetsk_content, width: bounds.width, :column_widths => [130], cell_style: { inline_format: true, padding: [2, 2, 2, 2], size: 11} do |t|
     end
+    
     chief = UnionForecast.ogmo_chief(forecast.chief)
 
     move_down 10
     table_content =[[{:padding => [10,0],:content => chief[:position]}, {position: :center, image: chief[:image_name], scale: 0.5}, {:padding => [10,5], align: :right, :content => chief[:name]}]]
-    table table_content, width: bounds.width, :column_widths => [310, 70], cell_style: {:overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true } do |t|
+    table table_content, width: bounds.width, :column_widths => [210, 70], cell_style: {:overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true } do |t|
       t.cells.border_width = 0
     end
 
