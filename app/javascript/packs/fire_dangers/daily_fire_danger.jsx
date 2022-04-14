@@ -19,6 +19,7 @@ const FireDangersTable = ({fireDangers, stations}) => {
         fireClass = 4;
       else
         fireClass = 5;
+      let dailyPrecipitation = Math.round(parseFloat(fd.precipitation_day)+parseFloat(fd.precipitation_night))
       rows.push(
         <tr key = {fd.id}>
           <td>{stations[fd.station_id-1].name}</td>
@@ -26,8 +27,7 @@ const FireDangersTable = ({fireDangers, stations}) => {
           <td>{fd.fire_danger}</td>
           <td>{fd.temperature}</td>
           <td>{fd.temperature_dew_point}</td>
-          <td>{fd.precipitation_day}</td>
-          <td>{fd.precipitation_night}</td>
+          <td>{dailyPrecipitation}</td>
         </tr>
       );
     });
@@ -40,8 +40,7 @@ const FireDangersTable = ({fireDangers, stations}) => {
           <th>Пожароопасность</th>
           <th>Температура (°С)</th>
           <th>Точка росы (°С)</th>
-          <th>Осадки днем (мм)</th>
-          <th>Осадки ночью (мм)</th>
+          <th>Осадки за сутки (мм)</th>
         </tr>
       </thead>
       <tbody>{rows}</tbody>

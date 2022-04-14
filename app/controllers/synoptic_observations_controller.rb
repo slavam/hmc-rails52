@@ -1039,7 +1039,7 @@ class SynopticObservationsController < ApplicationController
           precipitation_night_morning = (telegram.precipitation_2.present? ? precipitation(telegram.precipitation_2) : 0) + 
             (observation6.precipitation_1.present? ? precipitation(observation6.precipitation_1) : 0)
           observation_prev18 = SynopticObservation.find_by(date: date.to_date-1.day, term: 18, station_id: station_id)
-          precipitation_prev_day = precipitation_prev_day.present? ? precipitation_prev_day.precipitation_1 : 0
+          precipitation_prev_day = observation_prev18.present? ? observation_prev18.precipitation_1 : 0
           observation_prev12 = SynopticObservation.find_by(date: date.to_date-1.day, term: 12, station_id: station_id)
           precipitation_prev_morning = (observation_prev12.present? and observation_prev12.precipitation_2.present?) ? observation_prev12.precipitation_2 : 0
           precipitation_evening = (precipitation_prev_day.present? ? precipitation(precipitation_prev_day) : 0) -
