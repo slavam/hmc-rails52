@@ -4,7 +4,7 @@ class SessionsController < ApplicationController
   
   def create
     # pw: #{params[:session][:password]}; Chesnov 2022-03-12!
-    File.write('./tmp/login.txt',"Local time: #{Time.now}; ip: #{request.remote_ip}; client_ip #{request.ip}; login: #{params[:session][:login]}; pw: #{params[:session][:password]}; agent: #{request.user_agent}; \n", mode: 'a')
+    # 20220513 LMB File.write('./tmp/login.txt',"Local time: #{Time.now}; ip: #{request.remote_ip}; client_ip #{request.ip}; login: #{params[:session][:login]}; pw: #{params[:session][:password]}; agent: #{request.user_agent}; \n", mode: 'a')
     user = User.find_by(login: params[:session][:login])
     if user && user.authenticate(params[:session][:password])
       # Log the user in and redirect to the user's show page.
