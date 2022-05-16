@@ -19,6 +19,7 @@ class Bulletin < ActiveRecord::Base
     'storm' => "Штормовые предупреждения",
     'sea_storm' => "Шторма на море",
     'radiation' => "Радиация",
+    'radiation2' => "Радиация 2",
     # 'tv' => "Телевидение",
     'radio' => 'Радио',
     'avtodor' => "АВТОДОР",

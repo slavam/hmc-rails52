@@ -1,5 +1,5 @@
 require 'prawn'
-class Radiation < Prawn::Document
+class Radiation2 < Prawn::Document
   def initialize(bulletin)
 		super(top_margin: 40, right_margin: 50, left_margin: 55)
 		@bulletin = bulletin
@@ -29,10 +29,6 @@ class Radiation < Prawn::Document
     # image "./app/assets/images/rhumbs.png", at: [0, cursor]
     font "OpenSans" #, style: :italic
     bounding_box([300, cursor], width: bounds.width-300) do
-      # text "Начальнику центра управления в кризисных ситуациях Министерства по делам гражданской обороны, чрезвычайным ситуациям и ликвидации последствий стихийных бедствий
-      # Донецкой Народной Республики
-      #
-      # В.В. Вовку"
       text "Министру
       по делам гражданской обороны, чрезвычайным ситуациям и ликвидации последствий стихийных бедствий
       Донецкой Народной Республики
@@ -41,20 +37,15 @@ class Radiation < Prawn::Document
       А.А. Кострубицкому"
     end
     move_down 20
-    # text "Сообщаем данные о состоянии радиационного фона (мкР/ч) на 09.00 часов <b>#{@bulletin.report_date_as_str}</b>:", :inline_format => true, :indent_paragraphs => 40
     text "Сообщаем данные наблюдений за радиационным фоном в 09.00 часов", align: :center
     text "#{@bulletin.report_date_as_str}:", align: :center
     m_d = []
     m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
     move_down 20
-    table [["Метеорологическая станция",	"Донецк", "Дебальцево",	"Амвросиевка",	"Седово"],
-      ["мкР/ч", m_d[0], m_d[1], m_d[2], m_d[3]]], 
-      width: bounds.width,:cell_style => { :align => :center, :inline_format => true}
-    # table [["Метеорологическая станция",	"Дебальцево",	"Донецк", "Амвросиевка",	"Волноваха", "Седово"],
-            # ["мкР/ч", m_d[0], m_d[1], m_d[2], m_d[3], m_d[4]]], 
-            # width: bounds.width,:cell_style => { :align => :center, :inline_format => true}
+    table [["Метеорологическая станция",	"Дебальцево",	"Донецк", "Амвросиевка",	"Волноваха", "Седово"],
+            ["мкР/ч", m_d[0], m_d[1], m_d[2], m_d[3], m_d[4]]], 
+            width: bounds.width,:cell_style => { :align => :center, :inline_format => true, size: 9}
     move_down 20
-    # avg = (m_d[0].to_i+m_d[1].to_i+m_d[2].to_i+m_d[3].to_i) / 4
     avg = 0
     n = 0
     m_d.each do |md|
@@ -75,8 +66,6 @@ class Radiation < Prawn::Document
     user = User.find_by(last_name: last_name)
     synoptic = user.present? ? user[:last_name]+' '+user[:first_name]+' '+user[:middle_name] : @bulletin.synoptic1 # 'Синоптик'
     text_box synoptic + " (062) 303-10-34", :at => [0, 30] #, :width => 170
-    # image "./app/assets/images/radiation.png", at: [400, 100], :scale => 0.75
-    # text_box "телефон: (062) 303-10-34", :at => [320, 30], :width => 170, align: :right
     move_to 0, 15
     line_to 520, 15
     stroke_color '0000ff'

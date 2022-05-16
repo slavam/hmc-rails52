@@ -36,7 +36,7 @@ class BulletinsController < ApplicationController
     @bulletin.curr_number = Date.today.yday()
     @bulletin.bulletin_type = params[:bulletin_type]
     bulletin = Bulletin.last_this_type params[:bulletin_type]
-    if bulletin.report_date == @bulletin.report_date
+    if bulletin.present? && (bulletin.report_date == @bulletin.report_date)
       flash.now[:danger] = "Бюллетень за #{bulletin.report_date.strftime("%Y-%m-%d")} уже существует"
     end
     last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307
@@ -79,7 +79,7 @@ class BulletinsController < ApplicationController
         @bulletin.forecast_day = last_daily_bulletin.forecast_day
         @bulletin.forecast_period = bulletin.forecast_period if bulletin.present?
         @bulletin.meteo_data = bulletin.meteo_data if bulletin.present?
-      when 'radiation'
+      when 'radiation', 'radiation2'
         # @bulletin.meteo_data = bulletin.meteo_data if bulletin.present?
         @m_d = fill_radiation_meteo_data(@bulletin.report_date)
         @bulletin.meteo_data = ''
@@ -229,7 +229,7 @@ class BulletinsController < ApplicationController
         @m_d = fill_meteo_data(@bulletin.report_date)
       when 'sea'
         @m_d = fill_sea_meteo_data(@bulletin.report_date)
-      when 'radiation'
+      when 'radiation', 'radiation2'
         @m_d = fill_radiation_meteo_data(@bulletin.report_date)
       when 'avtodor'
         @m_d = fill_avtodor_meteo_data(@bulletin.report_date)
@@ -358,7 +358,8 @@ class BulletinsController < ApplicationController
           pdf = Storm.new(@bulletin, variant)
         when 'radiation'
           pdf = Radiation.new(@bulletin)
-          # @png_filename = @bulletin.png_filename(current_user.id)
+        when 'radiation2'
+          pdf = Radiation2.new(@bulletin)
         when 'tv'
           pdf = Tv.new(@bulletin)
           # @png_filename = @bulletin.png_filename(current_user.id)
@@ -450,6 +451,8 @@ class BulletinsController < ApplicationController
           15
         when 'radiation'
           4
+        when 'radiation2'
+          5
         # when 'tv'
           # 38
         when 'radio'
@@ -513,8 +516,12 @@ class BulletinsController < ApplicationController
     def fill_radiation_meteo_data(report_date)
       m_d = []
       m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
-      radiations = AgroObservation.radiations(report_date)
-      [1,3,2,10].each_with_index {|v,i| m_d[i] = radiations[v].present? ? radiations[v] : correct_radiation(report_date, v)}
+      radiations = AgroObservation.radiations(report_date, @bulletin.bulletin_type)
+      if @bulletin.bulletin_type == 'radiation'
+        [1,3,2,10].each_with_index {|v,i| m_d[i] = radiations[v].present? ? radiations[v] : correct_radiation(report_date, v)}
+      else
+        [3,1,2,4,10].each_with_index {|v,i| m_d[i] = radiations[v].present? ? radiations[v] : correct_radiation(report_date, v)}
+      end
       m_d
     end
 

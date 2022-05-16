@@ -110,9 +110,14 @@ class AgroObservation < ActiveRecord::Base
     end
     ret
   end
-  def self.radiations(report_date)
+  def self.radiations(report_date, bulletin_type)
     ret = []
-    self.where('station_id IN (1,2,3,10) AND date_dev LIKE ?', "#{report_date}%").select(:station_id, :telegram).each do |tm|
+    if bulletin_type == 'radiation'
+      additional_ids = ''
+    else
+      additional_ids = '4,'
+    end
+    self.where("station_id IN (1,2,3,#{additional_ids}10) AND date_dev LIKE ?", "#{report_date}%").select(:station_id, :telegram).each do |tm|
       i = tm.telegram =~ / \/\/\/\d\d/
       if i.present?
         ret[tm.station_id] = tm.telegram[i+4,2].to_i

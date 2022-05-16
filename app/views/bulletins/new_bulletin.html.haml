@@ -7,7 +7,9 @@
   = render partial: 'radio_form'
   - when 'radiation'
   %h3{ align: :center } Создать бюллетень о радиационном фоне
-  = render partial: 'radiation_form'
+  - when 'radiation2'
+  %h3{ align: :center } Создать бюллетень о радиационном фоне (вариант 2)
+  = render partial: 'radiation2_form'
   - when 'avtodor'
   %h3{ align: :center } Создать прогноз для АВТОДОРа
   = render partial: 'avtodor_form'

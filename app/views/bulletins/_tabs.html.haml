@@ -16,7 +16,8 @@
         %li= link_to 'Шторма', '/bulletins/list?bulletin_type=storm'
         %li= link_to 'Шторма на море', '/bulletins/list?bulletin_type=sea_storm'
         %li= link_to 'Шторма (пожары)', '/bulletins/list?bulletin_type=fire_storm'
-        %li= link_to 'Радиация', '/bulletins/list?bulletin_type=radiation'
+        -# %li= link_to 'Радиация', '/bulletins/list?bulletin_type=radiation'
+        %li= link_to 'Радиация 2', '/bulletins/list?bulletin_type=radiation2'
         %li= link_to 'АВТОДОР', '/bulletins/list?bulletin_type=avtodor'
         %li= link_to 'Радио', '/bulletins/list?bulletin_type=radio'
         %li= link_to 'ДТЭ', '/bulletins/list?bulletin_type=dte'
@@ -27,3 +28,4 @@
         %li= link_to 'Предупреждения (гидро)', '/bulletins/list?bulletin_type=warning'
         %li= link_to 'ЖД', '/bulletins/list?bulletin_type=railway'
         %li= link_to 'Шторма для ЖД', '/bulletins/list?bulletin_type=rw_storm'
+        %li= link_to 'ЮНИОН', union_forecasts_path
