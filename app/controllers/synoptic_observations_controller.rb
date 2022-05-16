@@ -240,7 +240,7 @@ class SynopticObservationsController < ApplicationController
       end
     end
     # @stations = Station.all.order(:id)
-    @stations = Station.where("id not in (4, 8)").order(:id)
+    @stations = Station.where("id not in (8)").order(:id)
     first_day = true
     fire_danger = 0
     @fire_data.sort.each do |key,value|
@@ -254,7 +254,7 @@ class SynopticObservationsController < ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: {ata: @fire_data}
+        render json: {data: @fire_data}
       end
     end
   end

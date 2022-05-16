@@ -6,17 +6,19 @@ import {Bar} from 'react-chartjs-2';
 const FireTable = ({fireData}) => {
   let row = [<tr key="0"><td>Дата</td><td>ПО</td><td>Температура</td><td>Точка росы</td><td>Осадки ночью</td><td>Осадки днем</td></tr>];
   let fds = [];
-  let l = Object.keys(fireData).length;
   let i = 0;
-  for(var k in fireData){
-    let fd = fireData[k];
-    fd['obsDate'] = k;
-    fds[l-i] = fd;
-    i++;
+  if(fireData){
+    let l = Object.keys(fireData).length;
+    for(var k in fireData){
+      let fd = fireData[k];
+      fd['obsDate'] = k;
+      fds[l-i] = fd;
+      i++;
+    }
+    fds.forEach((e) => {
+      row.push(<tr key={e['obsDate']}><td>{e['obsDate']}</td><td>{e['fire_danger']}</td><td>{e['temp']}</td><td>{e['temp_d_p']}</td><td>{e['night']}</td><td>{e['day']}</td></tr>);
+    });
   }
-  fds.forEach((e) => {
-		row.push(<tr key={e['obsDate']}><td>{e['obsDate']}</td><td>{e['fire_danger']}</td><td>{e['temp']}</td><td>{e['temp_d_p']}</td><td>{e['night']}</td><td>{e['day']}</td></tr>);
-	});
   return <table className="table table-hover"><tbody>{row}</tbody></table>;
 };
 
@@ -40,7 +42,7 @@ export default class Fire extends React.Component{
       dataType: 'json',
       url: "/synoptic_observations/fire?date_from="+dateFrom+"&date_to="+dateTo+"&station_id="+stationId
       }).done((data) => {
-        this.setState({fireData: data.fireData});
+        this.setState({fireData: data.data});
       }).fail((res) => {
         this.setState({errors: ["Проблемы с чтением данных из БД"]});
     }); 
@@ -55,11 +57,12 @@ export default class Fire extends React.Component{
     let periodDays = [];
     let fireDanger = [];
     let precipitation = [];
-    Object.keys(this.state.fireData).forEach( (k) => {
-      periodDays.push(k.substr(8,2)+'.'+k.substr(5,2));
-      fireDanger.push(this.state.fireData[k].fire_danger);
-      precipitation.push(+this.state.fireData[k].day+this.state.fireData[k].night);
-    });
+    if(this.state.fireData)
+      Object.keys(this.state.fireData).forEach( (k) => {
+        periodDays.push(k.substr(8,2)+'.'+k.substr(5,2));
+        fireDanger.push(this.state.fireData[k].fire_danger);
+        precipitation.push(+this.state.fireData[k].day+this.state.fireData[k].night);
+      });
     const lineChartData = {
       labels: periodDays,
       datasets: [ 
