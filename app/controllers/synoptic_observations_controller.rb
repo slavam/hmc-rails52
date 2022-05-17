@@ -1045,8 +1045,8 @@ class SynopticObservationsController < ApplicationController
           precipitation_evening = (precipitation_prev_day.present? ? precipitation(precipitation_prev_day) : 0) -
             (precipitation_prev_morning.present? ? precipitation(precipitation_prev_morning) : 0)
           prev_fd_value = FireDanger.fire_danger_value(station_id, date.to_date-1.day)
-          temp = telegram.temperature
-          temp_d_p = telegram.temperature_dew_point
+          temp = telegram.temperature.round
+          temp_d_p = telegram.temperature_dew_point.round
           # fire_danger = FireDanger.find_by(observation_date: date, station_id: station_id)
           # if fire_danger.present?
           #   fire_danger[:precipitation_night] = precipitation_night_morning
@@ -1066,7 +1066,7 @@ class SynopticObservationsController < ApplicationController
           #     precipitation_night: precipitation_night_morning,
           #     precipitation_day: precipitation_evening)
           # end
-          f_d = (temp*(temp-temp_d_p)).round+prev_fd_value*((precipitation_evening+precipitation_night_morning).to_i>=3 ? 0:1)
+          f_d = (temp*(temp-temp_d_p))+prev_fd_value*((precipitation_evening+precipitation_night_morning).to_f>=3 ? 0:1)
           fire_danger = FireDanger.new(observation_date: date, 
               station_id: station_id, 
               temperature: temp, 

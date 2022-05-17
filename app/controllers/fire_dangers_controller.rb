@@ -7,7 +7,7 @@ class FireDangersController < ApplicationController
   def daily_fire_danger
     @report_date = params[:report_date].present? ? params[:report_date] : Time.now.strftime("%Y-%m-%d")
     @stations = Station.all.order(:id)
-    @daily_fire_dangers = FireDanger.where("observation_date = ? and station_id not in (8)", @report_date).order(:station_id)
+    @daily_fire_dangers = FireDanger.where("observation_date = ? and station_id not in (4,8)", @report_date).order(:station_id)
     respond_to do |format|
       format.html
       format.json do 

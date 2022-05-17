@@ -19,14 +19,14 @@ const FireDangersTable = ({fireDangers, stations}) => {
         fireClass = 4;
       else
         fireClass = 5;
-      let dailyPrecipitation = Math.round(parseFloat(fd.precipitation_day)+parseFloat(fd.precipitation_night))
+      let dailyPrecipitation = Math.round((parseFloat(fd.precipitation_day)+parseFloat(fd.precipitation_night))*10)/10;
       rows.push(
         <tr key = {fd.id}>
           <td>{stations[fd.station_id-1].name}</td>
           <td>{fireClass}</td>
           <td>{fd.fire_danger}</td>
-          <td>{fd.temperature}</td>
-          <td>{fd.temperature_dew_point}</td>
+          <td>{parseInt(fd.temperature)}</td>
+          <td>{parseInt(fd.temperature_dew_point)}</td>
           <td>{dailyPrecipitation}</td>
         </tr>
       );
