@@ -99,8 +99,7 @@ class Daily < Prawn::Document
       h7 = {content: "Высота снежного покрова (см)", rowspan: 2} 
       h8 = {content: "Глубина промерзания (см)", rowspan: 2} 
     end
-    stations = ["Донецк", "Дебальцево", "Амвросиевка", "Седово", "Красноармейск", "Волноваха", "Артемовск", "Мариуполь"]
-    # stations = ["Донецк", "Дебальцево", "Амвросиевка", "Седово", "Артемовск", "Мариуполь"]
+        # stations = ["Донецк", "Дебальцево", "Амвросиевка", "Седово", "Артемовск", "Мариуполь"]
     report_date_prev = (@bulletin.report_date - 1.day).to_s(:custom_datetime)
     table_content = 
     [
@@ -122,44 +121,54 @@ class Daily < Prawn::Document
       ]
     ]
     table_data = []
+    num_row = [3,1,4,7,2,5,0,6]
+    is_dnr = @bulletin.report_date > Time.parse("2022-05-17")
+    stations = is_dnr ? ["Артемовск", "Дебальцево", "Красноармейск", "Донецк", "Амвросиевка", "Волноваха", "Мариуполь", "Седово"] :
+      ["Донецк", "Дебальцево", "Амвросиевка", "Седово", "Красноармейск", "Волноваха", "Артемовск", "Мариуполь"]
+
     stations.each.with_index do |s, j|
-      if (j != 4) and (j != 5)
-        a = [s]
-        (0..8).each do |i| 
-          if i==4 and m_d[j*9+4].present? # 20190801 KMA
-            if m_d[j*9+4].to_f>1
-              m_d[j*9+4] = m_d[j*9+4].to_f.round
-            else
-              m_d[j*9+4] = m_d[j*9+4].to_s.tr(".",",")
-            end
-          end
-          m_d[i*9+2] = m_d[i*9+2].gsub('.',',') if m_d[i*9+2].present?
-          a << ((i!=2 and i!=4 and i!=5 and i!=8 and m_d[j*9+i].present?) ? ((m_d[j*9+i].to_f<0 and m_d[j*9+i].to_f>-0.5) ? '-0' : m_d[j*9+i].to_f.round) : m_d[j*9+i])
-        end
-        table_data << a
+      a = [s]
+      row = is_dnr ? num_row.index(j) : j
+      m_d[row*9+2] = m_d[row*9+2].gsub('.',',') if m_d[row*9+2].present?
+      if m_d[row*9+4].present?
+        m_d[row*9+4] = m_d[row*9+4].to_f>1 ? m_d[row*9+4].to_f.round : m_d[row*9+4].to_s.tr(".",",")
       end
+      (0..8).each do |i|
+        a << ((i!=2 and i!=4 and i!=5 and i!=8 and m_d[row*9+i].present?) ? 
+          ((m_d[row*9+i].to_f<0 and m_d[row*9+i].to_f>-0.5) ? '-0' : m_d[row*9+i].to_f.round) : 
+          m_d[row*9+i])
+      end
+      table_data << a
     end
+    # stations.each.with_index do |s, j|
+    #   # if (j != 4) and (j != 5)
+    #     a = [s]
+    #     (0..8).each do |i| 
+    #       if i==4 and m_d[j*9+4].present? # 20190801 KMA
+    #         if m_d[j*9+4].to_f>1
+    #           m_d[j*9+4] = m_d[j*9+4].to_f.round
+    #         else
+    #           m_d[j*9+4] = m_d[j*9+4].to_s.tr(".",",")
+    #         end
+    #       end
+    #       m_d[i*9+2] = m_d[i*9+2].gsub('.',',') if m_d[i*9+2].present?
+    #       a << ((i!=2 and i!=4 and i!=5 and i!=8 and m_d[j*9+i].present?) ? ((m_d[j*9+i].to_f<0 and m_d[j*9+i].to_f>-0.5) ? '-0' : m_d[j*9+i].to_f.round) : m_d[j*9+i])
+    #     end
+    #     table_data << a
+    #   # end
+    # end
   
     font "OpenSans"
     table table_content, width: bounds.width, :column_widths => [95, 40, 40, 40, 40, 40, 40, 55, 40],:cell_style => { :inline_format => true } do |t|
       t.cells.padding = [1, 1]
       t.cells.align = :center
-      # t.column(0).align = :left
       t.row(1).column(3).background_color = "FFCCCC"
       t.row(0).columns(5..8).rotate = 90
-      # t.row(1).height = 100
       t.row(1).rotate = 90
       
       t.before_rendering_page do |p|
         p.row(1).height = 110
       end
-      
-      # t.row(0).height = 120
-      # t.row(0).column(0).valign = :center
-      # t.row(0).column(0).align = :center
-      # t.row(0).column(9).valign = :center
-      # t.row(0).background_color = 'eeeeee'      
-      # t.row(0).text_color = "FFFFFF"
     end
     table table_data, width: bounds.width, :column_widths => [95, 40, 40, 40, 40, 40, 40, 55, 40],:cell_style => { :inline_format => true } do |t|
       t.cells.padding = [1, 1]
@@ -178,7 +187,6 @@ class Daily < Prawn::Document
           end
         end
       }
-      # t.column(9).height = 30 
     end
     
     move_down 10
@@ -186,10 +194,6 @@ class Daily < Prawn::Document
     text "ОБЗОР ПОГОДЫ И АГРОМЕТЕОРОЛОГИЧЕСКИХ УСЛОВИЙ", align: :center, :color => "0000FF"
     text "в Донецкой Народной Республике", align: :center, :color => "0000FF"
     text @bulletin.header_review, align: :center, :color => "0000FF"
-    # review_start_date = @bulletin.review_start_date.present? ? @bulletin.review_start_date : (@bulletin.report_date-1.day)
-    # text "за период с 9.00 часов #{review_start_date.strftime("%d")} #{Bulletin::MONTH_NAME2[review_start_date.month]} до 9.00 часов #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} #{report_date[0,4]} года", align: :center, :color => "0000FF"
-    # text "за период с 9.00 часов #{review_start_date.day} #{Bulletin::MONTH_NAME2[review_start_date.month]} до 9.00 часов #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} #{report_date[0,4]} года", align: :center, :color => "0000FF"
-    # text "за период с 9.00 часов #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} #{report_date[0,4]} года", align: :center, :color => "0000FF"
     font "OpenSans"
     text @bulletin.agro_day_review  
     
