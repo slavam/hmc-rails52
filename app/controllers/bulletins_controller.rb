@@ -68,7 +68,7 @@ class BulletinsController < ApplicationController
       when 'fire'
         if bulletin.present?
           @bulletin.curr_number = bulletin.curr_number.to_i + 1
-          @bulletin.meteo_data = bulletin.meteo_data #if bulletin.present?
+          @bulletin.meteo_data = bulletin.meteo_data
           @bulletin.forecast_day = bulletin.forecast_day
         else
           @bulletin.curr_number = 1
@@ -460,7 +460,7 @@ class BulletinsController < ApplicationController
         when 'avtodor'
           16
         when 'fire'
-          40
+          48 #40
         when 'hydro'
           56
         else

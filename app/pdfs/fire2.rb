@@ -42,7 +42,7 @@ class Fire2 < Prawn::Document
     ]
     m_d = []
     m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
-    Bulletin::REGIONS.each.with_index do |s, j|
+    Bulletin::REGIONS2.each.with_index do |s, j|
       a = [s]
       (0..3).each do |i|
         a << (m_d[j*4+i].present? ? m_d[j*4+i] : '')

@@ -46,7 +46,7 @@ class Fire < Prawn::Document
     ]
     m_d = []
     m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
-    Bulletin::REGIONS.each.with_index do |s, j|
+    Bulletin::REGIONS2.each.with_index do |s, j|
       a = [s]
       (0..3).each do |i|
         a << (m_d[j*4+i].present? ? m_d[j*4+i] : '')
@@ -74,14 +74,13 @@ class Fire < Prawn::Document
       t.cells.padding = [1, 3]
       t.row(0).align = :center
     end
-    move_down 10
+    move_down 5
     text @bulletin.forecast_day, size: 10
-    # text "Бюллетень выпускается при установлении 4 класса и прогнозировании 5 класса пожарной опасности", size: 10
     bounding_box([0, cursor], :width => bounds.width) do
       text "Время выпуска 16:00", size: 10
     end
-    move_down 10
-    table signatures, width: bounds.width, :column_widths => [220,170], cell_style: {:overflow => :shrink_to_fit, size: 10, :inline_format => true } do |t|
+    move_down 5
+    table signatures, width: bounds.width, :column_widths => [230,170], cell_style: {:overflow => :shrink_to_fit, size: 10, :inline_format => true } do |t|
       t.cells.border_width = 0
       t.row(0).height = 17
       t.row(2).size = 11
@@ -93,7 +92,7 @@ class Fire < Prawn::Document
 	  chief_descr = @bulletin.chief_2_pdf
     responsible_descr = @bulletin.responsible_2_pdf
     [ [{padding: [1,0],content: "Ответственный за выпуск:"},"",""],
-      [{padding: [10,0],content:responsible_descr[:position]}, {:image => responsible_descr[:image_name], scale: 0.6, :vposition => :center}, {:padding => [20,5],:content => responsible_descr[:name]}],
-      [{:padding => [10,0],:content => chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]
+      [{padding: [10,0],content:responsible_descr[:position]}, {:image => responsible_descr[:image_name], scale: 0.5, :vposition => :center}, {:padding => [20,5],:content => responsible_descr[:name]}],
+      [{:padding => [10,0],:content => chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.5}, {:padding => [10,5],:content => chief_descr[:name]}]]
   end
 end
