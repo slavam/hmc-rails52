@@ -41,6 +41,7 @@ export default class WindMonthly extends React.Component{
       data: {wind: this.state.wind, year: this.state.year, month: this.state.month, station_id: this.state.stationId}, 
       url: "/other_observations/create_wind_data"
       }).done((data) => {
+        this.setState({errors: ''});
         alert(data.message);
       }).fail((res) => {
         this.setState({errors: ["Ошибка записи в базу"]});

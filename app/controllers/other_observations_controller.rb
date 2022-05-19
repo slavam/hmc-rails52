@@ -76,26 +76,33 @@ class OtherObservationsController < ApplicationController
     last_day = Time.days_in_month(month, year)
     updated = 0
     created = 0
+    skiped = 0
     last_day.times do |i|
       obs_date = "#{year}-#{month}-#{i+1}"
+      new_wind = wind[i.to_s].present? ? wind[i.to_s].join(';') : ";;;;;;;"
       observation = OtherObservation.find_by(data_type: 'windd', station_id: station_id, obs_date: obs_date)
       if observation.present? 
-        observation.description = wind[i.to_s].present? ? wind[i.to_s].join(';') : ";;;;;;;"
-        observation.save
-        updated += 1
+        if observation.description != new_wind
+          Rails.logger.debug("windarchive: id=>#{observation.id}; old=>#{observation.description}; new=>#{new_wind};")
+          observation.description = new_wind
+          observation.save
+          updated += 1
+        else
+          skiped += 1
+        end
       else
         observation = OtherObservation.new(
           data_type: 'windd', 
           station_id: station_id, 
           obs_date: obs_date,
-          description: wind[i.to_s].join(';')
+          description: new_wind
         )
         observation.save
         created += 1
       end
     end
-    if (created+updated) == last_day
-      render json: {message: "За #{month}-#{year} обновлено #{updated} и создано #{created}"}, status: :ok
+    if (created+updated+skiped) == last_day
+      render json: {message: "За #{month}-#{year} обновлено #{updated}, создано #{created}, пропущено #{skiped}"}, status: :ok
     else
       render json: {errors: observation.errors.messages}, status: :unprocessable_entity
     end
