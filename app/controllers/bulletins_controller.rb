@@ -75,10 +75,12 @@ class BulletinsController < ApplicationController
         end
       when 'dte','bus_station'
         @bulletin.forecast_day = last_daily_bulletin.forecast_day
-      when 'radio'
+      when 'radio', 'radio2'
         @bulletin.forecast_day = last_daily_bulletin.forecast_day
-        @bulletin.forecast_period = bulletin.forecast_period if bulletin.present?
-        @bulletin.meteo_data = bulletin.meteo_data if bulletin.present?
+        if bulletin.present?
+          @bulletin.forecast_period = bulletin.forecast_period
+          @bulletin.meteo_data = bulletin.meteo_data
+        end
       when 'radiation', 'radiation2'
         # @bulletin.meteo_data = bulletin.meteo_data if bulletin.present?
         @m_d = fill_radiation_meteo_data(@bulletin.report_date)
@@ -239,7 +241,7 @@ class BulletinsController < ApplicationController
         @m_d =fill_hydro2_data(@bulletin.report_date, @bulletin.review_start_date)
       when 'fire'
         return
-      when 'radio'
+      when 'radio', 'radio2'
         return
       else
         @m_d = []
@@ -369,6 +371,8 @@ class BulletinsController < ApplicationController
           pdf = BusStation.new(@bulletin)
         when 'radio'
           pdf = Radio.new(@bulletin)
+        when 'radio2'
+          pdf = Radio2.new(@bulletin)
         when 'dte'
           pdf = Dte.new(@bulletin)
         when 'fire'
@@ -457,6 +461,8 @@ class BulletinsController < ApplicationController
           # 38
         when 'radio'
           22
+        when 'radio2'
+          34
         when 'avtodor'
           16
         when 'fire'
