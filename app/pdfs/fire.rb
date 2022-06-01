@@ -80,7 +80,7 @@ class Fire < Prawn::Document
       text "Время выпуска 16:00", size: 10
     end
     move_down 5
-    table signatures, width: bounds.width, :column_widths => [230,170], cell_style: {:overflow => :shrink_to_fit, size: 10, :inline_format => true } do |t|
+    table signatures, width: bounds.width, :column_widths => [230,160], cell_style: {:overflow => :shrink_to_fit, size: 10, :inline_format => true } do |t|
       t.cells.border_width = 0
       t.row(0).height = 17
       t.row(2).size = 11
