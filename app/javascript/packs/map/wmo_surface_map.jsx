@@ -1,4 +1,5 @@
 import React from 'react';
+import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 export default class WmoSurfaceMap extends React.Component{
   constructor(props){
@@ -241,8 +242,9 @@ export default class WmoSurfaceMap extends React.Component{
         id: codeStation});
       markers.push(marker);
     });
-    var markerCluster = new MarkerClusterer(map, markers,
-            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+    const markerCluster = new MarkerClusterer({ map, markers });
+//    var markerCluster = new MarkerClusterer(map, markers,
+//            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
     // markers.map( m => {
     //   var infowindow = new google.maps.InfoWindow({content: info[m.id],maxWidth: '500px'});
     //   m.addListener('click', () => infowindow.open(map, m));

@@ -120,6 +120,15 @@ export default class NewOtherData extends React.Component{
       { value: 'Новоселовка',  label: 'Новоселовка' },
       { value: 'Благодатное',  label: 'Благодатное' },
       { value: 'Алексеево-Орловка',  label: 'Алексеево-Орловка' },
+
+      {value: 'Николаевка', label: 'Николаевка'},
+      {value: 'Кременевка', label: 'Кременевка'},
+      {value: 'Захаровка', label: 'Захаровка'},
+      {value: 'Стародубовка', label: 'Стародубовка'},
+      {value: 'Алексеево-Дружковка', label: 'Алексеево-Дружковка'},
+      {value: 'Черкасское', label: 'Черкасское'},
+      {value: 'Северск', label: 'Северск'},
+      {value: 'Торское', label: 'Торское'},
     ];
     const periods = [
       { value: 'day',  label: 'День' },

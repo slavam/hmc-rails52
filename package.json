@@ -2,6 +2,7 @@
   "name": "hmc-rails5",
   "private": true,
   "dependencies": {
+    "@googlemaps/markerclusterer": "^2.0.8",
     "@rails/webpacker": "5.4.3",
     "babel-preset-react": "^6.24.1",
     "bootstrap": "^4.5.0",
