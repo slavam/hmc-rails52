@@ -165,7 +165,6 @@ class Daily < Prawn::Document
       t.row(1).column(3).background_color = "FFCCCC"
       t.row(0).columns(5..8).rotate = 90
       t.row(1).rotate = 90
-      
       t.before_rendering_page do |p|
         p.row(1).height = 110
       end
@@ -177,6 +176,7 @@ class Daily < Prawn::Document
       t.column(3).background_color = "FFCCCC"
       t.column(9).align = :left
       t.column(9).overflow = :shrink_to_fit
+      t.row(3).background_color = "CCCCCC"
       # t.column(9).size = 8 20190620 Boyko
       # t.column(9).size = 9
       # (0..8).each {|i| 
