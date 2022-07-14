@@ -17,8 +17,7 @@ class Tpp < Prawn::Document
     move_down 10
     font "OpenSans" #, style: :italic
     bounding_box([0, cursor], width: bounds.width) do
-      text "ул. Любавина, 2, г. Донецк, 83015 тел. (062) 311-40-10 тел./факс (062)340-99-25", align: :center, size: 10
-      text "web: www.dnmchs.ru  Идентификационный код 51001468  E-mail: gidromet@mail.dnmchs.ru", align: :center, size: 10
+      text Bulletin::ADDRESS2, align: :center, size: 10
     end
     
     stroke do

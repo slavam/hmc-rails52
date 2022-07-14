@@ -16,7 +16,7 @@ class TeploenergoPortrait < Prawn::Document
     font "OpenSans"
     bounding_box([bounds.width-200, y_pos], width: 300, leading: 3) do
       text "Приложение к письму"
-      text "Гидрометцентра МЧС ДНР"
+      text 'ГБУ "Гидрометцентр МЧС ДНР"'
       text "от _________________ № ____________"
     end
     move_down 20
