@@ -1,6 +1,6 @@
 class OtherObservationsController < ApplicationController
   before_action :cors_preflight_check
-  skip_before_action :verify_authenticity_token, :only => [:create_other_data]
+  skip_before_action :verify_authenticity_token, :only => [:create_other_data, :delete_other_data]
   def cors_preflight_check
     headers['Access-Control-Allow-Origin'] = '*'
     headers['Access-Control-Allow-Methods'] = 'POST, PUT, DELETE, GET, OPTIONS'
@@ -370,6 +370,22 @@ class OtherObservationsController < ApplicationController
       format.json do
         render json: {winds: @winds}
       end
+    end
+  end
+
+  def destroy
+    observation = OtherObservation.find(params[:id])
+    # data_type = observation.data_type
+    if observation.destroy
+      # last_telegrams = OtherObservation.last_50_telegrams(data_type)
+      # render json: {observations: last_telegrams}
+      respond_to do |format|
+        format.json do
+          head :no_content
+        end
+      end
+    else
+      render json: {errors: observation.errors.messages}, status: :unprocessable_entity
     end
   end
 
