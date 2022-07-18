@@ -18,7 +18,7 @@ class Fire < Prawn::Document
     bounding_box([0, cursor], width: bounds.width) do
       text Bulletin::ADDRESS, align: :center, size: 9
     end
-    move_down 30
+    move_down 25
     bounding_box([0, cursor], width: bounds.width) do
       text "БЮЛЛЕТЕНЬ ПОЖАРНОЙ ОПАСНОСТИ № #{@bulletin.curr_number}", align: :center, color: "ff0000", size: 12
       text "#{@bulletin.report_date.day} #{Bulletin::MONTH_NAME2[@bulletin.report_date.month]} #{@bulletin.report_date.year} года", align: :center, color: "ff0000", size: 12
