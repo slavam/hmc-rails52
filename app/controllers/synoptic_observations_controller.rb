@@ -1,6 +1,6 @@
 class SynopticObservationsController < ApplicationController
   require 'csv'
-  before_action :logged_user? #, except: [:create_synoptic_telegram]
+  before_action :logged_user?, except: [:find_term_telegrams] #, except: [:create_synoptic_telegram]
   before_action :find_synoptic_observation, only: [:show, :update_synoptic_telegram, :destroy, :update]
   # protect_from_forgery with: :null_session
 
