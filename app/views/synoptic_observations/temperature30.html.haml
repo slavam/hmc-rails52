@@ -1,0 +1,46 @@
+-#= @temperatures.inspect
+.container
+  %h4 Температура воздуха (°С) с 1 по #{@num_days} #{@month_name} #{@year} года в сроки 9, 12, 15 и 18 часов местного времени в городах Ясиноватая, Иловайск, Дебальцево, Волноваха, Мариуполь по данным репрезентативных метеорологических станций
+  %table{class: "table table-bordered"}
+    %thead
+      %tr
+        %th{rowspan: 2} Числа месяца
+        %th{colspan: 4} Ясиноватая
+        %th{colspan: 4} Иловайск
+        %th{colspan: 4} Дебальцево
+        %th{colspan: 4} Волноваха
+        %th{colspan: 4} Мариуполь
+      %tr
+        %th 09
+        %th 12
+        %th 15
+        %th 18
+        %th 09
+        %th 12
+        %th 15
+        %th 18
+        %th 09
+        %th 12
+        %th 15
+        %th 18
+        %th 09
+        %th 12
+        %th 15
+        %th 18
+        %th 09
+        %th 12
+        %th 15
+        %th 18
+    %tbody
+      - (1..@num_days).each do |d| 
+        %tr
+          %td= d
+          - (1..20).each do |i|
+            - if @temperatures[d].present? && @temperatures[d][i-1].present? 
+              - if @temperatures[d][i-1].to_i >= 30
+                %td{:style => "color: #ff0000"}= @temperatures[d][i-1]
+              - else
+                %td{:style => "color: #000000"}= @temperatures[d][i-1]
+            - else
+              %td
+  = link_to "Распечатать", "temperature30.pdf?year=#{@year}&month=#{@month}"

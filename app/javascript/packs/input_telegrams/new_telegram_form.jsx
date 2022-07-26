@@ -27,7 +27,7 @@ export default class NewTelegramForm extends React.Component{
     this.dateChange = this.dateChange.bind(this);
     this.inBufferClick = this.inBufferClick.bind(this);
     this.state.tlgText = this.initText(this.props.tlgType);
-    this.handleFromOgimet = this.handleFromOgimet.bind(this);
+    // this.handleFromOgimet = this.handleFromOgimet.bind(this);
   }
   
   initText(tlgType){
@@ -174,10 +174,10 @@ export default class NewTelegramForm extends React.Component{
     this.props.onInBuffer({tlgText: this.state.tlgText, message: this.state.errors[0], tlgType: this.state.tlgType});
     this.setState({tlgText: this.initText(this.state.tlgType), errors: []});
   }
-  handleFromOgimet(e){
-    this.props.onGetOgimet({term: this.state.tlgTerm, date: this.state.currDate})
-    this.setState({isMariupol: true, errors: []})
-  }
+  // handleFromOgimet(e){
+  //   this.props.onGetOgimet({term: this.state.tlgTerm, date: this.state.currDate})
+  //   this.setState({isMariupol: true, errors: []})
+  // }
 
   render() {
     const types = [
@@ -214,7 +214,7 @@ export default class NewTelegramForm extends React.Component{
       <tbody>
         <tr>
           <td width="90%"><input type="text" value={this.state.tlgText} onChange={(event) => this.handleTextChange(event)}/></td>
-          <td><input type="button" value="Мариуполь" onClick={this.handleFromOgimet}/></td>
+          {/* <td><input type="button" value="Мариуполь" onClick={this.handleFromOgimet}/></td> */}
         </tr>
       </tbody>
     </table> : <input type="text" value={this.state.tlgText} onChange={(event) => this.handleTextChange(event)}/>

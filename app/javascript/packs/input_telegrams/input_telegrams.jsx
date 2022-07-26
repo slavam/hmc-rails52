@@ -54,7 +54,7 @@ export default class InputTelegrams extends React.Component{
     this.handleInBuffer = this.handleInBuffer.bind(this);
     this.updateTelegramsState = this.updateTelegramsState.bind(this);
     this.tick = this.tick.bind(this);
-    this.handleGetOgimet = this.handleGetOgimet.bind(this);
+    // this.handleGetOgimet = this.handleGetOgimet.bind(this);
   }
   
   tick(){
@@ -158,23 +158,23 @@ export default class InputTelegrams extends React.Component{
         this.setState({errors: ["Ошибка записи в базу"]});
       }); 
   }
-  handleGetOgimet(ogimetParams){
-    $.ajax({
-      type: 'GET',
-      dataType: 'json',
-      data: ogimetParams, 
-      url: "from_ogimet"
-      }).done((data) => {
-        if(data.message){
-          this.setState({telegramMariupol: ''});
-          alert(data.message);
-        }else
-          this.setState({telegramMariupol: data.telegram});
-      }).fail((res) => {
-        this.setState({telegramMariupol: ''});
-        alert("Ошибка чтения из ogimet");
-      });
-  }
+  // handleGetOgimet(ogimetParams){
+  //   $.ajax({
+  //     type: 'GET',
+  //     dataType: 'json',
+  //     data: ogimetParams, 
+  //     url: "from_ogimet"
+  //     }).done((data) => {
+  //       if(data.message){
+  //         this.setState({telegramMariupol: ''});
+  //         alert(data.message);
+  //       }else
+  //         this.setState({telegramMariupol: data.telegram});
+  //     }).fail((res) => {
+  //       this.setState({telegramMariupol: ''});
+  //       alert("Ошибка чтения из ogimet");
+  //     });
+  // }
   
   handleInBuffer(forBuffer){
     $.ajax({
@@ -233,7 +233,7 @@ export default class InputTelegrams extends React.Component{
       <div>
         {/*<MakeSynopticTelegram term={this.state.tlgTerm} stations={this.props.stations} weatherInTerm={this.props.weatherInTerm} weatherPast={this.props.weatherPast}/>*/}
         <h3>Новая телеграмма</h3>
-        <NewTelegramForm codeStation={this.state.codeStation} currDate={this.state.currDate} tlgType={this.state.tlgType} onTelegramTypeChange={this.handleTelegramTypeChanged} onFormSubmit={this.handleFormSubmit} stations={this.props.stations} tlgTerm={this.state.tlgTerm} inputMode={this.props.inputMode} onInBuffer={this.handleInBuffer} onGetOgimet={this.handleGetOgimet} telegramMariupol={this.state.telegramMariupol} minutes={this.state.minutes}/>
+        <NewTelegramForm codeStation={this.state.codeStation} currDate={this.state.currDate} tlgType={this.state.tlgType} onTelegramTypeChange={this.handleTelegramTypeChanged} onFormSubmit={this.handleFormSubmit} stations={this.props.stations} tlgTerm={this.state.tlgTerm} inputMode={this.props.inputMode} onInBuffer={this.handleInBuffer} telegramMariupol={this.state.telegramMariupol} minutes={this.state.minutes}/>
         {telegramTable}
       </div>
     );

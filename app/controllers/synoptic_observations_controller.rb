@@ -4,6 +4,42 @@ class SynopticObservationsController < ApplicationController
   before_action :find_synoptic_observation, only: [:show, :update_synoptic_telegram, :destroy, :update]
   # protect_from_forgery with: :null_session
 
+  def temperature30
+    today = Time.now
+    @month = params[:month].present? ? params[:month] : today.month
+    @year = params[:year].present? ? params[:year] : today.year
+    @month_name = I18n.l(Date.new(@year.to_i,@month.to_i), format: '%B')
+    @num_days = Time.days_in_month(@month.to_i, @year.to_i)
+    start_date = "#{@year}-#{@month}-1"
+    end_date = "#{@year}-#{@month}-#{@num_days}"
+    date_stations = SynopticObservation.select(:date,:station_id).where("temperature >= 30. AND station_id IN (1,2,3,4,5,10) AND term IN (6,9,12,15) AND date BETWEEN ? AND ?",start_date, end_date).group(:date,:station_id)
+    hot_data = []
+    @temperatures = []
+    date_stations.each do |ds|
+      SynopticObservation.select(:date,:term,:station_id,:temperature).where("term in (6,9,12,15) AND date = ? AND station_id = ?",ds.date, ds.station_id).each do |t|
+        hot_data << t
+      end
+    end
+    
+    (1..@num_days).each do |d|
+      @temperatures << Array.new(24)
+    end
+    hot_data.each do |t|
+      i = t.date.day
+      s = t.station_id == '10' ? 6 : t.station_id.to_i
+      k = t.term.to_i/3-2
+      j = (s-1)*4+k
+      @temperatures[i][j] = t.temperature
+    end
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = Temperature30.new(@temperatures, @num_days, @year, @month_name)
+        send_data pdf.render, filename: "temperature30_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      end
+    end
+  end
+
   def get_date_term_station
     @stations = Station.all.order(:id)
   end
@@ -716,41 +752,41 @@ class SynopticObservationsController < ApplicationController
     @date = (Time.now-3.hours).utc.strftime("%Y-%m-%d") # предыдущий срок
   end
 
-  def from_ogimet
-    # https://www.ogimet.com/getsynop_help.phtml.en
-    # https://www.ogimet.com/display_synops2.php?lang=en&lugar=34712&tipo=ALL&ord=REV&nil=SI&fmt=html&ano=2021&mes=12&day=01&hora=18&anof=2021&mesf=12&dayf=01&horaf=18&send=send
-    # "http://www.ogimet.com/cgi-bin/getsynop?block=34712&begin="+year+month+day+term+'00&end='+year+month+day+term+'00'
-    wmo_index = params[:wmo_index] ? params[:wmo_index] : "34712" # Mariupol
-    observation_date = params[:date] ? params[:date] : Time.now.utc.strftime("%Y-%m-%d")
-    term = params[:term] ? params[:term] : "00"
-    if SynopticObservation.telegram_present?(wmo_index, observation_date, term)
-      respond_to do |format|  
-        format.json do
-          render json: {telegram: '', message: ["Телеграмма за #{observation_date} #{term} для #{wmo_index} уже есть в базе"]} #, status: :unprocessable_entity
-        end
-      end
-    else
-      date_term = observation_date.gsub(/-/,"")+term+"00"
-      url ="http://www.ogimet.com/cgi-bin/getsynop?block=#{wmo_index}&begin=#{date_term}&end=#{date_term}"
-      first5 = term.to_i % 2 == 0 ? "ЩЭСМЮ" : "ЩЭСИД"
-      csv_data = Net::HTTP.get(URI.parse(url))
-      if csv_data.size > 0
-        ogimet_telegram = first5.force_encoding("UTF-8") + csv_data[33..-2].force_encoding("UTF-8").gsub(/=/,"")+"="
-        # puts ">>>>>>>>>>>#{ogimet_telegram}<<<<<<<<<<<"
-        respond_to do |format|  
-          format.json do
-            render json: {telegram: ogimet_telegram, message: ''}
-          end
-        end
-      else
-        respond_to do |format|  
-          format.json do
-            render json: {telegram: '', message: ["На ogimet.com нет телеграммы за #{observation_date} #{term} для #{wmo_index}"]} #, status: :unprocessable_entity
-          end
-        end
-      end
-    end
-  end
+  # def from_ogimet
+  #   # https://www.ogimet.com/getsynop_help.phtml.en
+  #   # https://www.ogimet.com/display_synops2.php?lang=en&lugar=34712&tipo=ALL&ord=REV&nil=SI&fmt=html&ano=2021&mes=12&day=01&hora=18&anof=2021&mesf=12&dayf=01&horaf=18&send=send
+  #   # "http://www.ogimet.com/cgi-bin/getsynop?block=34712&begin="+year+month+day+term+'00&end='+year+month+day+term+'00'
+  #   wmo_index = params[:wmo_index] ? params[:wmo_index] : "34712" # Mariupol
+  #   observation_date = params[:date] ? params[:date] : Time.now.utc.strftime("%Y-%m-%d")
+  #   term = params[:term] ? params[:term] : "00"
+  #   if SynopticObservation.telegram_present?(wmo_index, observation_date, term)
+  #     respond_to do |format|  
+  #       format.json do
+  #         render json: {telegram: '', message: ["Телеграмма за #{observation_date} #{term} для #{wmo_index} уже есть в базе"]} #, status: :unprocessable_entity
+  #       end
+  #     end
+  #   else
+  #     date_term = observation_date.gsub(/-/,"")+term+"00"
+  #     url ="http://www.ogimet.com/cgi-bin/getsynop?block=#{wmo_index}&begin=#{date_term}&end=#{date_term}"
+  #     first5 = term.to_i % 2 == 0 ? "ЩЭСМЮ" : "ЩЭСИД"
+  #     csv_data = Net::HTTP.get(URI.parse(url))
+  #     if csv_data.size > 0
+  #       ogimet_telegram = first5.force_encoding("UTF-8") + csv_data[33..-2].force_encoding("UTF-8").gsub(/=/,"")+"="
+  #       # puts ">>>>>>>>>>>#{ogimet_telegram}<<<<<<<<<<<"
+  #       respond_to do |format|  
+  #         format.json do
+  #           render json: {telegram: ogimet_telegram, message: ''}
+  #         end
+  #       end
+  #     else
+  #       respond_to do |format|  
+  #         format.json do
+  #           render json: {telegram: '', message: ["На ogimet.com нет телеграммы за #{observation_date} #{term} для #{wmo_index}"]} #, status: :unprocessable_entity
+  #         end
+  #       end
+  #     end
+  #   end
+  # end
 
   def arm_sin_data_fetch
     # 08001 34824 41595 80902 10068 20061 30128 40134 58003 71022 885// 55555 11005=  for arm_sin
