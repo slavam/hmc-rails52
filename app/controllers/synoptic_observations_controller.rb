@@ -21,7 +21,7 @@ class SynopticObservationsController < ApplicationController
       end
     end
     
-    (1..@num_days).each do |d|
+    (0..31).each do |d|
       @temperatures << Array.new(24)
     end
     hot_data.each do |t|
