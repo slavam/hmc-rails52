@@ -456,7 +456,7 @@ class BulletinsController < ApplicationController
         when 'radiation'
           4
         when 'radiation2'
-          5
+          6 #5
         # when 'tv'
           # 38
         when 'radio'
@@ -526,7 +526,7 @@ class BulletinsController < ApplicationController
       if @bulletin.bulletin_type == 'radiation'
         [1,3,2,10].each_with_index {|v,i| m_d[i] = radiations[v].present? ? radiations[v] : correct_radiation(report_date, v)}
       else
-        [3,1,2,4,10].each_with_index {|v,i| m_d[i] = radiations[v].present? ? radiations[v] : correct_radiation(report_date, v)}
+        [3,1,2,4,10,5].each_with_index {|v,i| m_d[i] = radiations[v].present? ? radiations[v] : correct_radiation(report_date, v)}
       end
       m_d
     end

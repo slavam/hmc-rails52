@@ -42,8 +42,8 @@ class Radiation2 < Prawn::Document
     m_d = []
     m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
     move_down 20
-    table [["Метеорологическая станция",	"Дебальцево",	"Донецк", "Амвросиевка",	"Волноваха", "Седово"],
-            ["мкР/ч", m_d[0], m_d[1], m_d[2], m_d[3], m_d[4]]], 
+    table [["Метеорологическая станция",	"Дебальцево",	"Донецк", "Амвросиевка",	"Волноваха", "Мариуполь", "Седово"],
+            ["мкР/ч", m_d[0], m_d[1], m_d[2], m_d[3], m_d[5], m_d[4]]], 
             width: bounds.width,:cell_style => { :align => :center, :inline_format => true, size: 9}
     move_down 20
     avg = 0
