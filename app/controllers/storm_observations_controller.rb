@@ -1,5 +1,5 @@
 class StormObservationsController < ApplicationController
-  before_action :find_storm_observation, only: [:show, :edit, :update, :destroy, :update_storm_telegram]
+  before_action :find_storm_observation, only: [:show, :edit, :update, :destroy, :update_storm_telegram] #, :get_storm_context]
 
   def latest_storms
     @telegrams = []
@@ -401,6 +401,18 @@ class StormObservationsController < ApplicationController
     @storm_observation.destroy
     flash[:success] = "Удалена штормовая телеграмма"
     redirect_to storm_observations_path
+  end
+
+  def get_storm_context
+    storm_observation = StormObservation.find(params[:id])
+    station_id = storm_observation.station_id
+    occurrence_date = storm_observation.telegram_date
+    d1 = occurrence_date - 6.hours
+    hour1 = d1.hour / 3 * 3
+    start_date = DateTime.new(d1.year, d1.month, d1.day, hour1)
+    stop_date = start_date + 10.hours
+    obs = SynopticObservation.where("station_id = ? and observed_at between ? and ? ", station_id, start_date, stop_date).order(:observed_at)
+    render json: {storm_context: obs}
   end
 
   private
