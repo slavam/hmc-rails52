@@ -15,12 +15,14 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
       group8: { errorMessage: 'Ошибка в группе 8 раздела 1',  regex: /^8[0-9/]{4}$/ }, // From Margo 20170317 
       group31: { errorMessage: 'Ошибка в группе 1 раздела 3', regex: /^1[01][0-9]{3}$/ },
       group32: { errorMessage: 'Ошибка в группе 2 раздела 3', regex: /^2[01][0-9]{3}$/ },
+      group33: { errorMessage: 'Ошибка в группе 3 раздела 3', regex: /^3[0-9/][01][0-9]{2}$/ },
       group34: { errorMessage: 'Ошибка в группе 4 раздела 3', regex: /^4[0-9/][0-9]{3}$/ },
       group35: { errorMessage: 'Ошибка в группе 5 раздела 3', regex: /^55[0-9]{3}$/ },
+      group36: { errorMessage: 'Ошибка в группе 6 раздела 3', regex: /^6\d{3}[1-9]$/ }, // rf 20220822 
       group38: { errorMessage: 'Ошибка в группе 8 раздела 3', regex: /^8[0-9/]{2}([0-4][0-9]|50|5[6-9]|[6-9][0-9])$/ },
       group39: { errorMessage: 'Ошибка в группе 9 раздела 3', regex: /^9[0-9]{4}$/ },
       group51: { errorMessage: 'Ошибка в группе 1 раздела 5', regex: /^1[0-9/][01][0-9]{2}$/ },
-      group53: { errorMessage: 'Ошибка в группе 3 раздела 5', regex: /^3[0-9/][01][0-9]{2}$/ },
+      // group53: { errorMessage: 'Ошибка в группе 3 раздела 5', regex: /^3[0-9/][01][0-9]{2}$/ },
       group55: { errorMessage: 'Ошибка в группе 5 раздела 5', regex: /^52[01][0-9]{2}$/ },
       // group56: { errorMessage: 'Ошибка в группе 6 раздела 5', regex: /^6[0-9/]{4}$/ }, rf 20220819
       group59: { errorMessage: 'Ошибка в группе 9 раздела 5', regex: /^9[0-9/]{4}$/ },
@@ -124,31 +126,58 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
     }
     // console.log('section5-1:', section);
     while (section.length>=5) {
-      if(~['1', '3', '5', '6', '9'].indexOf(section[0])){
+      // if(~['1', '3', '5', '6', '9'].indexOf(section[0])){ rf 20220823
+      if(~['1', '5', '6', '9'].indexOf(section[0])){
         group = section.substr(0,5);
         var name = 'group5'+section[0];
         regex = state[name].regex;
         if (regex.test(group) && ((section[5] == ' ') || (section[5] == '=') || (section.length == 5))) {
           switch(section[0]) {
-            case '1':
-            case '3':
-              if (section[1] != '/') {
-                if (section[0] == '1') 
-                  observation.soil_surface_condition_1 = section[1];
-                else 
-                  observation.soil_surface_condition_2 = section[1];
+            case '1': // rf 20220823
+              if((+term == 0) || (+term == 12)){}else{
+                errors.push("Группа 1 в разделе 5 может быть только для срока 0 или 12");
+                return false;
               }
-              if (section[2] != '/') {
-                // sign = section[2] == '0' ? '' : '-';
-                if (section[0] == '1') 
-                  observation.temperature_soil = sign[section[2]]+section.substr(3,2);
-                else 
-                  observation.temperature_soil_min = sign[section[2]]+section[3]+'.'+section[4];
-              }
-              break;
+              if (section[1] != '/') 
+                observation.soil_surface_condition_1 = section[1];
+              if (section[2] != '/')
+                observation.temperature_soil = sign[section[2]]+section.substr(3,2);
+              break
+            // case '3': rf 20220823
+            //   if (section[1] != '/') {
+            //     if (section[0] == '1') 
+            //       observation.soil_surface_condition_1 = section[1];
+            //     else 
+            //       observation.soil_surface_condition_2 = section[1];
+            //   }
+            //   if (section[2] != '/') {
+            //     // sign = section[2] == '0' ? '' : '-';
+            //     if (section[0] == '1') 
+            //       observation.temperature_soil = sign[section[2]]+section.substr(3,2);
+            //     else 
+            //       observation.temperature_soil_min = sign[section[2]]+section[3]+'.'+section[4];
+            //   }
+            //   break;
             case '5':
-              // sign = section[2] == '0' ? '' : '-';
-              observation.temperature_2cm_min = sign[section[2]]+section.substr(3,2);
+              if(+section[1]<2){
+                if(+term == 18){}else{
+                  errors.push("Группа 5 в разделе 5 может быть только для срока 18");
+                  return false;
+                }
+                observation.temperature24_avg = sign[section[1]]+section.substr(2,2)+'.'+section[4]
+              }else if(section[1]=='2'){
+                if(+term==6){}else{
+                  errors.push("Группа 52 в разделе 5 может быть только для срока 6");
+                  return false;
+                }
+                observation.temperature_2cm_min = sign[section[2]]+section.substr(3,2);
+              }else{
+                if((+term==6) || (+term==18)){}else{
+                  errors.push("Группа 530 в разделе 5 может быть только для сроков 6 или 18");
+                  return false;
+                }
+                observation.wind_speed_max = section.substr(3,2);
+              }
               break;
             case '6':
               // rf 20220819
@@ -192,27 +221,34 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
     }
     // console.log('section3-1:', section);
     while (section.length>=5) {
-      if(~['1', '2', '4', '5', '8', '9'].indexOf(section[0])){
+      // if(~['1', '2', '4', '5', '8', '9'].indexOf(section[0])){ rf 20220822
+      if(~['1', '2', '3','4', '5','6', '8', '9'].indexOf(section[0])){
         group = section.substr(0,5);
         name = 'group3'+section[0];
         regex = state[name].regex;
         if (regex.test(group) && ((section[5] == ' ') || (section[5] == '=') || (section.length == 5))) {
           switch(section[0]) {
             case '1': // KMA 20190715
-              if(term != 18){
+              if(+term != 18){
                 errors.push("Ошибка в группе 1 раздела 3: только для срока 18");
                 return false;
               }
+              val = sign[section[1]]+section.substr(2,2)+'.'+section[4];
+              observation.temperature_dey_max = val;
+              break
             case '2':
-              if((section[0] == '2') && (term != 6)){ // KMA 20190715
-                errors.push("Ошибка в группе 2 раздела 3: только для срока 06");
+              if((+term == 3) || (+term == 6)){}else{ // KMA 20190715 rf 20220822
+                errors.push("Группа 2 раздела 3 для срока "+term+" не передается");
                 return false;
               }
               val = sign[section[1]]+section.substr(2,2)+'.'+section[4];
-              if (section[0] == '1')
-                observation.temperature_dey_max = val;
-              else
-                observation.temperature_night_min = val;
+              observation.temperature_night_min = val;
+              break;
+            case '3': // rf 20220823
+              if (section[1] != '/') 
+                observation.soil_surface_condition_2 = section[1];
+              if (section[2] != '/') 
+                observation.temperature_soil_min = sign[section[2]]+section[3]+'.'+section[4];
               break;
             case '4':
               if (section[1] != '/') {
@@ -223,6 +259,20 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
             case '5':
               observation.sunshine_duration = section.substr(2,2)+'.'+section[4];
               break;
+            // rf 20220822
+            case '6':
+              if((+term == 3) || (+term == 15)){
+                if (tlg[12] != '2'){
+                  errors.push("Для срока "+term+" в разделе 1 группа 00 должно быть iR=2");
+                  return false;
+                }
+              }else{
+                errors.push("Для срока "+term+" в разделе 3 группы 6 не должно быть");
+                return false;
+              }
+              observation.precipitation_1 = section.substr(1,3);
+              observation.precipitation_time_range_1 = section[4];
+              break
             case '8':
               if (section[1] != '/') {
                 observation.cloud_amount_3 = section[1];
@@ -231,10 +281,12 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
               }
               break;
             case '9':
-              observation.weather_data_add = section.substr(1,4);
+              if(!observation.weather_data_add) // rf 20220823
+                observation.weather_data_add = ''
+              observation.weather_data_add += section.substr(1,4);
               break;
           }
-        } else {
+        }else{
           errors.push(state[name].errorMessage);
           return false;
         }
@@ -244,6 +296,15 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
         return false;
       }
     }
+    if((+term == 3) || (+term == 15)){ // rf 20220822
+      if(/ 333(.*)6\d\d\d\d/.test(tlg)){}else{
+        errors.push("Для срока "+term+" в разделе 3 должна быть группа 6");
+        return false;
+      }
+    }
+  }else if((+term == 3) || (+term == 15)){ // rf 20220822
+    errors.push("Для срока "+term+" должна быть группа 6 в разделе 3");
+    return false;
   }
   
   var lng = pos333>0 ? pos333-24 : (pos555>0 ? pos555-24 : tlg.length-24);
