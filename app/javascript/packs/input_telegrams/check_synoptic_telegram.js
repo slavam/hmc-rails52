@@ -15,7 +15,7 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
       group8: { errorMessage: 'Ошибка в группе 8 раздела 1',  regex: /^8[0-9/]{4}$/ }, // From Margo 20170317 
       group31: { errorMessage: 'Ошибка в группе 1 раздела 3', regex: /^1[01][0-9]{3}$/ },
       group32: { errorMessage: 'Ошибка в группе 2 раздела 3', regex: /^2[01][0-9]{3}$/ },
-      group33: { errorMessage: 'Ошибка в группе 3 раздела 3', regex: /^3[0-9/][01][0-9]{2}$/ },
+      group33: { errorMessage: 'Ошибка в группе 3 раздела 3', regex: /^3[0-9/][01/][0-9/]{2}$/ },
       group34: { errorMessage: 'Ошибка в группе 4 раздела 3', regex: /^4[0-9/][0-9]{3}$/ },
       group35: { errorMessage: 'Ошибка в группе 5 раздела 3', regex: /^55[0-9]{3}$/ },
       group36: { errorMessage: 'Ошибка в группе 6 раздела 3', regex: /^6\d{3}[1-9]$/ }, // rf 20220822 
@@ -23,10 +23,14 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
       group39: { errorMessage: 'Ошибка в группе 9 раздела 3', regex: /^9[0-9]{4}$/ },
       group51: { errorMessage: 'Ошибка в группе 1 раздела 5', regex: /^1[0-9/][01][0-9]{2}$/ },
       // group53: { errorMessage: 'Ошибка в группе 3 раздела 5', regex: /^3[0-9/][01][0-9]{2}$/ },
-      group55: { errorMessage: 'Ошибка в группе 5 раздела 5', regex: /^52[01][0-9]{2}$/ },
+      group550: { errorMessage: 'Ошибка в группе 5 раздела 5', regex: /^5[01][0-9]{3}$/ },
+      group551: { errorMessage: 'Ошибка в группе 5 раздела 5', regex: /^5[01][0-9]{3}$/ },
+      group552: { errorMessage: 'Ошибка в группе 52 раздела 5', regex: /^52[01][0-9]{2}$/ },
+      group553: { errorMessage: 'Ошибка в группе 53 раздела 5', regex: /^530[0-9]{2}$/ },
       // group56: { errorMessage: 'Ошибка в группе 6 раздела 5', regex: /^6[0-9/]{4}$/ }, rf 20220819
-      group59: { errorMessage: 'Ошибка в группе 9 раздела 5', regex: /^9[0-9/]{4}$/ },
-    
+      group57: { errorMessage: 'Ошибка в группе 7 раздела 5',  regex: /^7\d{3}\/$/ },
+      group58: { errorMessage: 'Ошибка в группе 8 раздела 5', regex: /^88[0-9]{3}$/ },
+      
   };
   if((~tlg.indexOf("ЩЭСМЮ ") && (term % 2 == 0)) || (~tlg.indexOf("ЩЭСИД ") && (term % 2 == 1))){} else {
     errors.push("Ошибка в различительной группе =>"+tlg.substr(0, 6)+"; term="+term+';');
@@ -127,9 +131,13 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
     // console.log('section5-1:', section);
     while (section.length>=5) {
       // if(~['1', '3', '5', '6', '9'].indexOf(section[0])){ rf 20220823
-      if(~['1', '5', '6', '9'].indexOf(section[0])){
+      if(~['1', '5', '7', '8'].indexOf(section[0])){
         group = section.substr(0,5);
-        var name = 'group5'+section[0];
+        var name = 'group5';
+        if(group[0]=='5')
+          name += group.substr(0,2)
+        else
+          name += group.substr(0,1)
         regex = state[name].regex;
         if (regex.test(group) && ((section[5] == ' ') || (section[5] == '=') || (section.length == 5))) {
           switch(section[0]) {
@@ -183,20 +191,19 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
               // rf 20220819
               errors.push("В разделе 5 группы 6 не должно быть");
               return false;
-              // observation.precipitation_2 = section.substr(1,3);
-              // if ((term == 0) || (term == 12)){
-              //   if (section[4] != '1'){
-              //     errors.push("Для срока "+term+" в разделе 5 группа 6 должно быть tR=1");
-              //     return false;
-              //   }
-              //   if (tlg[12] != '/'){
-              //     errors.push("Для срока "+term+" в разделе 1 группа 00 должно быть iR='/'");
-              //     return false;
-              //   }
-              // }
-              // observation.precipitation_time_range_2 = section[4];
-              // break;
-            // case '9':
+            case '7': // rf 20220824
+              if(+term!=3){
+                errors.push("В разделе 5 группа 7 передается в срок 3");
+                return false;
+              }
+              observation.precipitation24 = section.substr(1,3)
+              break
+            case '8':
+              if(+term!=3){
+                errors.push("В разделе 5 группа 8 передается в срок 3");
+                return false;
+              }
+              observation.precipitation30 = section.substr(2,3)
           }
         } else {
           errors.push(state[name].errorMessage);
