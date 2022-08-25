@@ -62,7 +62,7 @@ class Sea < Prawn::Document
     # month_p = @bulletin.start_month(2,3)
     # text "Периодный прогноз погоды на #{report_date_next2[8,2]}#{month_p}-#{report_date_next3[8,2]} #{MONTH_NAME2[report_date_next3[5,2].to_i]} #{report_date_next3[0,4]} года
     text @bulletin.header_period, align: :center
-    text "По акватории Азовского моря (на участке с. Безыменное – пгт. Седово)", align: :center #, color: "0000ff"
+    text "По акватории Азовского моря", align: :center #, color: "0000ff"
     font "OpenSans"
     move_down 10
     text @bulletin.forecast_period, :leading => 4
@@ -137,7 +137,7 @@ class Sea < Prawn::Document
 	end
 	
 	def weather_forecast
-		[ [{:content => "<b>По акватории Азовского моря (на участке с. Безыменное – пгт. Седово)</b>", :align => :center}, {:content => "<b>По г. Новоазовску, пгт. Седово</b>", :align => :center}],
+		[ [{:content => "<b>По акватории Азовского моря</b>", :align => :center}, {:content => "<b>По г. Новоазовску, пгт. Седово</b>", :align => :center}],
       [@bulletin.forecast_day, @bulletin.forecast_day_city]]
 	end
 	def meteo_head
