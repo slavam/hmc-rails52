@@ -218,7 +218,7 @@ export default class NewTelegramForm extends React.Component{
         </tr>
       </tbody>
     </table> : <input type="text" value={this.state.tlgText} onChange={(event) => this.handleTextChange(event)}/>
-    
+    const rfSignature = `СИРС11 AAXX ${this.state.currDate.substr(8,2)}${this.state.tlgTerm}1`
     return (
     <div className="col-md-12">
       <form className="telegramForm" onSubmit={(event) => this.handleSubmit(event)}>
@@ -238,6 +238,7 @@ export default class NewTelegramForm extends React.Component{
             </tr>
           </tbody>
         </table>
+        {this.state.tlgType == 'synoptic' ? <h4>{rfSignature}</h4> : null}
         <div>Текст 
           {textButton}
           <span style={{color: 'red'}}>{this.state.errors[0]}</span>

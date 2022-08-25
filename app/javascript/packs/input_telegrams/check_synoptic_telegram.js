@@ -1,7 +1,6 @@
 export function checkSynopticTelegram(term, tlg, errors, stations, observation){
   var sign = {'0': '', '1': '-'};
   var state = {
-      // group00: { errorMessage: 'Ошибка в группе 00 раздела 1', regex: /^[134/][12][0-9/]([0-4][0-9]|50|5[6-9]|[6-9][0-9]|\/\/)$/ },  // наблюдатели, Л.А. 20180405 iX = 1 or 2
       group00: { errorMessage: 'Ошибка в группе 00 раздела 1', regex: /^[124][12][0-9/]([0-4][0-9]|50|5[6-9]|[6-9][0-9]|\/\/)$/ },  // rf 20220819
       group0: { errorMessage: 'Ошибка в группе 0 раздела 1',   regex: /^[0-9/]([012][0-9]|3[0-6]|99|\/\/)([012][0-9]|30|\/\/)$/ },
       group1: { errorMessage: 'Ошибка в группе 1 раздела 1',  regex: /^1[01][0-5][0-9][0-9]$/ },
@@ -9,7 +8,6 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
       group3: { errorMessage: 'Ошибка в группе 3 раздела 1',  regex: /^3\d{4}$/ },
       group4: { errorMessage: 'Ошибка в группе 4 раздела 1',  regex: /^4\d{4}$/ },
       group5: { errorMessage: 'Ошибка в группе 5 раздела 1',  regex: /^5[0-8]\d{3}$/ },
-      // group6: { errorMessage: 'Ошибка в группе 6 раздела 1',  regex: /^6\d{3}[12]$/ }, // From Margo 20170315 
       group6: { errorMessage: 'Ошибка в группе 6 раздела 1',  regex: /^6\d{3}[1-9]$/ }, // rf 20220819 
       group7: { errorMessage: 'Ошибка в группе 7 раздела 1',  regex: /^7\d{4}$/ },
       group8: { errorMessage: 'Ошибка в группе 8 раздела 1',  regex: /^8[0-9/]{4}$/ }, // From Margo 20170317 
@@ -22,15 +20,12 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
       group38: { errorMessage: 'Ошибка в группе 8 раздела 3', regex: /^8[0-9/]{2}([0-4][0-9]|50|5[6-9]|[6-9][0-9])$/ },
       group39: { errorMessage: 'Ошибка в группе 9 раздела 3', regex: /^9[0-9]{4}$/ },
       group51: { errorMessage: 'Ошибка в группе 1 раздела 5', regex: /^1[0-9/][01][0-9]{2}$/ },
-      // group53: { errorMessage: 'Ошибка в группе 3 раздела 5', regex: /^3[0-9/][01][0-9]{2}$/ },
       group550: { errorMessage: 'Ошибка в группе 5 раздела 5', regex: /^5[01][0-9]{3}$/ },
       group551: { errorMessage: 'Ошибка в группе 5 раздела 5', regex: /^5[01][0-9]{3}$/ },
       group552: { errorMessage: 'Ошибка в группе 52 раздела 5', regex: /^52[01][0-9]{2}$/ },
       group553: { errorMessage: 'Ошибка в группе 53 раздела 5', regex: /^530[0-9]{2}$/ },
-      // group56: { errorMessage: 'Ошибка в группе 6 раздела 5', regex: /^6[0-9/]{4}$/ }, rf 20220819
       group57: { errorMessage: 'Ошибка в группе 7 раздела 5',  regex: /^7\d{3}\/$/ },
       group58: { errorMessage: 'Ошибка в группе 8 раздела 5', regex: /^88[0-9]{3}$/ },
-      
   };
   if((~tlg.indexOf("ЩЭСМЮ ") && (term % 2 == 0)) || (~tlg.indexOf("ЩЭСИД ") && (term % 2 == 1))){} else {
     errors.push("Ошибка в различительной группе =>"+tlg.substr(0, 6)+"; term="+term+';');
@@ -76,11 +71,6 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
           return false;
         }
     }
-    // if((term==3) || (term==9) || (term==15) || (term==21))  // наблюдатели Донецк 20180405
-    //   if (+tlg[12]!=4){
-    //     errors.push("Для срока "+term+" в группа 00 должно быть iR=4");
-    //     return false;
-    //   }
     if(tlg[14] != '/')
       observation.cloud_base_height = tlg[14];
     if(tlg[15] != '/')
@@ -93,21 +83,6 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
   group = tlg.substr(18,5);
   regex = state.group0.regex;
   if (regex.test(group) && ((tlg[23] == ' ') || (tlg[23] == '='))) {      // ЩЭСИД 34524 41993 01102 10010 20010 40253 52004 74440 555 1/009=
-// нужно доработать критерии
-    // if ((+tlg[18]>=0) && (+tlg[18]<9))                                    // 20180405 по данным от Л.А.
-    //   if ((+tlg.substr(15,2)>93) && (+tlg.substr(15,2)<=99)){             // 20180615 по данным от Л.А. 99 - теперь правильное значение
-    //   }else 
-    //     if((+tlg.substr(15,2)>89) && (+tlg.substr(15,2)<94) && (/ 74[2468]/.test(tlg) )) // 20181109 по данным от Л.А. нужно анализировать группу 7
-    //     {
-    //       errors.push("Дальность видимости не соответствует количеству облаков");
-    //       return false;
-    //     }
-    // if ((tlg[18]=='/') || (+tlg[18]==9))                                    // 20180405 по данным от Л.А.
-    //   if ((+tlg.substr(15,2)>89) && (+tlg.substr(15,2)<94)){ 
-    //   }else{
-    //     errors.push("Дальность видимости не соответствует количеству облаков");
-    //     return false;
-    //   }
     if (tlg[18] != '/') 
       observation.cloud_amount_1 = tlg[18];
     if (tlg[19] != '/')
@@ -128,7 +103,6 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
       errors.push("Ошибка в разделе 5");
       return false;
     }
-    // console.log('section5-1:', section);
     while (section.length>=5) {
       // if(~['1', '3', '5', '6', '9'].indexOf(section[0])){ rf 20220823
       if(~['1', '5', '7', '8'].indexOf(section[0])){
@@ -151,21 +125,6 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
               if (section[2] != '/')
                 observation.temperature_soil = sign[section[2]]+section.substr(3,2);
               break
-            // case '3': rf 20220823
-            //   if (section[1] != '/') {
-            //     if (section[0] == '1') 
-            //       observation.soil_surface_condition_1 = section[1];
-            //     else 
-            //       observation.soil_surface_condition_2 = section[1];
-            //   }
-            //   if (section[2] != '/') {
-            //     // sign = section[2] == '0' ? '' : '-';
-            //     if (section[0] == '1') 
-            //       observation.temperature_soil = sign[section[2]]+section.substr(3,2);
-            //     else 
-            //       observation.temperature_soil_min = sign[section[2]]+section[3]+'.'+section[4];
-            //   }
-            //   break;
             case '5':
               if(+section[1]<2){
                 if(+term == 18){}else{
@@ -226,7 +185,6 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
       errors.push("Ошибка в разделе 3");
       return false;
     }
-    // console.log('section3-1:', section);
     while (section.length>=5) {
       // if(~['1', '2', '4', '5', '8', '9'].indexOf(section[0])){ rf 20220822
       if(~['1', '2', '3','4', '5','6', '8', '9'].indexOf(section[0])){
