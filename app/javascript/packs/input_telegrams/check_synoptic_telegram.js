@@ -27,10 +27,11 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
       group57: { errorMessage: 'Ошибка в группе 7 раздела 5',  regex: /^7\d{3}\/$/ },
       group58: { errorMessage: 'Ошибка в группе 8 раздела 5', regex: /^88[0-9]{3}$/ },
   };
-  if((~tlg.indexOf("ЩЭСМЮ ") && (term % 2 == 0)) || (~tlg.indexOf("ЩЭСИД ") && (term % 2 == 1))){} else {
-    errors.push("Ошибка в различительной группе =>"+tlg.substr(0, 6)+"; term="+term+';');
-    return false;
-  }
+  // if((~tlg.indexOf("ЩЭСМЮ ") && (term % 2 == 0)) || (~tlg.indexOf("ЩЭСИД ") && (term % 2 == 1))){} else {
+  //   errors.push("Ошибка в различительной группе =>"+tlg.substr(0, 6)+"; term="+term+';');
+  //   return false;
+  // }
+  // alert(tlg)
   var group = tlg.substr(6,5);
   var isStation = false; 
   var idStation = -1;

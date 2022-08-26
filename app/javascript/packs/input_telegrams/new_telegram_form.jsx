@@ -41,7 +41,7 @@ export default class NewTelegramForm extends React.Component{
       case 'agro':
         return "ЩЭАГЯ "+this.state.codeStation+' =';
       case 'synoptic':
-        let hdr = this.state.tlgTerm % 2 == 0 ? "ЩЭСМЮ " : "ЩЭСИД ";
+        let hdr = '' //this.state.tlgTerm % 2 == 0 ? "ЩЭСМЮ " : "ЩЭСИД ";
         return hdr+this.state.codeStation+' =';
       case 'radiation_daily':
         // let cd = this.state.currDate[3]+this.state.currDate.substr(5,2)+this.state.currDate.substr(8,2); 20190614 Boyko
@@ -78,10 +78,14 @@ export default class NewTelegramForm extends React.Component{
     this.observation.telegram = text;
     switch (this.state.tlgType) {
       case 'synoptic':
+        const first6 = `${date.substr(-2)}${term}1 `
+        if(text.substring(0,6)!=first6)
+          text = first6.concat(text)
         if (!checkSynopticTelegram(term, text, errors, this.props.stations, this.observation)){
           this.setState({errors: errors});
           return;
         }
+        this.observation.telegram = text;
         this.observation.term = term;
         this.observation.date = date;
         break;
@@ -218,7 +222,7 @@ export default class NewTelegramForm extends React.Component{
         </tr>
       </tbody>
     </table> : <input type="text" value={this.state.tlgText} onChange={(event) => this.handleTextChange(event)}/>
-    const rfSignature = `СИРС11 AAXX ${this.state.currDate.substr(8,2)}${this.state.tlgTerm}1`
+    const rfSignature = `${+this.state.tlgTerm % 2 == 0 ? 'СМРС11':'СИРС11'} AAXX ${this.state.currDate.substr(8,2)}${this.state.tlgTerm}1`
     return (
     <div className="col-md-12">
       <form className="telegramForm" onSubmit={(event) => this.handleSubmit(event)}>

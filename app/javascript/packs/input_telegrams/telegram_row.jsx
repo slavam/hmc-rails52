@@ -117,7 +117,7 @@ export default class TelegramRow extends React.Component{
         <td>{this.props.telegram.date.substr(0, 19)}</td>
         {term}
         <td>{this.props.telegram.station_name}</td>
-        {this.state.mode == 'Изменить' ? <td><a href={desiredLink}>{this.state.tlgText}</a></td> : <td><TextTelegramEditForm tlgText={this.state.tlgText} onTelegramEditSubmit={this.handleEditTelegramSubmit} errors = {this.state.errors}/></td> }
+        {this.state.mode == 'Изменить' ? <td><a href={desiredLink}>{this.props.tlgType == 'synoptic' ? this.state.tlgText.substr(6):this.state.tlgText}</a></td> : <td><TextTelegramEditForm tlgText={this.state.tlgText} onTelegramEditSubmit={this.handleEditTelegramSubmit} errors = {this.state.errors}/></td> }
         <td><input id={this.props.telegram.id} type="submit" value={this.state.mode} onClick={(event) => this.handleEditClick(event)}/></td> 
       </tr>
     );
