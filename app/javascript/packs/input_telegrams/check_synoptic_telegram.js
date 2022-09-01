@@ -23,7 +23,7 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
       group550: { errorMessage: 'Ошибка в группе 5 раздела 5', regex: /^5[01][0-9]{3}$/ },
       group551: { errorMessage: 'Ошибка в группе 5 раздела 5', regex: /^5[01][0-9]{3}$/ },
       group552: { errorMessage: 'Ошибка в группе 52 раздела 5', regex: /^52[01][0-9]{2}$/ },
-      group553: { errorMessage: 'Ошибка в группе 53 раздела 5', regex: /^530[0-9]{2}$/ },
+      group553: { errorMessage: 'Ошибка в группе 53 раздела 5', regex: /^530[0-9/]{2}$/ },
       group57: { errorMessage: 'Ошибка в группе 7 раздела 5',  regex: /^7\d{3}\/$/ },
       group58: { errorMessage: 'Ошибка в группе 8 раздела 5', regex: /^88[0-9]{3}$/ },
   };
