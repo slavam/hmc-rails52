@@ -623,7 +623,6 @@ class BulletinsController < ApplicationController
       push_in_m_d(m_d, min_night,1)
       avg_24 = AgroObservation.temperature_avg_24(@bulletin.report_date.strftime("%Y-%m-%d"))
       push_in_m_d(m_d, avg_24,2)
-      # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{m_d[2].inspect}")
       m_d[3*9+2] = SynopticObservation.station_daily_local_avg_temp(10, report_date-1.day) if m_d[3*9+2].nil? #Sedovo
       m_d[7*9+2] = SynopticObservation.station_daily_local_avg_temp(5, report_date-1.day) if m_d[7*9+2].nil? #Mariupol
       at_9_o_clock = SynopticObservation.current_temperatures(6, @bulletin.report_date)
@@ -653,12 +652,14 @@ class BulletinsController < ApplicationController
       precipitation_day = SynopticObservation.precipitation(18, report_date-1.day)
       precipitation_night = SynopticObservation.precipitation(6, report_date)
       (1..10).each do |i|
-        daily = {day: nil, night: nil}
+        daily = {'day'=> nil, 'night'=> nil}
         if precipitation_day[i].present?
-          daily['day'] = precipitation_day[i]>989 ? ((precipitation_day[i]-990)*0.1).round(1) : precipitation_day[i]
+          daily['day'] = precipitation_day[i]>989 ? ((precipitation_day[i]-990)*0.1).round(1) : 
+            (precipitation_day[i] === 0? nil : precipitation_day[i]) 
         end
         if precipitation_night[i].present?
-          daily['night'] = precipitation_night[i]>989 ? ((precipitation_night[i]-990)*0.1).round(1) : precipitation_night[i]
+          daily['night'] = precipitation_night[i]>989 ? ((precipitation_night[i]-990)*0.1).round(1) : 
+          (precipitation_night[i] === 0? nil : precipitation_night[i])
         end
         ret[i] = daily
       end
@@ -676,7 +677,8 @@ class BulletinsController < ApplicationController
       precipitation_night = SynopticObservation.precipitation(6, report_date)
       (1..10).each do |i|
         if precipitation_day[i].present?
-          precipitation[i] = precipitation_day[i]>989 ? ((precipitation_day[i]-990)*0.1).round(1) : precipitation_day[i]
+          precipitation[i] = precipitation_day[i]>989 ? ((precipitation_day[i]-990)*0.1).round(1) : 
+            (precipitation_day[i] === 0 ? nil : precipitation_day[i])
         end
         if precipitation_night[i].present?
           precipitation[i] ||= 0
@@ -685,7 +687,7 @@ class BulletinsController < ApplicationController
           else
             precipitation[i] = precipitation[i] + precipitation_night[i]
           end
-          # precipitation[i] += precipitation_night[i]>989 ? ((precipitation_night[i]-990)*0.1).round(1) : precipitation_night[i]
+          precipitation[i] === 0? nil : precipitation[i]
         end
       end
       precipitation
