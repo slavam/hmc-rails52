@@ -20,7 +20,9 @@ class OtherObservationsController < ApplicationController
     @stations =  Station.name_stations_as_array #all.order(:name)
     @observations = OtherObservation.last_50_telegrams('temp') #.to_json
     @input_mode = params[:input_mode]
-    @local_time = Time.now.localtime.strftime("%Y-%m-%d %H")
+    # @local_time = Time.now.localtime.strftime("%Y-%m-%d %H")
+    lt = Time.now.utc+3*60*60
+    @local_time = lt.strftime("%Y-%m-%d %H")
     @station_id = current_user.station_id.to_s
   end
 
