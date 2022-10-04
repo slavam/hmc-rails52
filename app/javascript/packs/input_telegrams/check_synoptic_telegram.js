@@ -289,6 +289,11 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
     errors.push("Отсутствует обязательная группа 2 раздела 1");
     return false;
   }
+  // 20221004 KMA
+  if((tlg[42] == '5') || (tlg[48] == '5')){}else{
+    errors.push("Отсутствует обязательная группа 5 раздела 1");
+    return false;
+  }
   while (section.length>=5) {
     if(~['1', '2', '3', '4', '5', '6', '7', '8'].indexOf(section[0])){
       group = section.substr(0,5);
@@ -357,8 +362,14 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
       }
       // rf 20220819
       if((tlg[12] == '1') && ((+term == 6) || (+term == 18)))
-        if(/ 5\d\d\d\d 6/.test(tlg)){}else{
+        if(/ 5\d{4} 6/.test(tlg)){}else{
           errors.push("Для срока "+term+" нет группы 6 в разделе 1");
+          return false;
+        }
+      // rf 20221003
+      if (tlg[13] == '1')
+        if((/5\d{4} 7\d{4}/.test(tlg)) || (/5\d{4} 6\d{4} 7\d{4}/.test(tlg))){}else{
+          errors.push("Для iX=1 в разделе 1 должна быть группа 7");
           return false;
         }
       if(section.length>6) // 20190408 
