@@ -255,6 +255,13 @@ class StormObservationsController < ApplicationController
     @storm_observation = StormObservation.new
   end
 
+  def input_storm_rf
+    stations = Station.all.order(:name)
+    @stations = stations.map {|s| {label: s.name, value: s.code, id: s.id}}
+    @telegrams = []
+    # @input_mode = params[:input_mode]
+  end
+
   def input_storm_telegrams
     @stations = Station.all.order(:name)
     @telegrams = StormObservation.short_last_50_telegrams(current_user)

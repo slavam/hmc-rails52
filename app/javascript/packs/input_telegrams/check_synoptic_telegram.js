@@ -109,9 +109,13 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
       if(~['1', '5', '7', '8'].indexOf(section[0])){
         group = section.substr(0,5);
         var name = 'group5';
-        if(group[0]=='5')
+        if(group[0]=='5'){
           name += group.substr(0,2)
-        else
+          if(~['0','1','2','3'].indexOf(group[1])){}else{
+            errors.push("Группа 5 в разделе 5 на второй позиции может содержать только 0,1,2,3");
+            return false;
+          }
+        }else
           name += group.substr(0,1)
         regex = state[name].regex;
         if (regex.test(group) && ((section[5] == ' ') || (section[5] == '=') || (section.length == 5))) {

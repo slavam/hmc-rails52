@@ -1,0 +1,14 @@
+input[type="radio"]{
+  height: 16px;
+  width: 16px;
+}
+label {
+  width: 120px;
+  /* display: inline-block; */
+  display: block;
+  text-align: right;
+}
+.other label {
+  text-align: left;
+  margin-left: 10px;
+}
