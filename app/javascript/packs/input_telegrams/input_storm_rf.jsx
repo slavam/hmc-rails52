@@ -1,27 +1,30 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import Select from 'react-select';
+import Select from "react-select"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ru from 'date-fns/locale/ru';
 // import './input_storm_rf.css'
 import { checkStormRf } from './check_storm_rf';
 
-const LastStormsRf = ({telegrams, stations}) => {
+const LastStormsRf = ({lastTelegrams, stations}) => {
   var rows = [];
-  telegrams.forEach((t) => {
-    t.date = t.date.replace(/T/, " ");
-    rows.push(<TelegramRow telegram={t} key={t.id} tlgType={tlgType} stations={stations}/>);
+  lastTelegrams.forEach((t) => {
+    let stationName = stations.find(s => s.id === t.station_id).label
+    rows.push(<tr key={t.id}>
+      <td>{t.telegram_date.replace(/T/, " ").substr(0,16)}</td>
+      <td>{t.created_at.replace(/T/, " ").substr(0,19)}</td>
+      <td>{stationName}</td>
+      <td>{t.telegram}</td></tr>)
   });
   return (
     <table className="table table-hover">
       <thead>
         <tr>
-          <th width = "200px">Дата { tlgType == 'storm' ? 'ввода' : ''}</th>
-          { tlgType == 'synoptic' ? <th>Срок</th> : <th></th>}
+          <th width = "200px">Дата/время явления (UTC)</th>
+          <th width = "200px">Дата/время вода (UTC)</th>
           <th>Метеостанция</th>
           <th>Текст</th>
-          <th>Действия</th>
         </tr>
       </thead>
       <tbody>{rows}</tbody>
@@ -45,6 +48,7 @@ const eventArray = [
   // {label: "", value:, isDangerous:},
 ]
 export function InputStormRf({telegrams, stations}){
+  const [lastTelegrams, setLastTelegrams] = useState(telegrams)
   const [eventWarep, setEventWarep] = useState(eventArray[0])
   const [isStart, setIsStart] = useState(true)
   const [eventDate, setEventDate] = useState(new Date())
@@ -100,7 +104,20 @@ export function InputStormRf({telegrams, stations}){
   const saveStormMessage = ()=>{
     let error = []
     if(checkStormRf(+eventWarep.value, tail, error)){
-      alert(telegram+' '+tail)
+      let message = {telegram_type: telegram.substr(0,4),
+        station_id: station.id,
+        telegram: telegram+(tail.length==1?'':' ')+tail,
+        telegram_date: eventDate.toISOString().replace('T',' ').substr(0,19)}
+      $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        data: {storm_observation: message},
+        url: "/storm_observations/create_storm_rf"
+        }).done((data) => {
+          setLastTelegrams(data.telegrams);
+        }).fail((res) => {
+          alert("Ошибка записи в базу")
+        });
     }else{
       alert(error[0])
     }
@@ -108,7 +125,6 @@ export function InputStormRf({telegrams, stations}){
   return(
     <div>
       <h1 color="black">Ввод штормовых сообщений</h1>
-      <form>
       <table className="table table-hover">
         <thead>
           <tr>
@@ -122,13 +138,13 @@ export function InputStormRf({telegrams, stations}){
         <tbody>
           <tr>
             <td>
-                <section className='other'>
-                  <input id='start-event' type="radio" name="start-event" value={isStart} checked={isStart} onChange={onStartChanged} /> 
-                  <label align="left" htmlFor="start-event">Начало</label>
-                  <br/>
-                  <input id="end-event" type="radio" name="end-event" value={!isStart} checked={!isStart} onChange={onEndChanged} /> 
-                  <label htmlFor="end-event">Окончание</label>
-                </section>
+              <section className='other'>
+                <input id='start-event' type="radio" name="start-event" value={isStart} checked={isStart} onChange={onStartChanged} /> 
+                <label align="left" htmlFor="start-event">Начало</label>
+                <br/>
+                <input id="end-event" type="radio" name="end-event" value={!isStart} checked={!isStart} onChange={onEndChanged} /> 
+                <label htmlFor="end-event">Окончание</label>
+              </section>
             </td>
             <td><DatePicker selected={eventDate} onChange={date => setEventDate(date)} locale={ru}
               showTimeSelect
@@ -141,12 +157,13 @@ export function InputStormRf({telegrams, stations}){
           </tr>
         </tbody>
       </table>
-      </form>
       <div>
         <p><b>{telegram}</b></p>
         <input type="text" value={tail} onChange={onTailChanged}/>
         <button type="button" onClick={saveStormMessage}>Сохранить</button>
       </div>
+      <h1 color="black">Последние шторма</h1>
+      <LastStormsRf lastTelegrams={lastTelegrams} stations={stations} />
     </div>
   )
 }

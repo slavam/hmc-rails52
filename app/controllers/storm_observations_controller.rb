@@ -258,8 +258,18 @@ class StormObservationsController < ApplicationController
   def input_storm_rf
     stations = Station.all.order(:name)
     @stations = stations.map {|s| {label: s.name, value: s.code, id: s.id}}
-    @telegrams = []
-    # @input_mode = params[:input_mode]
+    @telegrams = StormObservation.where("telegram_type like 'W%'").order(telegram_date: :desc).limit(20)
+    # @telegrams = []
+  end
+
+  def create_storm_rf
+    observation = StormObservation.new(storm_observation_params)
+    if observation.save
+      last_telegrams_rf = StormObservation.where("telegram_type like 'W%'").order(telegram_date: :desc).limit(20)
+      render json: {telegrams: last_telegrams_rf}
+    else
+      render json: {errors: observation.errors.messages}, status: :unprocessable_entity
+    end
   end
 
   def input_storm_telegrams

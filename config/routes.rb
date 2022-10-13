@@ -84,6 +84,7 @@ Rails.application.routes.draw do
   get 'storm_observations/storm_description', to: 'storm_observations#storm_description'
   get 'storm_observations/get_storm_context', to: 'storm_observations#get_storm_context'
   get 'storm_observations/input_storm_rf', to: 'storm_observations#input_storm_rf'
+  post 'storm_observations/create_storm_rf', to: 'storm_observations#create_storm_rf'
   resources :storm_observations
   # get 'synoptic_observations/:id/edit_synoptic_data', to: 'synoptic_observations#edit_synoptic_data'
   # get 'synoptic_observations/new_synoptic_data', to: 'synoptic_observations#new_synoptic_data'
