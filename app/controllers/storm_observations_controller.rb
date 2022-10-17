@@ -265,6 +265,10 @@ class StormObservationsController < ApplicationController
   def create_storm_rf
     observation = StormObservation.new(storm_observation_params)
     if observation.save
+      ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: observation})
+      User.where(role: ['synoptic', 'vip']).each do |synoptic|
+        ActionCable.server.broadcast("storm_telegram_user_#{synoptic.id}", {sound: true, telegram_id: observation.id})
+      end
       last_telegrams_rf = StormObservation.where("telegram_type like 'W%'").order(telegram_date: :desc).limit(20)
       render json: {telegrams: last_telegrams_rf}
     else

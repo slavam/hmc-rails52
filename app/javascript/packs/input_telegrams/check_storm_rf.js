@@ -46,6 +46,14 @@ export function checkStormRf(code, tlg, error){
     }
     return true
   }
+  const checkGroup8=(tlg,start)=>{
+    let group = tlg.substr(start,5)
+    if(!/^8[0-9/]{4}$/.test(group)){
+      error.push("Ошибка в группе 7, недопустимое значение VV")
+      return false
+    }
+    return true
+  }
   const checkGroup906 = (tlg,start)=>{
     let group = tlg.substr(start,5)
     if(/^906[0-6]\d$/.test(group)){}else{
@@ -179,6 +187,59 @@ export function checkStormRf(code, tlg, error){
         }
       }else{
         error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }
+    case 26:
+      if(!checkGroup45(tlg))
+        return false
+      if(tlg[5]==' '){
+        if(!checkGroup7(tlg,6))
+          return false
+        if(tlg[12]=='=')
+          return true
+        else{
+          error.push("Нарушен формат сообщения для кода 26")
+          return false
+        }
+      }else{
+        error.push("Нарушен формат сообщения для кода 26")
+        return false
+      }
+    case 30:
+      if(tlg[0]=='=')
+        return true
+      if(tlg[0]=='2'){
+        let group = tlg.substr(0,5)
+        if(!/^2\/\/[5-9/][0-9/]$/.test(group))
+          return false
+        if(tlg[5]==' '){
+          if(!checkGroup8(tlg,6))
+            return false
+          if(tlg[11]=='=')
+            return true
+          else{
+            error.push("Нарушен формат сообщения для кода 30")
+            return false
+          }
+        }
+        if(tlg[5]=='=')
+          return true
+        else{
+          error.push("Нарушен формат сообщения для кода 30")
+          return false
+        }
+      }
+      if(tlg[0]=='8'){
+        if(!checkGroup8(tlg,0))
+          return false
+        if(tlg[5]=='=')
+          return true
+        else{
+          error.push("Нарушен формат сообщения для кода 30")
+          return false
+        }
+      }else{
+        error.push("Нарушен формат сообщения для кода 30")
         return false
       }
     default:
