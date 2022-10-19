@@ -46,6 +46,18 @@ const eventArray = [
   {label: <b>25 Сильный мороз</b>, value: 25, isDangerous: true},
   {label: <b>26 Аномально-холодная погода</b>, value: 26, isDangerous: true},
   {label: "30 Низкая облачность при 5 баллах и более", value: 30, isDangerous: false},
+  {label: "31 Закрытие гор, перевалов облаками, осадками, туманом", value: 31, isDangerous: false},
+  {label: "35 Пыльная (песчаная) буря", value: 35, isDangerous: false},
+  {label: <b>36 Сильная пыльная (песчаная) буря</b>, value: 36, isDangerous: true},
+  {label: "37 Метель низовая", value: 37, isDangerous: false},
+  {label: "38 Метель общая", value: 38, isDangerous: false},
+  {label: <b>39 Сильная метель</b>, value: 39, isDangerous: true},
+  {label: "40 Ухудшение видимости при осадках", value: 40, isDangerous: false},
+  {label: "41 Ухудшение видимости из-за дыма", value: 41, isDangerous: false},
+  {label: "42 Ухудшение видимости из-за мглы", value: 42, isDangerous: false},
+  {label: "43 Ухудшение видимости из-за дымки", value: 43, isDangerous: false},
+  {label: "44 Ухудшение видимости из-за тумана", value: 44, isDangerous: false},
+  {label: <b>47 Сильный туман</b>, value: 47, isDangerous: true},
   // {label: "", value:, isDangerous:},
   // {label: "", value:, isDangerous:},
 ]
@@ -99,7 +111,23 @@ export function InputStormRf({telegrams, stations}){
       case 26:
         setTail('5sTTT 7VVttt=')
         break
-      // case 30:                
+      // case 30:
+      // case 31:
+      case 35:
+      case 36:
+      case 37:
+      case 38:
+      case 39:
+        setTail('1ddffFF 7VVttt=')
+        break
+      case 40:
+      case 41:
+      case 42:
+      case 43:
+      case 44:
+      case 47:
+        setTail('7VVttt=')
+        break
       default:
         setTail('=')
     }

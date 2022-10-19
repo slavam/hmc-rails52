@@ -4,7 +4,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.5.1'
 
 gem 'bootstrap-sass', '~> 3.3', '>= 3.3.7'
-gem 'autoprefixer-rails'
+# gem 'autoprefixer-rails'
+gem 'autoprefixer-rails', '~> 7.1.6'
 gem 'jquery-rails', '~> 4.3', '>= 4.3.3'
 gem 'sprockets-rails', '~> 3.2', '>= 3.2.1'
 gem 'rack-cors', '~> 1.1', '>= 1.1.1'
@@ -38,8 +39,8 @@ gem 'uglifier', '>= 1.3.0'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
 gem 'webpacker'
 # See https://github.com/rails/execjs#readme for more supported runtimes
-# gem 'mini_racer', platforms: :ruby
-gem 'therubyracer', :platforms => :ruby
+gem 'mini_racer', platforms: :ruby
+# gem 'therubyracer', :platforms => :ruby
 
 gem 'descriptive_statistics', '~> 2.5', '>= 2.5.1'
 

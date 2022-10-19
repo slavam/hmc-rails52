@@ -242,6 +242,83 @@ export function checkStormRf(code, tlg, error){
         error.push("Нарушен формат сообщения для кода 30")
         return false
       }
+    case 31:
+      if(tlg[0]=='=')
+        return true
+      if(tlg[0]=='2'){
+        if(!checkGroup2(tlg,0))
+          return false
+        if(tlg[5]=='=')
+          return true
+        else{
+          error.push("Нарушен формат сообщения для кода 31")
+          return false
+        }
+      }
+    case 35:
+    case 36:
+    case 37:
+    case 38:
+    case 39:
+      if(!checkGroup1(tlg))
+        return false
+      if(tlg[7]!=' '){
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }
+      if(!checkGroup7(tlg,8))
+        return false
+      if(tlg[14]!='='){
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }else
+        return true
+    case 40:
+      let pos = 0
+      if(tlg[0]=='2'){
+        if(!checkGroup2(tlg,0))
+          return false
+        if(tlg[5]!=' '){
+          error.push("Нарушен формат сообщения для кода 40")
+          return false
+        }
+        pos = 6
+      }
+      if(!checkGroup7(tlg,pos))
+        return false
+      if(tlg[pos+6]!='='){
+        error.push("Нарушен формат сообщения для кода 40")
+        return false
+      }else
+        return true
+    case 41:
+    case 42:
+    case 43:
+    case 47:
+      if(!checkGroup7(tlg,0))
+        return false
+      if(tlg[6]!='='){
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }else
+        return true
+    case 44:
+      if(!checkGroup7(tlg,0))
+        return false
+      if(tlg[6]==' '){
+        if(!checkGroup8(tlg,7))
+          return false
+        if(tlg[12]!='='){
+          error.push("Нарушен формат сообщения для кода 44")
+          return false
+        }else
+          return true
+      }
+      if(tlg[6]!='='){
+        error.push("Нарушен формат сообщения для кода 44")
+        return false
+      }else
+        return true
     default:
       error = "Ошибка в коде WAREP"
       return false
