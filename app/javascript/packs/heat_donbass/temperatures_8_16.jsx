@@ -24,14 +24,16 @@ const TableTemperatures816 = ({temperatures, maxDay}) => {
   rows.push(<tr key="2"><td>16:00</td>{fillValues(1,1)}</tr>);
   rows.push(<tr key="3"><td rowSpan='2'><b>Макеевка</b></td><td>08:00</td>{fillValues(1,0)}</tr>);
   rows.push(<tr key="4"><td>16:00</td>{fillValues(1,1)}</tr>);
-  rows.push(<tr key="5"><td rowSpan='2'><b>Горловка</b></td><td>08:00</td>{fillValues(5,0)}</tr>);
-  rows.push(<tr key="6"><td>16:00</td>{fillValues(5,1)}</tr>);
+  rows.push(<tr key="5"><td rowSpan='2'><b>Горловка</b></td><td>08:00</td>{fillValues(8,0)}</tr>);
+  rows.push(<tr key="6"><td>16:00</td>{fillValues(8,1)}</tr>);
   rows.push(<tr key="7"><td rowSpan='2'><b>Шахтерск</b></td><td>08:00</td>{fillValues(6,0)}</tr>);
   rows.push(<tr key="8"><td>16:00</td>{fillValues(6,1)}</tr>);
   rows.push(<tr key="9"><td rowSpan='2'><b>Старобешево</b></td><td>08:00</td>{fillValues(7,0)}</tr>);
   rows.push(<tr key="10"><td>16:00</td>{fillValues(7,1)}</tr>);
   rows.push(<tr key="11"><td rowSpan='2'><b>Новоазовск</b></td><td>08:00</td>{fillValues(10,0)}</tr>);
   rows.push(<tr key="12"><td>16:00</td>{fillValues(10,1)}</tr>);
+  rows.push(<tr key="11"><td rowSpan='2'><b>Мариуполь</b></td><td>08:00</td>{fillValues(5,0)}</tr>);
+  rows.push(<tr key="12"><td>16:00</td>{fillValues(5,1)}</tr>);
   return <table className="table table-hover"><tbody>{rows}</tbody></table>;
 };
 

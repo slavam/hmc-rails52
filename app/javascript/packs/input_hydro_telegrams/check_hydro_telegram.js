@@ -213,7 +213,8 @@ export function checkHydroTelegram(tlgText, hydroPosts, errors, observation, dat
         return false;
       }
     if(tlg[currPos] == '4')
-      if(/^4\d{4}$/.test(tlg.substr(currPos,5))){
+      // if(/^4\d{4}$/.test(tlg.substr(currPos,5))){ Aram. 20221020
+      if(/^4\d{2}[0-9/]{2}$/.test(tlg.substr(currPos,5))){
         currPos += 6;
       } else {
         errors.push("Ошибка в группе 4 раздела "+sectionId);

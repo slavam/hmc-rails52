@@ -268,16 +268,18 @@ class OtherObservationsController < ApplicationController
     start_date = @year+'-'+@month+'-01'
     end_date = @year+'-'+@month+'-'+last_day
     rows = OtherObservation.select("obs_date, station_id, data_type, value").
-      where("station_id in (1,2,3,10) and obs_date >= ? AND obs_date <= ? AND data_type in ('temp', 'temp16')", start_date, end_date).order(:obs_date, :station_id)
+      where("station_id in (1,2,3,10,5) and obs_date >= ? AND obs_date <= ? AND data_type in ('temp', 'temp16')", start_date, end_date).order(:obs_date, :station_id)
+    # add Mariupol KMA 20221020
     @temperatures = []
     rows.each {|t|
       d = t.obs_date.day
       s = t.station_id
       @temperatures[d] ||= []
       @temperatures[d][s] ||= []
-      @temperatures[d][5] ||= []
+      
       @temperatures[d][6] ||= []
       @temperatures[d][7] ||= []
+      @temperatures[d][8] ||= []
       if t.data_type == 'temp'
         @temperatures[d][s][0] = t.value
       else
@@ -288,7 +290,7 @@ class OtherObservationsController < ApplicationController
       @temperatures[i] ||= []
       if @temperatures[i].present? && @temperatures[i][1].present? && @temperatures[i][1][0].present?
         if @temperatures[i][3].present? && @temperatures[i][3][0].present?
-          @temperatures[i][5][0] = ((@temperatures[i][1][0]+@temperatures[i][3][0])/2).round(1) # Gorlovka
+          @temperatures[i][8][0] = ((@temperatures[i][1][0]+@temperatures[i][3][0])/2).round(1) # Gorlovka
         end
         if @temperatures[i][2].present? && @temperatures[i][2][0].present?
           @temperatures[i][7][0] = ((@temperatures[i][1][0]+@temperatures[i][2][0])/2).round(1) # Starobeshevo
@@ -302,7 +304,7 @@ class OtherObservationsController < ApplicationController
       # 16
       if @temperatures[i].present? && @temperatures[i][1].present? && @temperatures[i][1][1].present?
         if @temperatures[i][3].present? && @temperatures[i][3][1].present?
-          @temperatures[i][5][1] = ((@temperatures[i][1][1]+@temperatures[i][3][1])/2).round(1) # Gorlovka
+          @temperatures[i][8][1] = ((@temperatures[i][1][1]+@temperatures[i][3][1])/2).round(1) # Gorlovka
         end
         if @temperatures[i][2].present? && @temperatures[i][2][1].present?
           @temperatures[i][7][1] = ((@temperatures[i][1][1]+@temperatures[i][2][1])/2).round(1) # Starobeshevo
@@ -344,7 +346,8 @@ class OtherObservationsController < ApplicationController
     start_date = year+'-'+month+'-01'
     end_date = year+'-'+month+'-'+last_day
     rows = OtherObservation.select("obs_date, station_id, value").
-      where("station_id in (1,2,3,10) and obs_date >= ? AND obs_date <= ? AND data_type='#{variant}'", start_date, end_date).order(:obs_date, :station_id)
+    # add Mariupol KMA 20221020
+      where("station_id in (1,2,3,10,5) and obs_date >= ? AND obs_date <= ? AND data_type='#{variant}'", start_date, end_date).order(:obs_date, :station_id)
     result = []
     rows.each {|t|
       d = t.obs_date.day

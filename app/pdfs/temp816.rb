@@ -48,7 +48,8 @@ class Temp816 < Prawn::Document
     table = []
     (1..@max_day).each do |d|
       row = [d]
-      [1,1,5,6,7,10].each{|s| 
+      # [1,1,5,6,7,10].each{|s| 
+      [1,1,8,6,7,10,5].each{|s| 
         row << (@temperatures[d].present? && @temperatures[d][s].present? ? @temperatures[d][s][0] : '')
         row << (@temperatures[d].present? && @temperatures[d][s].present? ? @temperatures[d][s][1] : '')
       }
@@ -62,9 +63,10 @@ class Temp816 < Prawn::Document
         {content: "<b>Горловка</b>", colspan: 2}, 
         {content: "<b>Шахтерск</b>", colspan: 2},
         {content: "<b>Старобешево</b>", colspan: 2},
-        {content: "<b>Новоазовск</b>", colspan: 2}
+        {content: "<b>Новоазовск</b>", colspan: 2},
+        {content: "<b>Мариуполь</b>", colspan: 2}
       ],
-      ['08.00','16.00','08.00','16.00','08.00','16.00','08.00','16.00','08.00','16.00','08.00','16.00']
+      ['08.00','16.00','08.00','16.00','08.00','16.00','08.00','16.00','08.00','16.00','08.00','16.00','08.00','16.00']
     ] + table
   end
 end

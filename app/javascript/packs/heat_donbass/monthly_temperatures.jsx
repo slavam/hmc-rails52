@@ -3,12 +3,18 @@ import ReactDOM from 'react-dom';
 import MonthYearForm from './month_year_form';
 
 const MonthlyTemperaturesTable = ({temperatures, maxDay}) => {
-  let rows = [<tr><td style={{borderColor:"black"}} align="center"><b>Число</b></td><td style={{borderColor:"black"}} align="center"><b>Донецк</b></td><td style={{borderColor:"black"}} align="center"><b>Дебальцево</b></td><td style={{borderColor:"black"}} align="center"><b>Амвросиевка</b></td><td style={{borderColor:"black"}} align="center"><b>Седово</b></td></tr>];
+  let rows = [<tr align="center">
+    <td style={{borderColor:"black"}}><b>Число</b></td>
+    <td style={{borderColor:"black"}}><b>Донецк</b></td>
+    <td style={{borderColor:"black"}}><b>Дебальцево</b></td>
+    <td style={{borderColor:"black"}}><b>Амвросиевка</b></td>
+    <td style={{borderColor:"black"}}><b>Седово</b></td>
+    <td style={{borderColor:"black"}}><b>Мариуполь</b></td></tr>];
   if (temperatures){
     for(var i=1; i<=maxDay; ++i){
       let values = [];
-      [1,3,2,4].forEach((j) => {
-      // for(var j=1; j<5; ++j){
+      // add Mariupol KMA 20221020
+      [1,3,2,4,5].forEach((j) => {
         let val = '';
         if((temperatures[i] != null) && (temperatures[i][j] != null)){
           val = temperatures[i][j];

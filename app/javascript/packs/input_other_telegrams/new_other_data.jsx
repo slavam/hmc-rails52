@@ -106,7 +106,8 @@ export default class NewOtherData extends React.Component{
     const types = [];
     Object.keys(this.props.otherTypes).forEach( k => types.push({value: k, label: this.props.otherTypes[k]}));
     const stations = [];
-    [1,2,3,10].forEach(s => stations.push({value: s, label: this.props.stations[s]}));
+    // add Mariupol KMA 20221020
+    [1,2,3,10,5].forEach(s => stations.push({value: s, label: this.props.stations[s]}));
     const points = [
       { value: 'Макеевка',  label: 'Макеевка' },
       { value: 'Кировский',  label: 'Кировский' },
@@ -120,16 +121,18 @@ export default class NewOtherData extends React.Component{
       { value: 'Новоселовка',  label: 'Новоселовка' },
       { value: 'Благодатное',  label: 'Благодатное' },
       { value: 'Алексеево-Орловка',  label: 'Алексеево-Орловка' },
-
-      {value: 'Николаевка', label: 'Николаевка'},
-      {value: 'Кременевка', label: 'Кременевка'},
-      {value: 'Захаровка', label: 'Захаровка'},
-      {value: 'Стародубовка', label: 'Стародубовка'},
-      {value: 'Алексеево-Дружковка', label: 'Алексеево-Дружковка'},
-      {value: 'Черкасское', label: 'Черкасское'},
-      {value: 'Северск', label: 'Северск'},
-      {value: 'Торское', label: 'Торское'},
     ];
+// Change OtherObservation::POSTS   !!!!!!!!!!!!!!
+// Aram 20221020
+      // {value: 'Николаевка', label: 'Николаевка'},
+      // {value: 'Кременевка', label: 'Кременевка'},
+      // {value: 'Захаровка', label: 'Захаровка'},
+      // {value: 'Стародубовка', label: 'Стародубовка'},
+      // {value: 'Алексеево-Дружковка', label: 'Алексеево-Дружковка'},
+      // {value: 'Черкасское', label: 'Черкасское'},
+      // {value: 'Северск', label: 'Северск'},
+      // {value: 'Торское', label: 'Торское'},
+    
     const periods = [
       { value: 'day',  label: 'День' },
       { value: 'night',  label: 'Ночь' }
