@@ -26,9 +26,25 @@ export function checkStormRf(code, tlg, error){
     }
     return true
   }
+  const checkGroup3 = (tlg,start)=>{
+    let group = tlg.substr(start,6)
+    if(!/^3[0-9/]{2}[01]\d{2}$/.test(group)){
+      error.push("Ошибка в формате группы 3")
+      return false
+    }
+    return true
+  }
   const checkGroup45 = (tlg)=>{
     if(!/^[45][01]\d{3}/.test(tlg.substr(0,5))){
       error.push("Ошибка в формате группы "+tlg[0])
+      return false
+    }
+    return true
+  }
+  const checkGroup6=(tlg)=>{
+    let group = tlg.substr(0,5)
+    if(!/^6\d{3}\/$/.test(group)){
+      error.push("Ошибка в формате группы 6")
       return false
     }
     return true
@@ -319,6 +335,78 @@ export function checkStormRf(code, tlg, error){
         return false
       }else
         return true
+    case 51:
+      if(!checkGroup3(tlg,0))
+        return false
+      if(tlg[6]=='=')
+        return true
+      else{
+        error.push("Нарушен формат сообщения для кода 51")
+        return false
+      }
+    case 52:
+    case 53:
+    case 54:
+    case 55:
+    case 56:
+    case 57:
+    case 58:
+    case 59:
+      if(!checkGroup1(tlg))
+        return false
+      if(tlg[7]!=' '){
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }
+      if(!checkGroup3(tlg,8))
+        return false
+      if(tlg[14]=='=')
+        return true
+      if(tlg[14]!=' '){
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }
+      if(!checkGroup7(tlg,15))
+        return false
+      if(tlg[21]=='=')
+        return true
+      else{
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }
+    case 62:
+      if(!checkGroup6(tlg))
+        return false
+      if(tlg[5]!=' '){
+        error.push("Нарушен формат сообщения для кода 62")
+        return false
+      }
+      if(!checkGroup7(tlg,6))
+        return false
+      if(tlg[12]=='=')
+        return true
+      else{
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }
+    case 63:
+    case 64:
+    case 65:
+    case 66:
+      if(!checkGroup6(tlg,0))
+        return false
+      if(tlg[5]!=' '){
+          error.push("Нарушен формат сообщения для кода "+code)
+          return false
+        }
+      if(!checkGroup906(tlg,6))
+        return false
+      if(tlg[11]=='=')
+        return true
+      else{
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }  
     default:
       error = "Ошибка в коде WAREP"
       return false

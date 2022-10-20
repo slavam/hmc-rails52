@@ -58,6 +58,20 @@ const eventArray = [
   {label: "43 Ухудшение видимости из-за дымки", value: 43, isDangerous: false},
   {label: "44 Ухудшение видимости из-за тумана", value: 44, isDangerous: false},
   {label: <b>47 Сильный туман</b>, value: 47, isDangerous: true},
+  {label: "51 Гололедица на дорогах", value: 51, isDangerous: false},
+  {label: "52 Изморозь", value: 52, isDangerous: false},
+  {label: <b>53 Сильная изморозь</b>, value: 53, isDangerous: true},
+  {label: "54 Гололед", value: 54, isDangerous: false},
+  {label: <b>55 Сильный гололед</b>, value: 55, isDangerous: true},
+  {label: "56 Отложение мокрого снега", value: 56, isDangerous: false},
+  {label: <b>57 Сильное отложение мокрого снега</b>, value: 57, isDangerous: true},
+  {label: "58 Сложное отложение", value: 58, isDangerous: false},
+  {label: <b>59 Сильное сложное отложение</b>, value: 59, isDangerous: true},
+  {label: <b>62 Продолжительный сильный дождь</b>, value: 62, isDangerous: true},
+  {label: "63 Сильный дождь (дождь, ливневый дождь)", value: 63, isDangerous: false},
+  {label: <b>64 Очень сильный дождь (дождь, ливневый дождь)</b>, value: 64, isDangerous: true},
+  {label: "65 Сильные смешанные осадки (мокрый снег, дождь со снегом)", value: 65, isDangerous: false},
+  {label: <b>66 Очень сильные смешанные осадки (мокрый снег, дождь со снегом)</b>, value: 66, isDangerous: true},
   // {label: "", value:, isDangerous:},
   // {label: "", value:, isDangerous:},
 ]
@@ -127,6 +141,28 @@ export function InputStormRf({telegrams, stations}){
       case 44:
       case 47:
         setTail('7VVttt=')
+        break
+      case 51:
+        setTail('3//sTT=')
+        break
+      case 52:
+      case 53:
+      case 54:
+      case 55:
+      case 56:
+      case 57:
+      case 58:
+      case 59:
+        setTail('1ddffFF 3RRsTT=')
+        break
+      case 62:
+        setTail('6RRR/ 7VVttt=')
+        break
+      case 63:
+      case 64:
+      case 65:
+      case 66:
+        setTail('6RRR/ 906tt=')
         break
       default:
         setTail('=')
