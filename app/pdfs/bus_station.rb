@@ -42,7 +42,7 @@ class BusStation < Prawn::Document
             СОВРЕМЕННЫХ ТЕХНОЛОГИЙ
             \"ДОНЕЦКИЕ ТЕХНОЛОГИИ\"
 		
-            В.В. Гайдуку", leading: 3
+            Р.И. Маркелову", leading: 3
     end
     
     move_down 50

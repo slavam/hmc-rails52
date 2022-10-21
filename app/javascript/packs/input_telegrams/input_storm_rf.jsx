@@ -15,7 +15,7 @@ const LastStormsRf = ({lastTelegrams, stations}) => {
       <td>{t.telegram_date.replace(/T/, " ").substr(0,16)}</td>
       <td>{t.created_at.replace(/T/, " ").substr(0,19)}</td>
       <td>{stationName}</td>
-      <td>{t.telegram}</td></tr>)
+      <td><a href={'/storm_observations/'+t.id}>{t.telegram}</a></td></tr>)
   });
   return (
     <table className="table table-hover">
@@ -72,8 +72,15 @@ const eventArray = [
   {label: <b>64 Очень сильный дождь (дождь, ливневый дождь)</b>, value: 64, isDangerous: true},
   {label: "65 Сильные смешанные осадки (мокрый снег, дождь со снегом)", value: 65, isDangerous: false},
   {label: <b>66 Очень сильные смешанные осадки (мокрый снег, дождь со снегом)</b>, value: 66, isDangerous: true},
-  // {label: "", value:, isDangerous:},
-  // {label: "", value:, isDangerous:},
+  {label: "68 Ледяной дождь", value: 68, isDangerous: false},
+  {label: "81 Ливень", value: 81, isDangerous: false},
+  {label: <b>82 Сильный ливень</b>, value: 82, isDangerous: true},
+  {label: "85 Сильнй снег (снег, ливневый снег и др.)", value: 85, isDangerous: false},
+  {label: <b>86 Очень сильный снег (снег, ливневый снег и др.)</b>, value: 86, isDangerous: true},
+  {label: "89 Град", value: 89, isDangerous: false},
+  {label: <b>90 Крупный град</b>, value: 90, isDangerous: true},
+  {label: "91 Гроза на станции", value: 91, isDangerous: false},
+  {label: "92 Гроза в окрестности", value: 92, isDangerous: false},
 ]
 export function InputStormRf({telegrams, stations}){
   const [lastTelegrams, setLastTelegrams] = useState(telegrams)
@@ -164,6 +171,23 @@ export function InputStormRf({telegrams, stations}){
       case 66:
         setTail('6RRR/ 906tt=')
         break
+      case 68:
+        setTail('3//sTT=')
+        break
+      case 81:
+      case 82:
+      case 85:
+      case 86:
+        setTail('6RRR/ 906tt=')
+        break
+      // case 89:
+      case 90:
+        setTail('906tt 932RR=')
+        break
+      case 91:
+      case 92:
+          setTail('1ddffFF 2ddww=')
+          break
       default:
         setTail('=')
     }

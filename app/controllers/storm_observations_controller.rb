@@ -243,7 +243,7 @@ class StormObservationsController < ApplicationController
     add_param = params[:storm_type].present? ? "&term=#{params[:storm_type]}" : ''
     station = params[:station_id].present? ? "&station_id=#{params[:station_id]}" : ''
     text = params[:text].present? ? "&text=#{params[:text]}" : ''
-    @code_warep_positions = @storm_observation.telegram.gsub(/ \d\d /).map { Regexp.last_match.begin(0)+1 }
+    @code_warep_positions = @storm_observation.telegram.gsub(/ \d\d[ =]/).map { Regexp.last_match.begin(0)+1 }
     if @code_warep_positions.size == 0
       @code_warep_positions[0] = 26
     end

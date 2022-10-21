@@ -78,7 +78,14 @@ export function checkStormRf(code, tlg, error){
     }
     return true
   }
-  
+  const checkGroup932 = (tlg,start)=>{
+    let group = tlg.substr(start,5)
+    if(/^932\d\d$/.test(group)){}else{
+      error.push("Ошибка в формате группы 932")
+      return false
+    }
+    return true
+  }  
   switch (code) {
     case 10:
     case 11:
@@ -406,15 +413,102 @@ export function checkStormRf(code, tlg, error){
       else{
         error.push("Нарушен формат сообщения для кода "+code)
         return false
+      }
+    case 68:
+      if(!checkGroup3(tlg,0))
+        return false
+      if(tlg[6]=='=')
+        return true
+      else{
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }
+    case 81:
+    case 82:
+    case 83:
+    case 86:
+      if(!checkGroup6(tlg))
+        return false
+      if(tlg[5]!=' '){
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }
+      if(!checkGroup906(tlg,6))
+        return false
+      if(tlg[11]=='=')
+        return true
+      else{
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }
+    case 89:
+      if(tlg[0]=='=')
+        return true
+      if(tlg[1]=='0'){
+        if(!checkGroup906(tlg,0))
+          return false
+        if(tlg[5]==' '){
+          if(!checkGroup932(tlg,6))
+            return false
+          if(tlg[11]=='=')
+            return true
+          else{
+            error.push("Нарушен формат сообщения для кода "+code)
+            return false
+          }
+        }
+        if(tlg[5]=='=')
+          return true
+        else{
+          error.push("Нарушен формат сообщения для кода "+code)
+          return false
+        }
+      }
+      if(tlg[1]!='3'){
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }
+      if(!checkGroup932(tlg,0))
+        return false
+      if(tlg[5]=='=')
+        return true
+      else{
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }
+    case 90:
+      if(!checkGroup906(tlg,0))
+        return false
+      if(tlg[5]!=' '){
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }
+      if(!checkGroup932(tlg,6))
+        return false
+      if(tlg[11]=='=')
+        return true
+      else{
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }  
+    case 91:
+    case 92:
+      if(!checkGroup1(tlg))
+        return false
+      if(tlg[7]!=' '){
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }
+      if(!checkGroup2(tlg,8))
+        return false
+      if(tlg[13]=='=')
+        return true
+      else{
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
       }  
     default:
       error = "Ошибка в коде WAREP"
       return false
   }
-  // if(~tlg.indexOf("ЩЭОЗМ ") || ~tlg.indexOf("ЩЭОЯЮ ") ){
-  //   observation.telegram_type = tlg.substr(0, 5);
-  // } else {
-  //   errors.push("Ошибка в различительной группе");
-  //   return false;
-  // }
 }
