@@ -1,7 +1,7 @@
 import NewTelegramForm from "./new_telegram_form"
 
 /*jshint esversion: 6 */
-export function checkStormRf(code, tlg, error){
+export function checkStormRf(code, tlg, error, isStart){
   const checkGroup1 = (tlg) =>{
     if(/^1[0-39]\d[0-9/]{2}\d\d/.test(tlg.substr(0, 7))){}else{
       error.push("Ошибка в формате группы 1")
@@ -102,32 +102,40 @@ export function checkStormRf(code, tlg, error){
     case 12:
       if(!checkGroup1(tlg))
         return false
-      if(tlg[7]=='=')
-        return true
-      if(tlg[7]==' '){
-        if(tlg[8]=='7'){
-          if(!checkGroup7(tlg,8))
-            return false
-          if(tlg[14]=='=')
-            return true
-          return checkSecondCode(tlg,14)
-        }else
-          return checkSecondCode(tlg,7)
-      }else{
-        error.push("Нарушен формат сообщения для кода "+code)
-        return false
-      }
+      if(isStart){
+        if(tlg[7]=='=')
+          return true
+        return checkSecondCode(tlg,7)
+      }else
+        if(tlg[7]==' '){
+          if(tlg[8]=='7'){
+            if(!checkGroup7(tlg,8))
+              return false
+            if(tlg[14]=='=')
+              return true
+            return checkSecondCode(tlg,14)
+          }else
+            return checkSecondCode(tlg,7)
+        }else{
+          error.push("Нарушен формат сообщения для кода "+code)
+          return false
+        }
     case 16:
     case 17:
       if(!checkGroup1(tlg))
         return false
-      if(tlg[7]==' '){
-        if(!checkGroup2(tlg,8))
-          return false
+      if(tlg[7]!=' '){
+        error.push("Нарушен формат сообщения для кода "+code)
+        return false
+      }
+      if(!checkGroup2(tlg,8))
+        return false
+      if(isStart){
         if(tlg[13]=='=')
           return true
+        return checkSecondCode(tlg,13)
+      }else
         if(tlg[13]==' '){
-          error[0]=''
           if(!checkGroup906(tlg,14))
             return false
           if(tlg[19]=='=')
@@ -140,10 +148,6 @@ export function checkStormRf(code, tlg, error){
           error.push("Нарушен формат сообщения для кода "+code)
           return false
         }
-      }else{
-        error.push("Должна присутствовать группа 2")
-        return false
-      }
     case 18:
     case 19:  
       if(!checkGroup1(tlg))

@@ -93,47 +93,54 @@ export function InputStormRf({telegrams, stations}){
   ed = `${ed.substr(2, 2)}${ed.substr(5, 2)} ${ed.substr(8, 2)}${ed.substr(11, 2)}${ed.substr(14, 2)}`
   const telegram = `${isStart? 'WW':'WO'}${eventWarep.isDangerous? 'HP':'AP'} ${ed} ${station.value} ${eventWarep.value}`
   const onStartChanged = (e) => {
-    setIsStart(e.currentTarget.value)
+    setIsStart(true) //e.currentTarget.value)
+    tailPattern(true,+eventWarep.value)
   }
   const onEndChanged = (e) => {
-    setIsStart(!e.currentTarget.value)
+    setIsStart(false) //!e.currentTarget.value)
+    tailPattern(false,+eventWarep.value)
   }
   const handleStationSelected = (val)=>{
     setStation(val)
   }
   const handleEventSelected = (val)=>{
     setEventWarep(val)
-    switch (+val.value) {
+    tailPattern(isStart,+val.value)
+  }
+  const tailPattern = (isStart,code)=>{
+    switch (+code) {
       case 10:
       case 11:
       case 12:
-        setTail('1ddffFF=')
+        setTail(isStart?'1ddffFF=':'1ddffFF 7VVttt=')
         break
       case 16:
       case 17:
-        setTail('1ddffFF 2DDww=')
+        setTail(isStart?'1ddffFF 2DDww=':'1ddffFF 2DDww 906tt=')
         break
       case 18:
       case 19:
         setTail('1ddffFF 2DDww=')
         break
       case 21:
-        setTail('4sTTT=')
+        setTail(isStart?'4sTTT=':'4sTTT 7VVttt=')
         break
       case 22:
         setTail('4sTTT 7VVttt=')
         break
       // case 24:
-      //   setTail('=')
-      //   break
       case 25:
-        setTail('5sTTT=')
+        setTail(isStart?'5sTTT=':'5sTTT 7VVttt=')
         break
       case 26:
         setTail('5sTTT 7VVttt=')
         break
-      // case 30:
-      // case 31:
+      case 30:
+        setTail('2//ww 8NChh=')
+        break
+      case 31:
+        setTail(isStart?'2//ww=':'=')
+        break
       case 35:
       case 36:
       case 37:
@@ -142,12 +149,17 @@ export function InputStormRf({telegrams, stations}){
         setTail('1ddffFF 7VVttt=')
         break
       case 40:
+        setTail(isStart?'2//ww 7VVttt=':'7VVttt=')
+        break
       case 41:
       case 42:
       case 43:
-      case 44:
+      // case 44:
       case 47:
         setTail('7VVttt=')
+        break
+      case 44:
+        setTail(isStart?'7VVttt=':'7VVttt 8NCh/=')
         break
       case 51:
         setTail('3//sTT=')
@@ -160,7 +172,7 @@ export function InputStormRf({telegrams, stations}){
       case 57:
       case 58:
       case 59:
-        setTail('1ddffFF 3RRsTT=')
+        setTail(isStart?'1ddffFF 3RRsTT=':'1ddffFF 3RRsTT 7VVttt=')
         break
       case 62:
         setTail('6RRR/ 7VVttt=')
@@ -180,7 +192,9 @@ export function InputStormRf({telegrams, stations}){
       case 86:
         setTail('6RRR/ 906tt=')
         break
-      // case 89:
+      case 89:
+        setTail(isStart?'=':'906tt 932RR=')
+        break
       case 90:
         setTail('906tt 932RR=')
         break
@@ -197,7 +211,7 @@ export function InputStormRf({telegrams, stations}){
   }
   const saveStormMessage = ()=>{
     let error = []
-    if(checkStormRf(+eventWarep.value, tail, error)){
+    if(checkStormRf(+eventWarep.value, tail, error, isStart)){
       // check eventDate < currDate
       let message = {telegram_type: telegram.substr(0,4),
         station_id: station.id,
@@ -266,9 +280,11 @@ export function InputStormRf({telegrams, stations}){
         </tbody>
       </table>
       <div>
-        <p><b>{telegram}</b></p>
-        <input type="text" value={tail} onChange={onTailChanged}/>
-        <button type="button" onClick={saveStormMessage}>Сохранить</button>
+        <form>
+          <p><b>{telegram}</b></p>
+          <input type="text" value={tail} onChange={onTailChanged}/>
+          <button type="button" onClick={saveStormMessage}>Сохранить</button>
+        </form>
       </div>
       <h1 color="black">Последние шторма</h1>
       <LastStormsRf lastTelegrams={lastTelegrams} stations={stations} />
