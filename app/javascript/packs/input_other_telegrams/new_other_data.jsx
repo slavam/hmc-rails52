@@ -107,7 +107,8 @@ export default class NewOtherData extends React.Component{
     Object.keys(this.props.otherTypes).forEach( k => types.push({value: k, label: this.props.otherTypes[k]}));
     const stations = [];
     // add Mariupol KMA 20221020
-    [1,2,3,10,5].forEach(s => stations.push({value: s, label: this.props.stations[s]}));
+    // [1,2,3,10,5].forEach(s => stations.push({value: s, label: this.props.stations[s]}));
+    [1,2,3,4,5,10].forEach(s => stations.push({value: s, label: this.props.stations[s]}));
     const points = [
       { value: 'Макеевка',  label: 'Макеевка' },
       { value: 'Кировский',  label: 'Кировский' },

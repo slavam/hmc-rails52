@@ -8,13 +8,15 @@ const MonthlyTemperaturesTable = ({temperatures, maxDay}) => {
     <td style={{borderColor:"black"}}><b>Донецк</b></td>
     <td style={{borderColor:"black"}}><b>Дебальцево</b></td>
     <td style={{borderColor:"black"}}><b>Амвросиевка</b></td>
-    <td style={{borderColor:"black"}}><b>Седово</b></td>
-    <td style={{borderColor:"black"}}><b>Мариуполь</b></td></tr>];
+    <td style={{borderColor:"black"}}><b>Волноваха</b></td>
+    <td style={{borderColor:"black"}}><b>Мариуполь</b></td>
+    <td style={{borderColor:"black"}}><b>Седово</b></td></tr>];
   if (temperatures){
     for(var i=1; i<=maxDay; ++i){
       let values = [];
       // add Mariupol KMA 20221020
-      [1,3,2,4,5].forEach((j) => {
+      // [1,3,2,4,5].forEach((j) => { добавлена Волноваха 20221024
+      [1,3,2,4,5,10].forEach((j) => {
         let val = '';
         if((temperatures[i] != null) && (temperatures[i][j] != null)){
           val = temperatures[i][j];

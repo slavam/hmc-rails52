@@ -107,7 +107,7 @@ export default class InputOtherData extends React.Component{
   render(){
     let stationName = '';
     if(this.props.stationId!=''){
-      let ss = [null, "Донецк", "Амвросиевка", "Дебальцево",,,,,,,"Седово"]
+      let ss = [null, "Донецк", "Амвросиевка", "Дебальцево","Волноваха","Мариуполь",,,,,"Седово"]
       stationName = ss[+this.props.stationId]
     }
     return(

@@ -86,25 +86,33 @@ export function checkStormRf(code, tlg, error){
     }
     return true
   }  
+  const checkSecondCode=(tlg,start)=>{
+    let group = tlg.substr(start)
+    // alert(group)
+    if(/^ \d\d(=| .+=)$/.test(group))
+      return true
+    else{
+      error.push("Ошибка в данных о втором коде явления")
+      return false
+    }
+  }
   switch (code) {
     case 10:
     case 11:
     case 12:
-      if(checkGroup1(tlg)){}else
+      if(!checkGroup1(tlg))
         return false
-      if(tlg[7]=='='){
-        error[0] = ''
+      if(tlg[7]=='=')
         return true
-      }else if(tlg[7]==' '){
-        if(checkGroup7(tlg,8)){}else
-          return false
-        if(tlg[14]=='='){
-          error[0] = ''
-          return true
-        }else{
-          error.push("Нарушен формат сообщения для кода "+code)
-          return false
-        }
+      if(tlg[7]==' '){
+        if(tlg[8]=='7'){
+          if(!checkGroup7(tlg,8))
+            return false
+          if(tlg[14]=='=')
+            return true
+          return checkSecondCode(tlg,14)
+        }else
+          return checkSecondCode(tlg,7)
       }else{
         error.push("Нарушен формат сообщения для кода "+code)
         return false
@@ -236,14 +244,18 @@ export function checkStormRf(code, tlg, error){
         if(!/^2\/\/[5-9/][0-9/]$/.test(group))
           return false
         if(tlg[5]==' '){
-          if(!checkGroup8(tlg,6))
-            return false
-          if(tlg[11]=='=')
-            return true
-          else{
-            error.push("Нарушен формат сообщения для кода 30")
-            return false
+          if(tlg[6]=='8'){
+            if(!checkGroup8(tlg,6))
+              return false
+            if(tlg[11]=='=')
+              return true
+            return checkSecondCode(tlg,11)
           }
+          return checkSecondCode(tlg,6)
+          // else{
+          //   error.push("Нарушен формат сообщения для кода 30")
+          //   return false
+          // }
         }
         if(tlg[5]=='=')
           return true

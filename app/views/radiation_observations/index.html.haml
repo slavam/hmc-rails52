@@ -1,6 +1,6 @@
 = render 'synoptic_observations/tabs'
 - period = @factor == 'daily' ? 'ежедневные' : 'месячные'
-- months =[nil,1,2,3,4,5,6,7,8,9,0,6,7]
+-# - months =[nil,1,2,3,4,5,6,7,8,9,0,6,7]
 .container
   %ul{ class: 'nav nav-tabs' }
     %li= link_to 'Радиация ежедневная', '/radiation_observations?factor=daily'
@@ -19,11 +19,11 @@
     %tbody
       - name_stations = Station.name_stations_as_array
       - @radiation_observations.each do |r_o|
-        - telegram_rf = "РХОБ #{r_o.telegram[6,8]}#{months[r_o.telegram[14,2].to_i]}06 #{r_o.telegram[19,5]}="
+        -# - telegram_rf = "РХОБ #{r_o.telegram[6,8]}#{months[r_o.telegram[14,2].to_i]}06 #{r_o.telegram[19,5]}="
         %tr
           %td= r_o.date_observation.strftime('%d-%m-%Y')
           %td= r_o.created_at.localtime.strftime('%d-%m-%Y %H:%M:%S')
           %td= name_stations[r_o.station_id]
-          -# %td= link_to r_o.telegram, radiation_observation_path(r_o)
-          %td= telegram_rf
+          %td= link_to r_o.telegram, radiation_observation_path(r_o)
+          -# %td= telegram_rf
   = will_paginate

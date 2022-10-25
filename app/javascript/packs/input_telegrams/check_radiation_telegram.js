@@ -1,10 +1,10 @@
 export function checkRadiationTelegram(tlg, stations, errors, observation, currDate){
-  if((tlg.substr(0,6) == "ЩЭРБХ ") || (tlg.substr(0,6) == "ЩЭРДЦ ")){
+  if((tlg.substr(0,6) == "ЩЭРБХ ") || (tlg.substr(0,6) == "ЩЭРДЦ ") || (tlg.substr(0,5) == 'РХОБ ')){
   }else{
     errors.push("Ошибка в различительной группе");
     return false;
   }
-  if(!stations.some(s => {observation.station_id = s.id; return s.code == +tlg.substr(6,5);})){
+  if(!stations.some(s => {observation.station_id = s.id; return s.code == +tlg.substr((tlg[0]=='Р'?5:6),5);})){
     errors.push("Ошибка в коде метеостанции");
     return false;
   }
@@ -44,6 +44,34 @@ export function checkRadiationTelegram(tlg, stations, errors, observation, currD
     if(tlg[pos_ov-1] == '=')
       return true;
     else {
+      errors.push("Ошибка в окончании телеграммы");
+      return false;
+    }
+  }else if(tlg[0]=='Р'){ // rf format 20221025
+    // let groups = tlg.split(' ')
+    if(tlg.substr(11,2) != currDate.substr(8,2)){
+      errors.push("Ошибка в номере дня");
+      return false;
+    }
+    let cm = currDate.substr(5,2)
+    if((+tlg[13] == +cm) || (+tlg[13]==0 && +cm==10) || (+tlg[13]==6 && +cm==11) || (+tlg[13]==7 && +cm==12)){}else{
+      errors.push("Ошибка в номере месяца");
+      return false;
+    }
+    observation.date_observation = currDate;
+    observation.hour_observation = 0;
+    if (/^8[012]\d{3}$/.test(tlg.substr(17,5))){
+      if(+tlg.substr(19,3)<1){
+        errors.push("Отсутствуют данные о радиационной обстановке");
+        return false;
+      }
+    } else {
+      errors.push("Ошибка в данных о радиационной обстановке");
+      return false;
+    }
+    if (tlg[22] == '=')
+      return true;
+    else{
       errors.push("Ошибка в окончании телеграммы");
       return false;
     }

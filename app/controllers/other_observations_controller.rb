@@ -347,11 +347,12 @@ class OtherObservationsController < ApplicationController
     end_date = year+'-'+month+'-'+last_day
     rows = OtherObservation.select("obs_date, station_id, value").
     # add Mariupol KMA 20221020
-      where("station_id in (1,2,3,10,5) and obs_date >= ? AND obs_date <= ? AND data_type='#{variant}'", start_date, end_date).order(:obs_date, :station_id)
+    # add Volnovaha KMA 20221024
+      where("station_id in (1,2,3,4,5,10) and obs_date >= ? AND obs_date <= ? AND data_type='#{variant}'", start_date, end_date).order(:obs_date, :station_id)
     result = []
     rows.each {|t|
       d = t.obs_date.day
-      s = t.station_id == 10 ? 4 : t.station_id
+      s = t.station_id # 20221024 == 10 ? 4 : t.station_id
       result[d] ||= []
       result[d][s] = t.value
     }

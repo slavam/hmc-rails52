@@ -46,8 +46,24 @@ export default class NewTelegramForm extends React.Component{
       case 'radiation_daily':
         // let cd = this.state.currDate[3]+this.state.currDate.substr(5,2)+this.state.currDate.substr(8,2); 20190614 Boyko
         // let cd = this.state.currDate.substr(2,2)+this.state.currDate.substr(5,2)+this.state.currDate.substr(8,2); 20190619 Boyko, KMA
-        let cd = this.state.currDate.substr(8,2)+this.state.currDate.substr(5,2)+'09'; // ddmmhh
-        return 'ЩЭРДЦ '+this.state.codeStation+' '+cd+' 80000=';
+        let mm
+        switch (+this.state.currDate.substr(5,2)) {
+          case 10:
+            mm = 0
+            break;
+          case 11:
+            mm = 6
+            break
+          case 12:
+            mm = 7
+            break
+          default:
+            mm = +this.state.currDate.substr(5,2)
+            break;
+        }
+        let cd = this.state.currDate.substr(8,2)+mm+'06'; // ddmmhh 20221025
+        return "РХОБ "+this.state.codeStation+' '+cd+' 80000=';
+        // return 'ЩЭРДЦ '+this.state.codeStation+' '+cd+' 80000=';
       default:
         return '';
     }
