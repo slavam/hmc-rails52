@@ -535,8 +535,10 @@ class BulletinsController < ApplicationController
       r_o = RadiationObservation.find_by(date_observation: report_date, hour_observation: 0, station_id: station_id)
       # ret = r_o.present? ? r_o.telegram[20,3].to_i : nil 20190614 Boyko
       if r_o.present?
-        index = r_o.telegram[17] == ' ' ? 20 : 21 # old or new format
-        ret = r_o.telegram[index,3].to_i
+        groups = r_o.telegram.split
+        # index = r_o.telegram[17] == ' ' ? 20 : 21 # old or new format
+        # ret = r_o.telegram[index,3].to_i
+        ret = groups[3][2,3].to_i
       else
         ret = nil
       end
