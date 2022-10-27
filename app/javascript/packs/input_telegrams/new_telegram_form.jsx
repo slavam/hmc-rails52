@@ -34,8 +34,8 @@ export default class NewTelegramForm extends React.Component{
     switch (tlgType){
       case 'sea':
         return "МОРЕ =";
-      case 'radiation':
-        return "ЩЭРБХ "+this.state.codeStation+' =';
+      // case 'radiation':  20221027 BLN
+      //   return "ЩЭРБХ "+this.state.codeStation+' =';
       case 'agro_dec':
         return "ЩЭАГУ "+this.state.codeStation+' =';
       case 'agro':
@@ -126,7 +126,7 @@ export default class NewTelegramForm extends React.Component{
           }
         }
         break;
-      case 'radiation':
+      // case 'radiation':
       case 'radiation_daily':
         if(!checkRadiationTelegram(text, this.props.stations, errors, this.observation, this.state.currDate)){
           this.setState({errors: errors});
@@ -205,7 +205,7 @@ export default class NewTelegramForm extends React.Component{
       { value: 'agro',            label: 'Агро ежедневные' },
       { value: 'agro_dec',        label: 'Агро декадные' },
       { value: 'storm',           label: 'Штормовые' },
-      { value: 'radiation',       label: 'Радиация' },
+      // { value: 'radiation',       label: 'Радиация' },
       { value: 'radiation_daily', label: 'Радиация ежедневная' },
       { value: 'sea',             label: 'Морские' },
     ];

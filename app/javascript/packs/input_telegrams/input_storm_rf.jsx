@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import Select from "react-select"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import ru from 'date-fns/locale/ru';
+// import ru from 'date-fns/locale/ru';
 // import './input_storm_rf.css'
 import { checkStormRf } from './check_storm_rf';
 
@@ -252,7 +252,7 @@ export function InputStormRf({telegrams, stations}){
           <tr>
             <th width="150px">Начало/
                               Окончание</th>
-            <th width="300px">Дата и время явления</th>
+            <th width="300px">Дата и время явления (местное)</th>
             <th width="250px">Метеостанция</th>
             <th>Явление</th>
           </tr>
@@ -268,12 +268,28 @@ export function InputStormRf({telegrams, stations}){
                 <label htmlFor="end-event">Окончание</label>
               </section>
             </td>
-            <td><DatePicker selected={eventDate} onChange={date => setEventDate(date)} locale={ru}
+            <td>
+              <style>
+                {`.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list {
+                  padding-left: 0;
+                  padding-right: 0;
+                }`}
+              </style>
+              <DatePicker
+                dateFormat="yyyy-MM-dd HH:mm"
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={1}
+                selected={eventDate}
+                onChange={date => setEventDate(date)} 
+              />
+            </td>
+            {/* <td><DatePicker selected={eventDate} onChange={date => setEventDate(date)} locale={ru}
               showTimeSelect
               timeFormat="p"
               timeIntervals={1}
               dateFormat="Pp" />
-            </td>
+            </td> */}
             <td><Select value={station} onChange={handleStationSelected} options={stations} /></td>
             <td><Select value={eventWarep} onChange={handleEventSelected} options={eventArray} /></td>
           </tr>
