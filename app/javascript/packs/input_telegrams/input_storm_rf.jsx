@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import Select from "react-select"
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-// import ru from 'date-fns/locale/ru';
+import '../../../../node_modules/react-datepicker/dist/react-datepicker.css'
+// import '/home/slavam/hmc-rails52/node_modules/react-datepicker/dist/react-datepicker.css'
+// import '/home/morgachev/hmc-complex-v0/node_modules/react-datepicker/dist/react-datepicker.css'
+import ru from 'date-fns/locale/ru';
 // import './input_storm_rf.css'
 import { checkStormRf } from './check_storm_rf';
 
@@ -268,8 +270,8 @@ export function InputStormRf({telegrams, stations}){
                 <label htmlFor="end-event">Окончание</label>
               </section>
             </td>
-            <td>
-              <style>
+            {/* <td> 
+               <style>
                 {`.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list {
                   padding-left: 0;
                   padding-right: 0;
@@ -281,15 +283,16 @@ export function InputStormRf({telegrams, stations}){
                 timeFormat="HH:mm"
                 timeIntervals={1}
                 selected={eventDate}
+                // value={eventDate}
                 onChange={date => setEventDate(date)} 
-              />
-            </td>
-            {/* <td><DatePicker selected={eventDate} onChange={date => setEventDate(date)} locale={ru}
+              /> 
+             </td> */}
+            <td><DatePicker selected={eventDate} onChange={date => setEventDate(date)} locale={ru}
               showTimeSelect
-              timeFormat="p"
               timeIntervals={1}
-              dateFormat="Pp" />
-            </td> */}
+              timeFormat="HH:mm"
+              dateFormat="yyyy-MM-dd HH:mm" />
+            </td>
             <td><Select value={station} onChange={handleStationSelected} options={stations} /></td>
             <td><Select value={eventWarep} onChange={handleEventSelected} options={eventArray} /></td>
           </tr>

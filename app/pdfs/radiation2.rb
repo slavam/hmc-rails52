@@ -43,7 +43,7 @@ class Radiation2 < Prawn::Document
     m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
     move_down 20
     table [["Метеорологическая станция",	"Дебальцево",	"Донецк", "Амвросиевка",	"Волноваха", "Мариуполь", "Седово"],
-            ["мкР/ч", m_d[0], m_d[1], m_d[2], m_d[3], m_d[5], m_d[4]]], 
+            ["мкЗв/ч", m_d[0], m_d[1], m_d[2], m_d[3], m_d[5], m_d[4]]], 
             width: bounds.width,:cell_style => { :align => :center, :inline_format => true, size: 9}
     move_down 20
     avg = 0
@@ -55,7 +55,7 @@ class Radiation2 < Prawn::Document
       end
     end
     avg = (avg / n.to_f).to_f.round if n > 0
-    text "Естественный радиационный фон в Донецкой Народной Республике в среднем составил #{avg} мкР/ч."
+    text "Естественный радиационный фон в Донецкой Народной Республике в среднем составил #{avg} мкЗв/ч."
     bounding_box([0, 150], width: bounds.width) do
       text "Ответственный за выпуск:"
       table signatures, width: bounds.width, column_widths:  [300, 100], cell_style: {overflow: :shrink_to_fit, inline_format: true } do |t|
