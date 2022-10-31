@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import Select from "react-select"
 import DatePicker from "react-datepicker";
-import '../../../../node_modules/react-datepicker/dist/react-datepicker.css'
-// import '/home/slavam/hmc-rails52/node_modules/react-datepicker/dist/react-datepicker.css'
-// import '/home/morgachev/hmc-complex-v0/node_modules/react-datepicker/dist/react-datepicker.css'
+import './react-datepicker.css'
 import ru from 'date-fns/locale/ru';
 // import './input_storm_rf.css'
 import { checkStormRf } from './check_storm_rf';
@@ -243,7 +241,8 @@ export function InputStormRf({telegrams, stations}){
   {received: data => {
     // alert(JSON.stringify(data))
     setLastTelegrams([data.telegram].concat(lastTelegrams))
-    snd.play();
+    if(data.telegram && data.telegram[0]=='W')
+      snd.play();
   }
   });
   return(
@@ -272,18 +271,19 @@ export function InputStormRf({telegrams, stations}){
             </td>
             {/* <td> 
                <style>
-                {`.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list {
-                  padding-left: 0;
-                  padding-right: 0;
+                {`.my-class,
+                .ant-calendar-input-wrap,
+                .ant-calendar-footer {
+                  display: none;
                 }`}
               </style>
               <DatePicker
+                className="my-class"
                 dateFormat="yyyy-MM-dd HH:mm"
                 showTimeSelect
                 timeFormat="HH:mm"
                 timeIntervals={1}
                 selected={eventDate}
-                // value={eventDate}
                 onChange={date => setEventDate(date)} 
               /> 
              </td> */}
@@ -291,7 +291,9 @@ export function InputStormRf({telegrams, stations}){
               showTimeSelect
               timeIntervals={1}
               timeFormat="HH:mm"
-              dateFormat="yyyy-MM-dd HH:mm" />
+              dateFormat="yyyy-MM-dd HH:mm" 
+              timeCaption='Время'
+              />
             </td>
             <td><Select value={station} onChange={handleStationSelected} options={stations} /></td>
             <td><Select value={eventWarep} onChange={handleEventSelected} options={eventArray} /></td>
@@ -299,11 +301,9 @@ export function InputStormRf({telegrams, stations}){
         </tbody>
       </table>
       <div>
-        <form>
-          <p><b>{telegram}</b></p>
-          <input type="text" value={tail} onChange={onTailChanged}/>
-          <button type="button" onClick={saveStormMessage}>Сохранить</button>
-        </form>
+        <p><b>{telegram}</b></p>
+        <input type="text" value={tail} onChange={onTailChanged}/>
+        <button type="button" onClick={saveStormMessage}>Сохранить</button>
       </div>
       <h1 color="black">Последние шторма</h1>
       <LastStormsRf lastTelegrams={lastTelegrams} stations={stations} />
