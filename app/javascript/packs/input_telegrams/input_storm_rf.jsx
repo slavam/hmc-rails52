@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import Select from "react-select"
-import DatePicker from "react-datepicker";
-import './react-datepicker.css'
+// import DateTimePicker from 'react-datetime-picker';
+// import DatePicker from "react-datepicker";
+// import './react-datepicker.css'
 import ru from 'date-fns/locale/ru';
 // import './input_storm_rf.css'
 import { checkStormRf } from './check_storm_rf';
@@ -86,10 +87,14 @@ export function InputStormRf({telegrams, stations}){
   const [lastTelegrams, setLastTelegrams] = useState(telegrams)
   const [eventWarep, setEventWarep] = useState(eventArray[0])
   const [isStart, setIsStart] = useState(true)
-  const [eventDate, setEventDate] = useState(new Date())
+  // const [eventDate, setEventDate] = useState(new Date())
+  const [dtlEventDate, setDtlEventDate] = useState(new Date().toISOString().substr(0,16))
   const [station, setStation] = useState(stations[0])
   const [tail, setTail] = useState('1ddffFF=')
-  let ed = eventDate.toISOString()
+  // let cd = new Date()
+  // let ed = eventDate ? eventDate.toISOString() : cd.toISOString()
+  // ed = `${ed.substr(2, 2)}${ed.substr(5, 2)} ${ed.substr(8, 2)}${ed.substr(11, 2)}${ed.substr(14, 2)}`
+  let ed = dtlEventDate
   ed = `${ed.substr(2, 2)}${ed.substr(5, 2)} ${ed.substr(8, 2)}${ed.substr(11, 2)}${ed.substr(14, 2)}`
   const telegram = `${isStart? 'WW':'WO'}${eventWarep.isDangerous? 'HP':'AP'} ${ed} ${station.value} ${eventWarep.value}`
   const onStartChanged = (e) => {
@@ -210,13 +215,16 @@ export function InputStormRf({telegrams, stations}){
     setTail(e.target.value)
   }
   const saveStormMessage = ()=>{
+    // alert(dtlEventDate)
     let error = []
     if(checkStormRf(+eventWarep.value, tail, error, isStart)){
       // check eventDate < currDate
       let message = {telegram_type: telegram.substr(0,4),
         station_id: station.id,
         telegram: telegram+(tail.length==1?'':' ')+tail,
-        telegram_date: eventDate.toISOString().replace('T',' ').substr(0,17)+'00'}
+        // telegram_date: eventDate.toISOString().replace('T',' ').substr(0,17)+'00'}
+        telegram_date: dtlEventDate.replace('T',' ').substr(0,17)+'00'}
+        // alert(message.telegram_date)
       $.ajax({
         type: 'POST',
         dataType: 'json',
@@ -241,10 +249,15 @@ export function InputStormRf({telegrams, stations}){
   {received: data => {
     // alert(JSON.stringify(data))
     setLastTelegrams([data.telegram].concat(lastTelegrams))
-    if(data.telegram && data.telegram[0]=='W')
+    if(data.tlgType=='storm')
       snd.play();
   }
   });
+  const eventDateChanged = (e)=>{
+    if (!e.target['validity'].valid) return;
+    const dt= e.target['value'] + ':00Z';
+    setDtlEventDate(dt);
+  }
   return(
     <div>
       <h1 color="black">Ввод штормовых сообщений</h1>
@@ -253,7 +266,7 @@ export function InputStormRf({telegrams, stations}){
           <tr>
             <th width="150px">Начало/
                               Окончание</th>
-            <th width="300px">Дата и время явления (местное)</th>
+            <th width="300px">Дата и время явления (UTC)</th>
             <th width="250px">Метеостанция</th>
             <th>Явление</th>
           </tr>
@@ -287,13 +300,20 @@ export function InputStormRf({telegrams, stations}){
                 onChange={date => setEventDate(date)} 
               /> 
              </td> */}
-            <td><DatePicker selected={eventDate} onChange={date => setEventDate(date)} locale={ru}
+            {/* <td><DatePicker selected={eventDate} onChange={date => setEventDate(date)} locale={ru}
               showTimeSelect
               timeIntervals={1}
               timeFormat="HH:mm"
               dateFormat="yyyy-MM-dd HH:mm" 
               timeCaption='Время'
               />
+            </td> */}
+            <td>
+              <input type="datetime-local" 
+                onChange={eventDateChanged} locale={ru} 
+                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
+                // value={dtlEventDate}
+                defaultValue={dtlEventDate} />
             </td>
             <td><Select value={station} onChange={handleStationSelected} options={stations} /></td>
             <td><Select value={eventWarep} onChange={handleEventSelected} options={eventArray} /></td>

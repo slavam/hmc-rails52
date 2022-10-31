@@ -265,7 +265,7 @@ class StormObservationsController < ApplicationController
   def create_storm_rf
     observation = StormObservation.new(storm_observation_params)
     if observation.save
-      ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: observation})
+      ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: observation, tlgType: 'storm'})
       User.where(role: ['synoptic', 'vip']).each do |synoptic|
         ActionCable.server.broadcast("storm_telegram_user_#{synoptic.id}", {sound: true, telegram_id: observation.id})
       end
