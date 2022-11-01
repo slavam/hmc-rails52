@@ -264,6 +264,9 @@ class StormObservationsController < ApplicationController
 
   def create_storm_rf
     observation = StormObservation.new(storm_observation_params)
+    observation.day_event = observation.telegram[10,2] 
+    observation.hour_event = observation.telegram[12,2]  
+    observation.minute_event = observation.telegram[14,2] 
     if observation.save
       ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: observation, tlgType: 'storm'})
       User.where(role: ['synoptic', 'vip']).each do |synoptic|
