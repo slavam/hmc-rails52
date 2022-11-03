@@ -7,7 +7,8 @@ import { checkStormRf } from './check_storm_rf';
 const LastStormsRf = ({lastTelegrams, stations}) => {
   var rows = [];
   lastTelegrams.forEach((t) => {
-    let stationName = stations.find(s => s.id === t.station_id).label
+    let station = stations.find(s => s.id === t.station_id)
+    let stationName = station ? station.label : ' '
     rows.push(<tr key={t.id}>
       <td>{t.telegram_date.replace(/T/, " ").substr(0,16)}</td>
       <td>{t.created_at.replace(/T/, " ").substr(0,19)}</td>
