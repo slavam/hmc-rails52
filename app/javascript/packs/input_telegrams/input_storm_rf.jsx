@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import Select from "react-select"
-// import DateTimePicker from 'react-datetime-picker';
-// import DatePicker from "react-datepicker";
-// import './react-datepicker.css'
 import ru from 'date-fns/locale/ru';
-// import './input_storm_rf.css'
 import { checkStormRf } from './check_storm_rf';
 
 const LastStormsRf = ({lastTelegrams, stations}) => {
@@ -87,22 +83,19 @@ export function InputStormRf({telegrams, stations}){
   const [lastTelegrams, setLastTelegrams] = useState(telegrams)
   const [eventWarep, setEventWarep] = useState(eventArray[0])
   const [isStart, setIsStart] = useState(true)
-  // const [eventDate, setEventDate] = useState(new Date())
-  const [dtlEventDate, setDtlEventDate] = useState(new Date().toISOString().substr(0,16))
+  const [dtlEventDate, setDtlEventDate] = useState(new Date().toISOString().slice(0,-8))
   const [station, setStation] = useState(stations[0])
   const [tail, setTail] = useState('1ddffFF=')
-  // let cd = new Date()
-  // let ed = eventDate ? eventDate.toISOString() : cd.toISOString()
   // ed = `${ed.substr(2, 2)}${ed.substr(5, 2)} ${ed.substr(8, 2)}${ed.substr(11, 2)}${ed.substr(14, 2)}`
   let ed = dtlEventDate
-  ed = `${ed.substr(2, 2)}${ed.substr(5, 2)} ${ed.substr(8, 2)}${ed.substr(11, 2)}${ed.substr(14, 2)}`
+  ed = `${ed.slice(2,4)}${ed.slice(5,7)} ${ed.slice(8,10)}${ed.slice(11,13)}${ed.slice(14,16)}`
   const telegram = `${isStart? 'WW':'WO'}${eventWarep.isDangerous? 'HP':'AP'} ${ed} ${station.value} ${eventWarep.value}`
   const onStartChanged = (e) => {
-    setIsStart(true) //e.currentTarget.value)
+    setIsStart(true) 
     tailPattern(true,+eventWarep.value)
   }
   const onEndChanged = (e) => {
-    setIsStart(false) //!e.currentTarget.value)
+    setIsStart(false)
     tailPattern(false,+eventWarep.value)
   }
   const handleStationSelected = (val)=>{
@@ -219,11 +212,10 @@ export function InputStormRf({telegrams, stations}){
     let error = []
     if(checkStormRf(+eventWarep.value, tail, error, isStart)){
       // check eventDate < currDate
-      let message = {telegram_type: telegram.substr(0,4),
+      let message = {telegram_type: telegram.slice(0,4),
         station_id: station.id,
         telegram: telegram+(tail.length==1?'':' ')+tail,
-        // telegram_date: eventDate.toISOString().replace('T',' ').substr(0,17)+'00'}
-        telegram_date: dtlEventDate.replace('T',' ').substr(0,17)+'00'}
+        telegram_date: dtlEventDate.replace('T',' ').slice(0,17)+':00'}
         // alert(message.telegram_date)
       $.ajax({
         type: 'POST',
@@ -231,6 +223,7 @@ export function InputStormRf({telegrams, stations}){
         data: {storm_observation: message},
         url: "/storm_observations/create_storm_rf"
         }).done((data) => {
+          setIsStart(true)
           setEventWarep(eventArray[0])     
           setTail('1ddffFF=')  
           setLastTelegrams(data.telegrams);
@@ -300,14 +293,6 @@ export function InputStormRf({telegrams, stations}){
                 onChange={date => setEventDate(date)} 
               /> 
              </td> */}
-            {/* <td><DatePicker selected={eventDate} onChange={date => setEventDate(date)} locale={ru}
-              showTimeSelect
-              timeIntervals={1}
-              timeFormat="HH:mm"
-              dateFormat="yyyy-MM-dd HH:mm" 
-              timeCaption='Время'
-              />
-            </td> */}
             <td>
               <input type="datetime-local" 
                 onChange={eventDateChanged} locale={ru} 

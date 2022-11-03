@@ -1,7 +1,6 @@
 class BulletinsController < ApplicationController
   before_action :logged_in_user, only: [:list] # 20190819
   before_action :find_bulletin, :only => [:bulletin_show, :show, :destroy, :print_bulletin, :edit, :update]
-  # after_filter :pdf_png_delete, :only => [:holiday_show]
 
   def latest_bulletins
     bulletins = Bulletin.all.limit(50).order(:id).reverse_order
@@ -73,7 +72,7 @@ class BulletinsController < ApplicationController
         else
           @bulletin.curr_number = 1
         end
-      when 'dte','bus_station'
+      when 'dte','bus_station','gsr'
         @bulletin.forecast_day = last_daily_bulletin.forecast_day
       when 'radio', 'radio2'
         @bulletin.forecast_day = last_daily_bulletin.forecast_day
@@ -375,6 +374,8 @@ class BulletinsController < ApplicationController
           pdf = Radio2.new(@bulletin)
         when 'dte'
           pdf = Dte.new(@bulletin)
+        when 'gsr'
+          pdf = Gsr.new(@bulletin)
         when 'fire'
           if params[:variant] == 'short'
             pdf = Fire2.new(@bulletin)

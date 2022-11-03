@@ -267,6 +267,8 @@ class StormObservationsController < ApplicationController
     observation.day_event = observation.telegram[10,2] 
     observation.hour_event = observation.telegram[12,2]  
     observation.minute_event = observation.telegram[14,2] 
+    observation.telegram_date = "20#{observation.telegram[5,2]}-#{observation.telegram[7,2]}-#{observation.telegram[10,2]} #{observation.telegram[12,2]}:#{observation.telegram[14,2]}:00"
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{observation.telegram_date}")
     if observation.save
       ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: observation, tlgType: 'storm'})
       User.where(role: ['synoptic', 'vip']).each do |synoptic|
