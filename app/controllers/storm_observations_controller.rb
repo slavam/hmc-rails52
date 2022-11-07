@@ -259,7 +259,7 @@ class StormObservationsController < ApplicationController
     stations = Station.all.order(:name)
     @stations = stations.map {|s| {label: s.name, value: s.code, id: s.id}}
     @telegrams = StormObservation.where("telegram_type like 'W%'").order(telegram_date: :desc).limit(20)
-    # @telegrams = []
+    @current_station_id = (current_user && current_user.station_id)? current_user.station_id : 0
   end
 
   def create_storm_rf

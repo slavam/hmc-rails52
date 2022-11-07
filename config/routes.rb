@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   post 'sea_observations/create_sea_telegram', to: 'sea_observations#create_sea_telegram'
   get 'sea_observations/get_last_telegrams', to: 'sea_observations#get_last_telegrams'
   put 'sea_observations/update_sea_telegram', to: 'sea_observations#update_sea_telegram'
+  get 'sea_observations/input_sea_rf', to: 'sea_observations#input_sea_rf'
   resources :sea_observations
   get 'radiation_observations/input_radiation_telegrams', to: 'radiation_observations#input_radiation_telegrams'
   post 'radiation_observations/create_radiation_telegram', to: 'radiation_observations#create_radiation_telegram'

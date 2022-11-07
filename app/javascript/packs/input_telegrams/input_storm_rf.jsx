@@ -80,12 +80,13 @@ const eventArray = [
   {label: "91 Гроза на станции", value: 91, isDangerous: false},
   {label: "92 Гроза в окрестности", value: 92, isDangerous: false},
 ]
-export function InputStormRf({telegrams, stations}){
+export function InputStormRf({telegrams, stations, currStationId}){
   const [lastTelegrams, setLastTelegrams] = useState(telegrams)
   const [eventWarep, setEventWarep] = useState(eventArray[0])
   const [isStart, setIsStart] = useState(true)
   const [dtlEventDate, setDtlEventDate] = useState(new Date().toISOString().slice(0,-8))
-  const [station, setStation] = useState(stations[0])
+  let cs = currStationId==0? stations[0] : stations.find(s => s.id === currStationId)
+  const [station, setStation] = useState(cs) //stations[0])
   const [tail, setTail] = useState('1ddffFF=')
   // ed = `${ed.substr(2, 2)}${ed.substr(5, 2)} ${ed.substr(8, 2)}${ed.substr(11, 2)}${ed.substr(14, 2)}`
   let ed = dtlEventDate
@@ -322,9 +323,10 @@ $(function () {
   if(node) {
     const telegrams = JSON.parse(node.getAttribute('telegrams'));
     const stations = JSON.parse(node.getAttribute('stations'));
+    const currStationId = JSON.parse(node.getAttribute('currStationId'))
     
     ReactDOM.render(
-      <InputStormRf telegrams={telegrams} stations={stations} />,
+      <InputStormRf telegrams={telegrams} stations={stations} currStationId={currStationId} />,
       document.getElementById('root')
     );
   }

@@ -204,7 +204,7 @@ export default class NewTelegramForm extends React.Component{
       { value: 'synoptic',        label: 'Синоптические' },
       { value: 'agro',            label: 'Агро ежедневные' },
       { value: 'agro_dec',        label: 'Агро декадные' },
-      { value: 'storm',           label: 'Штормовые' },
+      // { value: 'storm',           label: 'Штормовые' },
       // { value: 'radiation',       label: 'Радиация' },
       { value: 'radiation_daily', label: 'Радиация ежедневная' },
       { value: 'sea',             label: 'Морские' },

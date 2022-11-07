@@ -66,6 +66,16 @@ class SeaObservationsController < ApplicationController
     @sea_observations = SeaObservation.paginate(page: params[:page]).order(:date_dev, :created_at).reverse_order
   end
   
+  def input_sea_rf
+    @telegrams = [] #SeaObservation.where("telegram like 'SEA%'").order(date_dev: :desc).limit(20)
+  end
+
+  def create_sea_rf
+    sea = SeaObservation.new(sea_observation_params)
+    # :telegram, :station_id, :date_dev, :term, :day_obs
+    telegram = SeaObservation.find_by(station_id: sea.station_id, date_dev: sea.date_dev)
+  end
+
   def input_sea_telegrams
     @stations = Station.all.order(:name)
     @telegrams = SeaObservation.short_last_50_telegrams(current_user)
