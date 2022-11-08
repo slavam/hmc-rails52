@@ -1,4 +1,4 @@
-import NewTelegramForm from "./new_telegram_form"
+// import NewTelegramForm from "./new_telegram_form"
 
 /*jshint esversion: 6 */
 export function checkStormRf(code, tlg, error, isStart){
