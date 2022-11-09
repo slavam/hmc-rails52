@@ -18,7 +18,7 @@ export const InputSeaRf=({telegrams})=>{
   const [observationDate, setObservationDate] = useState(new Date().toISOString().slice(0,10))
   const [station, setStation] = useState(stations[0])
   const [term, setTerm] = useState(terms[0])
-  const [section1, setSection1] = useState('0110 1ddff 2ffVW 3sTTT 4sTTT 5iHHH 59HHH 6PPDD 8ashhh ')
+  const [section1, setSection1] = useState('0110 1ddff 2ffVW 3sTTT 4sTTT 5iHHH 59HHH 6PPDD 8ashhh 88shhh 89shhh')
   const [section2, setSection2] = useState('')
   const [section3, setSection3] = useState('=')
   let od = observationDate

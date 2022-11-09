@@ -551,7 +551,7 @@ class SynopticObservationsController < ApplicationController
     end
   end
 
-  def teploenergo5
+  def teploenergo2
     today = Time.now
     @year = params[:year].present? ? params[:year] : today.year.to_s
     @month = params[:month].present? ? params[:month] : today.month.to_s.rjust(2, '0')
@@ -568,7 +568,7 @@ class SynopticObservationsController < ApplicationController
     else
       last_day = Time.parse("#{@year}-#{@month}-01").end_of_month.day.to_s
     end
-    sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date >= '#{@year}-#{@month}-01' and date <= '#{@year}-#{@month}-#{last_day}' and station_id in (1,2,3,4,10) group by date, station_id;"
+    sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date >= '#{@year}-#{@month}-01' and date <= '#{@year}-#{@month}-#{last_day}' and station_id in (1,2,3,4,5,10) group by date, station_id;"
     db_temperatures = SynopticObservation.find_by_sql(sql)
     @temperatures = {}
     db_temperatures.each {|t|
@@ -580,14 +580,51 @@ class SynopticObservationsController < ApplicationController
       format.html
       format.pdf do
         variant = params[:variant]
-        pdf = Teploenergo5.new(@temperatures, @year, @month, variant)
-        send_data pdf.render, filename: "teploenergo5_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+        pdf = Teploenergo2.new(@temperatures, @year, @month, variant)
+        send_data pdf.render, filename: "teploenergo2_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
       end
       format.json do
         render json: {temperatures: @temperatures}
       end
     end
   end
+  # def teploenergo5
+  #   today = Time.now
+  #   @year = params[:year].present? ? params[:year] : today.year.to_s
+  #   @month = params[:month].present? ? params[:month] : today.month.to_s.rjust(2, '0')
+  #   if @month.to_i == today.month
+  #     if today.hour >= 1
+  #       last_day = (today.day-1).to_s.rjust(2,'0') # не брать текущий день ЛМБ 20191001
+  #     else
+  #       if today.day > 1
+  #         last_day = (today.day-2).to_s.rjust(2,'0') # до часа ночи берем позавчерашний день 20191010 КМА
+  #       else
+  #         last_day = '00'
+  #       end
+  #     end
+  #   else
+  #     last_day = Time.parse("#{@year}-#{@month}-01").end_of_month.day.to_s
+  #   end
+  #   sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date >= '#{@year}-#{@month}-01' and date <= '#{@year}-#{@month}-#{last_day}' and station_id in (1,2,3,4,10) group by date, station_id;"
+  #   db_temperatures = SynopticObservation.find_by_sql(sql)
+  #   @temperatures = {}
+  #   db_temperatures.each {|t|
+  #     key = t.date.day.to_s.rjust(2, '0')+'-'+t.station_id.to_s.rjust(2, '0')
+  #     @temperatures[key] = t.temperature
+  #   }
+  #   # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@temperatures.inspect}")
+  #   respond_to do |format|
+  #     format.html
+  #     format.pdf do
+  #       variant = params[:variant]
+  #       pdf = Teploenergo5.new(@temperatures, @year, @month, variant)
+  #       send_data pdf.render, filename: "teploenergo5_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+  #     end
+  #     format.json do
+  #       render json: {temperatures: @temperatures}
+  #     end
+  #   end
+  # end
 
   def temperatures_12local
     today = Time.now
