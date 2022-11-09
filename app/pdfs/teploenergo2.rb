@@ -58,43 +58,37 @@ class Teploenergo2 < Prawn::Document
   end
   def table_data
     table = []
-    (1..@max_day).each do |d|
-      day = d.to_s.rjust(2,'0')
-      row = [d]
-      [1,3,2,4,5,10].each do |s|
-        key = day+'-'+s.to_s.rjust(2,'0')
-        row << (@temperatures[key].present? ? @temperatures[key] : '')
-      end
-      if @temperatures[day+'-01'] and @temperatures[day+'-03'] 
-        v = ((@temperatures[day+'-01']+@temperatures[day+'-03'])/2).round(1);
-        row << v
-      else
-        row << ''
-      end
-      if @temperatures[day+'-02'] and @temperatures[day+'-03']
-        db = @temperatures[day+'-03']
-        a = @temperatures[day+'-02']
+    (1..@max_day).each do |i|
+      d = i.to_s.rjust(2,'0')
+      @temperatures[d+'-11'] = (@temperatures[d+'-01'] and @temperatures[d+'-03'])?
+        ((@temperatures[d+'-01']+@temperatures[d+'-03'])/2).round(1) : ''
+      if @temperatures[d+'-02'] and @temperatures[d+'-03']
+        db = @temperatures[d+'-03']
+        a = @temperatures[d+'-02']
         v = ((a+db)/2).round(1)
-        row << v
+        @temperatures[d+'-12'] = v
         v = (db-(db-a)/3).round(1)
-        row << v
+        @temperatures[d+'-13'] = v
       else
-        row << '' << ''
+        @temperatures[d+'-12'] = '' 
+        @temperatures[d+'-13'] = ''
       end
-      if @temperatures[day+'-01'] and @temperatures[day+'-02'] 
-        v = ((@temperatures[day+'-01']+@temperatures[day+'-02'])/2).round(1);
-        row << v
-      else
-        row << ''
-      end
-      if @temperatures[day+'-01'] and @temperatures[day+'-04'] 
-        v = ((@temperatures[day+'-01']+@temperatures[day+'-04'])/2).round(1);
-        row << v
-      else
-        row << ''
+      @temperatures[d+'-14'] = (@temperatures[d+'-01'] and @temperatures[d+'-02'])?
+        ((@temperatures[d+'-01']+@temperatures[d+'-02'])/2).round(1) : ''
+      @temperatures[d+'-15'] = (@temperatures[d+'-01'] and @temperatures[d+'-04'])?
+        ((@temperatures[d+'-01']+@temperatures[d+'-04'])/2).round(1) : '' 
+    end
+    
+    (1..@max_day).each do |i|
+      d = i.to_s.rjust(2,'0')
+      row = [d]
+      [1,3,2,15,10,11,12,13,14,4,5].each do |j|
+        k = "#{d}-#{j.to_s.rjust(2,'0')}"
+        row << (@temperatures[k].present? ? @temperatures[k] : '')
       end
       table << row
     end
+    
     [
       [
         '<b>Число месяца</b>',

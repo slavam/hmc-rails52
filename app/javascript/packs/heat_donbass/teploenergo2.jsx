@@ -57,7 +57,7 @@ export default class Teploenergo2 extends React.Component{
     $.ajax({
       type: 'GET',
       dataType: 'json',
-      url: "/synoptic_observations/teploenergo?year="+year+"&month="+month
+      url: "/synoptic_observations/teploenergo2?year="+year+"&month="+month
       }).done((data) => {
         this.setState({temperatures: data.temperatures});
       }).fail((res) => {
@@ -91,27 +91,16 @@ export default class Teploenergo2 extends React.Component{
     const MONTHS = ['', 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
     let endDate = this.state.daysInMonth+' '+MONTHS[+this.state.month]+' '+this.state.year;
     let desiredLink = "/synoptic_observations/teploenergo2.pdf?year="+this.state.year+"&month="+this.state.month;
-    let cData = [];
-    [1,3,2,4,10].forEach((j) => {
-      cData[j] = [];
-      let id = ('0'+j).slice(-2);
-      Object.keys(this.state.temperatures).forEach((k) => {if(k.substr(3,2)==id) cData[j][+k.substr(0,2)-1]=this.state.temperatures[k]});
-    });
     
     return(
       <div>
         <TeploenergoForm year={this.state.year} month={this.state.month} onFormSubmit={this.handleFormSubmit} />
         <h5>Средняя за сутки (00:01-24:00) температура воздуха (°С) с 01 по {endDate} года для населенных пунктов Донецкой Народной Республики</h5>
         <br/>
-        {/*<AvgTemperatures temperatures={this.state.temperatures} maxDay={this.state.daysInMonth}/>*/}
         <AvgTemperaturesCompact temperatures={this.state.temperatures} maxDay={this.state.daysInMonth}/>
         <a href={desiredLink+'&variant=chief'} title='Подписал начальник'>Распечатать вариант 1</a>
         <br/>
         <a href={desiredLink+'&variant=deputy_chief'} title='Подписал заместитель'>Распечатать вариант 2</a>
-        {/*<br/>
-        <a href={desiredLink+'&variant=one_page'} title='Development'>Распечатать вариант 3</a>
-        <br/>
-        <a href={desiredLink+'&variant=portrait'} title='Development'>Распечатать вариант 4</a>*/}
       </div>
     );
   }
