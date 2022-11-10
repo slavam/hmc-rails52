@@ -23,21 +23,39 @@ export function checkSeaRf(s1, error){
     error.push("Ошибка в формате группы 4 раздела 1")
     return false
   }
-  if(!/^5[0-3/][0-9/]{3} $/.test(s1.slice(29,35))){
-    error.push("Ошибка в формате группы 5 раздела 1")
-    return false
+  const pos = 29
+  const isGroup15 = false
+  if(s1[29]=='5' && s1[30]!='9'){
+    if(!/^5[0-3/][0-9/]{3} $/.test(s1.slice(29,35))){
+      error.push("Ошибка в формате группы 5 раздела 1")
+      return false
+    }
+    pos = 35
+    isGroup15 = true
   }
-  if(!/^59[0-9/]{3} $/.test(s1.slice(35,41))){
-    error.push("Ошибка в формате группы 59 раздела 1")
-    return false
+  if(s1[pos]=='5' && s1[pos+1]=='9'){
+    if(!/^59[0-9/]{3} $/.test(s1.slice(pos,pos+6))){
+      error.push("Ошибка в формате группы 59 раздела 1")
+      return false
+    }
+    pos += 6
   }
-  if(!/^6[0-9/]{4} $/.test(s1.slice(41,47))){
-    error.push("Ошибка в формате группы 6 раздела 1")
-    return false
+  if(s1[pos]=='6'){
+    if(!isGroup15){
+      error.push("Группа 6 раздела 1 не должна быть без группы 5")
+      return false
+    }
+    if(!/^6[0-9/]{4} $/.test(s1.slice(pos,pos+6))){
+      error.push("Ошибка в формате группы 6 раздела 1")
+      return false
+    }
+    pos+=6
   }
-  if(!/^8[1-5/][01/][0-9/]{3} $/.test(s1.slice(47,54))){
+  if(!/^8[1-5/][01/][0-9/]{3}$/.test(s1.slice(pos,pos+6))){
     error.push("Ошибка в формате группы 8 раздела 1")
     return false
   }
+  pos+=7
+  if(s1.length>pos && s1[pos]=='8')
   return true
 }

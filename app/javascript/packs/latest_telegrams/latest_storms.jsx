@@ -51,7 +51,7 @@ export default class LatestStorms extends React.Component{
       {received: data => {
         if(data.tlgType == 'storm'){
           this.snd.play();
-          data.telegram.telegram_date = data.telegram.date;
+          // data.telegram.telegram_date = data.telegram.date;
           this.updateTelegramsState(data.telegram);
         }
       }
