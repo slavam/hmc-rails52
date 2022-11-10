@@ -9,8 +9,9 @@ const LastStormsRf = ({lastTelegrams, stations}) => {
   lastTelegrams.forEach((t) => {
     let station = stations.find(s => s.id === t.station_id)
     let stationName = station ? station.label : ' '
+    let td = `20${t.telegram.slice(5,7)}-${t.telegram.slice(7,9)}-${t.telegram.slice(10,12)} ${t.telegram.slice(12,14)}:${t.telegram.slice(14,16)}:00` //t.telegram_date? t.telegram_date.replace(/T/, " ").substr(0,16) : 
     rows.push(<tr key={t.id}>
-      <td>{t.telegram_date.replace(/T/, " ").substr(0,16)}</td>
+      <td>{td}</td>
       <td>{t.created_at.replace(/T/, " ").substr(0,19)}</td>
       <td>{stationName}</td>
       <td><a href={'/storm_observations/'+t.id}>{t.telegram}</a></td></tr>)
