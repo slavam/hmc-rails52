@@ -244,9 +244,10 @@ export function InputStormRf({telegrams, stations, currStationId}){
   },
   {received: data => {
     // alert(JSON.stringify(data))
-    setLastTelegrams([data.telegram].concat(lastTelegrams))
-    if(data.tlgType=='storm')
+    if(data.tlgType=='storm'){
       snd.play();
+      setLastTelegrams([data.telegram].concat(lastTelegrams))
+    }
   }
   });
   const eventDateChanged = (e)=>{
