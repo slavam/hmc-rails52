@@ -122,42 +122,37 @@ class StormObservationsController < ApplicationController
       @station_id = '0'
       station = ''
     end
-    sql = "select * from storm_observations where telegram_type in ('ЩЭОЯЮ','ЩЭОЗМ') and telegram_date >= '#{@date_from}' and telegram_date <= '#{@date_to} 23:59:59' #{station} order by telegram_date;"
+    sql = "select * from storm_observations where telegram_type in ('WWAP','WWHP','WOAP','WOHP') and telegram_date >= '#{@date_from}' and telegram_date <= '#{@date_to} 23:59:59' #{station} order by telegram_date;"
     data = StormObservation.find_by_sql(sql)
     stops = []
     data.map do |so|
-      if so.telegram[24] == '1' # убрать агро-шторма => 2
-        # key = so.station_id.to_s.rjust(2, '0')+so.telegram[26,2] # станция явление
-        fact = {}
-        if so.telegram_type == 'ЩЭОЗМ' # stop
-          fact['station_id'] = so.station_id
-          fact['warep_code'] = so.telegram[26,2]
-          fact['fact_date'] = so.telegram_date
-          fact['text'] = so.telegram
-          stops << fact
-        end
+      fact = {}
+      if so.telegram_type[1] == 'O' # stop
+        fact['station_id'] = so.station_id
+        fact['warep_code'] = so.telegram[23,2]
+        fact['fact_date'] = so.telegram_date
+        fact['text'] = so.telegram
+        stops << fact
       end
     end
     @telegrams = []
     data.map do |so|
-      if so.telegram[24] == '1'
-        telegram = {}
-        # telegram = {station_id: so.station_id, warep_code: so.telegram[26,2]}
-        if so.telegram_type == 'ЩЭОЯЮ' # start
-          telegram = {'station_id' => so.station_id, 'warep_code' => so.telegram[26,2], 'start_date' => so.telegram_date, 'start_text' => so.telegram}
-          stops.each do |f|
-            if telegram['station_id'] == f['station_id'] and telegram['warep_code'] == f['warep_code'] and telegram['start_date'] < f['fact_date']
-              telegram['stop_date'] = f['fact_date']
-              telegram['stop_text'] = f['text']
-              break
-            end
+      telegram = {}
+      # telegram = {station_id: so.station_id, warep_code: so.telegram[26,2]}
+      if so.telegram_type[1] == 'W' # start
+        telegram = {'station_id' => so.station_id, 'warep_code' => so.telegram[23,2], 'start_date' => so.telegram_date, 'start_text' => so.telegram}
+        stops.each do |f|
+          if telegram['station_id'] == f['station_id'] and telegram['warep_code'] == f['warep_code'] and telegram['start_date'] < f['fact_date']
+            telegram['stop_date'] = f['fact_date']
+            telegram['stop_text'] = f['text']
+            break
           end
+        end
+        @telegrams << telegram
+      else
+        telegram = {station_id: so.station_id, warep_code: so.telegram[23,2], stop_date: so.telegram_date, stop_text: so.telegram}
+        if not stop_telegram_used(telegram, @telegrams)
           @telegrams << telegram
-        else
-          telegram = {station_id: so.station_id, warep_code: so.telegram[26,2], stop_date: so.telegram_date, stop_text: so.telegram}
-          if not stop_telegram_used(telegram, @telegrams)
-            @telegrams << telegram
-          end
         end
       end
     end

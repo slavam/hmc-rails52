@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { eventArray } from '../input_telegrams/storm_events'
 
 export default class LatestStorms extends React.Component{
   constructor(props) {
@@ -9,22 +10,11 @@ export default class LatestStorms extends React.Component{
     this.state = {
       telegrams: this.props.telegrams
     };
-    this.fact = {
-      11: "Ветер",
-      12: "Сильный ветер",
-      17: "Шквал",
-      18: "Шквал",
-      19: "Смерч",
-      30: "Низкая облачность",
-      40: "Видимость",
-      50: "Гололед",
-      51: "Сложные отложения",
-      52: "Налипание мокрого снега",
-      61: "Сильный дождь",
-      65: "Очень сильный дождь",
-      71: "Сильный снег",
-      91: "Гроза"
-    };
+    this.fact = {}
+    eventArray.forEach((e)=>{
+      this.fact[e.value] = e.isDangerous? e.label.props.children : e.label
+    })
+    
   }
   updateTelegramsState(telegram) {
     let telegrams = [...this.state.telegrams];
@@ -40,9 +30,9 @@ export default class LatestStorms extends React.Component{
   render(){
     let rows = [];
     this.state.telegrams.forEach((t) => {
-      let date1 = t.telegram_date; //.replace(/T/,' ').substr(0, 19)+' UTC';
-      let date2 = t.created_at; //.replace(/T/,' ').substr(0, 19)+' UTC';
-      let title = (t.telegram[3] == 'Я'? 'Начало/усиление; ':'Завершение; ')+this.fact[t.telegram.substr(26,2)];
+      let date1 = t.telegram_date;
+      let date2 = t.created_at;
+      let title = (t.telegram[1]=='W'? 'Начало/усиление; ':'Завершение; ')+this.fact[+t.telegram.substr(23,2)];
       rows.push(<tr key={t.id}><td>{date2}</td><td>{date1}</td><td>{this.props.stations[t.station_id-1].name}</td><td title={title}>{t.telegram}</td></tr>);
     });
     App.candidate = App.cable.subscriptions.create({
@@ -51,7 +41,6 @@ export default class LatestStorms extends React.Component{
       {received: data => {
         if(data.tlgType == 'storm'){
           this.snd.play();
-          // data.telegram.telegram_date = data.telegram.date;
           this.updateTelegramsState(data.telegram);
         }
       }
@@ -77,10 +66,9 @@ $(()=>{
   if(node){
     const telegrams = JSON.parse(node.getAttribute('telegrams'));
     const stations = JSON.parse(node.getAttribute('stations'));
-    const tlgType = JSON.parse(node.getAttribute('tlgType'));
     
     ReactDOM.render(
-      <LatestStorms telegrams={telegrams} stations={stations} tlgType={tlgType}/>,
+      <LatestStorms telegrams={telegrams} stations={stations} />,
       document.getElementById('telegrams')
     );
   }

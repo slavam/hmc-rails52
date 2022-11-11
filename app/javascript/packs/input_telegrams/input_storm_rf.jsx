@@ -3,13 +3,12 @@ import ReactDOM from 'react-dom';
 import Select from "react-select"
 import ru from 'date-fns/locale/ru';
 import { checkStormRf } from './check_storm_rf';
+import { eventArray } from './storm_events'
 
 const LastStormsRf = ({lastTelegrams, stations}) => {
   var rows = [];
   lastTelegrams.forEach((t) => {
     let station = stations.find(s => s.id === t.station_id)
-    // let stationName = station ? station.label : ' '
-    // let td = `20${t.telegram.slice(5,7)}-${t.telegram.slice(7,9)}-${t.telegram.slice(10,12)} ${t.telegram.slice(12,14)}:${t.telegram.slice(14,16)}:00` //t.telegram_date? t.telegram_date.replace(/T/, " ").substr(0,16) : 
     rows.push(<tr key={t.id}>
       <td>{t.telegram_date.replace(/T/, " ").substr(0,16)}</td>
       <td>{t.created_at.replace(/T/, " ").substr(0,19)}</td>
@@ -31,65 +30,14 @@ const LastStormsRf = ({lastTelegrams, stations}) => {
   );
 };
 
-const eventArray = [
-  {label: "10 Сильный ветер", value: 10, isDangerous: false},
-  {label: <b>11 Очень сильный ветер</b>, value: 11, isDangerous: true},
-  {label: <b>12 Ураганный ветер</b>, value: 12, isDangerous: true},
-  {label: "16 Шквал, НГЯ", value: 16, isDangerous: false},
-  {label: <b>17 Шквал, ОЯ</b>, value: 17, isDangerous: true},
-  {label: <b>18 Смерч над водной поверхностью</b>, value: 18, isDangerous: true},
-  {label: <b>19 Смерч над сушей</b>, value: 19, isDangerous: true},
-  {label: <b>21 Сильная жара</b>, value: 21, isDangerous: true},
-  {label: <b>22 Аномально-жаркая погода</b>, value: 22, isDangerous: true},
-  {label: <b>24 Чрезвычайная пожарная опасность</b>, value: 24, isDangerous: true},
-  {label: <b>25 Сильный мороз</b>, value: 25, isDangerous: true},
-  {label: <b>26 Аномально-холодная погода</b>, value: 26, isDangerous: true},
-  {label: "30 Низкая облачность при 5 баллах и более", value: 30, isDangerous: false},
-  {label: "31 Закрытие гор, перевалов облаками, осадками, туманом", value: 31, isDangerous: false},
-  {label: "35 Пыльная (песчаная) буря", value: 35, isDangerous: false},
-  {label: <b>36 Сильная пыльная (песчаная) буря</b>, value: 36, isDangerous: true},
-  {label: "37 Метель низовая", value: 37, isDangerous: false},
-  {label: "38 Метель общая", value: 38, isDangerous: false},
-  {label: <b>39 Сильная метель</b>, value: 39, isDangerous: true},
-  {label: "40 Ухудшение видимости при осадках", value: 40, isDangerous: false},
-  {label: "41 Ухудшение видимости из-за дыма", value: 41, isDangerous: false},
-  {label: "42 Ухудшение видимости из-за мглы", value: 42, isDangerous: false},
-  {label: "43 Ухудшение видимости из-за дымки", value: 43, isDangerous: false},
-  {label: "44 Ухудшение видимости из-за тумана", value: 44, isDangerous: false},
-  {label: <b>47 Сильный туман</b>, value: 47, isDangerous: true},
-  {label: "51 Гололедица на дорогах", value: 51, isDangerous: false},
-  {label: "52 Изморозь", value: 52, isDangerous: false},
-  {label: <b>53 Сильная изморозь</b>, value: 53, isDangerous: true},
-  {label: "54 Гололед", value: 54, isDangerous: false},
-  {label: <b>55 Сильный гололед</b>, value: 55, isDangerous: true},
-  {label: "56 Отложение мокрого снега", value: 56, isDangerous: false},
-  {label: <b>57 Сильное отложение мокрого снега</b>, value: 57, isDangerous: true},
-  {label: "58 Сложное отложение", value: 58, isDangerous: false},
-  {label: <b>59 Сильное сложное отложение</b>, value: 59, isDangerous: true},
-  {label: <b>62 Продолжительный сильный дождь</b>, value: 62, isDangerous: true},
-  {label: "63 Сильный дождь (дождь, ливневый дождь)", value: 63, isDangerous: false},
-  {label: <b>64 Очень сильный дождь (дождь, ливневый дождь)</b>, value: 64, isDangerous: true},
-  {label: "65 Сильные смешанные осадки (мокрый снег, дождь со снегом)", value: 65, isDangerous: false},
-  {label: <b>66 Очень сильные смешанные осадки (мокрый снег, дождь со снегом)</b>, value: 66, isDangerous: true},
-  {label: "68 Ледяной дождь", value: 68, isDangerous: false},
-  {label: "81 Ливень", value: 81, isDangerous: false},
-  {label: <b>82 Сильный ливень</b>, value: 82, isDangerous: true},
-  {label: "85 Сильнй снег (снег, ливневый снег и др.)", value: 85, isDangerous: false},
-  {label: <b>86 Очень сильный снег (снег, ливневый снег и др.)</b>, value: 86, isDangerous: true},
-  {label: "89 Град", value: 89, isDangerous: false},
-  {label: <b>90 Крупный град</b>, value: 90, isDangerous: true},
-  {label: "91 Гроза на станции", value: 91, isDangerous: false},
-  {label: "92 Гроза в окрестности", value: 92, isDangerous: false},
-]
 export function InputStormRf({telegrams, stations, currStationId}){
   const [lastTelegrams, setLastTelegrams] = useState(telegrams)
   const [eventWarep, setEventWarep] = useState(eventArray[0])
   const [isStart, setIsStart] = useState(true)
   const [dtlEventDate, setDtlEventDate] = useState(new Date().toISOString().slice(0,-8))
   let cs = currStationId==0? stations[0] : stations.find(s => s.id === currStationId)
-  const [station, setStation] = useState(cs) //stations[0])
+  const [station, setStation] = useState(cs)
   const [tail, setTail] = useState('1ddffFF=')
-  // ed = `${ed.substr(2, 2)}${ed.substr(5, 2)} ${ed.substr(8, 2)}${ed.substr(11, 2)}${ed.substr(14, 2)}`
   let ed = dtlEventDate
   ed = `${ed.slice(2,4)}${ed.slice(5,7)} ${ed.slice(8,10)}${ed.slice(11,13)}${ed.slice(14,16)}`
   const telegram = `${isStart? 'WW':'WO'}${eventWarep.isDangerous? 'HP':'AP'} ${ed} ${station.value} ${eventWarep.value}`
@@ -211,7 +159,6 @@ export function InputStormRf({telegrams, stations, currStationId}){
     setTail(e.target.value)
   }
   const saveStormMessage = ()=>{
-    // alert(dtlEventDate)
     let error = []
     if(checkStormRf(+eventWarep.value, tail, error, isStart)){
       // check eventDate < currDate
@@ -219,7 +166,6 @@ export function InputStormRf({telegrams, stations, currStationId}){
         station_id: station.id,
         telegram: telegram+(tail.length==1?'':' ')+tail,
         telegram_date: dtlEventDate.replace('T',' ').slice(0,17)+':00'}
-        // alert(message.telegram_date)
       $.ajax({
         type: 'POST',
         dataType: 'json',
@@ -243,7 +189,6 @@ export function InputStormRf({telegrams, stations, currStationId}){
     channel: "SynopticTelegramChannel", 
   },
   {received: data => {
-    // alert(JSON.stringify(data))
     if(data.tlgType=='storm'){
       snd.play();
       setLastTelegrams([data.telegram].concat(lastTelegrams))

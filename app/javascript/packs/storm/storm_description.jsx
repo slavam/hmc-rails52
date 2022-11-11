@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ParamsForm from './params_form';
+import { eventArray } from '../input_telegrams/storm_events'
 
 function fancyTimeFormat(duration)
 {
@@ -22,23 +23,11 @@ function fancyTimeFormat(duration)
     return ret;
 }
 const Storms = (props) => {
-  const fact = {
-    11: "Ветер",
-    12: "Сильный ветер",
-    17: "Шквал",
-    18: "Шквал",
-    19: "Смерч",
-    30: "Низкая облачность",
-    40: "Видимость",
-    50: "Гололед",
-    51: "Сложные отложения",
-    52: "Налипание мокрого снега",
-    61: "Сильный дождь",
-    65: "Очень сильный дождь",
-    71: "Сильный снег",
-    90: "Град",
-    91: "Гроза"
-  };
+  const fact = {}
+  eventArray.forEach((e)=>{
+    fact[e.value] = e.isDangerous? e.label.props.children : e.label
+  })
+  
   var rows = [];
 
   props.telegrams.forEach( (t,i) => {
