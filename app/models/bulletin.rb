@@ -65,6 +65,7 @@ class Bulletin < ActiveRecord::Base
     'avtodor' => "АВТОДОР",
     'dte' => "Донбасстеплоэнерго",
     'gsr' => "ГазСтройРеновация",
+    'empair' => "Империя",
     'fire' => "Пожароопасность",
     'clarification' => "Уточнение",
     'bus_station' => "Автовокзалы Донбасса",

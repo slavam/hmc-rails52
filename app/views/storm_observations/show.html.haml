@@ -1,89 +1,95 @@
 .container
-  %h3 Телеграмма штормовая
+  %h3 Штормовое сообщение
   %table{class: "table table-bordered"}
     %tr
-      %th Дата ввода:
+      %th Дата/время ввода
       %td= @storm_observation.created_at.utc.strftime("%Y-%m-%d %H:%M:%S UTC")
     %tr
-      %th Дата/время(UTC) явления:
+      %th Дата/время явления
       %td= @storm_observation.telegram_date.utc.strftime("%Y-%m-%d %H:%M:%S UTC")
     - @text = @storm_observation.telegram
     %tr
-      %th Текст:
+      %th Текст
       %td= @text
     %tr
-      %th Тип телеграммы
-      %td= (['ЩЭОЗМ','ЩЭОЯУ'].include? @storm_observation.telegram_type) ? "Окончание явления (#{@storm_observation.telegram_type})" : "Начало/усиление явления (#{@storm_observation.telegram_type})"
+      %th Начало/окончание явления
+      -# %td= (['ЩЭОЗМ','ЩЭОЯУ'].include? @storm_observation.telegram_type) ? "Окончание явления (#{@storm_observation.telegram_type})" : "Начало/усиление явления (#{@storm_observation.telegram_type})"
+      %td= @storm_observation.telegram_type[1]=='O' ? "Окончание явления" : "Начало/усиление явления"
     %tr
-      %th Метеостанция:
+      %th ОЯ/НГЯ
+      %td= @storm_observation.telegram_type[2]=='H' ? "Опасное явление" : "Неблагоприятное гидрометеорологическое явление"
+    %tr
+      %th Метеостанция
       %td= @storm_observation.station.name
-    %tr
-      %th День месяца
-      %td= @storm_observation.day_event
-    %tr
-      %th Время(UTC)
-      %td= @storm_observation.event_time
-    %tr
-      %th Вид телеграммы
-      %td= (@storm_observation.telegram[24] == ' ') ? 'Для морских гидрометеорологических явлений' : ((@storm_observation.telegram[24] == '1') ? 'Для метеорологических явлений' : 'Для агрометеорологических явлений')
+    -# %tr
+    -#   %th День месяца
+    -#   %td= @storm_observation.day_event
+    -# %tr
+    -#   %th Время(UTC)
+    -#   %td= @storm_observation.event_time
+    -# %tr
+    -#   %th Вид телеграммы
+    -#   %td= (@storm_observation.telegram[24] == ' ') ? 'Для морских гидрометеорологических явлений' : ((@storm_observation.telegram[24] == '1') ? 'Для метеорологических явлений' : 'Для агрометеорологических явлений')
     - @code_warep_positions.each do |code_warep_pos|
+      - k = @text[code_warep_pos,2].to_i
+      - event = StormObservation::EVENT_WAREP.find {|e| e[:value] == k}
       %tr
-        %th= "Тип опасного/стихийного гидрометеорологического явления"
-        %td= @storm_observation.code_warep_to_s(@storm_observation.code_warep code_warep_pos)
-      - @curr_pos = code_warep_pos + 3
-      - case @storm_observation.code_warep code_warep_pos
-        - when 11, 12, 17, 18, 19, 36, 78
-          %tr
-            %th Направление ветра
-            %td= @storm_observation.wind_direction_to_s(@text[@curr_pos+1,2].to_i)
-          %tr
-            %th Средняя скорость ветра, м/с
-            %td= @text[@curr_pos+3,2].to_i
-          %tr
-            %th Максимальная скорость ветра (порыв), м/с
-            %td= @text[@curr_pos+5,2].to_i
-        - when 30
-          - @cloud_pos = @curr_pos
-          = render :partial => 'cloud_section'
-        - when 40, 41                     
-          - if @text[@curr_pos] == '7'
-            - @visibility_pos = @curr_pos
-            = render partial: 'visibility_section'
-            - if @text[@curr_pos+8] == '8'
-              - @cloud_pos = @curr_pos+8
-              = render :partial => 'cloud_section'
-        - when 50, 51
-          - if @text[@curr_pos-1] != '='
-            - if @text[@curr_pos] != '/'
-              %tr
-                %th Диаметр градин/гололедно-изморозевых отложений, мм
-                %td= @storm_observation.diameter_hail(@text[@curr_pos,2].to_i)
-            %tr
-              %th Температура воздуха, °С
-              - if @text[@curr_pos+3,2] == '00'
-                - t = '0'
-              - else
-                - t = "#{@text[@curr_pos+2] == '0'? '':'-'}#{@text[@curr_pos+3,2].to_i}"
-              %td= t
-            %tr
-              %th Стадия явления
-              %td= @text[@curr_pos+5] == '1'? "Стадия нарастания" : "Стадия сохранения или завершения"
-        - when 71      
-          - if @text[@curr_pos] == '3'
-            %tr
-              %th Количество осадков, мм
-              %td= precipitation_to_s(@text[@curr_pos+1,3].to_i)
-            %tr
-              %th Период, за который выпало указанное количество осадков, часы
-              %td= @text[@curr_pos+4,2].to_i
-        - when 91
-          - if @text[@curr_pos] == '2'
-            %tr
-              %th Направление, в котором наблюдается гроза или смерч
-              %td= @storm_observation.wind_direction_to_s(@text[@curr_pos+1,2].to_i)
-            %tr
-              %th Вид осадков
-              %td= @storm_observation.precipitation_type(@text[@curr_pos+3,2].to_i)
+        %th= "Вид гидрометеорологического явления"
+        %td= event[:label]
+      -# - @curr_pos = code_warep_pos + 3
+      -# - case @storm_observation.code_warep code_warep_pos
+      -#   - when 11, 12, 17, 18, 19, 36, 78
+      -#     %tr
+      -#       %th Направление ветра
+      -#       %td= @storm_observation.wind_direction_to_s(@text[@curr_pos+1,2].to_i)
+      -#     %tr
+      -#       %th Средняя скорость ветра, м/с
+      -#       %td= @text[@curr_pos+3,2].to_i
+      -#     %tr
+      -#       %th Максимальная скорость ветра (порыв), м/с
+      -#       %td= @text[@curr_pos+5,2].to_i
+      -#   - when 30
+      -#     - @cloud_pos = @curr_pos
+      -#     = render :partial => 'cloud_section'
+      -#   - when 40, 41                     
+      -#     - if @text[@curr_pos] == '7'
+      -#       - @visibility_pos = @curr_pos
+      -#       = render partial: 'visibility_section'
+      -#       - if @text[@curr_pos+8] == '8'
+      -#         - @cloud_pos = @curr_pos+8
+      -#         = render :partial => 'cloud_section'
+      -#   - when 50, 51
+      -#     - if @text[@curr_pos-1] != '='
+      -#       - if @text[@curr_pos] != '/'
+      -#         %tr
+      -#           %th Диаметр градин/гололедно-изморозевых отложений, мм
+      -#           %td= @storm_observation.diameter_hail(@text[@curr_pos,2].to_i)
+      -#       %tr
+      -#         %th Температура воздуха, °С
+      -#         - if @text[@curr_pos+3,2] == '00'
+      -#           - t = '0'
+      -#         - else
+      -#           - t = "#{@text[@curr_pos+2] == '0'? '':'-'}#{@text[@curr_pos+3,2].to_i}"
+      -#         %td= t
+      -#       %tr
+      -#         %th Стадия явления
+      -#         %td= @text[@curr_pos+5] == '1'? "Стадия нарастания" : "Стадия сохранения или завершения"
+      -#   - when 71      
+      -#     - if @text[@curr_pos] == '3'
+      -#       %tr
+      -#         %th Количество осадков, мм
+      -#         %td= precipitation_to_s(@text[@curr_pos+1,3].to_i)
+      -#       %tr
+      -#         %th Период, за который выпало указанное количество осадков, часы
+      -#         %td= @text[@curr_pos+4,2].to_i
+      -#   - when 91
+      -#     - if @text[@curr_pos] == '2'
+      -#       %tr
+      -#         %th Направление, в котором наблюдается гроза или смерч
+      -#         %td= @storm_observation.wind_direction_to_s(@text[@curr_pos+1,2].to_i)
+      -#       %tr
+      -#         %th Вид осадков
+      -#         %td= @storm_observation.precipitation_type(@text[@curr_pos+3,2].to_i)
   %h3 История операций
   %table{class: "table table-bordered"}
     %thead
@@ -102,7 +108,7 @@
   = link_to 'Поиск', @search_link
   %br
   - if current_user.role == 'technicist'
-    = link_to 'Ввод телеграмм', '/storm_observations/input_storm_telegrams?input_mode=normal'
+    = link_to 'Ввод телеграмм', '/storm_observations/input_storm_rf'
     %br
     = link_to "Список", storm_observations_path  
   - elsif current_user.role == 'specialist'

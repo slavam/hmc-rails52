@@ -5,6 +5,9 @@
   - when 'gsr'
   %h3{ align: :center } Создать прогноз для ГазСтройРеновации
   = render partial: 'gsr_form'
+  - when 'empire'
+  %h3{ align: :center } Создать прогноз для СК Империя
+  = render partial: 'empire_form'
   - when 'radio'
   %h3{ align: :center } Создать бюллетень для радио
   = render partial: 'radio_form'

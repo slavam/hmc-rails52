@@ -44,7 +44,7 @@ export const InputSeaRf=({telegrams})=>{
   }
   const saveSeaMessage=()=>{
     let error = []
-    if(checkSeaRf(section1, error)){
+    if(checkSeaRf(section1, section2, term.value, error)){
       alert('OK')
     }else{
       alert(error[0])

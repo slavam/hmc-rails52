@@ -72,7 +72,7 @@ class BulletinsController < ApplicationController
         else
           @bulletin.curr_number = 1
         end
-      when 'dte','bus_station','gsr'
+      when 'dte','bus_station','gsr','empire'
         @bulletin.forecast_day = last_daily_bulletin.forecast_day
       when 'radio', 'radio2'
         @bulletin.forecast_day = last_daily_bulletin.forecast_day
@@ -376,6 +376,8 @@ class BulletinsController < ApplicationController
           pdf = Dte.new(@bulletin)
         when 'gsr'
           pdf = Gsr.new(@bulletin)
+        when 'empire'
+          pdf = Empire.new(@bulletin)
         when 'fire'
           if params[:variant] == 'short'
             pdf = Fire2.new(@bulletin)
