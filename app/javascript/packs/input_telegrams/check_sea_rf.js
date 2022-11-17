@@ -1,5 +1,5 @@
 /*jshint esversion: 6 */
-export function checkSeaRf(s1, s2, term, error){
+export function checkSeaRf(s1, s2, s3, term, error){
   // const checkGroup=(regE,group)=>{
   //   return (regE.test(group))
   // }
@@ -92,18 +92,85 @@ export function checkSeaRf(s1, s2, term, error){
       }
       pos+=8
     }
-    if(!/^3[0-9/]{6} $/.test(s2.slice(pos,pos+8))){
+    if(!/^3[0-9/]{6}$/.test(s2.slice(pos,pos+7))){
       error.push("Ошибка в формате группы 3 раздела 2")
       return false
     }
     pos+=8
-    if(s2[pos]=='4'){
-      if(!/^4[0-9/]{2}[012/][0-9/][1-9/] $/.test(s2.slice(pos,pos+7))){
-        error.push("Ошибка в формате группы 4 раздела 2")
+    if(s2.length>pos){
+      if(s2[pos]=='4'){
+        if(!/^4[0-9/]{2}[012/][0-9/][1-9/]$/.test(s2.slice(pos,pos+6))){
+          error.push("Ошибка в формате группы 4 раздела 2")
+          return false
+        }
+        pos+=7
+      }
+      if(s2[pos]=='5'){
+        if(!/^5[0-5/][0-3/][0-9/]{2}[0-8/]$/.test(s2.slice(pos,pos+6))){
+          error.push("Ошибка в формате группы 5 раздела 2")
+          return false
+        }
+        pos+=7
+      }else{
+        if(s2[4]=='0' || s2[4]=='/'){}else{
+          error.push("При отсутствии группы 5 раздела 2 в отличительной группе Q=0 или Q=/")
+          return false
+        }
+      }
+      if(s2[pos]=='6'){
+        if(!/^6[0-5/][0-3/][0-8/][0-3/][0-4/][0-9/]$/.test(s2.slice(pos,pos+7))){
+          error.push("Ошибка в формате группы 6 раздела 2")
+          return false
+        }
+        pos+=8
+      }
+      if(s2[pos]=='7'){
+        if(!/^7[0-9/]{4}[0-6/]$/.test(s2.slice(pos,pos+6))){
+          error.push("Ошибка в формате группы 7 раздела 2")
+          return false
+        }
+      }
+    }else
+      if(s2[4]=='0' || s2[4]=='/'){}else{
+        error.push("При отсутствии группы 5 раздела 2 в отличительной группе Q=0 или Q=/")
         return false
       }
-      pos+=7
+  }
+  // =========================================================
+  if(s3.length>1){
+    if(term!=6){
+      error.push("Раздел 3 передается только в срок=6")
+      return false
     }
+    if(!/^03[1-9]0 $/.test(s3.slice(0,5))){
+      error.push("Ошибка в формате отличительной группы раздела 3")
+      return false
+    }
+    if(s3[5]=='1' || s3[5]=='2'){}else{
+      error.push("Должны присутствовать группы 1 и/или 2 раздела 3")
+      return false
+    }
+    pos=5
+    if(s3[5]=='1'){
+      if(!/^1[01]\d{3}$/.test(s3.slice(pos,pos+5))){
+        error.push("Ошибка в формате группы 1 раздела 3")
+        return false
+      }
+      if(s3[10]=='=')
+        return true
+      pos+=6
+    }
+    if(s3[pos]=='2'){
+      if(!/^2[01]\d{3}$/.test(s3.slice(pos,pos+5))){
+        error.push("Ошибка в формате группы 2 раздела 3")
+        return false
+      }
+      if(s3[pos+5]=='=')
+        return true
+    }
+  }else if(s3[0]!='='){
+    error.push("Неверное окончание сообщения")
+    return false
   }
   return true
 }

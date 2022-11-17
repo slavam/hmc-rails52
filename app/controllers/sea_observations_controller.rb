@@ -67,13 +67,29 @@ class SeaObservationsController < ApplicationController
   end
   
   def input_sea_rf
-    @telegrams = [] #SeaObservation.where("telegram like 'SEA%'").order(date_dev: :desc).limit(20)
+    @telegrams = SeaObservation.where("telegram like 'SEA%'").order(date_dev: :desc, station_id: :asc).limit(20)
   end
 
   def create_sea_rf
-    sea = SeaObservation.new(sea_observation_params)
-    # :telegram, :station_id, :date_dev, :term, :day_obs
-    telegram = SeaObservation.find_by(station_id: sea.station_id, date_dev: sea.date_dev)
+    telegram = SeaObservation.find_by(station_id: params[:sea_observation][:station_id],
+      date_dev: params[:sea_observation][:date_dev], term: params[:sea_observation][:term])
+    if telegram.present?
+      if telegram.update sea_observation_params
+        last_telegrams = SeaObservation.where("telegram like 'SEA%'").order(date_dev: :desc, station_id: :asc).limit(20)
+        render json: {telegrams: last_telegrams, 
+                      errors: ["Телеграмма изменена"]}
+      else
+        render json: {errors: telegram.errors.messages}, status: :unprocessable_entity
+      end
+    else
+      new_sea = SeaObservation.new(sea_observation_params)
+      if new_sea.save
+        ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: new_sea.as_json, tlgType: 'sea'})
+        render json: {tlgType: 'sea', errors: ["Телеграмма добавлена"]}
+      else
+        render json: {errors: new_sea.errors.messages}, status: :unprocessable_entity
+      end
+    end
   end
 
   def input_sea_telegrams

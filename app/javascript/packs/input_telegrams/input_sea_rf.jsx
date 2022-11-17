@@ -3,6 +3,31 @@ import ReactDOM from 'react-dom';
 import Select from "react-select"
 import { checkSeaRf } from './check_sea_rf';
 
+const LastSeaRf = ({lastTelegrams, stations}) => {
+  var rows = [];
+  lastTelegrams.forEach((t) => {
+    let station = stations.find(s => s.id === t.station_id)
+    rows.push(<tr key={t.id}>
+      <td>{t.date_dev.replace(/T/, " ").substr(0,16)}</td>
+      <td>{t.created_at.replace(/T/, " ").substr(0,19)}</td>
+      <td>{station.label}</td>
+      <td><a href={'/sea_observations/'+t.id}>{t.telegram}</a></td></tr>)
+  });
+  return (
+    <table className="table table-hover">
+      <thead>
+        <tr>
+          <th width = "200px">Дата/срок наблюдения (UTC)</th>
+          <th width = "200px">Дата/время вода (UTC)</th>
+          <th>Метеостанция</th>
+          <th>Текст</th>
+        </tr>
+      </thead>
+      <tbody>{rows}</tbody>
+    </table>
+  );
+};
+
 export const InputSeaRf=({telegrams})=>{
   const stations = [
     {label: "Мариуполь", value: 34712, id: 5},
@@ -42,14 +67,52 @@ export const InputSeaRf=({telegrams})=>{
   const onSection3Changed=(e)=>{
     setSection3(e.target.value)
   }
+  
+  const postObservation=(text)=>{
+    let message = {
+      station_id: station.id,
+      telegram: text,
+      term: term.value,
+      day_obs: observationDate.slice(8,10),
+      date_dev: `${observationDate.slice(0,10)} ${term.label}:00:00`
+    }
+    $.ajax({
+      type: 'POST',
+      dataType: 'json',
+      data: {sea_observation: message},
+      url: "/sea_observations/create_sea_rf"
+    }).done((data) => {
+      setSection1('0110 1ddff 2ffVW 3sTTT 4sTTT 8ashhh')
+      setSection2('')
+      setSection3('=')  
+      if(data.telegrams)
+        setLastTelegrams(data.telegrams);
+      alert(data.errors[0])
+    }).fail((res) => {
+      alert("Ошибка записи в базу")
+    });
+
+  }
   const saveSeaMessage=()=>{
     let error = []
-    if(checkSeaRf(section1, section2, term.value, error)){
-      alert('OK')
+    if(checkSeaRf(section1, section2, section3, term.value, error)){
+      let con1 = section2.length>0? ' ':''
+      let con2 = section3.length>1? ' ':''
+      let fullTelegram = `${telegram.trim()} ${section1.trim()}${con1}${section2.trim()}${con1}${section3.trim()}`
+      postObservation(fullTelegram)
     }else{
       alert(error[0])
     }
   }
+  App.candidate = App.cable.subscriptions.create({
+    channel: "SynopticTelegramChannel", 
+  },
+  {received: data => {
+    if(data.tlgType=='sea'){
+      setLastTelegrams([data.telegram].concat(lastTelegrams))
+    }
+  }
+  });
   return(
     <div>
       <h1>Ввод данных о морских наблюдениях</h1>
@@ -89,6 +152,8 @@ export const InputSeaRf=({telegrams})=>{
         </table>
         <button type="button" onClick={saveSeaMessage}>Сохранить</button>
       </div>
+      <h1 color="black">Последние наблюдения</h1>
+      <LastSeaRf lastTelegrams={lastTelegrams} stations={stations} />
     </div>
   )
 }
