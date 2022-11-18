@@ -5,16 +5,16 @@
   %table{ class: 'table table-hover' }
     %thead
       %tr
-        %th Дата наблюдения
-        %th Дата ввода
+        %th Дата/срок наблюдения (UTC)
+        %th Дата/время ввода (UTC)
         %th Метеостанция
         %th Телеграмма
     %tbody
       - name_stations = Station.name_stations_as_array
       - @sea_observations.each do |s_o|
         %tr
-          %td= s_o.date_dev.strftime('%d-%m-%Y')
-          %td= s_o.created_at.localtime.strftime('%d-%m-%Y %H:%M:%S')
+          %td= s_o.date_dev.strftime('%d-%m-%Y %H:%M:%S')
+          %td= s_o.created_at.strftime('%d-%m-%Y %H:%M:%S')
           %td= name_stations[s_o.station_id]
           %td= link_to s_o.telegram, sea_observation_path(s_o)
   = will_paginate

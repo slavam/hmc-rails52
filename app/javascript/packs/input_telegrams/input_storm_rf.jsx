@@ -5,6 +5,7 @@ import ru from 'date-fns/locale/ru';
 import { checkStormRf } from './check_storm_rf';
 import { eventArray } from './storm_events'
 
+const snd = new Audio("/assets/ring1.wav");
 const LastStormsRf = ({lastTelegrams, stations}) => {
   var rows = [];
   lastTelegrams.forEach((t) => {
@@ -175,8 +176,8 @@ export function InputStormRf({telegrams, stations, currStationId}){
           setIsStart(true)
           setEventWarep(eventArray[0])     
           setTail('1ddffFF=')  
-          setLastTelegrams(data.telegrams);
-          // alert(data.doneMessage)
+          // setLastTelegrams(data.telegrams);
+          alert("Сообщение добавлено")
         }).fail((res) => {
           alert("Ошибка записи в базу")
         });
@@ -184,7 +185,6 @@ export function InputStormRf({telegrams, stations, currStationId}){
       alert(error[0])
     }
   }
-  const snd = new Audio("/assets/ring1.wav");
   App.candidate = App.cable.subscriptions.create({
     channel: "SynopticTelegramChannel", 
   },

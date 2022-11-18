@@ -269,8 +269,9 @@ class StormObservationsController < ApplicationController
       User.where(role: ['synoptic', 'vip']).each do |synoptic|
         ActionCable.server.broadcast("storm_telegram_user_#{synoptic.id}", {sound: true, telegram_id: observation.id})
       end
-      last_telegrams_rf = StormObservation.where("telegram_type like 'W%'").order(telegram_date: :desc).limit(20)
-      render json: {telegrams: last_telegrams_rf}
+      # last_telegrams_rf = StormObservation.where("telegram_type like 'W%'").order(telegram_date: :desc).limit(20)
+      # render json: {telegrams: last_telegrams_rf}
+      render json: {tlgType: 'storm', errors: ["Телеграмма добавлена"]}
     else
       render json: {errors: observation.errors.messages}, status: :unprocessable_entity
     end

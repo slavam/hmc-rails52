@@ -63,7 +63,7 @@ class SeaObservationsController < ApplicationController
   end
   
   def index
-    @sea_observations = SeaObservation.paginate(page: params[:page]).order(:date_dev, :created_at).reverse_order
+    @sea_observations = SeaObservation.paginate(page: params[:page]).order(:date_dev, :station_id).reverse_order
   end
   
   def input_sea_rf
