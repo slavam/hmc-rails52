@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import FireMap from '../map/fire_map';
+// import FireMap from '../map/fire_map';
 import ReportDateForm from './report_date_form';
 
 const FireDangersTable = ({fireDangers, stations}) => {
@@ -73,13 +73,13 @@ export default class DailyFireDanger extends React.Component{
   }
 
   render(){
-    let map = <FireMap stations={this.props.stations} fireDangers={this.state.fireDangers}/>;
+    // let map = <FireMap stations={this.props.stations} fireDangers={this.state.fireDangers}/>;
     return (
       <div>
         <div>
-          {map}
+          {/* {map} */}
         </div>
-        <h6>0-400 зеленый; 401-1000 синий; 1001-3000 желтый; 3001-5000 оранжевый; более 5000 красный.</h6>
+        {/* <h6>0-400 зеленый; 401-1000 синий; 1001-3000 желтый; 3001-5000 оранжевый; более 5000 красный.</h6> */}
         <ReportDateForm onDateSubmit={this.handleSubmit} reportDate={this.state.reportDate} />
         <h3>Показатели пожарной опасности на {this.state.reportDate}</h3>
         <FireDangersTable fireDangers={this.state.fireDangers} stations={this.props.stations}/>

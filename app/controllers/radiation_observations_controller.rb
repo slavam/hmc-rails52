@@ -4,7 +4,11 @@ class RadiationObservationsController < ApplicationController
   def show
     @actions = Audit.where("auditable_id = ? and auditable_type = 'RadiationObservation'", @radiation_observation.id)
   end
-  
+
+  def index_simple
+    @radiation_observations = RadiationObservation.where("hour_observation = 0 and substr(telegram,1,1)='Р'").paginate(page: params[:page]).order(:date_observation, :created_at).reverse_order
+  end
+
   def index
     @factor = params[:factor].present? ? params[:factor] : 'monthly'
     if @factor == 'daily'

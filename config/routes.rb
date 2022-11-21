@@ -44,6 +44,7 @@ Rails.application.routes.draw do
   post 'radiation_observations/create_radiation_telegram', to: 'radiation_observations#create_radiation_telegram'
   get 'radiation_observations/get_last_telegrams', to: 'radiation_observations#get_last_telegrams'
   put 'radiation_observations/update_radiation_telegram', to: 'radiation_observations#update_radiation_telegram'
+  get 'radiation_observations/index_simple', to: 'radiation_observations#index_simple'
   resources :radiation_observations
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   post 'applicants/to_buffer', to: 'applicants#to_buffer'
