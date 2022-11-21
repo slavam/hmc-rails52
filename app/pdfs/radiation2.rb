@@ -53,7 +53,7 @@ class Radiation2 < Prawn::Document
               "%.2f" % (m_d[4].to_i/100.0).to_f.round(2)]], 
             width: bounds.width,:cell_style => { :align => :center, :inline_format => true, size: 9}
     move_down 20
-    avg = 0
+    avg = 0.0
     n = 0
     m_d.each do |md|
       if md.present?
@@ -62,7 +62,7 @@ class Radiation2 < Prawn::Document
         n += 1
       end
     end
-    avg = (avg / n.to_f).to_f.round(2) if n > 0
+    avg = "%.2f" % (avg / n.to_f).to_f.round(2) if n > 0
     text "Естественный радиационный фон в Донецкой Народной Республике в среднем составил #{avg} мкЗв/ч."
     bounding_box([0, 150], width: bounds.width) do
       text "Ответственный за выпуск:"
