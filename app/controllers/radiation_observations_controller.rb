@@ -6,7 +6,7 @@ class RadiationObservationsController < ApplicationController
   end
 
   def index_simple
-    @radiation_observations = RadiationObservation.where("hour_observation = 0 and substr(telegram,1,1)='Р'").paginate(page: params[:page]).order(:date_observation, :created_at).reverse_order
+    @radiation_observations = RadiationObservation.where("substr(telegram,1,1)='Р'").paginate(page: params[:page]).order(:date_observation, :created_at).reverse_order
   end
 
   def index
