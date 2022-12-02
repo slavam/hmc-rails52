@@ -136,10 +136,10 @@ export default class InputTelegrams extends React.Component{
         tlgData = {radiation_observation: telegram.observation};
         desiredLink = "/radiation_observations/create_radiation_telegram?date="+telegram.currDate+"&inputMode="+this.state.inputMode+"&factor=daily";
         break;
-      case 'sea':
-        tlgData = {sea_observation: telegram.observation};
-        desiredLink = "/sea_observations/create_sea_telegram?date="+telegram.currDate+"&input_mode="+this.state.inputMode;
-        break;
+      // case 'sea':
+      //   tlgData = {sea_observation: telegram.observation};
+      //   desiredLink = "/sea_observations/create_sea_telegram?date="+telegram.currDate+"&input_mode="+this.state.inputMode;
+      //   break;
       // case 'hydro':
       //   tlgData = {hydro_observation: telegram.observation};
       //   desiredLink = "/hydro_observations/create_hydro_telegram?date="+telegram.currDate+"&input_mode="+this.state.inputMode;

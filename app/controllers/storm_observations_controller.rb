@@ -250,10 +250,16 @@ class StormObservationsController < ApplicationController
     @storm_observation = StormObservation.new
   end
 
+  def n_last_storms(n=20)
+    last_storms = StormObservation.where("telegram_type like 'W%'").order(telegram_date: :desc, created_at: :desc).limit(n).as_json 
+    render json: {telegrams: last_storms}
+  end
+
   def input_storm_rf
     stations = Station.all.order(:name)
     @stations = stations.map {|s| {label: s.name, value: s.code, id: s.id}}
-    @telegrams = StormObservation.where("telegram_type like 'W%'").order(telegram_date: :desc).limit(20)
+    # order changed telegram_date => created_at
+    @telegrams = StormObservation.where("telegram_type like 'W%'").order(created_at: :desc).limit(20)
     @current_station_id = (current_user && current_user.station_id)? current_user.station_id : 0
   end
 
@@ -265,9 +271,10 @@ class StormObservationsController < ApplicationController
     observation.telegram_date = "20#{observation.telegram[5,2]}-#{observation.telegram[7,2]}-#{observation.telegram[10,2]} #{observation.telegram[12,2]}:#{observation.telegram[14,2]}:00"
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{observation.telegram_date}")
     if observation.save
-      ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: observation, tlgType: 'storm'})
+      ActionCable.server.broadcast("synoptic_telegram_channel", {'telegram' => observation, 'tlgType' => 'storm'})
+      # Rails.logger.debug("My object>>>>>>>>>>>>>>>BROADCAST")
       User.where(role: ['synoptic', 'vip']).each do |synoptic|
-        ActionCable.server.broadcast("storm_telegram_user_#{synoptic.id}", {sound: true, telegram_id: observation.id})
+        ActionCable.server.broadcast("storm_telegram_user_#{synoptic.id}", {'sound' => true, 'telegram_id' => observation.id})
       end
       # last_telegrams_rf = StormObservation.where("telegram_type like 'W%'").order(telegram_date: :desc).limit(20)
       # render json: {telegrams: last_telegrams_rf}

@@ -6,7 +6,7 @@ import { checkSeaStormTelegram } from './check_sea_storm_telegram';
 import { checkAgroStormTelegram } from './check_agro_storm_telegram';
 import { checkAgroTelegram } from './check_agro_telegram';
 import { checkRadiationTelegram } from './check_radiation_telegram';
-import { checkSeaTelegram } from './check_sea_telegram';
+// import { checkSeaTelegram } from './check_sea_telegram';
 
 export default class NewTelegramForm extends React.Component{
   constructor(props) {
@@ -32,8 +32,8 @@ export default class NewTelegramForm extends React.Component{
   
   initText(tlgType){
     switch (tlgType){
-      case 'sea':
-        return "МОРЕ =";
+      // case 'sea':
+        // return "МОРЕ =";
       // case 'radiation':  20221027 BLN
       //   return "ЩЭРБХ "+this.state.codeStation+' =';
       case 'agro_dec':
@@ -153,12 +153,12 @@ export default class NewTelegramForm extends React.Component{
           return;
         }
         break;
-      case 'sea':
-        if (!checkSeaTelegram(text, this.props.stations, errors, this.observation, this.state.currDate)) {
-          this.setState({errors: errors});
-          return;
-        }
-        break;
+      // case 'sea':
+      //   if (!checkSeaTelegram(text, this.props.stations, errors, this.observation, this.state.currDate)) {
+      //     this.setState({errors: errors});
+      //     return;
+      //   }
+      //   break;
     }
     this.props.onFormSubmit({observation: this.observation, currDate: date, tlgType: this.state.tlgType, tlgText: this.state.tlgText});
     this.setState({
@@ -207,7 +207,7 @@ export default class NewTelegramForm extends React.Component{
       // { value: 'storm',           label: 'Штормовые' },
       // { value: 'radiation',       label: 'Радиация' },
       { value: 'radiation_daily', label: 'Радиация ежедневная' },
-      { value: 'sea',             label: 'Морские' },
+      // { value: 'sea',             label: 'Морские' },
     ];
     const terms = [
       { value: '00', label: '00' },

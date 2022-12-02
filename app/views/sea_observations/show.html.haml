@@ -1,12 +1,12 @@
 .container
-  %h3 Телеграмма о прибрежных наблюдениях МОРЕ
+  %h3 Телеграмма о прибрежных наблюдениях SEA
   %table{class: "table table-bordered"}
     %tr
       %th Дата ввода:
       %td= @sea_observation.created_at
     %tr
       %th Дата наблюдения:
-      %td= @sea_observation.date_dev.strftime("%Y-%m-%d")
+      %td= @sea_observation.date_dev.strftime("%Y-%m-%d %H:%M UTC")
     %tr
       %th Текст:
       %td= @sea_observation.telegram
@@ -14,7 +14,7 @@
       %th Метеостанция:
       %td= @sea_observation.station.name
     %tr
-      %th Час наблюдения (время местное)
+      %th Час наблюдения (UTC)
       %td= @sea_observation.term
   %h3 История операций
   %table{class: "table table-bordered"}
@@ -34,13 +34,15 @@
   -#= link_to 'Поиск', @search_link
   %br
   - if current_user.role == 'technicist'
-    = link_to 'Ввод телеграмм', '/sea_observations/input_sea_telegrams?input_mode=normal'
+    = link_to 'Ввод телеграмм', '/sea_observations/input_sea_rf'
+    -#= link_to 'Ввод телеграмм', '/sea_observations/input_sea_telegrams?input_mode=normal'
     %br
     = link_to "Список", sea_observations_path
     %br
     = link_to 'Удалить', @sea_observation, method: :delete, data: { confirm: 'Вы уверены?' }
   - elsif current_user.role == 'specialist'
-    = link_to 'Возврат', '/sea_observations/input_sea_telegrams?input_mode=normal'
+    = link_to 'Ввод телеграмм', '/sea_observations/input_sea_rf'
+    -#= link_to 'Возврат', '/sea_observations/input_sea_telegrams?input_mode=normal'
   - else
     = link_to "Список", sea_observations_path  
     %br
