@@ -98,7 +98,7 @@ export const InputSeaRf=({telegrams})=>{
     if(checkSeaRf(section1, section2, section3, term.value, error)){
       let con1 = section2.length>0? ' ':''
       let con2 = section3.length>1? ' ':''
-      let fullTelegram = `${telegram.trim()} ${section1.trim()}${con1}${section2.trim()}${con1}${section3.trim()}`
+      let fullTelegram = `${telegram.trim()} ${section1.trim()}${con1}${section2.trim()}${con2}${section3.trim()}`
       postObservation(fullTelegram)
     }else{
       alert(error[0])
