@@ -34,10 +34,10 @@ class Avtodor < Prawn::Document
       text "К договору от 30.12.2021 № 04/22/06"
     end
     bounding_box([290, y_pos], width: bounds.width-290) do
-      text "Директору
+      text "И.о. директора
             ГУП ДНР \"АВТОДОР\"
 		
-            А.Р. Доброрезу", leading: 3
+            А.Г. Величко", leading: 3
     end
     move_down 15
     font "OpenSans", style: :bold

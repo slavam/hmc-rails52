@@ -1,36 +1,41 @@
 export function checkSnowTelegram(tlgText, snowPoints, errors, observation, dateObservation){
   let tlg = tlgText;
-  let type = tlg.substr(0,6);
-  if((type == "ЩЭСГХ ") || (type == "ЩЭСГА ") || (type == "ЩЭСГИ ")){
-    observation.snow_type = type.trim();
-  } else {
-    errors.push("Ошибка в различительной группе");
-    return false;
-  }
-  if(!snowPoints.some(s => {observation.snow_point_id = s.id; return s.code == +tlg.substr(6,5);})){
+  observation.snow_type = 'HHSS'
+  // let type = tlg.substr(0,6);
+  // if((type == "ЩЭСГХ ") || (type == "ЩЭСГА ") || (type == "ЩЭСГИ ")){
+  //   observation.snow_type = type.trim();
+  // } else {
+  //   errors.push("Ошибка в различительной группе");
+  //   return false;
+  // }
+  let currPos = 0
+  if(!snowPoints.some(s => {observation.snow_point_id = s.id; return s.code == +tlg.substr(currPos,5);})){
     errors.push("Ошибка в коде пункта снегосъемки");
     return false;
   }
-  if (dateObservation.substr(8,2) == tlg.substr(12,2)){
-    observation.day_obs = +tlg.substr(12,2);
+  currPos=6
+  if (dateObservation.substr(8,2) == tlg.substr(currPos,2)){
+    observation.day_obs = +tlg.substr(currPos,2);
   } else {
     errors.push("Ошибка в дне даты наблюдения"); // 20190129 А.O.A.
     return false;
   }
-  if (dateObservation.substr(5,2) == tlg.substr(14,2)){
-    observation.month_obs = +tlg.substr(14,2);
+  currPos=8
+  if (dateObservation.substr(5,2) == tlg.substr(currPos,2)){
+    observation.month_obs = +tlg.substr(currPos,2);
   } else {
     errors.push("Ошибка в месяце даты наблюдения"); // 20190129 А.O.A.
     return false;
   }
-  if (dateObservation[3] == tlg[16]){
-    observation.last_digit_year_obs = +tlg[16];
+  currPos=10
+  if (dateObservation[3] == tlg[currPos]){
+    observation.last_digit_year_obs = +tlg[currPos];
     observation.date_observation = dateObservation;
   } else {
     errors.push("Ошибка в последней цифре года наблюдения"); // 20190129 А.O.A.
     return false;
   }
-  let currPos = 18;
+  currPos = 12;
   if(tlg[currPos] == '1')
     if(/^1[0-9/]{3}\d$/.test(tlg.substr(currPos,5)))
       currPos+=6;

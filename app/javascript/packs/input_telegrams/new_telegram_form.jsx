@@ -18,7 +18,7 @@ export default class NewTelegramForm extends React.Component{
       tlgType: this.props.tlgType,
       tlgTerm: this.props.tlgTerm,  
       tlgText: '',
-      isMariupol: false,
+      // isMariupol: false,
       errors: [] 
     };
     
@@ -163,7 +163,7 @@ export default class NewTelegramForm extends React.Component{
     this.props.onFormSubmit({observation: this.observation, currDate: date, tlgType: this.state.tlgType, tlgText: this.state.tlgText});
     this.setState({
       tlgText: this.initText(this.props.tlgType),
-      isMariupol: false,
+      // isMariupol: false,
       errors: []
     });
     // if([...this.state.tlgText.matchAll(new RegExp('=','gi'))].map(a => a.index).length>1)
@@ -221,10 +221,10 @@ export default class NewTelegramForm extends React.Component{
     ];
     
     let currValue = '';
-    if(this.state.isMariupol && this.props.telegramMariupol){
-      this.state.tlgText = this.props.telegramMariupol;
-      this.state.isMariupol = false;
-    }
+    // if(this.state.isMariupol && this.props.telegramMariupol){
+    //   this.state.tlgText = this.props.telegramMariupol;
+    //   this.state.isMariupol = false;
+    // }
     let tlgDate = this.props.inputMode == 'normal' ? <td>{this.state.currDate}</td> : <td><input type="date" name="input-date" value={this.state.currDate} onChange={this.dateChange} required={true} autoComplete="on" /></td>;
     let term = this.state.tlgType == 'synoptic' ? <td>{this.props.inputMode == 'normal' ? this.props.tlgTerm : this.state.tlgTerm}</td> : <td></td>;
     let termSelect = this.state.tlgType == 'synoptic' ? <td><TermSynopticSelect options={terms} onUserInput={this.handleTermSelected} defaultValue={this.state.tlgTerm} readOnly="readonly"/></td> : <td></td>;
