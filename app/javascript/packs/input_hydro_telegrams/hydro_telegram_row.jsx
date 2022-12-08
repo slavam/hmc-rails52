@@ -25,17 +25,13 @@ export default class HydroTelegramRow extends React.Component{
     var tlgData = {};
     var observation = this.props.telegram;
     var desiredLink = '';
-    switch(this.props.tlgType) {
-      case 'hydro':
-        if(!checkHydroTelegram(tlgText, this.props.hydroPosts, errors, observation, this.props.telegram.date)){
-          this.setState({errors: errors});
-          return;
-        }
-        observation.telegram = tlgText;
-        tlgData = {hydro_observation: observation};
-        desiredLink = "/hydro_observations/update_hydro_telegram?id="+this.props.telegram.id;
-        break;
+    if(!checkHydroTelegram(tlgText, this.props.hydroPosts, errors, observation, this.props.telegram.date)){
+      this.setState({errors: errors});
+      return;
     }
+    observation.telegram = tlgText;
+    tlgData = {hydro_observation: observation};
+    desiredLink = "/hydro_observations/update_hydro_telegram?id="+this.props.telegram.id;
     observation.telegram = tlgText;
     this.setState({mode: "Изменить", tlgText: tlgText, source: 'inside'});
     $.ajax({
@@ -51,7 +47,7 @@ export default class HydroTelegramRow extends React.Component{
   render() {
     if(this.state.source == 'outside')
       this.state.tlgText = this.props.telegram.telegram;
-    var desiredLink = "/"+this.props.tlgType+"_observations/"+this.props.telegram.id;
+    var desiredLink = "/hydro_observations/"+this.props.telegram.id;
     
     return (
       <tr key = {this.props.telegram.id}>

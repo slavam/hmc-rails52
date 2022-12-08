@@ -1,5 +1,5 @@
 .container
-  %h3 Телеграмма о гидрологических наблюдениях
+  %h3 Телеграмма о гидрологических наблюдениях HHZZ
   %table{class: "table table-bordered"}
     %tr
       %th Дата ввода:
@@ -20,7 +20,7 @@
     %tr
       %th Час наблюдения (время местное)
       %td= @hydro_observation.hour_obs
-    - curr_pos = 18
+    - curr_pos = 18-6
     - if text[curr_pos] == '1'
       %tr
         %th Отметка уровня воды над нулем поста, см.

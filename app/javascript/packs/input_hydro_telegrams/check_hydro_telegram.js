@@ -1,37 +1,42 @@
 export function checkHydroTelegram(tlgText, hydroPosts, errors, observation, dateObservation){
   let tlg = tlgText;
-  let type = tlg.substr(0,6);
-  if((type == "ЩЭРЕХ ") || (type == "ЩЭРЕА ") || (type == "ЩЭРЕИ ") || (type == 'ЩЭГОЛ ')){
-    observation.hydro_type = type.trim();
-  } else {
-    errors.push("Ошибка в различительной группе");
-    return false;
-  }
-  if(!hydroPosts.some(s => {observation.hydro_post_id = s.id; return s.code == +tlg.substr(6,5);})){
+  observation.hydro_type = 'HHZZ'
+  // let type = tlg.substr(0,6);
+  // if((type == "ЩЭРЕХ ") || (type == "ЩЭРЕА ") || (type == "ЩЭРЕИ ") || (type == 'ЩЭГОЛ ')){
+  //   observation.hydro_type = type.trim();
+  // } else {
+  //   errors.push("Ошибка в различительной группе");
+  //   return false;
+  // }
+  let currPos = 0
+  if(!hydroPosts.some(s => {observation.hydro_post_id = s.id; return s.code == +tlg.substr(currPos,5);})){
     errors.push("Ошибка в коде гидрологического поста");
     return false;
   }
-  if (dateObservation.substr(8,2) == tlg.substr(12,2)){
-    observation.day_obs = tlg.substr(12,2);
+  currPos = 6
+  if (dateObservation.substr(8,2) == tlg.substr(currPos,2)){
+    observation.day_obs = tlg.substr(currPos,2);
     observation.date_observation = dateObservation;
   } else {
     errors.push("Число месяца не соответствует дню даты наблюдения"); // 20181217 А.O.A.
     return false;
   }
-  let hour = +tlg.substr(14,2);
+  currPos = 8
+  let hour = +tlg.substr(currPos,2);
   if((hour >= 0) && (hour < 24))
     observation.hour_obs = hour;
   else {
     errors.push("Ошибка в часе наблюдения");
     return false;
   }
-  if(/[127]/.test(tlg[16])){
-    observation.content_factor = tlg[16];
+  currPos=10
+  if(/[127]/.test(tlg[currPos])){
+    observation.content_factor = tlg[currPos];
   } else {
     errors.push("Ошибка в признаке присутствия разделов");
     return false;
   }
-  let currPos = 18;
+  currPos = 12;
   if (tlg[currPos] != '9')
     if(checkSection1('1')){
       // console.log('>>>>>>>>>>> currPos=>'+currPos);
@@ -40,7 +45,7 @@ export function checkHydroTelegram(tlgText, hydroPosts, errors, observation, dat
     }
   let groupNum = 0;
   if(tlg.substr(currPos-1,4) == ' 922'){
-    if(tlg[16] != '2'){
+    if(tlg[10] != '2'){
       errors.push("Ошибка в признаке присутствия разделов =>"+tlg.substr(currPos));
       return false;
     }
@@ -66,7 +71,7 @@ export function checkHydroTelegram(tlgText, hydroPosts, errors, observation, dat
     }
   }
   if(tlg.substr(currPos-1,4) == ' 966'){
-    if(tlg[16] != '2'){
+    if(tlg[10] != '2'){
       errors.push("Ошибка в признаке присутствия разделов =>"+tlg.substr(currPos));
       return false;
     }
@@ -127,19 +132,19 @@ export function checkHydroTelegram(tlgText, hydroPosts, errors, observation, dat
         errors.push("Ошибка в группе 8 раздела 966 =>"+tlg.substr(currPos));
         return false;
       }
-    if(/^9\d{4}$/.test(tlg.substr(currPos,5))){
-      currPos+=6;
-    }else{
-      errors.push("Ошибка в группе 9 раздела 966 =>"+tlg.substr(currPos));
-      return false;
-    }
+    // if(/^9\d{4}$/.test(tlg.substr(currPos,5))){
+    //   currPos+=6;
+    // }else{
+    //   errors.push("Ошибка в группе 9 раздела 966 =>"+tlg.substr(currPos));
+    //   return false;
+    // }
   }
   if(tlg.substr(currPos-1,5) == ' 9770'){
-    if(tlg.substr(0,5) != 'ЩЭГОЛ'){
-      errors.push("Ошибка в различительной группе =>"+tlg.substr(currPos));
-      return false;
-    }
-    if(tlg[16] != '7'){
+    // if(tlg.substr(0,5) != 'ЩЭГОЛ'){
+    //   errors.push("Ошибка в различительной группе =>"+tlg.substr(currPos));
+    //   return false;
+    // }
+    if(tlg[10] != '7'){
       errors.push("Ошибка в признаке присутствия разделов =>"+tlg.substr(currPos));
       return false;
     }
