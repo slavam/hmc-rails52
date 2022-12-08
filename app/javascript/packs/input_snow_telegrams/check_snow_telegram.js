@@ -117,48 +117,49 @@ export function checkSnowTelegram(tlgText, snowPoints, errors, observation, date
     else
       snowDateNum+=1;
   }
-  if(tlg.substr(currPos,2)=='94')
-    if(/^94\d{3}$/.test(tlg.substr(currPos,5)))
-      currPos+=6;
-    else{
-      errors.push("Ошибка в группе 94 =>"+tlg.substr(currPos));
-      return false;
-    }
-  if(tlg.substr(currPos,2)=='95')
-    if(/^95\d{3}$/.test(tlg.substr(currPos,5)))
-      currPos+=6;
-    else{
-      errors.push("Ошибка в группе 95 =>"+tlg.substr(currPos));
-      return false;
-    }
-  if(tlg.substr(currPos,2)=='96')
-    if(/^96[5-9]\d{2}$/.test(tlg.substr(currPos,5)))
-      currPos+=6;
-    else{
-      errors.push("Ошибка в группе 96 =>"+tlg.substr(currPos));
-      return false;
-    }
-  if(tlg.substr(currPos,2)=='97')
-    if(/^97\d{3}$/.test(tlg.substr(currPos,5)))
-      currPos+=6;
-    else{
-      errors.push("Ошибка в группе 97 =>"+tlg.substr(currPos));
-      return false;
-    }
-  if(tlg.substr(currPos,2)=='98')
-    if(/^98\d{3}$/.test(tlg.substr(currPos,5)))
-      currPos+=6;
-    else{
-      errors.push("Ошибка в группе 98 =>"+tlg.substr(currPos));
-      return false;
-    }
-  if(tlg.substr(currPos,2)=='99')
-    if(/^99[5-9]\d{2}$/.test(tlg.substr(currPos,5)))
-      currPos+=6;
-    else{
-      errors.push("Ошибка в группе 99 =>"+tlg.substr(currPos));
-      return false;
-    }
+  // +++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // if(tlg.substr(currPos,2)=='94')
+  //   if(/^94\d{3}$/.test(tlg.substr(currPos,5)))
+  //     currPos+=6;
+  //   else{
+  //     errors.push("Ошибка в группе 94 =>"+tlg.substr(currPos));
+  //     return false;
+  //   }
+  // if(tlg.substr(currPos,2)=='95')
+  //   if(/^95\d{3}$/.test(tlg.substr(currPos,5)))
+  //     currPos+=6;
+  //   else{
+  //     errors.push("Ошибка в группе 95 =>"+tlg.substr(currPos));
+  //     return false;
+  //   }
+  // if(tlg.substr(currPos,2)=='96')
+  //   if(/^96[5-9]\d{2}$/.test(tlg.substr(currPos,5)))
+  //     currPos+=6;
+  //   else{
+  //     errors.push("Ошибка в группе 96 =>"+tlg.substr(currPos));
+  //     return false;
+  //   }
+  // if(tlg.substr(currPos,2)=='97')
+  //   if(/^97\d{3}$/.test(tlg.substr(currPos,5)))
+  //     currPos+=6;
+  //   else{
+  //     errors.push("Ошибка в группе 97 =>"+tlg.substr(currPos));
+  //     return false;
+  //   }
+  // if(tlg.substr(currPos,2)=='98')
+  //   if(/^98\d{3}$/.test(tlg.substr(currPos,5)))
+  //     currPos+=6;
+  //   else{
+  //     errors.push("Ошибка в группе 98 =>"+tlg.substr(currPos));
+  //     return false;
+  //   }
+  // if(tlg.substr(currPos,2)=='99')
+  //   if(/^99[5-9]\d{2}$/.test(tlg.substr(currPos,5)))
+  //     currPos+=6;
+  //   else{
+  //     errors.push("Ошибка в группе 99 =>"+tlg.substr(currPos));
+  //     return false;
+  //   }
   if(tlg[currPos-1]=='=')
     return true;
   else{

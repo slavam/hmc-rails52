@@ -54,28 +54,15 @@ export default class NewSnowTelegram extends React.Component{
   
   render(){
     let inBuffer = ((this.state.errors[0] > '') && (this.state.tlgText > '')) ? <button style={{float: "right"}} type="button" id="in-buffer" onClick={(event) => this.inBufferClick(event)}>В буфер</button> : '';
-    let obsDate = this.props.inputMode == 'normal' ? <td>{this.state.observationDate}</td> : <td><input type="date" name="input-date" value={this.state.observationDate} onChange={(event) => this.dateChange(event)} required={true} autoComplete="on" /></td>;
+    // let obsDate = this.props.inputMode == 'normal' ? <td>{this.state.observationDate}</td> : <td><input type="date" name="input-date" value={this.state.observationDate} onChange={(event) => this.dateChange(event)} required={true} autoComplete="on" /></td>;
+    let obsDate = this.props.inputMode == 'normal' ? this.state.observationDate : <input type="date" name="input-date" value={this.state.observationDate} onChange={(event) => this.dateChange(event)} required={true} autoComplete="on" />
     return(
       <div>
         <form className="telegramForm" onSubmit={(event) => this.handleSubmit(event)}>
-          <table className="table table-hover">
-            <thead>
-              <tr>
-                {/* <th>Тип телеграммы</th> */}
-                <th>Дата наблюдения</th>
-                {/* <th>Время местное</th> */}
-                {/*<th>Время UTC</th>*/}
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                {/* <td><TermSynopticSelect options={types} onUserInput={this.handleTypeSelected} defaultValue={this.state.tlgType}/></td> */}
-                {obsDate}
-                {/* <td>{this.state.localTime}</td> */}
-              </tr>
-            </tbody>
-          </table>
-          <p>Текст 
+          <label htmlFor='observ-date'>Дата наблюдения </label>
+          <br/>
+          <span id='observ-date'>{obsDate}</span>
+          <p><b>Текст</b>
             <input type="text" value={this.state.tlgText} onChange={(event) => this.handleTextChange(event)}/>
             <span style={{color: 'red'}}>{this.state.errors[0]}</span>
             {inBuffer}

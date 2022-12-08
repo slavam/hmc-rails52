@@ -12,7 +12,7 @@ const LastSnowTelegramsTable = ({lastTelegrams, tlgType, snowPoints}) => {
     <table className="table table-hover">
       <thead>
         <tr>
-          <th width = "100px">Дата наблюдения</th>
+          <th width = "100px">Дата съемки</th>
           <th>Пункт снегосъемки</th>
           <th>Текст</th>
           <th>Действия</th>
@@ -36,6 +36,7 @@ export default class InputSnowTelegrams extends React.Component{
     this.handleTelegramTypeChanged = this.handleTelegramTypeChanged.bind(this);
     this.handleInBuffer = this.handleInBuffer.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.toClipboard = this.toClipboard.bind(this)
   }
   
   handleTelegramTypeChanged(tlgType){
@@ -77,13 +78,28 @@ export default class InputSnowTelegrams extends React.Component{
         this.setState({errors: ["Ошибка записи в буфер"]});
       });
   }
+  toClipboard(e){
+    let text = ""
+    let message = ''
+    let ts = []
+    ts = this.state.lastTelegrams.filter(t => this.state.observationDate===t.date)
+    message = `Скопировано ${ts.length} snow тлг. за ${this.state.observationDate}`
   
+    ts.forEach((t) => {text += t.telegram+'\n'})
+    navigator.clipboard.writeText(text).then(function() {
+      console.log('Async: Copying to clipboard was successful!');
+    }, function(err) {
+      console.error('Async: Could not copy text: ', err);
+    });
+    alert(message);
+  }
   render(){
     return(
       <div>
-        <h3>Новая телеграмма</h3>
+        <h3>Новая телеграмма о снегомерных съемках</h3>
         <NewSnowTelegram observationDate={this.state.observationDate} tlgType={this.state.tlgType} onTelegramTypeChange={this.handleTelegramTypeChanged} onFormSubmit={this.handleFormSubmit} snowPoints={this.props.snowPoints} inputMode={this.props.inputMode} onInBuffer={this.handleInBuffer}/>
         <h3>Телеграммы {this.state.tlgType} (HHSS)</h3> 
+        <button onClick={event => this.toClipboard(event)}>Скопировать последние</button>
         <LastSnowTelegramsTable lastTelegrams={this.state.lastTelegrams} tlgType={this.state.tlgType} snowPoints={this.props.snowPoints}/>
       </div>
     );
