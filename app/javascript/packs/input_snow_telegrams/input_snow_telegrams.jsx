@@ -84,9 +84,8 @@ export default class InputSnowTelegrams extends React.Component{
     let ts = []
     ts = this.state.lastTelegrams.filter(t => this.state.observationDate===t.date)
     message = `Скопировано ${ts.length} snow тлг. за ${this.state.observationDate}`
-  
     ts.forEach((t) => {text += t.telegram+'\n'})
-    navigator.clipboard.writeText(text).then(function() {
+    navigator['clipboard'].writeText(text).then(function() {
       console.log('Async: Copying to clipboard was successful!');
     }, function(err) {
       console.error('Async: Could not copy text: ', err);
@@ -104,7 +103,6 @@ export default class InputSnowTelegrams extends React.Component{
       </div>
     );
   }
-  
 }
 
 $(function () {

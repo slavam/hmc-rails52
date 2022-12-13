@@ -68,7 +68,7 @@ Rails.application.configure do
   # config.action_cable.url = 'ws://localhost:3000/cable'
   config.action_cable.url = 'ws://localhost:3000/cable'
   # Add Cloud9 origin for Action Cable requests.
-  config.action_cable.allowed_request_origins = [
-    'https://hmc-active-cable-slavam1.c9users.io' 
-  ]
+  # config.action_cable.allowed_request_origins = [
+  #    'https://hmc-active-cable-slavam1.c9users.io' 
+  #  ]
 end

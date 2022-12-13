@@ -253,7 +253,7 @@ export default class InputTelegrams extends React.Component{
     let telegramTable = this.props.telegrams.length > 0 ? 
       <div>
         <h3>Телеграммы {this.state.tlgType}</h3> 
-        <div>{toClipboard}</div>
+        {/* <div>{toClipboard}</div> */}
         <LastTelegramsTable telegrams={this.state.telegrams} tlgType={this.state.tlgType} stations={this.props.stations}/>
       </div> : '';
     return(
