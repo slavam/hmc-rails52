@@ -88,7 +88,7 @@ export function InputStormRf({telegrams, stations, currStationId}){
         setTail('5sTTT 7VVttt=')
         break
       case 30:
-        setTail(isStart?'2//ww 8NChh=':'8NChh=')
+        setTail('2//ww 8NChh=')
         break
       case 31:
         setTail(isStart?'2//ww=':'=')

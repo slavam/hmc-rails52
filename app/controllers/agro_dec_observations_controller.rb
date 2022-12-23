@@ -194,6 +194,22 @@ class AgroDecObservationsController < ApplicationController
     end
   end
   
+  def input_agro_dec_rf
+    stations = Station.all.order(:name)
+    @stations = stations.map {|s| {label: s.name, value: s.code, id: s.id}}
+    @telegrams = []
+    cd = Time.now
+    c_day = cd.day
+    if c_day<10
+      @report_date = (cd-c_day.days).strftime("%Y-%m-%d")
+    elsif c_day<20
+      @report_date = cd.strftime("%Y-%m-10")
+    else
+      @report_date = cd.strftime("%Y-%m-20")
+    end
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@report_date.inspect}") 
+  end
+
   def input_agro_dec_telegrams
     @stations = Station.all.order(:name)
     @telegrams = AgroDecObservation.short_last_50_telegrams(current_user)

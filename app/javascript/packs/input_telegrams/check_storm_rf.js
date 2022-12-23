@@ -214,7 +214,7 @@ export function checkStormRf(code, tlg, error, isStart){
         return false
       }
     case 30:
-      if(isStart)
+//      if(isStart)
         if(tlg[0]=='2'){
           let group = tlg.substr(0,5)
           if(!/^2\/\/[5-9/][0-9/]$/.test(group))
