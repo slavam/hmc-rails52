@@ -143,7 +143,6 @@ class AgroDecObservationsController < ApplicationController
     telegram_text = params[:agro_dec_observation][:telegram]
     station_id = params[:agro_dec_observation][:station_id]
     date_dev = params[:input_mode] == 'direct' ? Time.parse(params[:date]+' 00:01:00 UTC') : Time.now
-    # telegram_type = telegram_text[0,5]
     day_obs = telegram_text[12,2].to_i
     month_obs = telegram_text[14,2].to_i
     telegram_num = telegram_text[16,1].to_i
@@ -194,10 +193,55 @@ class AgroDecObservationsController < ApplicationController
     end
   end
   
+  def create_agro_dec_rf
+    # telegram_text = params[:agro_dec_observation][:telegram]
+    station_id = params[:agro_dec_observation][:station_id].to_i
+    date_dev = params[:agro_dec_observation][:date_dev]
+    telegram_num = params[:agro_dec_observation][:telegram_num].to_i
+    telegram = AgroDecObservation.find_by("station_id = ? and telegram_num = ? and date_dev = ?", station_id, telegram_num, date_dev)
+    if telegram.present? 
+      if telegram.update agro_dec_observation_params
+        params[:crop_dec_conditions].each do |k, v|
+          c_c = CropDecCondition.find_by(agro_dec_observation_id: telegram.id, crop_code: v[:crop_code].to_i)
+          if c_c.present?
+            c_c.update crop_dec_conditions_params(v)
+          else
+            telegram.crop_dec_conditions.build(crop_dec_conditions_params(v)).save
+          end
+        end if params[:crop_dec_conditions].present?
+        last_telegrams = [] #AgroDecObservation.short_last_50_telegrams(current_user)
+        render json: {telegrams: last_telegrams, 
+                      errors: ["Телеграмма изменена"]}
+      else
+        render json: {errors: telegram.errors.messages}, status: :unprocessable_entity
+      end
+    else
+      telegram = AgroDecObservation.new(agro_dec_observation_params)
+      if telegram.save
+        params[:crop_dec_conditions].each do |k, v|
+          telegram.crop_dec_conditions.build(crop_dec_conditions_params(v)).save
+        end if params[:crop_dec_conditions].present?
+        # new_telegram = {id: telegram.id, date: telegram.date_dev, station_name: telegram.station.name, telegram: telegram.telegram}
+        # new_telegram = {id: telegram.id, date_dev: telegram.date_dev, station_id: telegram.station_id, telegram: telegram.telegram, created_at: telegram.created_at}
+        # ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: new_telegram, tlgType: 'agro_dec'})
+        last_telegrams = last_20_telegrams_rf #AgroDecObservation.short_last_50_telegrams(current_user)
+        render json: {telegrams: last_telegrams, 
+                      errors: ["Телеграмма сохранена"]}
+      else
+        render json: {errors: telegram.errors.messages}, status: :unprocessable_entity
+      end
+    end
+  end
+  
+  def last_20_telegrams_rf
+    all_fields = AgroDecObservation.all.limit(20).order(:date_dev, :updated_at).reverse_order
+    telegrams = all_fields.each{|t| {id: t.id, date_dev: t.date_dev, station_id: t.station_id, telegram: t.telegram, created_at: t.created_at}}
+  end
+
   def input_agro_dec_rf
     stations = Station.all.order(:name)
     @stations = stations.map {|s| {label: s.name, value: s.code, id: s.id}}
-    @telegrams = []
+    @telegrams = last_20_telegrams_rf
     cd = Time.now
     c_day = cd.day
     if c_day<10

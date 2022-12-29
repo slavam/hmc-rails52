@@ -32,8 +32,8 @@ export const InputAgroDecRf=({telegrams, stations, reportDate})=>{
   const [observationDate, setObservationDate] = useState(reportDate)
   const [station, setStation] = useState(stations[0])
   const [telegramNum, setTelegramNum] = useState(1)
-  const [zone90, setZone90] = useState('90sTT 1sTTT 2sTTn 3sTTn 4sTTn 5000/ 8ffnm')
-  const [zone91, setZone91] = useState('=')
+  const [zone9091, setZone9091] = useState('90sTT 1sTTT 2sTTn 3sTTn 4sTTn 5000/ 8ffnm')
+  const [zone9295, setZone9295] = useState('222 92KKK 1NNNA=')
   let od = observationDate
   od = `${od.slice(8,10)}${od.slice(5,7)}${telegramNum} 111`
   const telegram = `AADD ${station.value} ${od}`
@@ -46,20 +46,36 @@ export const InputAgroDecRf=({telegrams, stations, reportDate})=>{
   const telegramNumChanged=(e)=>{
     setTelegramNum(e.target.value)
   }
-  const onZone90Changed=(e)=>{
-    setZone90(e.target.value)
+  const onZone9091Changed=(e)=>{
+    setZone9091(e.target.value)
   }
-  const onZone91Changed=(e)=>{
-    setZone91(e.target.value)
+  const onZone9295Changed=(e)=>{
+    setZone9295(e.target.value)
   }
   const saveAgroDecObservation=()=>{
     let errors = []
-    let con1 = zone91.length>1? ' ':''
-    let fullTelegram = `${telegram.trim().substring(5)} ${zone90.trim()}${con1}${zone91.trim()}`
+    let con = zone9295.length>1? ' ':''
+    const fullTelegram = `${telegram.trim().substring(5)} ${zone9091.trim()}${con}${zone9295.trim()}`
     let observation = {}
+    
     if(checkAgroDecRf(fullTelegram, stations, errors, observation)){
-      alert('OK')
-      // postObservation(fullTelegram)
+      observation.telegram = fullTelegram
+      observation.date_dev = observationDate
+      observation.telegram_num = telegramNum
+      $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        data: {agro_dec_observation: observation},
+        url: "/agro_dec_observations/create_agro_dec_rf"
+        }).done((data) => {
+          setTelegramNum(1)
+          setZone9091('90sTT 1sTTT 2sTTn 3sTTn 4sTTn 5000/ 8ffnm')     
+          setZone9295('222 92KKK 1NNNA=') 
+          setLastTelegrams(data.telegrams)
+          alert(data.errors[0])
+        }).fail((res) => {
+          alert("Ошибка записи в базу")
+        });
     }else{
       alert(errors[0])
     }
@@ -82,7 +98,7 @@ export const InputAgroDecRf=({telegrams, stations, reportDate})=>{
             <th width="250px">Дата наблюдения</th>
             <th width="100px">Номер телеграммы</th>
             <th>Метеостанция</th>
-            <th></th>
+            {/* <th></th> */}
           </tr>
         </thead>
         <tbody>
@@ -90,7 +106,7 @@ export const InputAgroDecRf=({telegrams, stations, reportDate})=>{
             <td><input type="date" value={observationDate} onChange={dateChanged} /></td>
             <td><input type="number" value={telegramNum} step='1' max='9' min='1' onChange={telegramNumChanged} /></td>
             <td><Select value={station} onChange={handleStationSelected} options={stations} /></td>
-            <td></td>
+            {/* <td></td> */}
           </tr>
         </tbody>
       </table>
@@ -99,13 +115,12 @@ export const InputAgroDecRf=({telegrams, stations, reportDate})=>{
         <table className="table table-hover">
           <thead>
             <tr>
-              <th rowSpan={2}>Раздел 1:</th>
-              <th>Зона 90</th>
-              <th><input type="text" value={zone90} id='zone90' onChange={onZone90Changed}/></th>
+              <th width="200px">Раздел 1; зоны 90-91</th>
+              <th><input type="text" value={zone9091} id='zone9091' onChange={onZone9091Changed}/></th>
             </tr>
             <tr>
-              <th>Зона 91</th>
-              <th><input type="text" value={zone91} id='zone91' onChange={onZone91Changed}/></th>
+              <th>Раздел 2; зоны 92-95</th>
+              <th><input type="text" value={zone9295} id='zone9295' onChange={onZone9295Changed}/></th>
             </tr>
           </thead>
         </table>

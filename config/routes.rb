@@ -58,6 +58,8 @@ Rails.application.routes.draw do
   put 'agro_dec_observations/update_agro_dec_telegram', to: 'agro_dec_observations#update_agro_dec_telegram'
   get 'agro_dec_observations/agro_meteo_data', to: 'agro_dec_observations#agro_meteo_data'
   get 'agro_dec_observations/input_agro_dec_rf', to: 'agro_dec_observations#input_agro_dec_rf'
+  post 'agro_dec_observations/create_agro_dec_rf', to: 'agro_dec_observations#create_agro_dec_rf'
+  get 'agro_dec_observations/last_20_telegrams_rf', to: 'agro_dec_observations#last_20_telegrams_rf'
   resources :agro_dec_observations
   resources :agro_works
   resources :agro_damages
