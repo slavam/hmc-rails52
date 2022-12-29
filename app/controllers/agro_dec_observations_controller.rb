@@ -195,6 +195,7 @@ class AgroDecObservationsController < ApplicationController
   
   def create_agro_dec_rf
     # telegram_text = params[:agro_dec_observation][:telegram]
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>state_crops: #{params[:crop_dec_conditions].inspect}") 
     station_id = params[:agro_dec_observation][:station_id].to_i
     date_dev = params[:agro_dec_observation][:date_dev]
     telegram_num = params[:agro_dec_observation][:telegram_num].to_i
@@ -209,7 +210,7 @@ class AgroDecObservationsController < ApplicationController
             telegram.crop_dec_conditions.build(crop_dec_conditions_params(v)).save
           end
         end if params[:crop_dec_conditions].present?
-        last_telegrams = [] #AgroDecObservation.short_last_50_telegrams(current_user)
+        last_telegrams = last_20_telegrams_rf #AgroDecObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams, 
                       errors: ["Телеграмма изменена"]}
       else

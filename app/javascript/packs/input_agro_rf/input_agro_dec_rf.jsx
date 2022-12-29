@@ -65,7 +65,7 @@ export const InputAgroDecRf=({telegrams, stations, reportDate})=>{
       $.ajax({
         type: 'POST',
         dataType: 'json',
-        data: {agro_dec_observation: observation},
+        data: {agro_dec_observation: observation, crop_dec_conditions: observation.state_crops},
         url: "/agro_dec_observations/create_agro_dec_rf"
         }).done((data) => {
           setTelegramNum(1)
