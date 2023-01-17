@@ -729,7 +729,7 @@ export function checkAgroDecRf(tlg, stations, errors, observation){
             return code = false;
           }
         if (t[pos] == '2')
-          if (/^2\d{4}]$/.test(t.substr(pos,5))){
+          if (/^2\d{4}$/.test(t.substr(pos,5))){
             state_crops.number_measurements_0 = t[pos+1];
             state_crops.number_measurements_3 = t[pos+2];
             state_crops.number_measurements_30 = t[pos+3];

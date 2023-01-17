@@ -295,11 +295,11 @@
         %td= a.created_at
 
   - if current_user.role == 'technicist'
-    = link_to 'Ввод телеграмм', '/agro_dec_observations/input_agro_dec_telegrams?input_mode=normal'
+    = link_to 'Ввод декадных агротелеграмм', '/agro_dec_observations/input_agro_dec_rf'
     %br
     = link_to "Список", agro_dec_observations_path
   - elsif current_user.role == 'specialist'
-    = link_to 'Возврат', '/agro_dec_observations/input_agro_dec_telegrams?input_mode=normal'
+    = link_to 'Возврат', '/agro_dec_observations/input_agro_dec_rf'
   - else
     = link_to "Список", agro_dec_observations_path
   - if (current_user.role == 'admin') or (current_user.role == 'technicist')
