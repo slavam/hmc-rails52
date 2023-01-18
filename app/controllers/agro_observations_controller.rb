@@ -146,6 +146,17 @@ class AgroObservationsController < ApplicationController
     @stations = Station.all.order(:name)
     @telegrams = AgroObservation.short_last_50_telegrams(current_user)
   end
+
+  def last_20_telegrams_rf
+    all_fields = AgroObservation.all.limit(20).order(:date_dev, :updated_at).reverse_order
+    telegrams = all_fields.each{|t| {id: t.id, date_dev: t.date_dev, station_id: t.station_id, telegram: t.telegram, created_at: t.created_at}}
+  end
+
+  def input_agro_rf
+    stations = Station.all.order(:name)
+    @stations = stations.map {|s| {label: s.name, value: s.code, id: s.id}}
+    @telegrams = last_20_telegrams_rf
+  end
   
   def get_last_telegrams
     telegrams = AgroObservation.short_last_50_telegrams(current_user)
