@@ -1,18 +1,18 @@
 .container
-  %h3 Телеграмма агрометеорологическая ежедневная
+  %h3 Телеграмма агрометеорологическая ежедневная AAEE
   %table{class: "table table-bordered"}
     %tr
       %th Дата ввода
       %td= @agro_observation.created_at
     %tr
       %th Дата
-      %td= @agro_observation.date_dev
+      %td= @agro_observation.date_dev.strftime("%Y-%m-%d")
     %tr
       %th Текст
       %td= @agro_observation.telegram
-    %tr
-      %th Тип телеграммы
-      %td= @agro_observation.telegram_type == 'ЩЭАГЯ'? 'Ежедневная (ЩЭАГЯ)' : 'Декадная (ЩЭАГУ)'
+    -# %tr
+    -#   %th Тип телеграммы
+    -#   %td Ежедневная (AAEE)
     %tr
       %th Метеостанция
       %td= @agro_observation.station.name
@@ -247,28 +247,29 @@
             %tr
               %th Температура грунта на глубине 3 см (°С)
               %td= c_d.temperature_dec_min_soil3.to_s
-  %h3 История операций
-  %table{class: "table table-bordered"}
-    %thead
-      %tr
-        %th Версия
-        %th ID пользователя
-        %th Операция
-        %th Дата
-    %tbody
-    - @actions.each do |a|
-      %tr
-        %td= a.version
-        %td= a.user.present? ? a.user.login : 'unknown'
-        %td= a.action
-        %td= a.created_at
+  - if @actions.present?
+    %h3 История операций
+    %table{class: "table table-bordered"}
+      %thead
+        %tr
+          %th Версия
+          %th ID пользователя
+          %th Операция
+          %th Дата
+      %tbody
+      - @actions.each do |a|
+        %tr
+          %td= a.version
+          %td= a.user.present? ? a.user.login : 'unknown'
+          %td= a.action
+          %td= a.created_at
       
   - if current_user.role == 'technicist'
-    = link_to 'Ввод телеграмм', '/agro_observations/input_agro_telegrams?input_mode=normal'
+    = link_to 'Ввод телеграмм', '/agro_observations/input_agro_rf'
     %br
     = link_to "Список", agro_observations_path
   - elsif current_user.role == 'specialist'
-    = link_to 'Возврат', '/agro_observations/input_agro_telegrams?input_mode=normal'
+    = link_to 'Возврат', '/agro_observations/input_agro_rf'
   - else
     = link_to "Список", agro_observations_path
   - if (current_user.role == 'admin') or (current_user.role == 'technicist')

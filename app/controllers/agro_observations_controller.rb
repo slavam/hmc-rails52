@@ -158,6 +158,59 @@ class AgroObservationsController < ApplicationController
     @telegrams = last_20_telegrams_rf
   end
   
+  def create_agro_rf
+    telegram_text = params[:agro_observation][:telegram]
+    station_id = params[:agro_observation][:station_id]
+    date_dev = params[:agro_observation][:date_dev]
+    telegram_type = params[:agro_observation][:telegram_type]
+    telegram_num = params[:agro_observation][:telegram_num]
+    
+    telegram = AgroObservation.find_by( station_id: station_id, 
+                                        telegram_type: telegram_type, 
+                                        date_dev: date_dev, 
+                                        telegram_num: telegram_num)
+    if telegram.present?
+      if telegram.update agro_observation_params
+        params[:agro_observation][:state_crops].each do |k, v|
+          c_c = CropCondition.find_by(agro_observation_id: telegram.id, crop_code: v[:crop_code].to_i)
+          if c_c.present?
+            c_c.update crop_conditions_params(v)
+          else
+            telegram.crop_conditions.build(crop_conditions_params(v)).save
+          end
+        end if params[:agro_observation][:state_crops].present?
+        params[:agro_observation][:crop_damages].each do |k, v|
+          c_d = CropDamage.find_by(agro_observation_id: telegram.id, crop_code: v[:crop_code].to_i)
+          if c_d.present?
+            c_d.update crop_damages_params(v)
+          else
+            telegram.crop_damages.build(crop_damages_params(v)).save
+          end
+        end if params[:agro_observation][:crop_damages].present?
+        last_telegrams = last_20_telegrams_rf
+        render json: {telegrams: last_telegrams, 
+                      errors: ["Телеграмма изменена"]}
+      else
+        render json: {errors: telegram.errors.messages}, status: :unprocessable_entity
+      end
+    else
+      telegram = AgroObservation.new(agro_observation_params)
+      if telegram.save
+        params[:agro_observation][:state_crops].each do |k, v|
+          telegram.crop_conditions.build(crop_conditions_params(v)).save
+        end if params[:agro_observation][:state_crops].present?
+        params[:agro_observation][:crop_damages].each do |k, v|
+          telegram.crop_damages.build(crop_damages_params(v)).save
+        end if params[:agro_observation][:crop_damages].present?
+        new_telegram = {id: telegram.id, date_dev: telegram.date_dev, station_id: telegram.station_id, telegram: telegram.telegram, created_at: telegram.created_at}
+        ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: new_telegram, tlgType: 'agro'})
+        render json: {errors: ["Телеграмма сохранена"]}
+      else
+        render json: {errors: telegram.errors.messages}, status: :unprocessable_entity
+      end
+    end
+  end
+
   def get_last_telegrams
     telegrams = AgroObservation.short_last_50_telegrams(current_user)
     render json: {telegrams: telegrams, tlgType: 'agro'}

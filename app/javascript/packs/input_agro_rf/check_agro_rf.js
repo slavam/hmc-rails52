@@ -210,16 +210,16 @@ export function checkAgroRf(tlg, stations, errors, observation){
     currentPos = end92pos;
     let zone = tlg.substr(zone92_95pos-1,end92pos-zone92_95pos).split(' 92'); // 20180710 mwm
     zone.splice(0,1);
-    observation.damage_crops = [];
-    let damage_crops;
+    observation.crop_damages = [];
+    let crop_damages;
     let code = true;
     zone.forEach((t, i) => {
-      damage_crops = {};
-      damage_crops.crop_code = t.substr(0, 3);
+      crop_damages = {};
+      crop_damages.crop_code = t.substr(0, 3);
       let pos = 4;
       if( (/^95[0-9/]{3}$/.test(t.substr(pos,5)))){ // добавил /// по согласованию с В.И. 2018.02.28 (см. стр. 35)
         if (t[pos+2] != '/')
-          damage_crops.height_snow_cover_rail = t.substr(pos+2,3);
+          crop_damages.height_snow_cover_rail = t.substr(pos+2,3);
         pos += 6;
       }else {
         errors.push("Ошибка в группе 95 зоны 92_95["+(i+1)+"] раздела 3 =>"+t.substr(pos));
@@ -228,7 +228,7 @@ export function checkAgroRf(tlg, stations, errors, observation){
       
       if (t[pos] == '4')
         if( (/^4\d{3}\/$/.test(t.substr(pos,5)))){
-          damage_crops.depth_soil_freezing = t.substr(pos+1,3);
+          crop_damages.depth_soil_freezing = t.substr(pos+1,3);
           pos += 6;
         }else {
           errors.push("Ошибка в группе 4 зоны 92_95["+(i+1)+"] раздела 3 =>"+t.substr(pos));
@@ -237,8 +237,8 @@ export function checkAgroRf(tlg, stations, errors, observation){
       
       if (t[pos] == '5')
         if( (/^5[12][01]\d{2}$/.test(t.substr(pos,5)))){
-          damage_crops.thermometer_index = t[pos+1];
-          damage_crops.temperature_dec_min_soil3 = sign[t[pos+2]]+t.substr(pos+3,2);
+          crop_damages.thermometer_index = t[pos+1];
+          crop_damages.temperature_dec_min_soil3 = sign[t[pos+2]]+t.substr(pos+3,2);
           pos += 6;
         }else {
           errors.push("Ошибка в группе 5 зоны 92_95["+(i+1)+"] раздела 3 =>"+t.substr(pos));
@@ -249,7 +249,7 @@ export function checkAgroRf(tlg, stations, errors, observation){
         errors.push("Ошибка в зоне 92_95["+(i+1)+"] раздела 3 =>"+t.substr(pos));
         code = false;
       } else
-        observation.damage_crops.push(damage_crops);
+        observation.crop_damages.push(crop_damages);
     });
     if (!code)
       return false;
