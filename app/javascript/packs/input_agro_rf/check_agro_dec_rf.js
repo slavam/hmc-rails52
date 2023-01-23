@@ -218,7 +218,7 @@ export function checkAgroDecRf(tlg, stations, errors, observation){
     let zone = tlg.substr(currentPos-1).split(' 92');
     zone.splice(0,1);
     let state_crops;
-    observation.state_crops = [];
+    observation.crop_dec_conditions = [];
     let code = true;
     zone.forEach((t, i) => {
       state_crops = {};
@@ -455,7 +455,8 @@ export function checkAgroDecRf(tlg, stations, errors, observation){
       }
       if (/ 95/.test(t.substr(pos-1,3))){ // zone 95
         if (/^95[0-9/]{3}$/.test(t.substr(pos,5))){
-          state_crops.height_snow_cover = t.substr(pos+2,3);
+          if(t[pos+2]!='/')
+            state_crops.height_snow_cover = t.substr(pos+2,3);
           pos += 6;
         }else {
           errors.push("Ошибка в группе 95 зоны 92["+(i+1)+"] раздела 2");
@@ -485,8 +486,8 @@ export function checkAgroDecRf(tlg, stations, errors, observation){
           return code = false;
         }
       if (t[pos] == '3')
-        if (/^3\d{4}$/.test(t.substr(pos,5))){
-          // if (t[pos+1] != '/')
+        if (/^3[0-9/]{2}\d{2}$/.test(t.substr(pos,5))){
+          if (t[pos+1] != '/')
             state_crops.thickness_ice_cake = t.substr(pos+1,2);
           state_crops.depth_thawing_soil_2 = t.substr(pos+3,2);
           pos += 6;
@@ -558,7 +559,7 @@ export function checkAgroDecRf(tlg, stations, errors, observation){
         code = false;
       } else{
         currentPos += t.length+(i<zone.length-1 ? 3:2);
-        observation.state_crops.push(state_crops);
+        observation.crop_dec_conditions.push(state_crops);
       }
     });
     if (!code)

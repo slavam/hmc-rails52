@@ -202,14 +202,14 @@ class AgroDecObservationsController < ApplicationController
     telegram = AgroDecObservation.find_by("station_id = ? and telegram_num = ? and date_dev = ?", station_id, telegram_num, date_dev)
     if telegram.present? 
       if telegram.update agro_dec_observation_params
-        params[:crop_dec_conditions].each do |k, v|
+        params[:agro_dec_observation][:crop_dec_conditions].each do |k, v|
           c_c = CropDecCondition.find_by(agro_dec_observation_id: telegram.id, crop_code: v[:crop_code].to_i)
           if c_c.present?
             c_c.update crop_dec_conditions_params(v)
           else
             telegram.crop_dec_conditions.build(crop_dec_conditions_params(v)).save
           end
-        end if params[:crop_dec_conditions].present?
+        end if params[:agro_dec_observation][:crop_dec_conditions].present?
         last_telegrams = last_20_telegrams_rf #AgroDecObservation.short_last_50_telegrams(current_user)
         render json: {telegrams: last_telegrams, 
                       errors: ["Телеграмма изменена"]}
@@ -219,9 +219,9 @@ class AgroDecObservationsController < ApplicationController
     else
       telegram = AgroDecObservation.new(agro_dec_observation_params)
       if telegram.save
-        params[:crop_dec_conditions].each do |k, v|
+        params[:agro_dec_observation][:crop_dec_conditions].each do |k, v|
           telegram.crop_dec_conditions.build(crop_dec_conditions_params(v)).save
-        end if params[:crop_dec_conditions].present?
+        end if params[:agro_dec_observation][:crop_dec_conditions].present?
         # new_telegram = {id: telegram.id, date: telegram.date_dev, station_name: telegram.station.name, telegram: telegram.telegram}
         # new_telegram = {id: telegram.id, date_dev: telegram.date_dev, station_id: telegram.station_id, telegram: telegram.telegram, created_at: telegram.created_at}
         # ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: new_telegram, tlgType: 'agro_dec'})
