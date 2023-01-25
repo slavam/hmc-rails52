@@ -86,7 +86,7 @@ export const InputAgroRf=({telegrams, stations})=>{
       channel: "SynopticTelegramChannel", 
     },
     {received: data => {
-        if(data.tlgType==='agro')
+        if(data.tlgType==='agro_rf')
           setLastTelegrams([data.telegram].concat(lastTelegrams))
       }
     }
