@@ -1,9 +1,9 @@
 import React from 'react';
 import { checkSynopticTelegram } from './check_synoptic_telegram';
 import { checkStormTelegram } from './check_storm_telegram';
-import { checkAgroTelegram } from './check_agro_telegram';
+// import { checkAgroTelegram } from './check_agro_telegram';
 import { checkRadiationTelegram } from './check_radiation_telegram';
-import { checkSeaTelegram } from './check_sea_telegram';
+// import { checkSeaTelegram } from './check_sea_telegram';
 import TextTelegramEditForm from './text_telegram_edit_form';
 
 export default class TelegramRow extends React.Component{
@@ -39,32 +39,32 @@ export default class TelegramRow extends React.Component{
         desiredLink = "/synoptic_observations/update_synoptic_telegram?id="+this.props.telegram.id; //+"&telegram="+tlgText;
         tlgData = {observation: observation};
         break;
-      case 'agro':
-        if (!checkAgroTelegram(tlgText, this.props.stations, errors, observation)) {
-          this.setState({errors: errors});
-          return;
-        }
-        let c_d = observation.damage_crops;
-        let c_c = observation.state_crops;
-        tlgData = {agro_observation: observation, crop_conditions: c_c, crop_damages: c_d};
-        if (observation.state_crops)
-          delete observation.state_crops;
-        if (observation.damage_crops)
-          delete observation.damage_crops;
+      // case 'agro':
+      //   if (!checkAgroTelegram(tlgText, this.props.stations, errors, observation)) {
+      //     this.setState({errors: errors});
+      //     return;
+      //   }
+      //   let c_d = observation.damage_crops;
+      //   let c_c = observation.state_crops;
+      //   tlgData = {agro_observation: observation, crop_conditions: c_c, crop_damages: c_d};
+      //   if (observation.state_crops)
+      //     delete observation.state_crops;
+      //   if (observation.damage_crops)
+      //     delete observation.damage_crops;
 
-        desiredLink = "/agro_observations/update_agro_telegram?id="+this.props.telegram.id; //+"&telegram="+tlgText;
-        break;
-      case 'agro_dec':
-        if (!checkAgroTelegram(tlgText, this.props.stations, errors, observation)) {
-          this.setState({errors: errors});
-          return;
-        }
-        c_c = observation.state_crops;
-        tlgData = {agro_dec_observation: observation, crop_conditions: c_c};
-        if (observation.state_crops)
-          delete observation.state_crops;
-        desiredLink = "/agro_dec_observations/update_agro_dec_telegram?id="+this.props.telegram.id;
-        break;
+      //   desiredLink = "/agro_observations/update_agro_telegram?id="+this.props.telegram.id; //+"&telegram="+tlgText;
+      //   break;
+      // case 'agro_dec':
+      //   if (!checkAgroTelegram(tlgText, this.props.stations, errors, observation)) {
+      //     this.setState({errors: errors});
+      //     return;
+      //   }
+      //   c_c = observation.state_crops;
+      //   tlgData = {agro_dec_observation: observation, crop_conditions: c_c};
+      //   if (observation.state_crops)
+      //     delete observation.state_crops;
+      //   desiredLink = "/agro_dec_observations/update_agro_dec_telegram?id="+this.props.telegram.id;
+      //   break;
       case 'storm':
         if (!checkStormTelegram(tlgText, this.props.stations, errors, observation)){
           this.setState({errors: errors});
@@ -86,10 +86,10 @@ export default class TelegramRow extends React.Component{
           desiredLink = "/radiation_observations/update_radiation_telegram?id="+this.props.telegram.id+"&telegram="+tlgText+"&factor=daily";
         break;
       case 'sea':
-        if (!checkSeaTelegram(tlgText, this.props.stations, errors, observation, this.props.telegram.date)) {
-          this.setState({errors: errors});
-          return;
-        }
+        // if (!checkSeaTelegram(tlgText, this.props.stations, errors, observation, this.props.telegram.date)) {
+        //   this.setState({errors: errors});
+        //   return;
+        // }
         tlgData = {sea_observation: observation};
         desiredLink = "/sea_observations/update_sea_telegram?id="+this.props.telegram.id+"&telegram="+tlgText;
         break;

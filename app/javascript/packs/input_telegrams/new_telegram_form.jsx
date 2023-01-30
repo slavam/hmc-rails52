@@ -4,7 +4,7 @@ import { checkSynopticTelegram } from './check_synoptic_telegram';
 import { checkStormTelegram } from './check_storm_telegram';
 import { checkSeaStormTelegram } from './check_sea_storm_telegram';
 import { checkAgroStormTelegram } from './check_agro_storm_telegram';
-import { checkAgroTelegram } from './check_agro_telegram';
+// import { checkAgroTelegram } from './check_agro_telegram';
 import { checkRadiationTelegram } from './check_radiation_telegram';
 // import { checkSeaTelegram } from './check_sea_telegram';
 
@@ -36,10 +36,10 @@ export default class NewTelegramForm extends React.Component{
         // return "МОРЕ =";
       // case 'radiation':  20221027 BLN
       //   return "ЩЭРБХ "+this.state.codeStation+' =';
-      case 'agro_dec':
-        return "ЩЭАГУ "+this.state.codeStation+' =';
-      case 'agro':
-        return "ЩЭАГЯ "+this.state.codeStation+' =';
+      // case 'agro_dec':
+      //   return "ЩЭАГУ "+this.state.codeStation+' =';
+      // case 'agro':
+      //   return "ЩЭАГЯ "+this.state.codeStation+' =';
       case 'synoptic':
         let hdr = '' //this.state.tlgTerm % 2 == 0 ? "ЩЭСМЮ " : "ЩЭСИД ";
         return hdr+this.state.codeStation+' =';
@@ -133,26 +133,26 @@ export default class NewTelegramForm extends React.Component{
           return;
         }
         break;
-      case 'agro':
-        if (text.substr(0,5) != 'ЩЭАГЯ') {
-          this.setState({errors: ["Ошибка в опознавательных буквах"]});
-          return;
-        }
-        if (!checkAgroTelegram(text, this.props.stations, errors, this.observation)) {
-          this.setState({errors: errors});
-          return;
-        }
-        break;
-      case 'agro_dec':
-        if (text.substr(0,5) != 'ЩЭАГУ') {
-          this.setState({errors: ["Ошибка в опознавательных буквах"]});
-          return;
-        }
-        if (!checkAgroTelegram(text, this.props.stations, errors, this.observation)) {
-          this.setState({errors: errors});
-          return;
-        }
-        break;
+      // case 'agro':
+      //   if (text.substr(0,5) != 'ЩЭАГЯ') {
+      //     this.setState({errors: ["Ошибка в опознавательных буквах"]});
+      //     return;
+      //   }
+      //   if (!checkAgroTelegram(text, this.props.stations, errors, this.observation)) {
+      //     this.setState({errors: errors});
+      //     return;
+      //   }
+      //   break;
+      // case 'agro_dec':
+      //   if (text.substr(0,5) != 'ЩЭАГУ') {
+      //     this.setState({errors: ["Ошибка в опознавательных буквах"]});
+      //     return;
+      //   }
+      //   if (!checkAgroTelegram(text, this.props.stations, errors, this.observation)) {
+      //     this.setState({errors: errors});
+      //     return;
+      //   }
+      //   break;
       // case 'sea':
       //   if (!checkSeaTelegram(text, this.props.stations, errors, this.observation, this.state.currDate)) {
       //     this.setState({errors: errors});
@@ -202,8 +202,8 @@ export default class NewTelegramForm extends React.Component{
   render() {
     const types = [
       { value: 'synoptic',        label: 'Синоптические' },
-      { value: 'agro',            label: 'Агро ежедневные' },
-      { value: 'agro_dec',        label: 'Агро декадные' },
+      // { value: 'agro',            label: 'Агро ежедневные' },
+      // { value: 'agro_dec',        label: 'Агро декадные' },
       // { value: 'storm',           label: 'Штормовые' },
       // { value: 'radiation',       label: 'Радиация' },
       { value: 'radiation_daily', label: 'Радиация ежедневная' },
