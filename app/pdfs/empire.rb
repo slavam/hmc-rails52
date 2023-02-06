@@ -28,7 +28,7 @@ class Empire < Prawn::Document
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
       text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № 0#{Bulletin.ogmo_code}/"+@bulletin.curr_number
-      text "К договору от 11.11.2022 № 50/22/07"
+      text "К договору от" # 11.11.2022 № 50/22/07"
     end
     
     bounding_box([280, y_pos], width: bounds.width-280) do

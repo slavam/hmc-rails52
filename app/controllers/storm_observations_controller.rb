@@ -252,7 +252,8 @@ class StormObservationsController < ApplicationController
 
   def n_last_storms(n=20)
     last_storms = StormObservation.where("telegram_type like 'W%'").order(telegram_date: :desc, created_at: :desc).limit(n).as_json 
-    render json: {telegrams: last_storms}
+    # render json: {telegrams: last_storms}
+    render json: last_storms
   end
 
   def input_storm_rf
