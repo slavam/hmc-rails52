@@ -239,7 +239,7 @@ export function checkAgroDecRf(tlg, stations, errors, observation){
         // let zone92 = t.substr(pos, zonePos-pos);
         let j = 1;
         while ((0<t.indexOf(' 2', pos-1)) &&(t.indexOf(' 2', pos-1)<zonePos)){
-          if((j<6) && (/^2\d{2}[0-9/][1-5]$/.test(t.substr(pos,5)))){ // 2018.03.01 mwm assessment_condition => /
+          if((j<6) && (/^2\d{2}[0-9/][1-5/]$/.test(t.substr(pos,5)))){ // 2018.03.01 mwm assessment_condition => /
             state_crops["development_phase_"+j] = t.substr(pos+1,2);
             if(t[pos+3] != '/')
               state_crops["day_phase_"+j] = t[pos+3];
