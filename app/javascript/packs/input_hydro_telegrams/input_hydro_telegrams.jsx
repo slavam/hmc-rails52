@@ -35,6 +35,7 @@ export default class InputHydroTelegrams extends React.Component{
     this.handleInBuffer = this.handleInBuffer.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.toClipboard = this.toClipboard.bind(this)
+    this.copyToClipboard = this.copyToClipboard.bind(this)
   }
   handleFormSubmit(formData) {
     let tlgData = {};
@@ -66,30 +67,30 @@ export default class InputHydroTelegrams extends React.Component{
         this.setState({errors: ["Ошибка записи в буфер"]});
       });
   }
-  // copyToClipboard(text) {
-  //   if (window.clipboardData && window.clipboardData.setData) {
-  //       // Internet Explorer-specific code path to prevent textarea being shown while dialog is visible.
-  //       return window.clipboardData.setData("Text", text);
-
-  //   }
-  //   else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
-  //       var textarea = document.createElement("textarea");
-  //       textarea.textContent = text;
-  //       textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in Microsoft Edge.
-  //       document.body.appendChild(textarea);
-  //       textarea.select();
-  //       try {
-  //           return document.execCommand("copy");  // Security exception may be thrown by some browsers.
-  //       }
-  //       catch (ex) {
-  //           console.warn("Copy to clipboard failed.", ex);
-  //           return prompt("Copy to clipboard: Ctrl+C, Enter", text);
-  //       }
-  //       finally {
-  //           document.body.removeChild(textarea);
-  //       }
-  //   }
-  // }
+  copyToClipboard(text) {
+    if (window.clipboardData && window.clipboardData.setData) {
+        // Internet Explorer-specific code path to prevent textarea being shown while dialog is visible.
+        return window.clipboardData.setData("Text", text);
+    }
+    else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+        var textarea = document.createElement("textarea");
+        textarea.textContent = text;
+        textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in Microsoft Edge.
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        try {
+            return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+        }
+        catch (ex) {
+            console.warn("Copy to clipboard failed.", ex);
+            return prompt("Copy to clipboard: Ctrl+C, Enter", text);
+        }
+        finally {
+            document.body.removeChild(textarea);
+        }
+    }
+  }
   toClipboard(e){
     let text = ""
     let message = ''
@@ -97,12 +98,7 @@ export default class InputHydroTelegrams extends React.Component{
     ts = this.state.lastTelegrams.filter(t => this.state.observationDate===t.date)
     message = `Скопировано ${ts.length} hydro тлг. за ${this.state.observationDate}`
     ts.forEach((t) => {text += t.telegram+'\n'})
-    // window.prompt(message+" Ctrl+C, Enter", text);
-    navigator['clipboard'].writeText(text).then(function() {
-      console.log('Async: Copying to clipboard was successful!');
-    }, function(err) {
-      console.error('Async: Could not copy text: ', err);
-    });
+    this.copyToClipboard(text)
     alert(message);
   }
   render(){
