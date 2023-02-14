@@ -27,10 +27,11 @@ const LastAgroDecRf = ({lastTelegrams, stations}) => {
     </table>
   );
 }
-export const InputAgroDecRf=({telegrams, stations, reportDate})=>{
+export const InputAgroDecRf=({telegrams, stations, reportDate, currStationId})=>{
   const [lastTelegrams, setLastTelegrams] = useState(telegrams)
   const [observationDate, setObservationDate] = useState(reportDate)
-  const [station, setStation] = useState(stations[0])
+  let cs = currStationId==0? stations[0] : stations.find(s => s.id === currStationId)
+  const [station, setStation] = useState(cs) //stations[0])
   const [telegramNum, setTelegramNum] = useState(1)
   const [zone9091, setZone9091] = useState('90sTT 1sTTT 2sTTn 3sTTn 4sTTn 5000/ 8ffnm')
   const [zone9295, setZone9295] = useState('222 92KKK 1NNNA=')
@@ -137,8 +138,9 @@ $(function () {
     const telegrams = JSON.parse(node.getAttribute('telegrams'));
     const stations = JSON.parse(node.getAttribute('stations'));
     const reportDate = JSON.parse(node.getAttribute('reportDate'));
+    const currStationId = JSON.parse(node.getAttribute('currStationId'))
     ReactDOM.render(
-      <InputAgroDecRf telegrams={telegrams} stations={stations} reportDate={reportDate}/>,
+      <InputAgroDecRf telegrams={telegrams} stations={stations} reportDate={reportDate} currStationId={currStationId}/>,
       document.getElementById('root')
     )
   }

@@ -252,6 +252,7 @@ class AgroDecObservationsController < ApplicationController
     else
       @report_date = cd.strftime("%Y-%m-20")
     end
+    @current_station_id = (current_user && current_user.station_id)? current_user.station_id : 0
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@report_date.inspect}") 
   end
 

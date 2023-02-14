@@ -27,11 +27,12 @@ const LastAgroRf = ({lastTelegrams, stations}) => {
     </table>
   );
 }
-export const InputAgroRf=({telegrams, stations})=>{
+export const InputAgroRf=({telegrams, stations, currStationId})=>{
   const [lastTelegrams, setLastTelegrams] = useState(telegrams)
   let today = new Date().toJSON().slice(0,10)
   const [observationDate, setObservationDate] = useState(today)
-  const [station, setStation] = useState(stations[0])
+  let cs = currStationId==0? stations[0] : stations.find(s => s.id === currStationId)
+  const [station, setStation] = useState(cs) //stations[0])
   const [telegramNum, setTelegramNum] = useState(1)
   let templ = '90sTT 1sTTT 3sTT/ 4sTT/ 5000/ 7ffDD='
   const [zone9095, setZone9095] = useState(templ)
@@ -125,8 +126,9 @@ $(function () {
   if(node) {
     const telegrams = JSON.parse(node.getAttribute('telegrams'));
     const stations = JSON.parse(node.getAttribute('stations'));
+    const currStationId = JSON.parse(node.getAttribute('currStationId'))
     ReactDOM.render(
-      <InputAgroRf telegrams={telegrams} stations={stations} />,
+      <InputAgroRf telegrams={telegrams} stations={stations} currStationId={currStationId}/>,
       document.getElementById('root')
     )
   }

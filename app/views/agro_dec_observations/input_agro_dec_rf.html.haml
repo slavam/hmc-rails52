@@ -1,4 +1,4 @@
 .container
   #root
-  #init-params{telegrams: @telegrams.to_json, stations: @stations.to_json, reportDate: @report_date.to_json}
+  #init-params{telegrams: @telegrams.to_json, stations: @stations.to_json, reportDate: @report_date.to_json, currStationId: @current_station_id}
   = javascript_pack_tag 'input_agro_rf/input_agro_dec_rf'

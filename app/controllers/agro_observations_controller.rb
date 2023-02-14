@@ -156,6 +156,7 @@ class AgroObservationsController < ApplicationController
     stations = Station.all.order(:name)
     @stations = stations.map {|s| {label: s.name, value: s.code, id: s.id}}
     @telegrams = last_20_telegrams_rf
+    @current_station_id = (current_user && current_user.station_id)? current_user.station_id : 0
   end
   
   def create_agro_rf

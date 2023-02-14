@@ -282,7 +282,7 @@ export function checkStormRf(code, tlg, error, isStart){
         return true
     case 40:
       let pos = 0
-      if(isStart)
+      // if(isStart) 20230214
         if(tlg[0]=='2'){
           if(!checkGroup2(tlg,0))
             return false
