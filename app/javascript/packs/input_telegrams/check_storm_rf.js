@@ -41,9 +41,9 @@ export function checkStormRf(code, tlg, error, isStart){
     }
     return true
   }
-  const checkGroup6=(tlg)=>{
-    let group = tlg.substr(0,5)
-    if(!/^6\d{3}\/$/.test(group)){
+  const checkGroup6 = (tlg)=>{
+    // let group = tlg.substr(0,5)
+    if(!/^6\d{3}\/$/.test(tlg.substr(0,5))){
       error.push("Ошибка в формате группы 6")
       return false
     }
@@ -415,7 +415,7 @@ export function checkStormRf(code, tlg, error, isStart){
       }
     case 81:
     case 82:
-    case 83:
+    case 85:
     case 86:
       if(!checkGroup6(tlg))
         return false
