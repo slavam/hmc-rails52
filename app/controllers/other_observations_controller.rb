@@ -14,6 +14,7 @@ class OtherObservationsController < ApplicationController
     else
       @other_observations = OtherObservation.where('data_type = ?', @factor).paginate(page: params[:page]).order(:obs_date, :id).reverse_order
     end
+    @stations = Station.name_stations_as_array
   end
 
   def input_other_telegrams
