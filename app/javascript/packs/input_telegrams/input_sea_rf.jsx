@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import Select from "react-select"
 import { checkSeaRf } from './check_sea_rf';
+import { copyToClipboard } from '../synoptic_data/about_clipboard';
 
 const LastSeaRf = ({lastTelegrams, stations}) => {
   var rows = [];
@@ -113,6 +114,16 @@ export const InputSeaRf=({telegrams})=>{
     }
   }
   });
+  const toClipboard = (e) =>{
+    let text = ""
+    let message = ''
+    let ts = []
+    ts = lastTelegrams.filter(t => observationDate===t.date_dev.substr(0,10) && term.value===t.term)
+    message = `Скопировано ${ts.length} SEA тлг. за ${observationDate} (${term.value})`
+    ts.forEach((t) => {text += t.telegram+'\n'})
+    copyToClipboard(text)
+    alert(message);
+  }
   return(
     <div>
       <h1>Ввод данных о морских наблюдениях</h1>
@@ -137,22 +148,25 @@ export const InputSeaRf=({telegrams})=>{
       <div>
         <p><b>{telegram}</b></p>
         <table className="table table-hover">
-          <tr>
-            <th width="80px">Раздел 1:</th>
-            <th><input type="text" value={section1} id='section1' onChange={onSection1Changed}/></th>
-          </tr>
-          <tr>
-            <th width="80px">Раздел 2:</th>
-            <th><input type="text" value={section2} id='section2' onChange={onSection2Changed}/></th>
-          </tr>
-          <tr>
-            <th width="80px">Раздел 3:</th>
-            <th><input type="text" value={section3} id='section3' onChange={onSection3Changed}/></th>
-          </tr>
+          <tbody>
+            <tr>
+              <th width="80px">Раздел 1:</th>
+              <th><input type="text" value={section1} id='section1' onChange={onSection1Changed}/></th>
+            </tr>
+            <tr>
+              <th width="80px">Раздел 2:</th>
+              <th><input type="text" value={section2} id='section2' onChange={onSection2Changed}/></th>
+            </tr>
+            <tr>
+              <th width="80px">Раздел 3:</th>
+              <th><input type="text" value={section3} id='section3' onChange={onSection3Changed}/></th>
+            </tr>
+          </tbody>
         </table>
         <button type="button" onClick={saveSeaMessage}>Сохранить</button>
       </div>
       <h1 color="black">Последние наблюдения</h1>
+      <button onClick={event => toClipboard(event)}>Скопировать последние</button>
       <LastSeaRf lastTelegrams={lastTelegrams} stations={stations} />
     </div>
   )

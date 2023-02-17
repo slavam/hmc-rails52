@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import NewSnowTelegram from './new_snow_telegram';
 import SnowTelegramRow from './snow_telegram_row';
+import { copyToClipboard } from '../synoptic_data/about_clipboard';
 
 const LastSnowTelegramsTable = ({lastTelegrams, tlgType, snowPoints}) => {
   var rows = [];
@@ -85,11 +86,12 @@ export default class InputSnowTelegrams extends React.Component{
     ts = this.state.lastTelegrams.filter(t => this.state.observationDate===t.date)
     message = `Скопировано ${ts.length} snow тлг. за ${this.state.observationDate}`
     ts.forEach((t) => {text += t.telegram+'\n'})
-    navigator['clipboard'].writeText(text).then(function() {
-      console.log('Async: Copying to clipboard was successful!');
-    }, function(err) {
-      console.error('Async: Could not copy text: ', err);
-    });
+    copyToClipboard(text)
+    // navigator['clipboard'].writeText(text).then(function() {
+    //   console.log('Async: Copying to clipboard was successful!');
+    // }, function(err) {
+    //   console.error('Async: Could not copy text: ', err);
+    // });
     alert(message);
   }
   render(){

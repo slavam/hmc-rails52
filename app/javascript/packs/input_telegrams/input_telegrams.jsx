@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import NewTelegramForm from './new_telegram_form';
 import TelegramRow from './telegram_row';
+import { copyToClipboard } from '../synoptic_data/about_clipboard';
 // import MakeSynopticTelegram from './make_synoptic_telegram';
 
 // import { Observable} from 'rxjs/Observable';
@@ -221,11 +222,7 @@ export default class InputTelegrams extends React.Component{
       message = `Скопировано ${ts.length} ${this.state.tlgType} тлг. за ${cd}`
     }
     ts.forEach((t) => {text += t.telegram.substr(pos)+'\n'})
-    navigator.clipboard.writeText(text).then(function() {
-      console.log('Async: Copying to clipboard was successful!');
-    }, function(err) {
-      console.error('Async: Could not copy text: ', err);
-    });
+    copyToClipboard(text)
     alert(message);
   }
   render(){
@@ -253,7 +250,7 @@ export default class InputTelegrams extends React.Component{
     let telegramTable = this.props.telegrams.length > 0 ? 
       <div>
         <h3>Телеграммы {this.state.tlgType}</h3> 
-        {/* <div>{toClipboard}</div> */}
+        <div>{toClipboard}</div>
         <LastTelegramsTable telegrams={this.state.telegrams} tlgType={this.state.tlgType} stations={this.props.stations}/>
       </div> : '';
     return(
