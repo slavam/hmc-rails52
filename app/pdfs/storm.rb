@@ -38,7 +38,7 @@ class Storm < Prawn::Document
     table signatures, width: bounds.width, :column_widths => [170,170], cell_style: {:overflow => :shrink_to_fit, :inline_format => true } do |t|
       t.cells.border_width = 0
     end
-    text_box @bulletin.synoptic1 + " (062) 303-10-34", :at => [0, 30], size: 9
+    text_box @bulletin.synoptic1 + " +7 (856) 303-10-34", :at => [0, 30], size: 9
     image "./app/assets/images/storm.png", at: [380, 100], :scale => 0.75
     move_to 0, 15
     line_to 500, 15

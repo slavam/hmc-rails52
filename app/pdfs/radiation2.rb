@@ -73,7 +73,7 @@ class Radiation2 < Prawn::Document
     last_name = @bulletin.synoptic1[0..-6]
     user = User.find_by(last_name: last_name)
     synoptic = user.present? ? user[:last_name]+' '+user[:first_name]+' '+user[:middle_name] : @bulletin.synoptic1 # 'Синоптик'
-    text_box synoptic + " (062) 303-10-34", :at => [0, 30] #, :width => 170
+    text_box synoptic + " +7 (856) 303-10-34", :at => [0, 30] #, :width => 170
     move_to 0, 15
     line_to 520, 15
     stroke_color '0000ff'
