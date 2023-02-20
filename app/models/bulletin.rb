@@ -77,7 +77,8 @@ class Bulletin < ActiveRecord::Base
     'rw_storm' => 'Шторма для Железной дороги',
     'fire_storm' => 'Шторма (пожары)'
   }
-  CHIEFS = {"Лукьяненко" => "М.Б. Лукьяненко", "Стец" => "Н.В. Стец", "Арамелева" => "О.В. Арамелева"}
+  # CHIEFS = {"Лукьяненко" => "М.Б. Лукьяненко", "Стец" => "Н.В. Стец", "Арамелева" => "О.В. Арамелева"}
+  CHIEFS = {"Кияненко" => "М.А. Кияненко", "Стец" => "Н.В. Стец", "Арамелева" => "О.В. Арамелева"}
   RESPONSIBLES = {"Бойко" => "Л.Н. Бойко", "Кияненко" => "М.А. Кияненко"}
   REGIONS = ["Донецк",
             "Макеевка, Харцызск, Ясиноватая",
@@ -134,9 +135,12 @@ class Bulletin < ActiveRecord::Base
 
   def chief_2_pdf
     ret = {}
-    if self.chief == "М.Б. Лукьяненко"
+    # if self.chief == "М.Б. Лукьяненко"
+    #   ret[:position] = "Начальник"
+    #   ret[:image_name] = "./app/assets/images/chief.png"
+    if self.chief == "М.А. Кияненко"
       ret[:position] = "Начальник"
-      ret[:image_name] = "./app/assets/images/chief.png"
+      ret[:image_name] = "./app/assets/images/kian.png"
     elsif self.chief == "О.В. Арамелева"
       ret[:position] = "Врио начальника"
       ret[:image_name] = "./app/assets/images/arameleva2.png"
