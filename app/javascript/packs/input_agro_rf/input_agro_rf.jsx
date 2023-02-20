@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import Select from "react-select"
 import { checkAgroRf } from './check_agro_rf'
+import { copyToClipboard } from '../synoptic_data/about_clipboard';
 
 const LastAgroRf = ({lastTelegrams, stations}) => {
   var rows = [];
@@ -92,6 +93,16 @@ export const InputAgroRf=({telegrams, stations, currStationId})=>{
       }
     }
   )
+  const toClipboard = (e) =>{
+    let text = ""
+    let message = ''
+    let ts = []
+    ts = lastTelegrams.filter(t => observationDate===t.date_dev.substr(0,10))
+    message = `Скопировано ${ts.length} agro тлг. за ${observationDate}`
+    ts.forEach((t) => {text += t.telegram+'\n'})
+    copyToClipboard(text)
+    alert(message);
+  }
   return(
     <div>
       <h1>Ввод ежедневных агрометеорологических данных</h1>
@@ -117,6 +128,7 @@ export const InputAgroRf=({telegrams, stations, currStationId})=>{
         <button type="button" onClick={saveAgroObservation}>Сохранить</button>
       </div>
       <h1 color="black">Последние наблюдения</h1>
+      <button onClick={event => toClipboard(event)}>Скопировать последние</button>
       <LastAgroRf lastTelegrams={lastTelegrams} stations={stations} />
     </div>
   )

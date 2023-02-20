@@ -217,9 +217,9 @@ class StormObservationsController < ApplicationController
   end
 
   def storm_fields_short_list(full_list)
-    # stations = Station.all.order(:id)
+    stations = Station.name_stations_as_array
     full_list.map do |rec|
-      {id: rec.id, date: rec.telegram_date.utc, station_name: rec.station.name, telegram: rec.telegram, input_date: rec.created_at.utc}  # 20190619 add utc for date
+      {id: rec.id, date: rec.telegram_date.utc, station_name: stations[rec.station_id], telegram: rec.telegram, input_date: rec.created_at.utc}  # 20190619 add utc for date
       # {id: rec.id, date: rec.created_at.localtime, station_name: stations[rec.station_id-1].name, telegram: rec.telegram, event_date: rec.telegram_date} 20190618 KMA
     end
   end

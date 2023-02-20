@@ -204,7 +204,7 @@ class AgroObservationsController < ApplicationController
           telegram.crop_damages.build(crop_damages_params(v)).save
         end if params[:agro_observation][:crop_damages].present?
         new_telegram = {id: telegram.id, date_dev: telegram.date_dev, station_id: telegram.station_id, telegram: telegram.telegram, created_at: telegram.created_at}
-        ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: new_telegram, tlgType: 'agro_rf'})
+        ActionCable.server.broadcast("synoptic_telegram_channel", {'telegram' => new_telegram, 'tlgType' => 'agro_rf'})
         render json: {errors: ["Телеграмма сохранена"]}
       else
         render json: {errors: telegram.errors.messages}, status: :unprocessable_entity
