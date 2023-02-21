@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import Select from "react-select"
 import { checkAgroDecRf } from './check_agro_dec_rf'
+import { copyToClipboard } from '../synoptic_data/about_clipboard'
 
 const LastAgroDecRf = ({lastTelegrams, stations}) => {
   var rows = [];
@@ -81,15 +82,25 @@ export const InputAgroDecRf=({telegrams, stations, reportDate, currStationId})=>
       alert(errors[0])
     }
   }
-  App.candidate = App.cable.subscriptions.create({
-    channel: "SynopticTelegramChannel", 
-  },
-  {received: data => {
-    if(data.tlgType==='agro_dec'){
-      setLastTelegrams([data.telegram].concat(lastTelegrams))
-    }
+  // App.candidate = App.cable.subscriptions.create({
+  //     channel: "SynopticTelegramChannel", 
+  //   },
+  //   {received: data => {
+  //     if(data.tlgType==='agro_dec'){
+  //       setLastTelegrams([data.telegram].concat(lastTelegrams))
+  //     }
+  //   }
+  // })
+  const toClipboard = (e) =>{
+    let text = ""
+    let message = ''
+    let ts = []
+    ts = lastTelegrams.filter(t => observationDate===t.date_dev.substr(0,10))
+    message = `Скопировано ${ts.length} agro_dec тлг. за ${observationDate}`
+    ts.forEach((t) => {text += t.telegram+'\n'})       
+    copyToClipboard(text)
+    alert(message);
   }
-  })
   return(
     <div>
       <h1>Ввод декадных агрометеорологических данных</h1>
@@ -128,6 +139,7 @@ export const InputAgroDecRf=({telegrams, stations, reportDate, currStationId})=>
         <button type="button" onClick={saveAgroDecObservation}>Сохранить</button>
       </div>
       <h1 color="black">Последние наблюдения</h1>
+      <button onClick={event => toClipboard(event)}>Скопировать последние</button>
       <LastAgroDecRf lastTelegrams={lastTelegrams} stations={stations} />
     </div>
   )
