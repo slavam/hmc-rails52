@@ -117,10 +117,10 @@
       %tr
         %th Донецк, относительная влажность воздуха
         %td= form.text_field :capital_humidity
-      
       %tr
         %th Начальник
-        %td= form.select :chief, options_for_select(Bulletin::CHIEFS, @union_forecast.chief)  
+        %td= form.select :chief, options_for_select({"Л.Н. Бойко" => "Л.Н. Бойко"}, @union_forecast.chief)  
+      -#   %td= form.select :chief, options_for_select(Bulletin::CHIEFS, @union_forecast.chief)  20230309 BLN
       %tr
         %th Синоптик
         %td= form.select :synoptic, options_for_select(Bulletin.synoptic_list, @union_forecast.synoptic)
