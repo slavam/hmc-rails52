@@ -14,7 +14,8 @@ class StationsController < ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: {stations: @stations}
+        render json: @stations.as_json
+#        render json: {stations: @stations}
       end
     end
   end
