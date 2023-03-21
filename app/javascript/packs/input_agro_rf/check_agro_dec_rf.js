@@ -142,7 +142,7 @@ export function checkAgroDecRf(tlg, stations, errors, observation){
         return false;
       }
       if (tlg[currentPos] == '1')
-        if (/^1\d{3}[0-9/]$/.test(tlg.substr(currentPos,5))){ // 20180411 время солнечного сияния м.б. /// А.И.
+        if (/^1[0-9/]{4}$/.test(tlg.substr(currentPos,5))){ // 20180411 время солнечного сияния м.б. /// А.И.
           if (tlg[currentPos+1] != '/')
             observation.sunshine_duration_dec = tlg.substr(currentPos+1,3);
           if (tlg[currentPos+4] != '/')
