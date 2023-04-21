@@ -12,7 +12,7 @@ class UnionForecast < ApplicationRecord
         ret[:position] = "Врио начальника"
         ret[:image_name] = "./app/assets/images/arameleva2.png"
       else
-        ret[:position] = "Начальник отдела гидрометеорологического обеспечения и обслуживания"
+        ret[:position] = "Начальник отдела гидрометеорологического обеспечения" # и обслуживания"
         ret[:image_name] = "./app/assets/images/head_of_dep.png"
     end
     ret[:name] = name
