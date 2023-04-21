@@ -8,16 +8,19 @@ class Clarification < Prawn::Document
       :bold => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Bold.ttf"),
       :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
     })
-    image "./app/assets/images/eagle.png", :scale => 0.4, position: :center # at: [235, y_pos],
-    font "OpenSans", style: :bold
+    # image "./app/assets/images/eagle.png", :scale => 0.4, position: :center # at: [235, y_pos],
+    font "OpenSans" #, style: :bold
     move_down 20
     bounding_box([0, cursor], width: bounds.width) do
-      text Bulletin::HEAD, align: :center, size: 10
+      # text Bulletin::HEAD, align: :center, size: 10
+      text Bulletin::HEAD1, align: :center, size: 10
+      text Bulletin::HEAD2, align: :center, size: 10, style: :bold
+      text Bulletin::HEAD3, align: :center, size: 10
     end
     move_down 10
     font "OpenSans" #, style: :italic
     bounding_box([0, cursor], width: bounds.width) do
-      text Bulletin::ADDRESS2, align: :center, size: 10
+      text Bulletin::ADDRESS, align: :center, size: 10
     end
 
     stroke do

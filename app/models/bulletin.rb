@@ -146,10 +146,10 @@ class Bulletin < ActiveRecord::Base
 
   def chief_2_pdf
     ret = {}
-    # if self.chief == "М.Б. Лукьяненко"
-    #   ret[:position] = "Начальник"
-    #   ret[:image_name] = "./app/assets/images/chief.png"
-    if self.chief == "М.А. Кияненко"
+    if self.chief == "М.Б. Лукьяненко"
+      ret[:position] = "Начальник"
+      ret[:image_name] = "./app/assets/images/chief.png"
+    elsif self.chief == "М.А. Кияненко"
       ret[:position] = "Начальник Донецкого гидрометцентра"
       # ret[:position] = "Начальник"
       ret[:image_name] = "./app/assets/images/kian.png"

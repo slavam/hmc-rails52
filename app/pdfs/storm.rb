@@ -9,17 +9,20 @@ class Storm < Prawn::Document
       :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
     })
     y_pos = cursor
-    image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.25
+    # image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.25
     font "OpenSans" #, style: :bold
     bounding_box([0, y_pos], width: bounds.width) do
-      text Bulletin::HEAD, align: :center, size: 10
+      # text Bulletin::HEAD, align: :center, size: 10
+      text Bulletin::HEAD1, align: :center, size: 10
+      text Bulletin::HEAD2, align: :center, size: 10, style: :bold
+      text Bulletin::HEAD3, align: :center, size: 10
     end
     move_down 20
     bounding_box([0, cursor], width: bounds.width) do
       text Bulletin::ADDRESS, align: :center, size: 9
     end
 
-    move_down 90
+    move_down 20 #90
     text @bulletin.date_hour_minute
     move_down 20
     font "OpenSans", style: :bold

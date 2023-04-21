@@ -14,20 +14,26 @@ class Union < Prawn::Document
       text "Информация к Плану передачи
             от 03.02.2020 № 06/2020", leading: 3
     end
-    move_down 20
-    font "OpenSans", style: :bold
-    text 'ГБУ "ГИДРОМЕТЕОРОЛОГИЧЕСКИЙ ЦЕНТР МЧС ДНР"', align: :center, size: 14
+    # move_down 20
+    font "OpenSans" #, style: :bold
+    bounding_box([0, cursor], width: bounds.width) do
+      text Bulletin::HEAD1, align: :center, size: 10
+      text Bulletin::HEAD2, align: :center, size: 10, style: :bold
+      text Bulletin::HEAD3, align: :center, size: 10
+    end
+    # text 'ГБУ "ГИДРОМЕТЕОРОЛОГИЧЕСКИЙ ЦЕНТР МЧС ДНР"', align: :center, size: 14
     move_down 10
     font "OpenSans" #, style: :italic
     bounding_box([0, cursor], width: bounds.width) do
-      text Bulletin::ADDRESS2, align: :center, size: 10
+      text Bulletin::ADDRESS, align: :center, size: 10
+      text 'ОГРН 1239300003909 ИНН 9303033080 КПП 930301001', align: :center, size: 10
     end
     stroke do
       horizontal_line 0, bounds.width, :at => cursor
     end
     move_down 10
     text forecast.report_date.strftime("%d.%m.%Y")+'  № 06/'+forecast.curr_number
-    move_down 20
+    # move_down 20
     text "ПРОГНОЗ ПОГОДЫ", align: :center
     text "по городам Донецкой Народной Республики", align: :center
     text "на сутки "+(forecast.report_date+3.days).strftime("%d.%m.%Y")+" года", align: :center
@@ -94,6 +100,6 @@ class Union < Prawn::Document
       fullname = User.fullname_by_lastname(forecast.synoptic.split(' ')[0])
       synoptic_name = fullname if fullname>''
     end
-    text_box synoptic_name + " (062) 303-10-34", :at => [0, 30], size: 9
+    text_box synoptic_name + " +7 856 303-10-34", :at => [0, 30], size: 9
   end
 end

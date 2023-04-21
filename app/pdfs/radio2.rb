@@ -15,12 +15,18 @@ class Radio2 < Prawn::Document
               к Плану передачи информации", leading: 3
       end
       move_down 20
-      font "OpenSans", style: :bold
-      text 'ГБУ "ГИДРОМЕТЕОРОЛОГИЧЕСКИЙ ЦЕНТР МЧС ДНР"', align: :center, size: 14
+      font "OpenSans"
+      # text 'ГБУ "ГИДРОМЕТЕОРОЛОГИЧЕСКИЙ ЦЕНТР МЧС ДНР"', align: :center, size: 14
+      bounding_box([0, cursor], width: bounds.width) do
+        text Bulletin::HEAD1, align: :center, size: 10
+        text Bulletin::HEAD2, align: :center, size: 10, style: :bold
+        text Bulletin::HEAD3, align: :center, size: 10
+      end
       move_down 10
       font "OpenSans"
       bounding_box([0, cursor], width: bounds.width) do
-        text Bulletin::ADDRESS2, align: :center, size: 10
+        text Bulletin::ADDRESS, align: :center, size: 10
+        text 'ОГРН 1239300003909 ИНН 9303033080 КПП 930301001', align: :center, size: 10  
       end
       stroke do
         horizontal_line 0, bounds.width, :at => cursor
@@ -52,7 +58,7 @@ class Radio2 < Prawn::Document
       
       move_cursor_to 20
       synoptic_name = @bulletin.synoptic1.present? ? @bulletin.synoptic1 : 'Синоптик'
-      text_box synoptic_name + " (062) 303-10-34", :at => [0, 30], size: 9
+      text_box synoptic_name + " +7 856 303-10-34", :at => [0, 30], size: 9
     end
     def temps
       ret = [["<b>Город</b>",	"<b>Температура воздуха ночью (°C)</b>", "<b>Температура воздуха днем (°C)</b>"]]
