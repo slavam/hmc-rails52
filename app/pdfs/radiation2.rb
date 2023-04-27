@@ -1,5 +1,6 @@
-require 'prawn'
+# require 'prawn'
 class Radiation2 < Prawn::Document
+include HeadersDoc
   def initialize(bulletin)
 		super(top_margin: 40, right_margin: 50, left_margin: 55)
 		@bulletin = bulletin
@@ -10,21 +11,20 @@ class Radiation2 < Prawn::Document
       :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
     })
     y_pos = cursor
-    # image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.25
-    font "OpenSans" #, style: :bold
-    # bounding_box([50, y_pos], :width => 470) do
-    bounding_box([0, y_pos], width: bounds.width) do
-      # text Bulletin::HEAD, align: :center
-      text Bulletin::HEAD1, align: :center, size: 10
-      text Bulletin::HEAD2, align: :center, size: 10, style: :bold
-      text Bulletin::HEAD3, align: :center, size: 10
-    end
-    move_down 20
     font "OpenSans"
-    # bounding_box([50, cursor], :width => 470) do
-    bounding_box([0, cursor], width: bounds.width) do
-      text Bulletin::ADDRESS, align: :center, size: 10
-    end
+    bulletin_header(y_pos)
+    # bounding_box([0, y_pos], width: bounds.width) do
+    #   # text Bulletin::HEAD, align: :center
+    #   text Bulletin::HEAD1, align: :center, size: 10
+    #   text Bulletin::HEAD2, align: :center, size: 10, style: :bold
+    #   text Bulletin::HEAD3, align: :center, size: 10
+    # end
+    # move_down 20
+    # font "OpenSans"
+    # # bounding_box([50, cursor], :width => 470) do
+    # bounding_box([0, cursor], width: bounds.width) do
+    #   text Bulletin::ADDRESS, align: :center, size: 10
+    # end
     move_down 30
     font "OpenSans", style: :bold
     bounding_box([50, cursor], :width => 470) do

@@ -1,4 +1,5 @@
 class Storm < Prawn::Document
+include HeadersDoc
   def initialize(bulletin, variant)
 		super(top_margin: 40, right_margin: 40, left_margin: 80)
 		@bulletin = bulletin
@@ -9,18 +10,8 @@ class Storm < Prawn::Document
       :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
     })
     y_pos = cursor
-    # image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.25
-    font "OpenSans" #, style: :bold
-    bounding_box([0, y_pos], width: bounds.width) do
-      # text Bulletin::HEAD, align: :center, size: 10
-      text Bulletin::HEAD1, align: :center, size: 10
-      text Bulletin::HEAD2, align: :center, size: 10, style: :bold
-      text Bulletin::HEAD3, align: :center, size: 10
-    end
-    move_down 20
-    bounding_box([0, cursor], width: bounds.width) do
-      text Bulletin::ADDRESS, align: :center, size: 9
-    end
+    font "OpenSans"
+    bulletin_header(y_pos)
 
     move_down 20 #90
     text @bulletin.date_hour_minute

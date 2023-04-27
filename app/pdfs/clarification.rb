@@ -1,4 +1,5 @@
 class Clarification < Prawn::Document
+include HeadersDoc
   def initialize(bulletin)
 		super(top_margin: 40, left_margin: 80, right_margin: 50, bottom_margin: 0)
 		@bulletin = bulletin
@@ -8,29 +9,29 @@ class Clarification < Prawn::Document
       :bold => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Bold.ttf"),
       :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
     })
-    # image "./app/assets/images/eagle.png", :scale => 0.4, position: :center # at: [235, y_pos],
-    font "OpenSans" #, style: :bold
-    move_down 20
-    bounding_box([0, cursor], width: bounds.width) do
-      # text Bulletin::HEAD, align: :center, size: 10
-      text Bulletin::HEAD1, align: :center, size: 10
-      text Bulletin::HEAD2, align: :center, size: 10, style: :bold
-      text Bulletin::HEAD3, align: :center, size: 10
-    end
-    move_down 10
-    font "OpenSans" #, style: :italic
-    bounding_box([0, cursor], width: bounds.width) do
-      text Bulletin::ADDRESS, align: :center, size: 10
-    end
-
-    stroke do
-      horizontal_line 0, bounds.width, :at => cursor
-    end
+    font "OpenSans"
+    bulletin_header(cursor)
+    # move_down 20
+    # bounding_box([0, cursor], width: bounds.width) do
+    #   # text Bulletin::HEAD, align: :center, size: 10
+    #   text Bulletin::HEAD1, align: :center, size: 10
+    #   text Bulletin::HEAD2, align: :center, size: 10, style: :bold
+    #   text Bulletin::HEAD3, align: :center, size: 10
+    # end
+    # move_down 10
+    # font "OpenSans" #, style: :italic
+    # bounding_box([0, cursor], width: bounds.width) do
+    #   text Bulletin::ADDRESS, align: :center, size: 10
+    # end
+    # move_down 10
+    # stroke do
+    #   horizontal_line 0, bounds.width, :at => cursor
+    # end
     move_down 10
     font "OpenSans", style: :normal
     # y_pos = cursor
     text "#{@bulletin.report_date.strftime("%d.%m.%Y")} № #{@bulletin.curr_number}-у"
-    move_down 20
+    move_down 10
     report_date = @bulletin.report_date.strftime("%Y-%m-%d")
     text "УТОЧНЕНИЕ ПРОГНОЗА ПОГОДЫ", align: :center
     text "на день с 09.00 до 21.00 часа #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} #{report_date[0,4]} года", align: :center
