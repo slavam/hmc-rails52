@@ -4,9 +4,9 @@ import DateForm from './date_form';
 
 const WindsTable = ({winds}) => {
   var rows = [];
-  var stations = ["", "Донецк", "Амвросиевка", "Дебальцево", "", "", '', "", "", '', "Седово"];
+  var stations = ["", "Донецк", "Амвросиевка", "Дебальцево", "Волноваха", "Мариуполь", '', "", "", '', "Седово"];
   let n = 0;
-  [1, 3, 2, 10].forEach( s => {
+  [1, 3, 2, 4, 5, 10].forEach( s => {
     let tdsl = [];
     let val;
     [0, 3, 6, 9, 12, 15, 18, 21].forEach( t =>{

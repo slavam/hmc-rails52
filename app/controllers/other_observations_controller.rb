@@ -363,11 +363,10 @@ class OtherObservationsController < ApplicationController
   def winds
     @calc_date = params[:calc_date].present? ? params[:calc_date] : Time.now.strftime("%Y-%m-%d")
     rows = OtherObservation.select("station_id, value, period").
-      where("station_id in (1,2,3,10) and obs_date = ? AND data_type='wind'", @calc_date).order(:period, :station_id)
+      where("station_id in (1,2,3,4,5,10) and obs_date = ? AND data_type='wind'", @calc_date).order(:period, :station_id)
     @winds = []
     rows.each {|o_o|
       t = o_o.period.to_i
-      # s = o_o.station_id == 10 ? 4 : o_o.station_id
       s = o_o.station_id
       @winds[s] ||= []
       @winds[s][t] = o_o.value
