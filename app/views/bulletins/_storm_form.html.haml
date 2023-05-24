@@ -14,8 +14,8 @@
         %th Минуты
         %td= form.text_field :storm_minute
       %tr
-        %th Номер
-        %td= form.text_field :curr_number
+        %th Заголовок
+        %td= form.text_field :curr_number, value: @bulletin.curr_number.present? ? @bulletin.curr_number : "ШТОРМОВОЕ ПРЕДУПРЕЖДЕНИЕ №"
       %tr
         %th Текст
         %td= form.text_area :storm, cols: "30", rows: "5"

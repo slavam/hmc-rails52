@@ -28,10 +28,12 @@
             %th Две страницы
             %th Одна страница
             %th Без метеоданных
-        - elsif (@bulletin_type == 'storm') || (@bulletin_type == 'sea_storm')
+        - elsif @bulletin_type == 'sea_storm'
           %th Предупреждение
           - if current_user.role != 'guest'
             %th Оповещение
+        - elsif @bulletin_type == 'storm'
+          %th= ''
         - elsif @bulletin_type == 'fire'
           %th Полный
           %th Сокращенный
@@ -62,12 +64,15 @@
                 "#{b.id}/bulletin_show.pdf?variant=one_page"
               %td= link_to 'Просмотреть',
                 "#{b.id}/bulletin_show.pdf?variant=short"
-          - elsif (@bulletin_type == 'storm') || (@bulletin_type == 'sea_storm')
+          - elsif @bulletin_type == 'sea_storm'
             %td= link_to 'Просмотреть',
               "#{b.id}/bulletin_show.pdf?variant=warning"
             - if current_user.role != 'guest'
               %td= link_to 'Просмотреть',
                 "#{b.id}/bulletin_show.pdf?variant=notification"
+          - elsif @bulletin_type == 'storm'
+            %td= link_to 'Просмотреть',
+              "#{b.id}/bulletin_show.pdf?variant=warning"
           - elsif @bulletin_type == 'fire'
             %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf?variant=full"
             %td= link_to 'Просмотреть',
