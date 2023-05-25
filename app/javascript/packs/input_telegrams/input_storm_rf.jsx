@@ -153,8 +153,9 @@ export function InputStormRf({telegrams, stations, currStationId}){
         break
       case 91:
       case 92:
-          setTail('1ddffFF 2ddww=')
-          break
+          // setTail('1ddffFF 2ddww=') 20230525 RAI
+        setTail('1ddffFF=')
+        break
       default:
         setTail('=')
     }

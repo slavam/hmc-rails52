@@ -485,18 +485,18 @@ export function checkStormRf(code, tlg, error, isStart){
     case 92:
       if(!checkGroup1(tlg))
         return false
-      if(tlg[7]!=' '){
-        error.push("Нарушен формат сообщения для кода "+code)
-        return false
-      }
-      if(!checkGroup2(tlg,8))
-        return false
-      if(tlg[13]=='=')
+      if(tlg[7]=='='){
         return true
-      else{
-        error.push("Нарушен формат сообщения для кода "+code)
-        return false
-      }  
+      }else{
+        if(!checkGroup2(tlg,8))
+          return false
+        if(tlg[13]=='=')
+          return true
+        else{
+          error.push("Нарушен формат сообщения для кода "+code)
+          return false
+        }  
+      }
     default:
       error = "Ошибка в коде WAREP"
       return false
