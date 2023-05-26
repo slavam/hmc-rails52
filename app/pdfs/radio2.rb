@@ -14,7 +14,7 @@ class Radio2 < Prawn::Document
         text "Приложение
               к Плану передачи информации", leading: 3
       end
-      move_down 20
+      move_down 10
       font "OpenSans"
       # text 'ГБУ "ГИДРОМЕТЕОРОЛОГИЧЕСКИЙ ЦЕНТР МЧС ДНР"', align: :center, size: 14
       bounding_box([0, cursor], width: bounds.width) do
@@ -22,7 +22,7 @@ class Radio2 < Prawn::Document
         text Bulletin::HEAD2, align: :center, size: 10, style: :bold
         text Bulletin::HEAD3, align: :center, size: 10
       end
-      move_down 10
+      # move_down 10
       font "OpenSans"
       bounding_box([0, cursor], width: bounds.width) do
         text Bulletin::ADDRESS, align: :center, size: 10

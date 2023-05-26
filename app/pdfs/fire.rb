@@ -1,4 +1,5 @@
 class Fire < Prawn::Document
+  include HeadersDoc
   def initialize(bulletin)
 		super(top_margin: 40, right_margin: 40, left_margin: 80)
 		@bulletin = bulletin
@@ -9,16 +10,19 @@ class Fire < Prawn::Document
       :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
     })
     y_pos = cursor
-    image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.25
-    font "OpenSans" #, style: :bold
-    bounding_box([0, y_pos], width: bounds.width) do
-      text Bulletin::HEAD, align: :center, size: 10
-    end
-    move_down 20
-    bounding_box([0, cursor], width: bounds.width) do
-      text Bulletin::ADDRESS, align: :center, size: 9
-    end
-    move_down 25
+    font "OpenSans"
+    bulletin_header(y_pos)
+    move_down 10
+    # image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.25
+    # font "OpenSans" #, style: :bold
+    # bounding_box([0, y_pos], width: bounds.width) do
+    #   text Bulletin::HEAD, align: :center, size: 10
+    # end
+    # move_down 20
+    # bounding_box([0, cursor], width: bounds.width) do
+    #   text Bulletin::ADDRESS, align: :center, size: 9
+    # end
+    move_down 10
     bounding_box([0, cursor], width: bounds.width) do
       text "БЮЛЛЕТЕНЬ ПОЖАРНОЙ ОПАСНОСТИ № #{@bulletin.curr_number}", align: :center, color: "ff0000", size: 12
       text "#{@bulletin.report_date.day} #{Bulletin::MONTH_NAME2[@bulletin.report_date.month]} #{@bulletin.report_date.year} года", align: :center, color: "ff0000", size: 12
