@@ -5,6 +5,7 @@ module HeadersDoc
       text Bulletin::HEAD1, align: :center, size: 10
       text Bulletin::HEAD2, align: :center, size: 10, style: :bold
       text Bulletin::HEAD3, align: :center, size: 10
+      text Bulletin::HEAD4, align: :center, size: 11, style: :bold
       text Bulletin::ADDRESS, align: :center, size: 9
     end
   end
