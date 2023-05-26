@@ -22,7 +22,7 @@ class Union < Prawn::Document
       text Bulletin::HEAD3, align: :center, size: 10
     end
     # text 'ГБУ "ГИДРОМЕТЕОРОЛОГИЧЕСКИЙ ЦЕНТР МЧС ДНР"', align: :center, size: 14
-    move_down 10
+    # move_down 10
     font "OpenSans" #, style: :italic
     bounding_box([0, cursor], width: bounds.width) do
       text Bulletin::ADDRESS, align: :center, size: 10
