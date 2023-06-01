@@ -42,7 +42,6 @@ export function checkStormRf(code, tlg, error, isStart){
     return true
   }
   const checkGroup6 = (tlg)=>{
-    // let group = tlg.substr(0,5)
     if(!/^6\d{3}\/$/.test(tlg.substr(0,5))){
       error.push("Ошибка в формате группы 6")
       return false
@@ -88,7 +87,6 @@ export function checkStormRf(code, tlg, error, isStart){
   }  
   const checkSecondCode=(tlg,start)=>{
     let group = tlg.substr(start)
-    // alert(group)
     if(/^ \d\d(=| .+=)$/.test(group))
       return true
     else{
@@ -124,47 +122,58 @@ export function checkStormRf(code, tlg, error, isStart){
     case 17:
       if(!checkGroup1(tlg))
         return false
-      if(tlg[7]!=' '){
-        error.push("Нарушен формат сообщения для кода "+code)
-        return false
-      }
-      if(!checkGroup2(tlg,8))
-        return false
-      if(isStart){
-        if(tlg[13]=='=')
-          return true
-        return checkSecondCode(tlg,13)
-      }else
-        if(tlg[13]==' '){
+      if(tlg[7]=='=' && isStart)
+        return true
+      if(tlg[8]=='2'){
+        if(!checkGroup2(tlg,8))
+          return false
+        if(isStart){
+          if(tlg[13]=='=')
+            return true
+          else
+            return checkSecondCode(tlg,13)
+        }
+        if(tlg[14]=='9'){
           if(!checkGroup906(tlg,14))
             return false
           if(tlg[19]=='=')
             return true
-          else{
-            error.push("Нарушен формат сообщения для кода "+code)
-            return false
-          }
+          else
+            return checkSecondCode(tlg,19)
         }else{
           error.push("Нарушен формат сообщения для кода "+code)
           return false
         }
-    case 18:
-    case 19:  
-      if(!checkGroup1(tlg))
-        return false
-      if(tlg[7]==' '){
-        if(!checkGroup2(tlg,8))
+      }
+      // without 2 group
+      if(isStart)
+        return checkSecondCode(tlg,7)
+      if(tlg[8]=='9'){
+        if(!checkGroup906(tlg,8))
           return false
         if(tlg[13]=='=')
           return true
-        else{
-          error.push("Нарушен формат сообщения для кода "+code)
-          return false
-        }
+        else
+          return checkSecondCode(tlg,13)
       }else{
         error.push("Нарушен формат сообщения для кода "+code)
         return false
       }
+    case 18:
+    case 19:  
+      if(!checkGroup1(tlg))
+        return false
+      if(tlg[7]=='=')
+        return true
+      if(tlg[8]=='2'){
+        if(!checkGroup2(tlg,8))
+          return false
+        if(tlg[13]=='=')
+          return true
+        else
+          return checkSecondCode(tlg,13)
+      }
+      return checkSecondCode(tlg,7)
     case 21:
     case 25:
       if(!checkGroup45(tlg))
@@ -214,28 +223,29 @@ export function checkStormRf(code, tlg, error, isStart){
         return false
       }
     case 30:
-//      if(isStart)
-        if(tlg[0]=='2'){
-          let group = tlg.substr(0,5)
-          if(!/^2\/\/[5-9/][0-9/]$/.test(group))
-            return false
-          if(tlg[5]==' '){
-            if(tlg[6]=='8'){
-              if(!checkGroup8(tlg,6))
-                return false
-              if(tlg[11]=='=')
-                return true
-              return checkSecondCode(tlg,11)
-            }
-            return checkSecondCode(tlg,6)
-          }
-          if(tlg[5]=='=')
-            return true
-          else{
-            error.push("Нарушен формат сообщения для кода 30")
-            return false
-          }
+      if(tlg[0]=='2'){
+        let group = tlg.substr(0,5)
+        if(!/^2\/\/[5-9/][0-9/]$/.test(group)){
+          error.push("Нарушен формат сообщения для кода 30")
+          return false
         }
+        if(tlg[5]==' '){
+          if(tlg[6]=='8'){
+            if(!checkGroup8(tlg,6))
+              return false
+            if(tlg[11]=='=')
+              return true
+            return checkSecondCode(tlg,11)
+          }
+          return checkSecondCode(tlg,6)
+        }
+        if(tlg[5]=='=')
+          return true
+        else{
+          error.push("Нарушен формат сообщения для кода 30")
+          return false
+        }
+      }
       if(tlg[0]=='8'){
         if(!checkGroup8(tlg,0))
           return false
@@ -283,15 +293,15 @@ export function checkStormRf(code, tlg, error, isStart){
     case 40:
       let pos = 0
       // if(isStart) 20230214
-        if(tlg[0]=='2'){
-          if(!checkGroup2(tlg,0))
-            return false
-          if(tlg[5]!=' '){
-            error.push("Нарушен формат сообщения для кода 40")
-            return false
-          }
-          pos = 6
+      if(tlg[0]=='2'){
+        if(!checkGroup2(tlg,0))
+          return false
+        if(tlg[5]!=' '){
+          error.push("Нарушен формат сообщения для кода 40")
+          return false
         }
+        pos = 6
+      }
       if(!checkGroup7(tlg,pos))
         return false
       if(tlg[pos+6]=='=')
@@ -382,10 +392,6 @@ export function checkStormRf(code, tlg, error, isStart){
       if(tlg[12]=='=')
         return true
       return checkSecondCode(tlg,12)
-      // else{
-      //   error.push("Нарушен формат сообщения для кода "+code)
-      //   return false
-      // }
     case 63:
     case 64:
     case 65:
