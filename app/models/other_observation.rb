@@ -33,7 +33,7 @@ class OtherObservation < ApplicationRecord
     if data_type == 'wind'
       OtherObservation.where('data_type = ?', data_type).limit(50).order(:obs_date, :period).reverse_order
     else
-      OtherObservation.where('data_type = ?', data_type).limit(100).order(:obs_date, :updated_at).reverse_order
+      OtherObservation.where('data_type = ?', data_type).limit(400).order(:obs_date, :updated_at).reverse_order
     end
   end
   def init
