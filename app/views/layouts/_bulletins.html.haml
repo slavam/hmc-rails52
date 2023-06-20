@@ -1,7 +1,7 @@
 <a href='#' class='dropdown-toggle' data-toggle='dropdown'>Бюллетени <b class='caret'></b></a>
 %ul{ class: 'dropdown-menu' }
   %li= link_to 'Бюллетени ежедневные', '/bulletins/list?bulletin_type=daily'
-  %li= link_to 'Бюллетени морские', '/bulletins/list?bulletin_type=sea'
+  -# %li= link_to 'Бюллетени морские', '/bulletins/list?bulletin_type=sea'
   -# %li= link_to 'Бюллетени выходного дня',
     '/bulletins/list?bulletin_type=holiday'
   %li= link_to 'Бюллетени гидрологические',
@@ -9,8 +9,8 @@
   %li= link_to 'Бюллетени гидрологические 2',
     '/bulletins/list?bulletin_type=hydro2'
   %li= link_to 'Штормовые предупреждения', '/bulletins/list?bulletin_type=storm'
-  %li= link_to 'Шторма на море', '/bulletins/list?bulletin_type=sea_storm'
-  %li= link_to 'Шторма (пожары)', '/bulletins/list?bulletin_type=fire_storm'
+  -# %li= link_to 'Шторма на море', '/bulletins/list?bulletin_type=sea_storm'
+  -# %li= link_to 'Шторма (пожары)', '/bulletins/list?bulletin_type=fire_storm'
   %li= link_to 'Уточнения', '/bulletins/list?bulletin_type=clarification'
   -# %li= link_to 'Радиация', '/bulletins/list?bulletin_type=radiation'
   %li= link_to 'Радиация 2', '/bulletins/list?bulletin_type=radiation2'
@@ -25,6 +25,6 @@
   %li= link_to 'Шторма для ЖД', '/bulletins/list?bulletin_type=rw_storm'
   %li= link_to 'ЮНИОН', union_forecasts_path
   %li= link_to 'Пожароопасность', '/bulletins/list?bulletin_type=fire'
-  %li= link_to 'Оповещения (гидро)', '/bulletins/list?bulletin_type=alert'
-  %li= link_to 'Предупреждения (гидро)', '/bulletins/list?bulletin_type=warning'
+  -# %li= link_to 'Оповещения (гидро)', '/bulletins/list?bulletin_type=alert'
+  -# %li= link_to 'Предупреждения (гидро)', '/bulletins/list?bulletin_type=warning'
   
