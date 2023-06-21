@@ -252,17 +252,20 @@ export function checkAgroDecRf(tlg, stations, errors, observation){
             return code = false;
           }
         }
-        if (t[pos] == '3')
-          if (/^3[0-4/][0-9/]{3}$/.test(t.substr(pos,5))){ // 20180503 mwm add ////
+        j=1
+        while ((0<t.indexOf(' 3', pos-1)) &&(t.indexOf(' 3', pos-1)<zonePos)){ // 20230621
+          if ((j<6)&&(/^3[0-4/][0-9/]{3}$/.test(t.substr(pos,5)))){ // 20180503 mwm add ////
             if (t[pos+1] != '/')
               state_crops.clogging_weeds = t[pos+1];
             if (t[pos+2] != '/')
               state_crops.height_plants = t.substr(pos+2,3);
+            j+=1
             pos += 6;
           }else{
-            errors.push("Ошибка в группе 3 зоны 92["+(i+1)+"] раздела 2");
+            errors.push("Ошибка в группе 3["+j+"] зоны 92["+(i+1)+"] раздела 2");
             return code = false;
           }
+        }
         if (t[pos] == '4')
           if (/^4\d{4}$/.test(t.substr(pos,5))){
             state_crops.number_plants = t.substr(pos+2,3);
