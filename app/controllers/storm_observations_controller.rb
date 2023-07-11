@@ -264,6 +264,27 @@ class StormObservationsController < ApplicationController
     @current_station_id = (current_user && current_user.station_id)? current_user.station_id : 0
   end
 
+  def input_storm_as_text
+    @storm_type = 'agro'
+    @current_station_id = (current_user && current_user.station_id)? current_user.station_id : 0
+    stations = Station.all.order(:name)
+    @stations = stations.map {|s| {label: s.name, value: s.code, id: s.id}}
+    @telegrams = StormObservation.where("telegram_type like 'ЩЭ%'").order(created_at: :desc).limit(20)
+  end
+
+  def create_storm_as_text
+    observation = StormObservation.new(storm_observation_params)
+    if observation.save
+      ActionCable.server.broadcast("synoptic_telegram_channel", {'telegram' => observation, 'tlgType' => 'storm'})
+      User.where(role: ['synoptic', 'vip']).each do |synoptic|
+        ActionCable.server.broadcast("storm_telegram_user_#{synoptic.id}", {'sound' => true, 'telegram_id' => observation.id})
+      end
+      render json: {tlgType: 'storm', errors: ["Телеграмма добавлена"]}
+    else
+      render json: {errors: observation.errors.messages}, status: :unprocessable_entity
+    end
+  end
+
   def create_storm_rf
     observation = StormObservation.new(storm_observation_params)
     observation.day_event = observation.telegram[10,2] 

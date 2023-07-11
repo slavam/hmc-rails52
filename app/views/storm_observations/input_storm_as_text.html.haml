@@ -1,0 +1,4 @@
+.container
+  #root
+  #init-params{telegrams: @telegrams.to_json, stations: @stations.to_json, currStationId: @current_station_id.to_json, stormType: @storm_type.to_json}
+  = javascript_pack_tag 'input_telegrams/input_storm_as_text'

@@ -92,6 +92,8 @@ Rails.application.routes.draw do
   get 'storm_observations/storm_description', to: 'storm_observations#storm_description'
   get 'storm_observations/get_storm_context', to: 'storm_observations#get_storm_context'
   get 'storm_observations/input_storm_rf', to: 'storm_observations#input_storm_rf'
+  get 'storm_observations/input_storm_as_text', to: 'storm_observations#input_storm_as_text'
+  post 'storm_observations/create_storm_as_text', to: 'storm_observations#create_storm_as_text'
   post 'storm_observations/create_storm_rf', to: 'storm_observations#create_storm_rf'
   get 'storm_observations/n_last_storms', to: 'storm_observations#n_last_storms' 
   resources :storm_observations

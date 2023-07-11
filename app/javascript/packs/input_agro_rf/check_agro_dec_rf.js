@@ -193,6 +193,14 @@ export function checkAgroDecRf(tlg, stations, errors, observation){
           return false;
         }
     }
+    // 20230711 need section 999
+    if(tlg[currentPos] == '9')
+      if(/^999 90\/\/\/ 2\/\/\/\d=$/.test(tlg.substr(currentPos,16)))
+        return true
+      else{
+        errors.push("Ошибка в разделе 9 =>"+tlg.substr(currentPos,15)+"<=");
+        return false;
+      }
     // if (tlg[currentPos] == '4')
     //   if (/^4\d{3}[0-9/]$/.test(tlg.substr(currentPos,5))){
     //     observation.percipitation_dec_max = tlg.substr(currentPos+1,3);
@@ -215,7 +223,8 @@ export function checkAgroDecRf(tlg, stations, errors, observation){
       currentPos += 4;
     
   if (/^92\d{3}$/.test(tlg.substr(currentPos,5))){
-    let zone = tlg.substr(currentPos-1).split(' 92');
+    let group9pos = tlg.indexOf(' 999 ')
+    let zone = group9pos >= 0 ? tlg.slice(currentPos-1,group9pos).split(' 92') : tlg.substr(currentPos-1).split(' 92');
     zone.splice(0,1);
     let state_crops;
     observation.crop_dec_conditions = [];
@@ -572,6 +581,14 @@ export function checkAgroDecRf(tlg, stations, errors, observation){
     errors.push("Отсутствует обязательная зона 92 раздела 2");
     return false;
   }
+  // 20230711 need section 999
+  if(tlg[currentPos+1] == '9')
+    if(/^999 90\/\/\/ 2\/\/\/\d=$/.test(tlg.substr(currentPos+1,16)))
+      return true
+    else{
+      errors.push("Ошибка в разделе 9 =>"+tlg.substr(currentPos+1,15)+"<=");
+      return false;
+    }
   if ((tlg[currentPos-1] == '='))
     return true;
   else {
