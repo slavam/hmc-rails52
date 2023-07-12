@@ -84,7 +84,7 @@ class SeaObservationsController < ApplicationController
     else
       new_sea = SeaObservation.new(sea_observation_params)
       if new_sea.save
-        ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: new_sea.as_json, tlgType: 'sea'})
+        ActionCable.server.broadcast("synoptic_telegram_channel", {'telegram' => new_sea.as_json, 'tlgType' => 'sea'})
         render json: {tlgType: 'sea', errors: ["Телеграмма добавлена"]}
       else
         render json: {errors: new_sea.errors.messages}, status: :unprocessable_entity
