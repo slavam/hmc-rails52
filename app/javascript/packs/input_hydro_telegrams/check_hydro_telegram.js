@@ -226,6 +226,7 @@ export function checkHydroTelegram(tlgText, hydroPosts, errors, observation, dat
         return false;
       }
     if(tlg[currPos] == '5'){
+      let groupNum = 0;
       while (tlg[currPos] == '5'){
         groupNum += 1;
         if(groupNum > 5){
@@ -241,7 +242,7 @@ export function checkHydroTelegram(tlgText, hydroPosts, errors, observation, dat
       }
     }
     if(tlg[currPos] == '6'){
-      groupNum = 0;
+      let groupNum = 0;
       while (tlg[currPos] == '6'){
         groupNum += 1;
         if(groupNum > 5){
