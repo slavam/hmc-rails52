@@ -21,6 +21,7 @@ class Radio2 < Prawn::Document
         text Bulletin::HEAD1, align: :center, size: 10
         text Bulletin::HEAD2, align: :center, size: 10, style: :bold
         text Bulletin::HEAD3, align: :center, size: 10
+        text Bulletin::HEAD4, align: :center, size: 11, style: :bold
       end
       # move_down 10
       font "OpenSans"
