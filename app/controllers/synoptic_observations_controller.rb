@@ -279,13 +279,18 @@ class SynopticObservationsController < ApplicationController
     @stations = Station.where("id not in (8)").order(:id)
     first_day = true
     fire_danger = 0
+    yesterday_prec = 0
     @fire_data.sort.each do |key,value|
       if first_day
         first_day = false
-        fire_danger = value[:temp]*(value[:temp] - value[:temp_d_p])*is_3mm(value[:day],value[:night]) if value[:temp].present? and value[:temp_d_p].present?
+        # fire_danger = value[:temp]*(value[:temp] - value[:temp_d_p])*is_3mm(value[:day],value[:night]) if value[:temp].present? and value[:temp_d_p].present?
+        fire_danger = value[:temp]*(value[:temp] - value[:temp_d_p])*is_3mm(yesterday_prec,value[:night]) if value[:temp].present? and value[:temp_d_p].present?
+        yesterday_prec = value[:day]
       end
-      fire_danger = value[:temp]*(value[:temp] - value[:temp_d_p])+fire_danger*is_3mm(value[:day],value[:night]) if value[:temp].present? and value[:temp_d_p].present?
+      # fire_danger = value[:temp]*(value[:temp] - value[:temp_d_p])+fire_danger*is_3mm(value[:day],value[:night]) if value[:temp].present? and value[:temp_d_p].present?
+      fire_danger = value[:temp]*(value[:temp] - value[:temp_d_p])+fire_danger*is_3mm(yesterday_prec,value[:night]) if value[:temp].present? and value[:temp_d_p].present?
       @fire_data[key][:fire_danger] = fire_danger.round
+      yesterday_prec = value[:day]
     end
     respond_to do |format|
       format.html

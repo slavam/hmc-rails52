@@ -57,11 +57,14 @@ export default class Fire extends React.Component{
     let periodDays = [];
     let fireDanger = [];
     let precipitation = [];
+    let yesterday = 0
     if(this.state.fireData)
       Object.keys(this.state.fireData).forEach( (k) => {
         periodDays.push(k.substr(8,2)+'.'+k.substr(5,2));
         fireDanger.push(this.state.fireData[k].fire_danger);
-        precipitation.push(+this.state.fireData[k].day+this.state.fireData[k].night);
+        // precipitation.push(+this.state.fireData[k].day+this.state.fireData[k].night);
+        precipitation.push(yesterday+this.state.fireData[k].night);
+        yesterday = +this.state.fireData[k].day
       });
     const lineChartData = {
       labels: periodDays,
