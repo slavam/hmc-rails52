@@ -12,8 +12,9 @@ class Bulletin < ActiveRecord::Base
   HEAD4 = 'Донецкий гидрометцентр'
   
   ADDRESS = "ул. Любавина, 2, г. Донецк, г.о. Донецкий, ДНР, 283015
-        телефон: +7 (856) 303-10-34, +7 (856) 303-10-49
+        телефон: +7 (949) 300-73-59
         e-mail: ugms.dnr@mail.ru"
+        # телефон: +7 (856) 303-10-34, +7 (856) 303-10-49
   ADDRESS2 = "ул. Любавина, 2, г. Донецк, г.о. Донецкий, ДНР, 283015 тел. +7 (856) 311-40-10
         web: www.dnmchs.ru  ОГРН 1229300076015  E-mail: gidromet@mail.dnmchs.ru"
   MONTH_NAME2 = %w{nil января февраля марта апреля мая июня июля августа сентября октября ноября декабря}
@@ -127,7 +128,7 @@ class Bulletin < ActiveRecord::Base
   end
 
   def self.synoptic_list
-    synoptics = ["Деревянко Н.Н.", "Маренкова Н.В.", "Соколова Т.Е.", "Щербак Е.Д.", "Томченко Т.В.", "Нифтуллаева О.В."]
+    synoptics = ["Деревянко Н.Н.", "Маренкова Н.В.", "Соколова Т.Е."] #, "Щербак Е.Д.", "Томченко Т.В.", "Нифтуллаева О.В."]
     res = []
     synoptics.each {|s| res << [s, s]}
     return res
@@ -144,10 +145,10 @@ class Bulletin < ActiveRecord::Base
       ret[:position] = "Начальник"
       ret[:image_name] = "./app/assets/images/chief.png"
     elsif self.chief == "М.А. Кияненко"
-      ret[:position] = "Начальник Донецкого гидрометцентра"
+      ret[:position] = "Заместитель начальника - начальник Донецкого гидрометцентра"
       ret[:image_name] = "./app/assets/images/kian.png"
     elsif self.chief == "О.В. Арамелева"
-      ret[:position] = "Врио начальника"
+      ret[:position] = "Заместитель начальника Донецкого гидрометцентра - начальник ОГ"
       ret[:image_name] = "./app/assets/images/arameleva2.png"
     else
       ret[:position] = "Врио начальника"
@@ -158,15 +159,15 @@ class Bulletin < ActiveRecord::Base
   end
   def responsible_2_pdf
     ret = {}
-    if self.responsible == "Л.Н. Бойко"
+    # if self.responsible == "Л.Н. Бойко"
       ret[:position] = "Начальник отдела гидрометеорологического обеспечения" # и обслуживания"
       ret[:image_name] = "./app/assets/images/head_of_dep.png"
       ret[:full_name] = "Бойко Любовь Николаевна"
-    else
-      ret[:position] = "Врио начальника отдела гидрометеорологического обеспечения" # и обслуживания"
-      ret[:image_name] = "./app/assets/images/kian.png"
-      ret[:full_name] = "Кияненко Маргарита Анатольевна"
-    end
+    # else
+    #   ret[:position] = "Врио начальника отдела гидрометеорологического обеспечения" # и обслуживания"
+    #   ret[:image_name] = "./app/assets/images/kian.png"
+    #   ret[:full_name] = "Кияненко Маргарита Анатольевна"
+    # end
     ret[:name] = self.responsible
     ret
   end
@@ -222,6 +223,6 @@ class Bulletin < ActiveRecord::Base
     return "за период с 9.00 часов #{'%02d' % rs_date.day} #{MONTH_NAME2[rs_date.month]}#{curr_year} до 9.00 часов #{'%02d' % report_date.day} #{MONTH_NAME2[report_date.month]} #{report_date.year} года"
   end
   def self.ogmo_code
-    (Time.now >= '2020-01-01'.to_date)? '7':'3' # KMA 20221103
+    (Time.now >= '2020-01-01'.to_date)? '325/02.01':'3' # KMA 20221103
   end
 end

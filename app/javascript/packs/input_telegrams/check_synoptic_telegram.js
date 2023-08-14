@@ -240,8 +240,8 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
                 errors.push("Для срока "+term+" в разделе 3 группы 6 не должно быть");
                 return false;
               }
-              observation.precipitation_1 = section.substr(1,3);
-              observation.precipitation_time_range_1 = section[4];
+              observation.precipitation_2 = section.substr(1,3);
+              observation.precipitation_time_range_2 = section[4];
               break
             case '8':
               if (section[1] != '/') {
