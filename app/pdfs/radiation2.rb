@@ -19,11 +19,12 @@ include HeadersDoc
     end
     move_down 20
     font "OpenSans"
-    bounding_box([300, cursor], width: bounds.width-300) do
-      text "И.о. Министра
-      по делам гражданской обороны, чрезвычайным ситуациям и ликвидации последствий стихийных бедствий
-      Донецкой Народной Республики
+    bounding_box([250, cursor], width: bounds.width-250) do
+      text "Начальнику
+      Главного управления МЧС России по
+      Донецкой Народной Республике
 
+      генерал-лейтенанту внутренней службы
       А.А. Кострубицкому"
     end
     move_down 20
@@ -52,23 +53,30 @@ include HeadersDoc
     end
     avg = "%.2f" % (avg / n.to_f).to_f.round(2) if n > 0
     text "Естественный радиационный фон в Донецкой Народной Республике в среднем составил #{avg} мкЗв/ч."
-    bounding_box([0, 150], width: bounds.width) do
-      text "Ответственный за выпуск:"
-      table signatures, width: bounds.width, column_widths:  [300, 100], cell_style: {overflow: :shrink_to_fit, inline_format: true } do |t|
+    bounding_box([0, 300], width: bounds.width) do
+      # text "Ответственный за выпуск:"
+      table signatures, width: bounds.width, column_widths:  [250, 150], cell_style: {overflow: :shrink_to_fit, inline_format: true } do |t|
         t.cells.border_width = 0
       end
     end
     last_name = @bulletin.synoptic1[0..-6]
     user = User.find_by(last_name: last_name)
     synoptic = user.present? ? user[:last_name]+' '+user[:first_name]+' '+user[:middle_name] : @bulletin.synoptic1 # 'Синоптик'
-    text_box synoptic + " +7 (856) 303-10-34", :at => [0, 30] #, :width => 170
+    text_box synoptic + " +7 (949) 300-73-59", :at => [0, 30], size: 10 #, :width => 170
     move_to 0, 15
     line_to 520, 15
     stroke_color '0000ff'
     stroke
   end
   def signatures
-    responsible_descr = @bulletin.responsible_2_pdf
-    [[responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6}, {:padding => [20,5],:content => responsible_descr[:name]}]]
+    # chief_descr = @bulletin.chief_2_pdf
+    # table_content =[[{:padding => [10,5],:content => chief_descr[:position]}, 
+    #   {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, 
+    #   {:padding => [10,5],:content => chief_descr[:name]}]]
+
+    responsible_descr = @bulletin.chief.present? ? @bulletin.chief_2_pdf : @bulletin.responsible_2_pdf
+    [[responsible_descr[:position], 
+      {image: responsible_descr[:image_name], scale: 0.6}, 
+      {padding: [20,5], content: responsible_descr[:name]}]]
   end
 end

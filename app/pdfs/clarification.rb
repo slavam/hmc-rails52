@@ -42,14 +42,14 @@ include HeadersDoc
     text "В городе Донецке"
     text @bulletin.forecast_day_city
     move_down 20
-    text "В 07.00 часов в Донецке:"
-    text @bulletin.forecast_period
-    move_down 20
+    # text "В 07.00 часов в Донецке:"
+    # text @bulletin.forecast_period
+    # move_down 20
     chief_descr = @bulletin.chief_2_pdf
     table_content =[[{:padding => [10,5],:content => chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]
     table table_content, width: bounds.width, :column_widths => [200, 170], cell_style: {:overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true } do |t|
       t.cells.border_width = 0
     end
-    text_box @bulletin.synoptic1 + " (062) 303-10-34", :at => [0, 30], size: 9
+    text_box @bulletin.synoptic1 + " +7(949) 300-73-59", :at => [0, 30], size: 9
   end
 end
