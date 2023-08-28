@@ -16,30 +16,19 @@ class Teploenergo5 < Prawn::Document
     font "OpenSans"
     bounding_box([bounds.width-200, y_pos], width: 300, leading: 3) do
       text "Приложение к письму"
-      text 'ГБУ "Гидрометцентр МЧС ДНР"'
-      text "от _________________ № ____________"
+      text 'Донецкиого гидрометцентра'
+      text 'ФГБУ "УГМС по ДНР"'
+      text "от ___________ № 17/23/02.01"
     end
     move_down 20
     font "OpenSans", style: :bold
     text "Средняя за сутки (00:01-24:00) температура воздуха (°С)", size: 12, align: :center
     text "с 01 по #{@max_day} #{Bulletin::MONTH_NAME2[@month.to_i]} #{@year} года", size: 12, align: :center
-    text "для населенных пунктов Донецкой Народной Республики", size: 12, align: :center
+    text "на метеостанциях Донецкой Народной Республики", size: 12, align: :center
     move_down 20
     font "OpenSans", style: :normal
     table table_data, width: bounds.width, cell_style: { border_width: 0.3, :overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true, size: 9, align: :center } do |t|
       t.cells.padding = [2,2]
-      # t.row(0).size = 7
-      # t.row(0).rotate = 90
-      # t.row(0).column(1).rotate = -90
-      # t.row(0).column(3).rotate = -90
-      # t.column(9).width = 30
-      # t.column(1).width = 75
-      # t.column(2).width = 60
-      # t.column(4).width = 50
-      # t.column(5).width = 50
-      # t.column(6).width = 45
-      # t.column(7).width = 45
-      # t.column(8).width = 50
     end
     move_down 40
     if signatory == 'chief'
@@ -74,7 +63,7 @@ class Teploenergo5 < Prawn::Document
         '<b>Донецк</b>', 
         '<b>Дебальцево</b>', 
         '<b>Амвросиевка</b>', 
-        '<b>Докучаевск</b>', 
+        '<b>Волноваха</b>', 
         '<b>Седово</b>'
       ]
     ] + table

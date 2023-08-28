@@ -2,6 +2,9 @@
   - when 'dte'
   %h3{ align: :center } Создать прогноз для Донбасстеплоэнерго
   = render partial: 'dte_form'
+  - when 'donbassgaz'
+  %h3{ align: :center } Создать прогноз для Донбассгаз
+  = render partial: 'donbassgaz_form'
   - when 'gsr'
   %h3{ align: :center } Создать прогноз для ГазСтройРеновации
   = render partial: 'gsr_form'
