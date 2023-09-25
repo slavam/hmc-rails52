@@ -18,7 +18,7 @@ class Teploenergo5 < Prawn::Document
       text "Приложение к письму"
       text 'Донецкиого гидрометцентра'
       text 'ФГБУ "УГМС по ДНР"'
-      text "от ___________ № 17/23/02.01"
+      text "от 06.09.2023 № 05/23/02.01"
     end
     move_down 20
     font "OpenSans", style: :bold
