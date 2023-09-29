@@ -16,7 +16,7 @@ class Teploenergo5 < Prawn::Document
     font "OpenSans"
     bounding_box([bounds.width-200, y_pos], width: 300, leading: 3) do
       text "Приложение к письму"
-      text 'Донецкиого гидрометцентра'
+      text 'Донецкого гидрометцентра'
       text 'ФГБУ "УГМС по ДНР"'
       text "от 06.09.2023 № 05/23/02.01"
     end

@@ -30,14 +30,14 @@ class Dte < Prawn::Document
       text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № 0#{Bulletin.ogmo_code}/"+@bulletin.curr_number
       # text "К договору от 03.09.2020 № 08/20-21/06"
       # text "К договору от 25.08.2021 № 08/21-22/06"
-      text "К договору от 15.09.2022 № 08/22-23/06"
+      text "К договору от 06.09.2023 № 05/23/02.01"
     end
     
     bounding_box([280, y_pos], width: bounds.width-280) do
       text "Генеральному директору
             ГУП ДНР \"Донбасстеплоэнерго\"
 		
-            А.А. Цюпке", leading: 3
+            С.В. Полхову", leading: 3
     end
     
     move_down 50
