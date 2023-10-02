@@ -18,7 +18,7 @@ class Donbassgaz < Prawn::Document
     font "OpenSans", style: :normal
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
-      text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № 0#{Bulletin.ogmo_code}/"+@bulletin.curr_number
+      text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № #{Bulletin.ogmo_code}/"+@bulletin.curr_number
       text "К договору от ___________ № 10/23/02.01"
     end
     

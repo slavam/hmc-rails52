@@ -1,25 +1,29 @@
 class Dte < Prawn::Document
+  include HeadersDoc
   def initialize(bulletin)
-		super(top_margin: 40, left_margin: 95, right_margin: 50, bottom_margin: 0)
+		# super(top_margin: 40, left_margin: 95, right_margin: 50, bottom_margin: 0)
+    super(left_margin: 80, right_margin: 50)
 		@bulletin = bulletin
     font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),
-      :italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-Italic.ttf"),
+      # :italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-Italic.ttf"),
       :bold => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Bold.ttf"),
-      :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
+      # :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
     })
-    image "./app/assets/images/eagle.png", :scale => 0.4, position: :center # at: [235, y_pos], 
-    font "OpenSans", style: :bold
-    move_down 20
-    bounding_box([0, cursor], width: bounds.width) do
-      text Bulletin::HEAD, align: :center, size: 10
-    end
-    move_down 10
-    font "OpenSans" #, style: :italic
-    bounding_box([0, cursor], width: bounds.width) do
-      text Bulletin::ADDRESS2, align: :center, size: 10
-    end
-    
+    # image "./app/assets/images/eagle.png", :scale => 0.4, position: :center # at: [235, y_pos], 
+    # font "OpenSans", style: :bold
+    # move_down 20
+    # bounding_box([0, cursor], width: bounds.width) do
+    #   text Bulletin::HEAD, align: :center, size: 10
+    # end
+    # move_down 10
+    # font "OpenSans" #, style: :italic
+    # bounding_box([0, cursor], width: bounds.width) do
+    #   text Bulletin::ADDRESS2, align: :center, size: 10
+    # end
+    y_pos = cursor
+    font "OpenSans"
+    bulletin_header(y_pos)
     stroke do
       horizontal_line 0, bounds.width, :at => cursor
     end
@@ -27,9 +31,7 @@ class Dte < Prawn::Document
     font "OpenSans", style: :normal
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
-      text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № 0#{Bulletin.ogmo_code}/"+@bulletin.curr_number
-      # text "К договору от 03.09.2020 № 08/20-21/06"
-      # text "К договору от 25.08.2021 № 08/21-22/06"
+      text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № #{Bulletin.ogmo_code}/"+@bulletin.curr_number
       text "К договору от 06.09.2023 № 05/23/02.01"
     end
     
