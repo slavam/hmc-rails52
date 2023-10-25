@@ -70,7 +70,7 @@ export default class AmvrosievkaTemp extends React.Component{
     return(
       <div>
         <TeploenergoForm year={this.state.year} month={this.state.month} onFormSubmit={this.handleFormSubmit} />
-        <h4>Средняя за сутки температура воздуха (°С) с 01 по {endDate} года в г. Амвросиевка</h4>
+        <h4>Средняя за сутки температура воздуха (°С) с 01 по {endDate} года в пгт. Новый Свет</h4>
         <br/>
         <WorkShiftAvgTemperatures temperatures={this.state.temperatures} maxDay={this.state.daysInMonth} />
         <h4>Задайте параметры печати</h4>
