@@ -17,7 +17,7 @@ class Energy < Prawn::Document
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
       text "________________ № 325/02.01"
-      text "На № ___________ от ________"
+      text "На № 20/23/02.01 от 26.10.2023"
     end
     
     bounding_box([250, y_pos], width: bounds.width-250) do
