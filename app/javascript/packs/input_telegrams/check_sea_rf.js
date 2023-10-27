@@ -51,7 +51,7 @@ export function checkSeaRf(s1, s2, s3, term, error){
     }
     pos+=6
   }
-  if(!/^8[1-5/][01/][0-9/]{3}$/.test(s1.slice(pos,pos+6))){
+  if(!/^8[1-5/][01/][0-9/]{3}[=\s]*$/.test(s1.slice(pos,pos+7))){
     error.push("Ошибка в формате группы 8 раздела 1")
     return false
   }
