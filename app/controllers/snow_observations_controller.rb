@@ -12,6 +12,7 @@ class SnowObservationsController < ApplicationController
     @snow_points = SnowPoint.actual
     @telegrams = SnowObservation.short_last_50_telegrams(current_user)
     @input_mode = params[:input_mode]
+    @hydro_post_code = current_user.role == 'hydroobserver' ? current_user.position : ''
   end
   
   def create_snow_telegram
@@ -59,6 +60,12 @@ class SnowObservationsController < ApplicationController
   def get_last_telegrams
     telegrams = SnowObservation.short_last_50_telegrams(current_user)
     render json: {telegrams: telegrams, tlgType: 'snow'}
+  end
+
+  def destroy
+    @snow_observation.destroy
+    flash[:success] = "Удалена телеграмма"
+    redirect_to hydro_observations_path
   end
   
   private

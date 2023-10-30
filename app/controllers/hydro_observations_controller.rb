@@ -12,6 +12,7 @@ class HydroObservationsController < ApplicationController
     @hydro_posts = HydroPost.all.order(:id)
     @telegrams = HydroObservation.short_last_50_telegrams(current_user)
     @input_mode = params[:input_mode]
+    @hydro_post_code = current_user.role == 'hydroobserver' ? current_user.position : ''
   end
   
   def create_hydro_telegram
@@ -62,6 +63,12 @@ class HydroObservationsController < ApplicationController
   def get_last_telegrams
     telegrams = HydroObservation.short_last_50_telegrams(current_user)
     render json: {telegrams: telegrams, tlgType: 'hydro'}
+  end
+
+  def destroy
+    @hydro_observation.destroy
+    flash[:success] = "Удалена телеграмма"
+    redirect_to hydro_observations_path
   end
   
   private

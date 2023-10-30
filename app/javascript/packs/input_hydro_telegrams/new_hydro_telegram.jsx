@@ -4,8 +4,9 @@ import { checkHydroTelegram } from './check_hydro_telegram';
 export default class NewHydroTelegram extends React.Component{
   constructor(props){
     super(props);
+    this.tlgHead = (this.props.hydroPostCode==''?'':`${this.props.hydroPostCode} ${this.props.observationDate.substr(8,2)}081 =`);
     this.state = {
-      tlgText: '',
+      tlgText: this.tlgHead,
       observationDate: this.props.observationDate,
       errors: []
     };
@@ -32,13 +33,13 @@ export default class NewHydroTelegram extends React.Component{
     this.observation.telegram = text;
     this.props.onFormSubmit({observation: this.observation, observationDate: this.state.observationDate}); //, tlgText: this.state.tlgText});
     this.setState({
-      tlgText: '',
+      tlgText: this.tlgHead,
       errors: []
     });
   }
   inBufferClick(e){
     this.props.onInBuffer({tlgText: this.state.tlgText, message: this.state.errors[0], tlgType: "hydro"});
-    this.setState({tlgText: '', errors: []});
+    this.setState({errors: []});
   }
   render(){
     let inBuffer = ((this.state.errors[0] > '') && (this.state.tlgText > '')) ? <button style={{float: "right"}} type="button" id="in-buffer" onClick={(event) => this.inBufferClick(event)}>В буфер</button> : '';

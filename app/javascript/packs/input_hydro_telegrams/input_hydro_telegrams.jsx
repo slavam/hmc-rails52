@@ -78,12 +78,14 @@ export default class InputHydroTelegrams extends React.Component{
     alert(message);
   }
   render(){
+    let toClipboardButton = this.props.hydroPostCode == '' ? 
+      <button onClick={event => this.toClipboard(event)}>Скопировать последние</button> : null
     return(
       <div>
         <h3>Новая телеграмма</h3>
-        <NewHydroTelegram observationDate={this.state.observationDate} onFormSubmit={this.handleFormSubmit} hydroPosts={this.props.hydroPosts} inputMode={this.props.inputMode} onInBuffer={this.handleInBuffer}/>
+        <NewHydroTelegram observationDate={this.state.observationDate} onFormSubmit={this.handleFormSubmit} hydroPosts={this.props.hydroPosts} inputMode={this.props.inputMode} onInBuffer={this.handleInBuffer} hydroPostCode={this.props.hydroPostCode}/>
         <h3>Телеграммы hydro (HHZZ)</h3> 
-        <button onClick={event => this.toClipboard(event)}>Скопировать последние</button>
+        {toClipboardButton}
         <LastHydroTelegramsTable lastTelegrams={this.state.lastTelegrams} hydroPosts={this.props.hydroPosts}/>
       </div>
     );
@@ -96,8 +98,10 @@ $(function () {
     const observationDate = JSON.parse(node.getAttribute('currDate'));
     const hydroPosts = JSON.parse(node.getAttribute('hydroPosts'));
     const inputMode = JSON.parse(node.getAttribute('inputMode'));
+    const hydroPostCode = JSON.parse(node.getAttribute('hydroPostCode'))
     ReactDOM.render(
-      <InputHydroTelegrams lastTelegrams={lastTelegrams} hydroPosts={hydroPosts} observationDate={observationDate} inputMode={inputMode}/>,
+      <InputHydroTelegrams lastTelegrams={lastTelegrams} 
+        hydroPosts={hydroPosts} observationDate={observationDate} inputMode={inputMode} hydroPostCode={hydroPostCode}/>,
       document.getElementById('form_and_last_telegrams')
     );
   }

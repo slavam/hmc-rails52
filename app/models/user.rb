@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  ROLES = %w(admin vip technicist accountant synoptic agro hydro specialist user chemist observer railman spasatel guest)
+  ROLES = %w(admin vip technicist accountant synoptic agro hydro specialist user chemist observer railman spasatel guest hydroobserver)
   attr_accessor :remember_token
   validates :login, presence: true, length: { maximum: 50, minimum: 4 }, uniqueness: { case_sensitive: false }
   validates :last_name, presence: true, length: { maximum: 50 }
@@ -36,8 +36,7 @@ class User < ActiveRecord::Base
   
   # Returns the hash digest of the given string.
   def User.digest(string)
-    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
-                                                  BCrypt::Engine.cost
+    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
     BCrypt::Password.create(string, cost: cost)
   end
   

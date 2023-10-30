@@ -176,6 +176,20 @@
                     %li= link_to 'Бюллетени ежедневные', "/bulletins/list?bulletin_type=daily"
                     %li= link_to 'Штормовые предупреждения', "/bulletins/list?bulletin_type=storm"
                 %li= link_to "Помощь", "/bulletins/help_show.pdf"
+            - when 'hydroobserver'
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Ввод данных <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  %li= link_to 'Ввод гидро-телеграмм', '/hydro_observations/input_hydro_telegrams?input_mode=normal'
+                  %li= link_to 'Снегосъемка', '/snow_observations/input_snow_telegrams?input_mode=normal'
+                  %li= link_to 'Ввод дополнительных данных', '/other_observations/input_other_telegrams?input_mode=normal'
+                  %li= link_to 'Ввод дополнительных данных с любой датой', '/other_observations/input_other_telegrams?input_mode=direct'
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Сервис <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  %li= link_to 'Телеграммы о гидрологических наблюдениях', hydro_observations_path
+                  %li= link_to 'Телеграммы о снегомерных съемках', snow_observations_path
+                  %li= link_to 'Дополнительные данные', '/other_observations?factor=temp'
             - when 'hydro'
               %li
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Телеграммы <b class="caret"></b></a>

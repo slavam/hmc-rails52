@@ -14,12 +14,12 @@
     %tr
       %th Пункт снегосъемки
       %td= @snow_observation.snow_point.name
-    %tr
-      %th День наблюдения
-      %td= @snow_observation.day_obs
-    %tr
-      %th Месяц наблюдения
-      %td= @snow_observation.month_obs
+    -# %tr
+    -#   %th День наблюдения
+    -#   %td= @snow_observation.day_obs
+    -# %tr
+    -#   %th Месяц наблюдения
+    -#   %td= @snow_observation.month_obs
     - curr_pos = 18
     - if text[curr_pos] == '1'
       %tr
@@ -35,3 +35,6 @@
     = link_to 'Возврат', '/snow_observations/input_snow_telegrams?input_mode=normal'
   - else
     = link_to "Список", snow_observations_path      
+  - if (current_user.role == 'admin') or (current_user.role == 'technicist')
+    %br
+    = link_to 'Удалить', @snow_observation, method: :delete, data: { confirm: 'Вы уверены?' }

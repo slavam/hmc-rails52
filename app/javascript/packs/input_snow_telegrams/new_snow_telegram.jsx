@@ -4,8 +4,9 @@ import { checkSnowTelegram } from './check_snow_telegram';
 export default class NewSnowTelegram extends React.Component{
   constructor(props){
     super(props);
+    this.tlgHead = (this.props.hydroPostCode==''?'':`${this.props.hydroPostCode} ${this.props.observationDate.substr(8,2)}${this.props.observationDate.substr(5,2)}${this.props.observationDate[3]} =`);
     this.state = {
-      tlgText: '',
+      tlgText: this.tlgHead,
       tlgType: this.props.tlgType,
       observationDate: this.props.observationDate,
       errors: []
@@ -40,21 +41,20 @@ export default class NewSnowTelegram extends React.Component{
         this.observation.telegram = text;
       break;
     }
-    this.props.onFormSubmit({observation: this.observation, observationDate: this.state.observationDate, tlgType: this.state.tlgType}); //, tlgText: this.state.tlgText});
+    this.props.onFormSubmit({observation: this.observation, observationDate: this.state.observationDate, tlgType: this.state.tlgType});
     this.setState({
-      tlgText: '',
+      tlgText: this.tlgHead,
       errors: []
     });
   }
   
   inBufferClick(e){
     this.props.onInBuffer({tlgText: this.state.tlgText, message: this.state.errors[0], tlgType: this.state.tlgType});
-    this.setState({tlgText: '', errors: []});
+    this.setState({errors: []});
   }
   
   render(){
     let inBuffer = ((this.state.errors[0] > '') && (this.state.tlgText > '')) ? <button style={{float: "right"}} type="button" id="in-buffer" onClick={(event) => this.inBufferClick(event)}>В буфер</button> : '';
-    // let obsDate = this.props.inputMode == 'normal' ? <td>{this.state.observationDate}</td> : <td><input type="date" name="input-date" value={this.state.observationDate} onChange={(event) => this.dateChange(event)} required={true} autoComplete="on" /></td>;
     let obsDate = this.props.inputMode == 'normal' ? this.state.observationDate : <input type="date" name="input-date" value={this.state.observationDate} onChange={(event) => this.dateChange(event)} required={true} autoComplete="on" />
     return(
       <div>

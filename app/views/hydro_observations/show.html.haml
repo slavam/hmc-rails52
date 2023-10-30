@@ -41,3 +41,6 @@
     = link_to 'Возврат', '/hydro_observations/input_hydro_telegrams?input_mode=normal'
   - else
     = link_to "Список", hydro_observations_path  
+  - if (current_user.role == 'admin') or (current_user.role == 'technicist')
+    %br
+    = link_to 'Удалить', @hydro_observation, method: :delete, data: { confirm: 'Вы уверены?' }

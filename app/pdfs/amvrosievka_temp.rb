@@ -30,7 +30,7 @@ class AmvrosievkaTemp < Prawn::Document
     text "О предоставлении информации"
     move_down 20
     @last_day = Time.days_in_month(month.to_i, year.to_i)
-    text "ФГБУ \"УГМС по ДНР\" предоставляет информацию о средней за сутки температуре воздуха в пгт. Новый Свет за период 01-#{@last_day} #{Bulletin::MONTH_NAME2[month.to_i]} #{year} г. по данным метеорологической станции Амвросиевка:", indent_paragraphs: 40, leading: 2
+    text "ФГБУ \"УГМС по ДНР\" предоставляет информацию о средней за сутки температуре воздуха в пгт. Новый Свет за период 01-#{@last_day} #{Bulletin::MONTH_NAME2[month.to_i]} #{year} г. по данным репрезентативной метеорологической станции:", indent_paragraphs: 40, leading: 2
     case @last_day
       when 28
         @lines = 14

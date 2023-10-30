@@ -72,7 +72,6 @@ export default class InputSnowTelegrams extends React.Component{
       data: forBuffer, 
       url: "/applicants/to_buffer"
       }).done((data) => {
-        // this.setState({telegrams: data.telegrams, tlgType: data.tlgType, currDate: data.currDate, inputMode: "normal", errors: []});
         this.setState({errors: []});
         alert("Данные занесены в буфер");
       }).fail((res) => {
@@ -87,20 +86,17 @@ export default class InputSnowTelegrams extends React.Component{
     message = `Скопировано ${ts.length} snow тлг. за ${this.state.observationDate}`
     ts.forEach((t) => {text += t.telegram+'\n'})
     copyToClipboard(text)
-    // navigator['clipboard'].writeText(text).then(function() {
-    //   console.log('Async: Copying to clipboard was successful!');
-    // }, function(err) {
-    //   console.error('Async: Could not copy text: ', err);
-    // });
     alert(message);
   }
   render(){
+    let toClipboardButton = this.props.hydroPostCode == '' ? 
+      <button onClick={event => this.toClipboard(event)}>Скопировать последние</button> : null
     return(
       <div>
         <h3>Новая телеграмма о снегомерных съемках</h3>
-        <NewSnowTelegram observationDate={this.state.observationDate} tlgType={this.state.tlgType} onTelegramTypeChange={this.handleTelegramTypeChanged} onFormSubmit={this.handleFormSubmit} snowPoints={this.props.snowPoints} inputMode={this.props.inputMode} onInBuffer={this.handleInBuffer}/>
+        <NewSnowTelegram observationDate={this.state.observationDate} tlgType={this.state.tlgType} onTelegramTypeChange={this.handleTelegramTypeChanged} onFormSubmit={this.handleFormSubmit} snowPoints={this.props.snowPoints} inputMode={this.props.inputMode} onInBuffer={this.handleInBuffer} hydroPostCode={this.props.hydroPostCode}/>
         <h3>Телеграммы {this.state.tlgType} (HHSS)</h3> 
-        <button onClick={event => this.toClipboard(event)}>Скопировать последние</button>
+        {toClipboardButton}
         <LastSnowTelegramsTable lastTelegrams={this.state.lastTelegrams} tlgType={this.state.tlgType} snowPoints={this.props.snowPoints}/>
       </div>
     );
@@ -109,14 +105,16 @@ export default class InputSnowTelegrams extends React.Component{
 
 $(function () {
   const node = document.getElementById('init_params');
-  if(node) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+  if(node) {
     const lastTelegrams = JSON.parse(node.getAttribute('telegrams'));
     const observationDate = JSON.parse(node.getAttribute('currDate'));
     const tlgType = JSON.parse(node.getAttribute('tlgType'));
     const snowPoints = JSON.parse(node.getAttribute('snowPoints'));
     const inputMode = JSON.parse(node.getAttribute('inputMode'));
+    const hydroPostCode = JSON.parse(node.getAttribute('hydroPostCode'))
     ReactDOM.render(
-      <InputSnowTelegrams lastTelegrams={lastTelegrams} snowPoints={snowPoints} observationDate={observationDate} tlgType={tlgType} inputMode={inputMode}/>,
+      <InputSnowTelegrams lastTelegrams={lastTelegrams} 
+        snowPoints={snowPoints} observationDate={observationDate} tlgType={tlgType} inputMode={inputMode} hydroPostCode={hydroPostCode}/>,
       document.getElementById('form_and_last_telegrams')
     );
   }
