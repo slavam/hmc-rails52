@@ -7,6 +7,44 @@ class OtherObservationsController < ApplicationController
     headers['Access-Control-Request-Method'] = '*'
     headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   end
+
+  def new_precipitation
+    period = params[:period]
+    obs_date = period == 'day'? (Time.now-1.day).strftime("%Y-%m-%d") : Time.now.strftime("%Y-%m-%d")
+    @other_observation = OtherObservation.new(period: period, data_type: 'perc', obs_date: obs_date)
+  end
+
+  def create_precipitation
+    data_type = 'perc'
+    source = current_user.position
+    period = params[:period]
+    obs_date = params[:obs_date]
+    observation = OtherObservation.find_by(data_type: data_type, source: source, period: period, obs_date: obs_date)
+    if observation.present?
+      if observation.update other_observation_params
+        flash[:success] = "Данные изменены"
+        redirect_to "/other_observations?factor=perc"
+      else
+        flash[:danger] = 'Ошибка обновления'
+        render 'new_precipitation'
+      end
+    else
+      observation = OtherObservation.new(other_observation_params)
+      observation[:data_type] = data_type
+      observation[:source] = source
+      observation[:period] = period
+      observation[:obs_date] = obs_date
+      if observation.save
+        flash[:success] = "Данные сохранены"
+        redirect_to "/other_observations?factor=perc" # other_observations_path
+      else
+        # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{observation.errors.messages.inspect}")
+        flash[:danger] = 'Ошибка сохранения'
+        render 'new_precipitation'
+      end
+    end
+  end
+
   def index
     @factor = params[:factor]
     if @factor == 'wind'

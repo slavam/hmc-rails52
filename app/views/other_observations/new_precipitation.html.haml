@@ -1,0 +1,3 @@
+- period = @other_observation.period == 'day'? 'день' : 'ночь'
+%h3{align: :center} Осадки за #{period} #{@other_observation.obs_date}. Пост #{current_user.position}
+= render :partial => 'form_precipitation'
