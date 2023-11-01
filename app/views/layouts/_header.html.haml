@@ -189,7 +189,11 @@
                 %ul{class: "dropdown-menu"}
                   %li= link_to 'Телеграммы о гидрологических наблюдениях', hydro_observations_path
                   %li= link_to 'Телеграммы о снегомерных съемках', snow_observations_path
-                  %li= link_to 'Дополнительные данные', '/other_observations?factor=temp'
+                  %li= link_to 'Осадки', '/other_observations?factor=perc'
+                  %li= link_to 'Бюллетени ежедневные', "/bulletins/list?bulletin_type=daily"
+                  %li= link_to 'Бюллетени гидрологические', "/bulletins/list?bulletin_type=hydro"
+                  %li= link_to 'Бюллетени гидрологические 2', "/bulletins/list?bulletin_type=hydro2"
+                  %li= link_to 'Осадки обобщенные', other_observations_total_monthly_precipitation_path
             - when 'hydro'
               %li
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Телеграммы <b class="caret"></b></a>

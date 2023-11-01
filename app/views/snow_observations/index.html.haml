@@ -1,4 +1,5 @@
-= render 'synoptic_observations/tabs'
+- if current_user.role != 'hydroobserver'
+  = render 'synoptic_observations/tabs'
 .container
   %h3 Телеграммы о снегомерных съемках HHSS
   = will_paginate

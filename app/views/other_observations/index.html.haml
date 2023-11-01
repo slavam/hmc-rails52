@@ -1,6 +1,8 @@
-= render 'synoptic_observations/tabs'
+- if current_user.role != 'hydroobserver'
+  = render 'synoptic_observations/tabs'
 .container
-  = render 'list'
+  - if current_user.role != 'hydroobserver'
+    = render 'list'
   %h3 Дополнительные данные: #{OtherObservation::OTHER_TYPES[@factor]}
   = will_paginate
   %table{ class: 'table table-hover' }

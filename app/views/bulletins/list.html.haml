@@ -1,4 +1,4 @@
-- if current_user.role != 'guest'
+- if (current_user.role != 'guest') && (current_user.role != 'hydroobserver')
   = render 'bulletins/tabs'
 .container
   %h3= Bulletin::BULLETIN_TYPES[@bulletin_type]
