@@ -4,11 +4,12 @@ import NewSnowTelegram from './new_snow_telegram';
 import SnowTelegramRow from './snow_telegram_row';
 import { copyToClipboard } from '../synoptic_data/about_clipboard';
 
-const LastSnowTelegramsTable = ({lastTelegrams, tlgType, snowPoints}) => {
+const LastSnowTelegramsTable = ({lastTelegrams, tlgType, snowPoints, hydroPostCode}) => {
   var rows = [];
   lastTelegrams.forEach((t) => {
-    rows.push(<SnowTelegramRow telegram={t} key={t.id} tlgType={tlgType} snowPoints={snowPoints}/>);
+    rows.push(<SnowTelegramRow telegram={t} key={t.id} tlgType={tlgType} snowPoints={snowPoints} hydroPostCode={hydroPostCode}/>);
   });
+  let action = hydroPostCode == '' ? <th>Действия</th> : null
   return (
     <table className="table table-hover">
       <thead>
@@ -16,7 +17,7 @@ const LastSnowTelegramsTable = ({lastTelegrams, tlgType, snowPoints}) => {
           <th width = "100px">Дата съемки</th>
           <th>Пункт снегосъемки</th>
           <th>Текст</th>
-          <th>Действия</th>
+          {action}
         </tr>
       </thead>
       <tbody>{rows}</tbody>
@@ -97,7 +98,7 @@ export default class InputSnowTelegrams extends React.Component{
         <NewSnowTelegram observationDate={this.state.observationDate} tlgType={this.state.tlgType} onTelegramTypeChange={this.handleTelegramTypeChanged} onFormSubmit={this.handleFormSubmit} snowPoints={this.props.snowPoints} inputMode={this.props.inputMode} onInBuffer={this.handleInBuffer} hydroPostCode={this.props.hydroPostCode}/>
         <h3>Телеграммы {this.state.tlgType} (HHSS)</h3> 
         {toClipboardButton}
-        <LastSnowTelegramsTable lastTelegrams={this.state.lastTelegrams} tlgType={this.state.tlgType} snowPoints={this.props.snowPoints}/>
+        <LastSnowTelegramsTable lastTelegrams={this.state.lastTelegrams} tlgType={this.state.tlgType} snowPoints={this.props.snowPoints} hydroPostCode={this.props.hydroPostCode}/>
       </div>
     );
   }

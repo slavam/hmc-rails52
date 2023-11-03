@@ -4,11 +4,12 @@ import NewHydroTelegram from './new_hydro_telegram';
 import HydroTelegramRow from './hydro_telegram_row';
 import { copyToClipboard } from '../synoptic_data/about_clipboard';
 
-const LastHydroTelegramsTable = ({lastTelegrams, hydroPosts}) => {
+const LastHydroTelegramsTable = ({lastTelegrams, hydroPosts, hydroPostCode}) => {
   var rows = [];
   lastTelegrams.forEach((t) => {
-    rows.push(<HydroTelegramRow telegram={t} key={t.id} hydroPosts={hydroPosts}/>);
+    rows.push(<HydroTelegramRow telegram={t} key={t.id} hydroPosts={hydroPosts} hydroPostCode={hydroPostCode}/>);
   });
+  let action = hydroPostCode == '' ? <th>Действия</th> : null
   return (
     <table className="table table-hover">
       <thead>
@@ -16,7 +17,7 @@ const LastHydroTelegramsTable = ({lastTelegrams, hydroPosts}) => {
           <th width = "100px">Дата наблюдения</th>
           <th>Гидрологический пост</th>
           <th>Текст</th>
-          <th>Действия</th>
+          {action}
         </tr>
       </thead>
       <tbody>{rows}</tbody>
@@ -86,7 +87,7 @@ export default class InputHydroTelegrams extends React.Component{
         <NewHydroTelegram observationDate={this.state.observationDate} onFormSubmit={this.handleFormSubmit} hydroPosts={this.props.hydroPosts} inputMode={this.props.inputMode} onInBuffer={this.handleInBuffer} hydroPostCode={this.props.hydroPostCode}/>
         <h3>Телеграммы hydro (HHZZ)</h3> 
         {toClipboardButton}
-        <LastHydroTelegramsTable lastTelegrams={this.state.lastTelegrams} hydroPosts={this.props.hydroPosts}/>
+        <LastHydroTelegramsTable lastTelegrams={this.state.lastTelegrams} hydroPosts={this.props.hydroPosts} hydroPostCode={this.props.hydroPostCode}/>
       </div>
     );
   }

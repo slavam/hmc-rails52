@@ -52,13 +52,13 @@ export default class SnowTelegramRow extends React.Component{
     if(this.state.source == 'outside')
       this.state.tlgText = this.props.telegram.telegram;
     var desiredLink = "/"+this.props.tlgType+"_observations/"+this.props.telegram.id;
-    
+    let editButton = this.props.hydroPostCode == '' ? <td><input id={this.props.telegram.id} type="submit" value={this.state.mode} onClick={(event) => this.handleEditClick(event)}/></td> : null
     return (
       <tr key = {this.props.telegram.id}>
         <td>{this.props.telegram.date}</td>
         <td>{this.props.telegram.station_name}</td>
         {this.state.mode == 'Изменить' ? <td><a href={desiredLink}>{this.state.tlgText}</a></td> : <td><TextSnowTelegramEdit tlgText={this.state.tlgText} onTelegramEditSubmit={this.handleEditTelegramSubmit} errors = {this.state.errors}/></td> }
-        <td><input id={this.props.telegram.id} type="submit" value={this.state.mode} onClick={(event) => this.handleEditClick(event)}/></td> 
+        {editButton}
       </tr>
     );
   }

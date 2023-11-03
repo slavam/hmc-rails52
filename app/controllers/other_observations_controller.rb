@@ -16,7 +16,7 @@ class OtherObservationsController < ApplicationController
 
   def create_precipitation
     data_type = 'perc'
-    source = current_user.position
+    source = HydroPost.find_by(code: current_user.position).town
     period = params[:period]
     obs_date = params[:obs_date]
     observation = OtherObservation.find_by(data_type: data_type, source: source, period: period, obs_date: obs_date)
@@ -284,17 +284,19 @@ class OtherObservationsController < ApplicationController
       where("obs_date >= ? AND obs_date <= ? AND data_type='perc'", start_date, end_date).order(:obs_date, :source, :period)
     precipitation = []
     rows.each {|p|
-      d = p.obs_date.day
       s = posts.index(p.source)
-      precipitation[d] ||= []
-      precipitation[d][s] ||= [nil,nil,'','']
+      if s.present?
+        d = p.obs_date.day
+        precipitation[d] ||= []
+        precipitation[d][s] ||= [nil,nil,'','']
 
-      if p.period == 'night'
-        precipitation[d][s][0] = p.value
-        precipitation[d][s][2] = p.description if p.description.present? and p.description > ''
-      else
-        precipitation[d][s][1] = p.value
-        precipitation[d][s][3] = p.description if p.description.present? and p.description > ''
+        if p.period == 'night'
+          precipitation[d][s][0] = p.value
+          precipitation[d][s][2] = p.description if p.description.present? and p.description > ''
+        else
+          precipitation[d][s][1] = p.value
+          precipitation[d][s][3] = p.description if p.description.present? and p.description > ''
+        end
       end
     }
     precipitation
