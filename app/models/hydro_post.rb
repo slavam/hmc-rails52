@@ -6,4 +6,10 @@ class HydroPost < ActiveRecord::Base
     posts.each {|p| ret[p.id] = p.town}
     ret
   end
+  def self.hydro_post_names_as_hash
+    posts = HydroPost.all
+    ret = {}
+    posts.each {|p| ret[p.code] = p.town}
+    ret
+  end
 end

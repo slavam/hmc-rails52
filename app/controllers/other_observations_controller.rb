@@ -16,7 +16,7 @@ class OtherObservationsController < ApplicationController
 
   def create_precipitation
     data_type = 'perc'
-    source = HydroPost.find_by(code: current_user.position).town
+    source = current_user.position # HydroPost.find_by(code: current_user.position).town
     period = params[:period]
     obs_date = params[:obs_date]
     observation = OtherObservation.find_by(data_type: data_type, source: source, period: period, obs_date: obs_date)
@@ -53,6 +53,7 @@ class OtherObservationsController < ApplicationController
       @other_observations = OtherObservation.where('data_type = ?', @factor).paginate(page: params[:page]).order(:obs_date, :id).reverse_order
     end
     @stations = Station.name_stations_as_array
+    @hydro_posts = HydroPost.hydro_post_names_as_hash
   end
 
   def input_other_telegrams

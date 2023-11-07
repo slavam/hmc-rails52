@@ -1,3 +1,4 @@
+-#=@hydro_posts.inspect
 - if current_user.role != 'hydroobserver'
   = render 'synoptic_observations/tabs'
 .container
@@ -25,7 +26,7 @@
             %td= o_o.period+':00'
           %td= o_o.created_at.localtime.strftime('%d-%m-%Y %H:%M:%S')
           -# %td= o_o.data_type == 'perc' ? o_o.source : Station.find(o_o.station_id).name
-          %td= o_o.data_type == 'perc' ? o_o.source : @stations[o_o.station_id]
+          %td= o_o.data_type == 'perc' ? (o_o.source[0] == '8'? @hydro_posts[o_o.source.to_i]: o_o.source) : @stations[o_o.station_id]
           %td= (@factor == 'min_hum' or @factor == 'wind') ? o_o.value.round : o_o.value
           - if @factor == 'perc'
             %td= o_o.description
