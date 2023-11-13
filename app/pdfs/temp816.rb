@@ -16,7 +16,7 @@ class Temp816 < Prawn::Document
     font "OpenSans"
     bounding_box([bounds.width-200, y_pos], width: 300, leading: 3) do
       text "Приложение к письму"
-      text "ГБУ \"Гидрометцентр МЧС ДНР\""
+      text "ФГБУ \"УГМС по ДНР\""
       text "от _________________ № ____________"
     end
     move_down 20
@@ -35,12 +35,12 @@ class Temp816 < Prawn::Document
       # signature = "./app/assets/images/head_of_dep.png"
       person = "Л.Н. Бойко"
     else
-      position = "Врио начальника ОГМО"
+      position = "Заместитель начальника - начальник Донецкого гидрометцентра"
       # signature = "./app/assets/images/kian.png"
       person = "М.А. Кияненко"
     end
     # table [[position, {image: signature, scale: 0.6, padding: [-5,5], position: :center}, person]], width: bounds.width, cell_style: { border_width: 0, align: :center}
-    table [[position, person]], width: bounds.width, :column_widths => [330], cell_style: { border_width: 0, align: :left} do |t|
+    table [[position, '', person]], width: bounds.width, :column_widths => [200,150], cell_style: { border_width: 0, align: :left} do |t|
       t.cells.padding = [2,2]
     end
   end

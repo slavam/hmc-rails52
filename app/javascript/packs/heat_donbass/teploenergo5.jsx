@@ -63,15 +63,13 @@ export default class Teploenergo5 extends React.Component{
     let desiredLink = "/synoptic_observations/teploenergo5.pdf?year="+this.state.year+"&month="+this.state.month;
     return(
       <div>
-        {/* <p align="right">Дежурный синоптик (062) 303-10-34, 071-300-73-59</p> */}
         <MonthYearForm year={this.state.year} month={this.state.month} onFormSubmit={this.handleFormSubmit} />
         <h5>Средняя за сутки (00:01-24:00) температура воздуха (°С) с 01 по {endDate} года на метеостанциях Донецкой Народной Республики</h5>
         
         <ResultTable temperatures={this.state.temperatures} maxDay={this.state.daysInMonth}/>
         <a href={desiredLink+'&variant=chief'} title='Подписал начальник'>Распечатать</a>
-        {/* <br/>
-        <a href={desiredLink+'&variant=deputy_chief'} title='Подписал заместитель'>Распечатать вариант 2</a> */}
-        
+        <br/>
+        <a href={desiredLink+'&variant=deputy_chief'} title='Подписал заместитель'>Распечатать</a>
       </div>
     );
   }

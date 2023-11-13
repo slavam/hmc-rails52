@@ -16,15 +16,14 @@ class Teploenergo5 < Prawn::Document
     font "OpenSans"
     bounding_box([bounds.width-200, y_pos], width: 300, leading: 3) do
       text "Приложение к письму"
-      text 'Донецкого гидрометцентра'
       text 'ФГБУ "УГМС по ДНР"'
-      text "от 06.09.2023 № 05/23/02.01"
+      text "от __________ № ___________"
     end
     move_down 20
     font "OpenSans", style: :bold
     text "Средняя за сутки (00:01-24:00) температура воздуха (°С)", size: 12, align: :center
     text "с 01 по #{@max_day} #{Bulletin::MONTH_NAME2[@month.to_i]} #{@year} года", size: 12, align: :center
-    text "на метеостанциях Донецкой Народной Республики", size: 12, align: :center
+    text "по данным метеорологических станций", size: 12, align: :center
     move_down 20
     font "OpenSans", style: :normal
     table table_data, width: bounds.width, cell_style: { border_width: 0.3, :overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true, size: 9, align: :center } do |t|
@@ -36,12 +35,12 @@ class Teploenergo5 < Prawn::Document
       # signature = "./app/assets/images/head_of_dep.png"
       person = "Л.Н. Бойко"
     else
-      position = "Врио начальника ОГМО"
+      position = "Заместитель начальника - начальник Донецкого гидрометцентра"
       # signature = "./app/assets/images/kian.png"
       person = "М.А. Кияненко"
     end
     # table [[position, {image: signature, scale: 0.6, padding: [-5,5], position: :center}, person]], width: bounds.width, cell_style: { border_width: 0, align: :center}
-    table [[position, person]], width: bounds.width, :column_widths => [330], cell_style: { border_width: 0, align: :left} do |t|
+    table [[position, '', person]], width: bounds.width, :column_widths => [200,150], cell_style: { border_width: 0, align: :left} do |t|
       t.cells.padding = [2,2]
     end
   end
