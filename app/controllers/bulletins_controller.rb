@@ -74,6 +74,8 @@ class BulletinsController < ApplicationController
         end
       when 'dte','bus_station','gsr','empire','donbassgaz'
         @bulletin.forecast_day = last_daily_bulletin.forecast_day
+      when 'drsu'
+        @bulletin.forecast_day = last_daily_bulletin.forecast_day_city
       when 'radio', 'radio2'
         @bulletin.forecast_day = last_daily_bulletin.forecast_day
         if bulletin.present?
@@ -374,6 +376,8 @@ class BulletinsController < ApplicationController
           pdf = Radio2.new(@bulletin)
         when 'dte'
           pdf = Dte.new(@bulletin)
+        when 'drsu'
+          pdf = Drsu.new(@bulletin)
         when 'donbassgaz'
           pdf = Donbassgaz.new(@bulletin)
         when 'gsr'

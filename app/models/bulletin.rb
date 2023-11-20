@@ -70,6 +70,7 @@ class Bulletin < ActiveRecord::Base
     'radio2' => 'Радио 2',
     'avtodor' => "АВТОДОР",
     'dte' => "Донбасстеплоэнерго",
+    'drsu' => "ДРСУ",
     'donbassgaz' => "Донбассгаз",
     'gsr' => "ГазСтройРеновация",
     'empire' => "Империя",

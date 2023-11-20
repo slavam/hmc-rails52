@@ -1,0 +1,20 @@
+.container
+  <input id="daily-submit" type="submit" value="Сохранить" form="daily-form">
+  = form_for @bulletin, html: {id: "daily-form"} do |form|
+    %table{class: "table table-hover"}
+      %tr
+        %th Тип
+        %td= form.text_field :bulletin_type, readonly: true
+      %tr
+        %th Отчетная дата
+        %td= form.text_field :report_date, readonly: true
+      %tr
+        %th Номер бюллетеня
+        %td= form.text_field :curr_number
+      %tr
+        %th Прогноз по городу Донецку на сутки
+        %td= form.text_area :forecast_day, cols: "30", rows: "5"
+    = render partial: 'chief'
+    = render partial: 'responsible'
+    %br
+= link_to "Список", "/bulletins/list?bulletin_type=drsu"
