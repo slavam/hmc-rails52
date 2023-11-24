@@ -67,25 +67,34 @@ export default class AmvrosievkaTemp extends React.Component{
       {value: 'Kijanenko', label: 'Кияненко М.А.'},
     ];
     let desiredLink = "/synoptic_observations/amvrosievka_daily_avg_temp.pdf?year="+this.state.year+"&month="+this.state.month+"&chief="+this.state.chiefR.value+"&responsible="+this.state.responsibleR.value;
+    let pr =  <div>
+                <h4>Задайте параметры печати</h4>
+                <table className= "table table-hover">
+                  <tbody>
+                    <tr>
+                      <th>Руководитель</th><th>Ответственный</th>
+                    </tr>
+                    <tr>
+                      <td><Select id="chief" value={this.state.chiefR} onChange={this.handleChiefSelected} options={chiefs}/></td>
+                      <td><Select id="responsible"value={this.state.responsibleR} onChange={this.handleResponsibleSelected} options={responsibles}/></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <a href={desiredLink} >Распечатать</a>
+              </div>
+    let ct = "пгт. Новый Свет"
+    if(this.props.city == 'A') {
+      pr = null
+      ct = 'г. Амвросиевка'
+    }
     return(
       <div>
         <TeploenergoForm year={this.state.year} month={this.state.month} onFormSubmit={this.handleFormSubmit} />
-        <h4>Средняя за сутки температура воздуха (°С) с 01 по {endDate} года в пгт. Новый Свет</h4>
+        <h4>Средняя за сутки температура воздуха (°С) с 01 по {endDate} года в {ct}</h4>
         <br/>
         <WorkShiftAvgTemperatures temperatures={this.state.temperatures} maxDay={this.state.daysInMonth} />
-        <h4>Задайте параметры печати</h4>
-        <table className= "table table-hover">
-          <tbody>
-            <tr>
-              <th>Руководитель</th><th>Ответственный</th>
-            </tr>
-            <tr>
-              <td><Select id="chief" value={this.state.chiefR} onChange={this.handleChiefSelected} options={chiefs}/></td>
-              <td><Select id="responsible"value={this.state.responsibleR} onChange={this.handleResponsibleSelected} options={responsibles}/></td>
-            </tr>
-          </tbody>
-        </table>
-        <a href={desiredLink} >Распечатать</a>
+        
+        {pr}
       </div>
     );
   }
@@ -96,9 +105,10 @@ $(() => {
     const temperatures = JSON.parse(node.getAttribute('temperatures'));
     const year = JSON.parse(node.getAttribute('year'));
     const month = JSON.parse(node.getAttribute('month'));
+    const city = JSON.parse(node.getAttribute('city'));
     
     ReactDOM.render(
-      <AmvrosievkaTemp temperatures={temperatures} year={year} month={month} />,
+      <AmvrosievkaTemp temperatures={temperatures} year={year} month={month} city={city}/>,
       document.getElementById('root')
     );
   }

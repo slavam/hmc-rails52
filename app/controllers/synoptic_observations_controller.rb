@@ -375,6 +375,7 @@ class SynopticObservationsController < ApplicationController
   end
 
   def amvrosievka_daily_avg_temp
+    @city = params[:city].present? ? 'A':''
     @year = params[:year].present? ? params[:year] : Time.now.year.to_s
     @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
     first_day = '01'
