@@ -150,7 +150,7 @@ class Bulletin < ActiveRecord::Base
       ret[:position] = "Заместитель начальника - начальник Донецкого гидрометцентра"
       ret[:image_name] = "./app/assets/images/kian.png"
     elsif self.chief == "О.В. Арамелева"
-      ret[:position] = "Заместитель начальника Донецкого гидрометцентра - начальник ОГ"
+      ret[:position] = "Врио заместителя начальника Донецкого гидрометцентра - начальник ОГ"
       ret[:image_name] = "./app/assets/images/arameleva2.png"
     else
       ret[:position] = "Врио начальника"
