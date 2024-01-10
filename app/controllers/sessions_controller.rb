@@ -30,12 +30,15 @@ def create
     if user && user.authenticate(password)
       # Log the user in and redirect to the user's show page.
       log_in user
+      # current_user
       remember user
       respond_to do |format|
         format.html { redirect_back_or user }
-        format.json { 
+        format.json {
+          # current_user
         # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{user.inspect}")
-        render json: {user: user}} 
+          render json: {user: user}
+        }
       end
     else
       respond_to do |format|

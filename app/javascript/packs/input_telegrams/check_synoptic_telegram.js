@@ -1,7 +1,7 @@
 export function checkSynopticTelegram(term, tlg, errors, stations, observation){
   var sign = {'0': '', '1': '-'};
   var state = {
-      group00: { errorMessage: 'Ошибка в группе 00 раздела 1', regex: /^[124][12][0-9/]([0-4][0-9]|50|5[6-9]|[6-9][0-9]|\/\/)$/ },  // rf 20220819
+      group00: { errorMessage: 'Ошибка в группе 00 раздела 1', regex: /^[12468][12][0-9/]([0-4][0-9]|50|5[6-9]|[6-9][0-9]|\/\/)$/ },  // rf 20220819 20240110
       group0: { errorMessage: 'Ошибка в группе 0 раздела 1',   regex: /^[0-9/]([012][0-9]|3[0-6]|99|\/\/)([012][0-9]|30|\/\/)$/ },
       group1: { errorMessage: 'Ошибка в группе 1 раздела 1',  regex: /^1[01][0-5][0-9][0-9]$/ },
       group2: { errorMessage: 'Ошибка в группе 2 раздела 1',  regex: /^2[01][0-5][0-9][0-9]$/ },
@@ -47,22 +47,128 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
   }
   
   group = tlg.substr(12,5);
-  var regex = '';
+  let regex = ''
+  let iR = +tlg[12]
   regex = state.group00.regex;
   if (regex.test(group) && ((tlg[17] == ' ') || (tlg[17] == '='))) {
     // rf 20220819
     switch(+term) {
-      case 6:
-      case 18:
-        if (+tlg[12]!=1){
-          errors.push("Для срока "+term+" в группе 00 должно быть iR=1");
-          return false;
+      case 0:
+      case 9:
+      case 12:
+      case 21:
+        if(iR===4 || iR===8){}
+        else{
+          errors.push(`Для срока ${term} в группе 00 должно быть iR=4 или iR=8`);
+          return false
         }
         break
       case 3:
+        if(iR===1 || iR===6){
+          if(!/ 6\d\d\d2.* 333 /.test(tlg)){
+            errors.push("Для срока 03 группа 6 раздела 1 должна присутствовать")
+            return false
+          }
+          if(/ 333.* 6\d\d\d2/.test(tlg)){
+            errors.push("Для срока 03 группа 6 раздела 3 должна отсутствовать")
+            return false
+          }
+          // if(!/ 333.* 3/.test(tlg)){
+          //   errors.push("Для срока 03 группа 3 раздела 3 должна присутствовать")
+          //   return false
+          // }
+          // if(!/ 333.* 4/.test(tlg)){
+          //   errors.push("Для срока 03 группа 4 раздела 3 должна присутствовать")
+          //   return false
+          // }
+          // if(!/ 333.* 55/.test(tlg)){
+          //   errors.push("Для срока 03 группа 55 раздела 3 должна присутствовать")
+          //   return false
+          // }
+          // if(!/ 555.* 52/.test(tlg)){
+          //   errors.push("Для срока 03 группа 52 раздела 5 должна присутствовать")
+          //   return false
+          // }
+          if(!/ 555.* 530/.test(tlg)){
+            errors.push("Для срока 03 группа 530 раздела 5 должна присутствовать")
+            return false
+          }
+        }else{
+          errors.push("Для срока 03 в группе 00 должно быть iR=1 или iR=6");
+          return false
+        }
+        break
+      case 6:
+        if(iR===4 || iR===8){
+          if(/ 333.* 3/.test(tlg)){
+            errors.push("Для срока 06 группа 3 раздела 3 должна отсутствовать")
+            return false
+          }
+          if(/ 333.* 4/.test(tlg)){
+            errors.push("Для срока 06 группа 4 раздела 3 должна отсутствовать")
+            return false
+          }
+          if(/ 333.* 6/.test(tlg)){
+            errors.push("Для срока 06 группа 6 раздела 3 должна отсутствовать")
+            return false
+          }
+        }else{
+          errors.push("Для срока 06 в группе 00 должно быть iR=4 или iR=8");
+          return false
+        }
+        break
+      // case 18: 20240110
+        // if (iR!==1){
+        //   errors.push("Для срока 06 в группе 00 должно быть iR=1");
+        //   return false;
+        // }
+        // break
+      
+      // case 15:
+      //   if (iR!==2){
+      //     errors.push("Для срока "+term+" в группе 00 должно быть iR=2");
+      //     return false;
+      //   }
+      //   break
       case 15:
-        if (+tlg[12]!=2){
-          errors.push("Для срока "+term+" в группе 00 должно быть iR=2");
+        if(iR===1 || iR===6){
+          if(!/ 6\d\d\d2.* 333 /.test(tlg)){
+            errors.push("Для срока 15 группа 6 раздела 1 должна присутствовать")
+            return false
+          }
+          if(!/ 333.* 1/.test(tlg)){
+            errors.push("Для срока 15 группа 1 раздела 3 должна присутствовать")
+            return false
+          }
+          if(!/ 555.* 5[01]/.test(tlg)){
+            errors.push("Для срока 15 группа 5 раздела 5 должна присутствовать")
+            return false
+          }
+          if(!/ 555.* 530/.test(tlg)){
+            errors.push("Для срока 15 группа 530 раздела 5 должна присутствовать")
+            return false
+          }
+        }else{
+          errors.push("Для срока 15 в группе 00 должно быть iR=1 или iR=6");
+          return false
+        }
+        break
+      case 18: // 20240110
+        if (iR===4 || iR===8){
+          if(/ 6\d\d\d2.* 333 /.test(tlg)){
+            errors.push("Для срока 18 группа 6 раздела 1 должна отсутствовать")
+            return false
+          }
+          if(~tlg.indexOf(" 555 ")){
+            errors.push("Для срока 18 раздел 5 должен отсутствовать")
+            return false
+          }
+          if(~tlg.indexOf(" 333 1")){
+            errors.push("Для срока 18 группа 1 раздела 3 должна отсутствовать")
+            return false
+          }
+        }else{
+          errors.push("Для срока 18 в группе 00 должно быть iR=4 или iR=8");
           return false;
         }
         break
@@ -132,8 +238,8 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
               break
             case '5':
               if(+section[1]<2){
-                if(+term == 18){}else{
-                  errors.push("Группа 5 в разделе 5 может быть только для срока 18");
+                if(+term == 15){}else{
+                  errors.push("Группа 5 в разделе 5 может быть только для срока 15");
                   return false;
                 }
                 observation.temperature24_avg = sign[section[1]]+section.substr(2,2)+'.'+section[4]
@@ -144,8 +250,8 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
                 }
                 observation.temperature_2cm_min = sign[section[2]]+section.substr(3,2);
               }else{
-                if((+term==6) || (+term==18)){}else{
-                  errors.push("Группа 530 в разделе 5 может быть только для сроков 6 или 18");
+                if((+term==3) || (+term==15)){}else{
+                  errors.push("Группа 530 в разделе 5 может быть только для сроков 3 или 15");
                   return false;
                 }
                 observation.wind_speed_max = section.substr(3,2);
@@ -192,15 +298,15 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
     }
     while (section.length>=5) {
       // if(~['1', '2', '4', '5', '8', '9'].indexOf(section[0])){ rf 20220822
-      if(~['1', '2', '3','4', '5','6', '8', '9'].indexOf(section[0])){
+      if(~['1', '2', '3','4', '5', '8', '9'].indexOf(section[0])){
         group = section.substr(0,5);
         name = 'group3'+section[0];
         regex = state[name].regex;
         if (regex.test(group) && ((section[5] == ' ') || (section[5] == '=') || (section.length == 5))) {
           switch(section[0]) {
             case '1': // KMA 20190715
-              if(+term != 18){
-                errors.push("Ошибка в группе 1 раздела 3: только для срока 18");
+              if(+term !== 15){
+                errors.push("Ошибка в группе 1 раздела 3: только для срока 15");
                 return false;
               }
               val = sign[section[1]]+section.substr(2,2)+'.'+section[4];
@@ -230,19 +336,19 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
               observation.sunshine_duration = section.substr(2,2)+'.'+section[4];
               break;
             // rf 20220822
-            case '6':
-              if((+term == 3) || (+term == 15)){
-                if (tlg[12] != '2'){
-                  errors.push("Для срока "+term+" в разделе 1 группа 00 должно быть iR=2");
-                  return false;
-                }
-              }else{
-                errors.push("Для срока "+term+" в разделе 3 группы 6 не должно быть");
-                return false;
-              }
-              observation.precipitation_2 = section.substr(1,3);
-              observation.precipitation_time_range_2 = section[4];
-              break
+            // case '6':
+            //   if((+term == 3) || (+term == 15)){
+            //     if (tlg[12] != '2'){
+            //       errors.push("Для срока "+term+" в разделе 1 группа 00 должно быть iR=2");
+            //       return false;
+            //     }
+            //   }else{
+            //     errors.push("Для срока "+term+" в разделе 3 группы 6 не должно быть");
+            //     return false;
+            //   }
+            //   observation.precipitation_2 = section.substr(1,3);
+            //   observation.precipitation_time_range_2 = section[4];
+            //   break
             case '8':
               if (section[1] != '/') {
                 observation.cloud_amount_3 = section[1];
@@ -266,12 +372,12 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
         return false;
       }
     }
-    if((+term == 3) || (+term == 15)){ // rf 20220822
-      if(/ 333(.*)6\d\d\d\d/.test(tlg)){}else{
-        errors.push("Для срока "+term+" в разделе 3 должна быть группа 6");
-        return false;
-      }
-    }
+    // if((+term == 3) || (+term == 15)){ // rf 20220822
+    //   if(/ 333(.*)6\d\d\d\d/.test(tlg)){}else{
+    //     errors.push("Для срока "+term+" в разделе 3 должна быть группа 6");
+    //     return false;
+    //   }
+    // }
   }else if((+term == 3) || (+term == 15)){ // rf 20220822
     errors.push("Для срока "+term+" должна быть группа 6 в разделе 3");
     return false;
@@ -327,19 +433,25 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
             observation.pressure_tendency = section.substr(2,2)+'.'+section[4];
             break;
           case '6':
-            if ((+term == 6) || (+term == 18)){
+            if(+term===3 || +term===15){}else{
+              errors.push(`Для срока ${term} в разделе 1 группа 6 должна отсутствовать`);
+              return false
+            }
+            if (+term===6 || +term===18){
               if (section[4] != '2'){
                 errors.push("Для срока "+term+" в группе 6 раздела 1 должно быть tR=2");
                 return false;
               }
-              if (tlg[12] != '1'){
-                errors.push("Для срока "+term+" в разделе 1 группа 00 должно быть iR=1");
-                return false;
-              }
-            }else{
-              errors.push("Для срока "+term+" в разделе 1 группы 6 не должно быть");
-              return false;
+              // if (tlg[12]==='4' || tlg[12]==='8'){}
+              // else {
+              //   errors.push("Для срока "+term+" в разделе 1 группа 00 должно быть iR=4 или iR=8");
+              //   return false;
+              // }
             }
+            // else{
+            //   errors.push("Для срока "+term+" в разделе 1 группы 6 не должно быть");
+            //   return false;
+            // }
             observation.precipitation_1 = section.substr(1,3);
             observation.precipitation_time_range_1 = section[4];
             break;

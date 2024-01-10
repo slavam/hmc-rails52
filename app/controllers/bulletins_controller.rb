@@ -1,6 +1,15 @@
 class BulletinsController < ApplicationController
-  before_action :logged_in_user, only: [:list] # 20190819
+#  before_action :cors_preflight_check
+#  before_action :logged_in_user, only: [:list] # 20190819
   before_action :find_bulletin, :only => [:bulletin_show, :show, :destroy, :print_bulletin, :edit, :update]
+
+ skip_before_action :verify_authenticity_token, :only => [:create]
+ def cors_preflight_check
+   headers['Access-Control-Allow-Origin'] = '*'
+   headers['Access-Control-Allow-Methods'] = 'POST, PUT, DELETE, GET, OPTIONS'
+   headers['Access-Control-Request-Method'] = '*'
+   headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+ end
 
   def latest_bulletins
     bulletins = Bulletin.all.limit(50).order(:id).reverse_order
@@ -24,9 +33,22 @@ class BulletinsController < ApplicationController
   end
 
   def list
-    @bulletin_type = params[:bulletin_type]
+    page_size = params[:page_size].present? ? params[:page_size]:15
+    @bulletin_type = params[:bulletin_type].present? ? params[:bulletin_type] : 'daily'
     @variant = params[:variant].present? ? params[:variant] : nil
-    @bulletins = Bulletin.where(bulletin_type: @bulletin_type).paginate(page: params[:page], per_page: 20).order(:created_at).reverse_order
+    @bulletins = Bulletin.where(bulletin_type: @bulletin_type).paginate(page: params[:page], per_page: page_size).order(:created_at).reverse_order
+    respond_to do |format|
+      format.html
+      format.json do
+        # if !logged_in?
+        #   user = User.find_by(id: params[:user_id])
+        #   log_in user
+        #   current_user
+        # end
+        total = Bulletin.where(bulletin_type: @bulletin_type).count
+        render json: {pageSize: page_size, totalCount: total, bulletins: @bulletins}
+      end
+    end
   end
 
   def new_bulletin
@@ -205,15 +227,29 @@ class BulletinsController < ApplicationController
     end
     @bulletin.curr_number ||= Date.today.yday().to_s+'-tv' if @bulletin.bulletin_type == 'tv'
     if not @bulletin.save
-      render :new
+      respond_to do |format|
+        format.html do
+          render :new
+        end
+        format.json do
+          render json: {error: @bulletin.errors.messages}, :status => 422
+        end
+      end
     else
       # User.where(role: 'synoptic').each do |synoptic|
       #   ActionCable.server.broadcast "bulletin_editing_channel_user_#{synoptic.id}",
       #     bulletin: {id: @bulletin.id, created_at: @bulletin.created_at, bulletin_type: @bulletin.bulletin_type, curr_number: @bulletin.curr_number, user_login: '', start_editing: nil}, mode: 'new_bulletin'
       # end 20190820
       # MeteoMailer.welcome_email(current_user).deliver_now
-      flash[:success] = "Бюллетень создан"
-      redirect_to "/bulletins/list?bulletin_type=#{@bulletin.bulletin_type}"
+      respond_to do |format|
+        format.html do
+          flash[:success] = "Бюллетень создан"
+          redirect_to "/bulletins/list?bulletin_type=#{@bulletin.bulletin_type}"
+        end
+        format.json do
+          render json: {message: "Бюллетень создан"}, status: :ok
+        end
+      end
       # redirect_to "/bulletins/#{@bulletin.id}/bulletin_show"
     end
   end
@@ -410,6 +446,7 @@ class BulletinsController < ApplicationController
             pdf_file_name = "Bulletin_daily_#{current_user.id}_#{params[:variant]}.pdf"
             send_data pdf.render, filename: pdf_file_name, type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
         else
+          # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{current_user.inspect}")
           send_data pdf.render, filename: @bulletin.pdf_filename(current_user.id), type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
         end
       end
