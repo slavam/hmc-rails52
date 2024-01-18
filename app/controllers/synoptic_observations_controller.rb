@@ -606,7 +606,7 @@ class SynopticObservationsController < ApplicationController
     else
       last_day = Time.parse("#{@year}-#{@month}-01").end_of_month.day.to_s
     end
-    sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date >= '#{@year}-#{@month}-01' and date <= '#{@year}-#{@month}-#{last_day}' and station_id in (1,2,3,4,10) group by date, station_id;"
+    sql = "select date, station_id, avg(temperature) temperature from synoptic_observations where date >= '#{@year}-#{@month}-01' and date <= '#{@year}-#{@month}-#{last_day}' and station_id in (1,2,3,4,5,10) group by date, station_id;"
     db_temperatures = SynopticObservation.find_by_sql(sql)
     @temperatures = {}
     db_temperatures.each {|t|

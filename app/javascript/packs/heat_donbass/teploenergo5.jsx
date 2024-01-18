@@ -15,11 +15,12 @@ const ResultTable = ({temperatures, maxDay}) => {
     <td><b>Амвросиевка<br/></b></td>,
     <td><b>Дебальцево</b></td>,
     <td><b>Волноваха</b></td>,
-    ,,,,,
+    <td><b>Мариуполь</b></td>,
+    ,,,,
     <td><b>Седово</b></td>
   ];
   let values = [];
-  [1,3,2,4,10].forEach((j) => { // коды станций 1-4,10
+  [1,3,2,4,5,10].forEach((j) => { // коды станций 1-4,5,10
     values = [];
     for(var i=1; i<=maxDay; ++i){
       let key = ('0'+i).slice(-2)+'-'+('0'+j).slice(-2);

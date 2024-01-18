@@ -49,7 +49,7 @@ class Teploenergo5 < Prawn::Document
     (1..@max_day).each do |d|
       day = d.to_s.rjust(2,'0')
       row = [d]
-      [1,3,2,4,10].each do |s|
+      [1,3,2,4,5,10].each do |s|
         key = day+'-'+s.to_s.rjust(2,'0')
         row << (@temperatures[key].present? ? @temperatures[key] : '')
       end
@@ -62,7 +62,8 @@ class Teploenergo5 < Prawn::Document
         '<b>Донецк</b>', 
         '<b>Дебальцево</b>', 
         '<b>Амвросиевка</b>', 
-        '<b>Волноваха</b>', 
+        '<b>Волноваха</b>',
+        '<b>Мариуполь</b>',
         '<b>Седово</b>'
       ]
     ] + table
