@@ -57,11 +57,22 @@ export default class NewOtherData extends React.Component{
   handleSubmit(e) {
     e.preventDefault();
     this.state.errors = [];
-    if (!this.state.value) {
+    if(!this.state.value && this.state.dataType.value!=='duty') {
       this.setState({errors: ["Не задано значение"]});
       return;
     }
     switch (this.state.dataType.value) {
+      case 'duty':
+        this.observation = {
+          data_type: this.state.dataType.value,
+          // value: this.state.value,
+          obs_date: this.state.observationDate,
+          // source: this.state.point.value,
+          // period: this.state.period.value,
+          station_id: this.state.station.value,
+          description: this.state.message
+        }
+        break
       case 'perc': 
         this.observation = {
           data_type: this.state.dataType.value,
@@ -182,6 +193,14 @@ export default class NewOtherData extends React.Component{
               {station}
               <td><input type="number" value={this.state.value} onChange={(event) => this.handleValueChange(event)}/></td>
             </tr>;
+    }else if(this.state.dataType.value==='duty'){
+      hdr = <tr><th width="220px">Тип данных</th><th width="140px">Дата дежурства</th><th>Метеостанция</th><th>Дежурный/время</th></tr>;
+      dat = <tr>
+        <td><Select id='types' options={types} onChange={this.handleTypeSelected} value={this.state.dataType}/></td>
+        <td><input type="date" name="input-date" value={this.state.observationDate} onChange={(event) => this.dateChange(event)} required={true} autoComplete="on" /></td>
+        {station}
+        <td><input type="text" value={this.state.message} onChange={(event) => this.handleDescriptionChange(event)}/></td>
+      </tr>
     }else{
       hdr = <tr><th width="220px">Тип данных</th><th>Дата наблюдения</th><th>Метеостанция</th><th>Значение</th></tr>;
       dat = <tr>

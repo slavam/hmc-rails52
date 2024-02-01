@@ -9,6 +9,8 @@ const LastData = ({observations, tlgType, stations, onClickDelete}) => {
       rows.push(<tr key={o.id}><td>{o.obs_date}</td><td>{o.source}</td><td>{o.period}</td><td>{o.value}</td><td>{o.description}</td><td><button id={o.id} onClick={o => onClickDelete(o)}>Удалить</button></td></tr>);
     else if (tlgType == 'wind')
       rows.push(<tr key={o.id}><td>{o.obs_date}</td><td>{o.period+':00'}</td><td>{stations[o.station_id]}</td><td>{parseInt(o.value,10)}</td><td><button id={o.id} onClick={o => onClickDelete(o)}>Удалить</button></td></tr>);
+    else if(tlgType === 'duty')
+      rows.push(<tr key={o.id}><td>{o.obs_date}</td><td>{o.created_at}</td><td>{stations[o.station_id]}</td><td>{o.description}</td><td><button id={o.id} onClick={o => onClickDelete(o)}>Удалить</button></td></tr>)
     else
       rows.push(<tr key={o.id}><td>{o.obs_date}</td><td>{stations[o.station_id]}</td><td>{o.value}</td><td><button id={o.id} onClick={o => onClickDelete(o)}>Удалить</button></td></tr>);
   });
@@ -28,6 +30,14 @@ const LastData = ({observations, tlgType, stations, onClickDelete}) => {
       <th>Время</th>
       <th>Метеостанция</th>
       <th>Значение</th>
+      <th>Действия</th>
+    </tr>;
+  else if(tlgType === 'duty')
+    hdr = <tr>
+      <th width = "200px">Дата дежурства</th>
+      <th>Дата ввода</th>
+      <th>Метеостанция</th>
+      <th>Дежурный/время</th>
       <th>Действия</th>
     </tr>;
   else
