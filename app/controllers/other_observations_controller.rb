@@ -231,7 +231,7 @@ class OtherObservationsController < ApplicationController
     last_day = Time.days_in_month(month.to_i, year.to_i).to_s
     end_date = year+'-'+month+'-'+last_day
     rows = SynopticObservation.select("date, station_id, term, precipitation_1").
-      where("date >= ? AND date <= ? AND station_id IN (1,2,3,10) AND term IN (6,18) AND precipitation_1 > 0", start_date, end_date).order(:date, :station_id, :term)
+      where("date >= ? AND date <= ? AND station_id IN (1,2,3,10) AND term IN (3,15) AND precipitation_1 > 0", start_date, end_date).order(:date, :station_id, :term)
       num_row = [nil,1,7,6,nil,nil,nil,nil,nil,nil,15]
     ret = []
     rows.each do |p|
