@@ -26,7 +26,7 @@ class ChemForma1AsProtocol < Prawn::Document
     text site_description
     move_down 10
     font "OpenSans", style: :normal
-    table pollutions, cell_style: { border_width: 0.3, :overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true, size: 9 }, :column_widths => {0 =>65, 1 => 35, 2 => 45} do |t|
+    table pollutions, cell_style: { border_width: 0.3, :overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true, size: 9 }, :column_widths => {0 =>65, 1 => 35, 2 => 45, 8=>55} do |t|
       # t.cells.border_width = 0
     end
     move_down 10
