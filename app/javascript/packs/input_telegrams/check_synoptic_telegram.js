@@ -155,7 +155,8 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
         break
       case 18: // 20240110
         if (iR===4 || iR===8){
-          if(/ 6\d\d\d2.* 333 /.test(tlg)){
+          // if(/ 6\d\d\d2.* 333 /.test(tlg)){ mwm 20240320
+          if(/ 5\d{4} 6\d\d\d2/.test(tlg)){
             errors.push("Для срока 18 группа 6 раздела 1 должна отсутствовать")
             return false
           }
