@@ -156,7 +156,7 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
       case 18: // 20240110
         if (iR===4 || iR===8){
           // if(/ 6\d\d\d2.* 333 /.test(tlg)){ mwm 20240320
-          if(/ 5\d{4} 6\d\d\d2/.test(tlg)){
+          if(/ 5\d{4} 6\d\d\d2.*/.test(tlg)){
             errors.push("Для срока 18 группа 6 раздела 1 должна отсутствовать")
             return false
           }
@@ -245,8 +245,8 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
                 }
                 observation.temperature24_avg = sign[section[1]]+section.substr(2,2)+'.'+section[4]
               }else if(section[1]=='2'){
-                if(+term==6){}else{
-                  errors.push("Группа 52 в разделе 5 может быть только для срока 6");
+                if(+term==3){}else{
+                  errors.push("Группа 52 в разделе 5 может быть только для срока 3"); // mwm 20240321
                   return false;
                 }
                 observation.temperature_2cm_min = sign[section[2]]+section.substr(3,2);
