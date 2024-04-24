@@ -198,6 +198,7 @@ Rails.application.routes.draw do
   resources :laboratories
   put 'wmo_stations/edit_station', to: 'wmo_stations#edit_station'
   get 'wmo_stations/find_by_code', to: 'wmo_stations#find_by_code'
+  get 'wmo_stations/wmo_stations', to: 'wmo_stations#wmo_stations'
   resources :wmo_stations
   root 'sessions#new'
   mount ActionCable.server, at: '/cable'

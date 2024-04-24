@@ -18,6 +18,11 @@ class WmoStationsController < ApplicationController
     end
   end
   
+  def wmo_stations
+    ws = WmoStation.all.order(:code)
+    render json: ws.as_json
+  end
+
   def find_by_code
     code = params[:code].present? ? params[:code] : nil
     if code
