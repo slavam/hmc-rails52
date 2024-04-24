@@ -256,7 +256,7 @@ class SynopticObservationsController < ApplicationController
       @fire_data[t.date.strftime("%Y-%m-%d")] = {temp: t.temperature, temp_d_p: t.temperature_dew_point, fire_danger: 0, day: nil, night: nil}
     end
     day_precipitations = SynopticObservation.select(:date, :precipitation_1).
-      where("date >= ? and date <= ? and station_id = ? and term = 18 and precipitation_1 > 0", @date_from, @date_to, @station_id).order(:date)
+      where("date >= ? and date <= ? and station_id = ? and term = 15 and precipitation_1 > 0", @date_from, @date_to, @station_id).order(:date)
     day_precipitations.each do |dp|
       day_prec = precipitation(dp.precipitation_1)
       if !@fire_data.key?(dp.date.strftime("%Y-%m-%d"))
@@ -266,7 +266,7 @@ class SynopticObservationsController < ApplicationController
       end
     end
     night_precipitations = SynopticObservation.select(:date, :precipitation_1).
-      where("date >= ? and date <= ? and station_id = ? and term = 6 and precipitation_1 > 0", @date_from, @date_to, @station_id).order(:date)
+      where("date >= ? and date <= ? and station_id = ? and term = 3 and precipitation_1 > 0", @date_from, @date_to, @station_id).order(:date)
     night_precipitations.each do |np|
       night_prec = precipitation(np.precipitation_1)
       if !@fire_data.key?(np.date.strftime("%Y-%m-%d"))
@@ -1128,10 +1128,10 @@ class SynopticObservationsController < ApplicationController
   end
 
   def make_fire_danger(telegram)
-    observation6 = SynopticObservation.find_by(date: telegram.date, term: 6, station_id: telegram.station_id)
+    observation6 = SynopticObservation.find_by(date: telegram.date, term: 3, station_id: telegram.station_id)
     precipitation_night_morning = (telegram.precipitation_2.present? ? precipitation(telegram.precipitation_2) : 0) + 
       ((observation6.present? && observation6.precipitation_1.present?) ? precipitation(observation6.precipitation_1) : 0)
-    observation_prev18 = SynopticObservation.find_by(date: telegram.date.to_date-1.day, term: 18, station_id: telegram.station_id)
+    observation_prev18 = SynopticObservation.find_by(date: telegram.date.to_date-1.day, term: 15, station_id: telegram.station_id)
     precipitation_prev_day = observation_prev18.present? ? observation_prev18.precipitation_1 : 0
     observation_prev12 = SynopticObservation.find_by(date: telegram.date.to_date-1.day, term: 12, station_id: telegram.station_id)
     precipitation_prev_morning = (observation_prev12.present? and observation_prev12.precipitation_2.present?) ? observation_prev12.precipitation_2 : 0
