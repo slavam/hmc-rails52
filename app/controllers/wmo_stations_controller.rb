@@ -19,7 +19,8 @@ class WmoStationsController < ApplicationController
   end
   
   def wmo_stations
-    ws = WmoStation.all.order(:code)
+#    ws = WmoStation.all.order(:code)
+    ws = WmoStation.where(country: ['Ukraine','Russian Federation. Europe'])
     render json: ws.as_json
   end
 
