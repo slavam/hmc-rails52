@@ -239,7 +239,7 @@ class OtherObservationsController < ApplicationController
       j = p.date.day
       ret[i] ||= []
       ret[i][j] ||= [nil, nil,'','']
-      if p.term == 6
+      if p.term == 3
         ret[i][j][0] = p.precipitation
       else
         ret[i][j][1] = p.precipitation
