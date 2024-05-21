@@ -17,7 +17,7 @@ export function checkSeaStormTelegram(tlg, stations, errors, observation){
   //   return +codeStation == s.code;
   // });
   // if (isStation && (tlg[17] == ' ')) {
-  if (tlg.substr(12,6) == '99023 '){  
+  if (tlg.substr(12,6) == '34721 '){
     observation.station_id = 10; // Sedovo idStation;
   } else {
     errors.push("Ошибка в коде метеостанции");

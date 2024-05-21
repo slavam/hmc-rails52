@@ -174,7 +174,7 @@ class SeaObservationsController < ApplicationController
         errors.push("Ошибка в различительной группе");
         return nil;
       end
-      if text_telegram[10,5] == '99023'
+      if text_telegram[10,5] == '34721' #       '99023'
         new_telegram.station_id = 10
       else
         errors << "Ошибка в коде станции - <#{text_telegram[10,5]}>"

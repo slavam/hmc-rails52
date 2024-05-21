@@ -32,7 +32,7 @@ const LastSeaRf = ({lastTelegrams, stations}) => {
 export const InputSeaRf=({telegrams})=>{
   const stations = [
     {label: "Мариуполь", value: 34712, id: 5},
-    {label: "Седово", value: 99023, id: 10}
+    {label: "Седово", value: 34721, id: 10}
   ]
   const terms = [
     {label: '00', value:0},

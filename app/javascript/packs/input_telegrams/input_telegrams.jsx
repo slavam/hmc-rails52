@@ -205,7 +205,7 @@ export default class InputTelegrams extends React.Component{
   }
   
   toClipboard(e){
-    const stationsCode = [34519,34524,34615,34622,34712,99023]//[1,2,3,4,5,10]
+    const stationsCode = [34519,34524,34615,34622,34712,34721]//[1,2,3,4,5,10]
     let text = ""
     let message = ''
     let ts = []
