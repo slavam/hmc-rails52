@@ -11,7 +11,8 @@
       = collection_select(:post, :site_type_id, SiteType.all, :id, :name, {:prompt => true})
       
       = form.label "Город"
-      = @post.city.name
+      = collection_select(:post, :city_id, City.all, :id, :name, {:prompt => true})
+      -# = @post.city.name
       
       = form.label "Лаборатория"
       = collection_select(:post, :laboratory_id, Laboratory.all, :id, :name, {:prompt => true})

@@ -1,4 +1,5 @@
 class HydroObservationsController < ApplicationController
+  # protect_from_forgery except: [:create_hydro_telegram]
   before_action :find_hydro_observation, only: [:show, :destroy, :update_hydro_telegram]
 
   def index

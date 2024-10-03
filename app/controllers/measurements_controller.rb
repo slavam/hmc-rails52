@@ -744,7 +744,7 @@ class MeasurementsController < ApplicationController
     end
 
     def get_weather_from_synoptic_observatios(post_id, date, term)
-      station_id = post_id < 15 ? 1 : 7
+      station_id = post_id < 15 ? 1 : (post_id<27? 7:5)
       weather = {}
       observation = SynopticObservation.find_by(date: date, term: term, station_id: station_id)
       return nil if observation.nil? or observation.pressure_at_station_level.nil? # mwm 20200806
