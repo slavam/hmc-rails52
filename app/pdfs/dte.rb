@@ -61,6 +61,6 @@ class Dte < Prawn::Document
       t.cells.border_width = 0
     end
     move_cursor_to 20
-    text responsible_descr[:full_name]+" (062) 303-10-45", size: 10
+    text responsible_descr[:full_name]+" +7(949) 554-78-30", size: 10
   end
 end
