@@ -13,7 +13,7 @@ class Bulletin < ActiveRecord::Base
   
   ADDRESS = "ул. Любавина, 2, г. Донецк, г.о. Донецк, ДНР, 283015
         телефон: +7 (949) 300-73-59
-        e-mail: ugms.dnr@mail.ru"
+        e-mail: donetskmeteo@dnr.mecom.ru"
         # телефон: +7 (856) 303-10-34, +7 (856) 303-10-49
   ADDRESS2 = "ул. Любавина, 2, г. Донецк, г.о. Донецкий, ДНР, 283015 тел. +7 (856) 311-40-10
         web: www.dnmchs.ru  ОГРН 1229300076015  E-mail: gidromet@mail.dnmchs.ru"
