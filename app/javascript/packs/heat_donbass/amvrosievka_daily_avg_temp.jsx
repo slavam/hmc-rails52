@@ -61,6 +61,7 @@ export default class AmvrosievkaTemp extends React.Component{
       {value: 'Lukjanenko', label: 'Лукьяненко М.Б.'},
       {value: 'Stec', label: 'Стец Н.В.'},
       {value: 'Arameleva', label: 'Арамелева О.В.'},
+      {value: 'Kijanenko', label: 'Кияненко М.А.'},
     ];
     const responsibles = [
       {value: 'Boyko', label: 'Бойко Л.Н.'},

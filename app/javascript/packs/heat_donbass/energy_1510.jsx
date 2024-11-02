@@ -60,6 +60,7 @@ export default class Energy2 extends React.Component{
     const chiefs = [
       {value: 'Lukjanenko', label: 'Лукьяненко М.Б.'},
       {value: 'Stec', label: 'Стец Н.В.'},
+      {value: 'Kijanenko', label: 'Кияненко М.А.'},
       {value: 'Arameleva', label: 'Арамелева О.В.'},
     ];
     const responsibles = [

@@ -59,6 +59,7 @@ export default class Energy extends React.Component{
     let endDate = this.state.daysInMonth+' '+MONTHS[+this.state.month]+' '+this.state.year;
     const chiefs = [
       {value: 'Lukjanenko', label: 'Лукьяненко М.Б.'},
+      {value: 'Kijanenko', label: 'Кияненко М.А.'},
       {value: 'Stec', label: 'Стец Н.В.'},
     ];
     const responsibles = [

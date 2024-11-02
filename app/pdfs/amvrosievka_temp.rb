@@ -16,16 +16,16 @@ class AmvrosievkaTemp < Prawn::Document
     font "OpenSans", style: :normal
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
-      text "________________ № 325/02.01"
-      text "На № 24/23-24/02.01 от 30.10.2023"
+      text "________________ № ________________"
+      text "На № 76/24-25/02.01 от 18.10.2024"
     end
     
     bounding_box([250, y_pos], width: bounds.width-250) do
-      text "Заместителю главного инженера
-            по эксплуатации
-            АО \"ИНФРАСТРУКТУРНЫЕ ПРОЕКТЫ\"
+      text "Директору филиала
+            АО \"ИНФРАСТРУКТУРНЫЕ ПРОЕКТЫ\"-
+            \"Старобешевская ТЭС\"
 
-            О.А. Лебедь", leading: 3
+            А.Е. Куцыну", leading: 3
     end
     text "О предоставлении информации"
     move_down 20
@@ -47,7 +47,11 @@ class AmvrosievkaTemp < Prawn::Document
       name = "Н.В. Стец"
     elsif chief == 'Arameleva'
       position = "Врио начальника"
-      name = "О.В. Арамелева"
+      name = "М.А. Кияненко"
+      # name = "О.В. Арамелева"
+    elsif chief == 'Kijanenko'
+      position = "Врио начальника"
+      name = "М.А. Кияненко"
     else
       position = "Начальник"
       name = "М.Б. Лукьяненко"

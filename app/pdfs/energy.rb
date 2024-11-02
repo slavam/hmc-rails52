@@ -48,7 +48,11 @@ class Energy < Prawn::Document
       name = "Н.В. Стец"
     elsif chief == 'Arameleva'
       position = "Врио начальника"
-      name = "О.В. Арамелева"
+      name = "М.А. Кияненко"
+      # name = "О.В. Арамелева"
+    elsif chief == 'Kijanenko'
+      position = "Врио начальника"
+      name = "М.А. Кияненко"
     else
       position = "Начальник"
       name = "М.Б. Лукьяненко"
