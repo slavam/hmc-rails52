@@ -1175,9 +1175,9 @@ class SynopticObservationsController < ApplicationController
     end
   end
   def get_daily_avg_temperatures(date)
-    date_prev = ((date.to_date) - 1.day).strftime("%Y-%m-%d")+' 21'
+    date_prev = ((date.to_date) - 1.day).strftime("%Y-%m-%d")+' 18'
     temp_local = SynopticObservation.select(:station_id, :term, :temperature).
-      where("observed_at > ? and observed_at < ? and station_id not in (6,9)", date_prev, date+' 21').order(:station_id, :date, :term)
+      where("observed_at > ? and observed_at < ? and station_id not in (6,9)", date_prev, date+' 18').order(:station_id, :date, :term)
     # where("observed_at > ? and observed_at < ? and station_id not in (6,9)", date_prev, date+' 20').order(:station_id, :date, :term) 20200207
     local = calc_daily_avg_temps(temp_local)
     ret = {}
@@ -1203,7 +1203,8 @@ class SynopticObservationsController < ApplicationController
       if a[s].present?
         arr = a[s].compact
         a[s][22] = (arr.reduce(:+) / arr.size.to_f).round(1) if arr.size > 0
-        [21,0,3,6,9,12,15,18,22].each do |t|
+        # [21,0,3,6,9,12,15,18,22].each do |t|
+        [18,21,0,3,6,9,12,15,22].each do |t|
           if a[s][t].present?
             a[11][t] ||=0
             a[11][t] += a[s][t]
@@ -1219,7 +1220,8 @@ class SynopticObservationsController < ApplicationController
         end
       end
     end
-    [21,0,3,6,9,12,15,18,22].each do |t|
+    # [21,0,3,6,9,12,15,18,22].each do |t|
+    [18,21,0,3,6,9,12,15,22].each do |t|
       a[11][t] = (a[11][t] / nt[t]).round(1) if nt[t].present? and nt[t]>0
       a[12][t] = (a[12][t] / nr[t]).round(1) if nr[t].present? and nr[t]>0
     end

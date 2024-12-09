@@ -10,7 +10,8 @@ const DailyTemperaturesTable = ({temperaturesLocal, temperaturesUtc}) => {
     let tdsl = [];
     let tdsu = [];
     let val;
-    [21, 0, 3, 6,9, 12, 15, 18,22].forEach( t =>{
+    // [21, 0, 3, 6,9, 12, 15, 18,22].forEach( t =>{
+    [18,21, 0, 3, 6,9, 12, 15, 22].forEach( t =>{
       if(temperaturesLocal[s] != null && temperaturesLocal[s][t] != null){
         if(((s>10) && (t==22)) || (t==22))
            val = <b style={{color: "red"}}>{temperaturesLocal[s][t]}</b>;
@@ -44,6 +45,7 @@ const DailyTemperaturesTable = ({temperaturesLocal, temperaturesUtc}) => {
       <thead>
         <tr>
           <th>Местное время</th>
+          <th>21:00</th>
           <th>00:00</th>
           <th>03:00</th>
           <th>06:00</th>
@@ -51,7 +53,7 @@ const DailyTemperaturesTable = ({temperaturesLocal, temperaturesUtc}) => {
           <th>12:00</th>
           <th>15:00</th>
           <th>18:00</th>
-          <th>21:00</th>
+          
           <th></th>
           <th>03:00</th>
           <th>06:00</th>
@@ -64,6 +66,7 @@ const DailyTemperaturesTable = ({temperaturesLocal, temperaturesUtc}) => {
         </tr>
         <tr>
           <th>Метеостанция</th>
+          <th>18</th>
           <th>21</th>
           <th>00</th>
           <th>03</th>
@@ -71,7 +74,7 @@ const DailyTemperaturesTable = ({temperaturesLocal, temperaturesUtc}) => {
           <th>09</th>
           <th>12</th>
           <th>15</th>
-          <th>18</th>
+          
           <th>Средняя</th>
           <th>00</th>
           <th>03</th>
@@ -130,6 +133,7 @@ const TemperaturesTable = ({temperaturesLocal, temperaturesUtc}) => {
       <thead>
         <tr>
           <th>Местное время</th>
+          <th>21:00</th>
           <th>00:00</th>
           <th>03:00</th>
           <th>06:00</th>
@@ -137,7 +141,7 @@ const TemperaturesTable = ({temperaturesLocal, temperaturesUtc}) => {
           <th>12:00</th>
           <th>15:00</th>
           <th>18:00</th>
-          <th>21:00</th>
+          
           <th></th>
           <th>03:00</th>
           <th>06:00</th>
@@ -150,6 +154,7 @@ const TemperaturesTable = ({temperaturesLocal, temperaturesUtc}) => {
         </tr>
         <tr>
           <th>Метеостанция</th>
+          <th>18</th>
           <th>21</th>
           <th>00</th>
           <th>03</th>
@@ -157,7 +162,7 @@ const TemperaturesTable = ({temperaturesLocal, temperaturesUtc}) => {
           <th>09</th>
           <th>12</th>
           <th>15</th>
-          <th>18</th>
+          
           <th>Средняя</th>
           <th>00</th>
           <th>03</th>
