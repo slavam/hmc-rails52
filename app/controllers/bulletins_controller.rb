@@ -94,6 +94,20 @@ class BulletinsController < ApplicationController
         else
           @bulletin.curr_number = 1
         end
+      when 'autodor'
+        if bulletin.present?
+          @bulletin.curr_number = bulletin.curr_number.to_i + 1
+        else
+          @bulletin.curr_number = 1
+        end
+        @bulletin.forecast_day = last_daily_bulletin.forecast_day
+        @bulletin.forecast_period = last_daily_bulletin.forecast_period
+      when 'autodor_warning'
+        if bulletin.present?
+          @bulletin.curr_number = bulletin.curr_number.to_i + 1
+        else
+          @bulletin.curr_number = 1
+        end
       when 'dte','bus_station','gsr','empire','donbassgaz'
         @bulletin.forecast_day = last_daily_bulletin.forecast_day
       when 'drsu'
@@ -412,6 +426,10 @@ class BulletinsController < ApplicationController
           pdf = Radio2.new(@bulletin)
         when 'dte'
           pdf = Dte.new(@bulletin)
+        when 'autodor'
+          pdf = Autodor.new(@bulletin)
+        when 'autodor_warning'
+          pdf = AutodorWarning.new(@bulletin)
         when 'drsu'
           pdf = Drsu.new(@bulletin)
         when 'donbassgaz'

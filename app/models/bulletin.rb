@@ -69,6 +69,8 @@ class Bulletin < ActiveRecord::Base
     'radio' => 'Радио',
     'radio2' => 'Радио 2',
     'avtodor' => "АВТОДОР",
+    'autodor' => "АВТОДОР ДОНБАСС",
+    'autodor_warning' => "АВТОДОР предупреждение",
     'dte' => "Донбасстеплоэнерго",
     'drsu' => "ДРСУ",
     'donbassgaz' => "Донбассгаз",

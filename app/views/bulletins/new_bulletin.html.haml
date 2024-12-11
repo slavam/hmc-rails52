@@ -25,6 +25,12 @@
   - when 'radiation2'
   %h3{ align: :center } Создать бюллетень о радиационном фоне (вариант 2)
   = render partial: 'radiation2_form'
+  - when 'autodor'
+  %h3{ align: :center } Создать прогноз для АВТОДОРа
+  = render partial: 'autodor_form'
+  - when 'autodor_warning'
+  %h3{ align: :center } Создать предупреждение для АВТОДОРа
+  = render partial: 'autodor_warning_form'
   - when 'avtodor'
   %h3{ align: :center } Создать прогноз для АВТОДОРа
   = render partial: 'avtodor_form'

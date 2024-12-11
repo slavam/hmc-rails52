@@ -1,0 +1,3 @@
+%tr
+  %th Синоптик
+  %td= select :bulletin, :synoptic1, options_for_select(Bulletin.synoptic_list, @bulletin.synoptic1)
