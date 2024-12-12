@@ -3,19 +3,14 @@ class Autodor < Prawn::Document
   def initialize(bulletin)
     super(left_margin: 80, right_margin: 50)
 		@bulletin = bulletin
-    report_date = @bulletin.report_date
+    tomorrow = @bulletin.report_date+1.day
     font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),
       :bold => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Bold.ttf"),
     })
-    
     y_pos = cursor
     font "OpenSans"
     ugms_header
-    # bulletin_header(y_pos)
-    # stroke do
-    #   horizontal_line 0, bounds.width, :at => cursor
-    # end
     move_down 10
     font "OpenSans", style: :normal
     y_pos = cursor
@@ -23,17 +18,15 @@ class Autodor < Prawn::Document
       text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № #{Bulletin.ogmo_code}/"+@bulletin.curr_number
       text "На № 104/24-25/02.01 от 09.12.2024 "
     end
-    
     bounding_box([280, y_pos], width: bounds.width-280) do
       text "Директору
             ООО \"АВТОДОР ДОНБАСС\"
 		
             Постнову А.А.", leading: 3
     end
-    
     move_down 50
     font "OpenSans", style: :bold
-    text "Прогноз погоды на #{'%02d' % report_date.day} #{Bulletin::MONTH_NAME2[report_date.month]} #{report_date.year} года", align: :center
+    text "Прогноз погоды на #{'%02d' % tomorrow.day} #{Bulletin::MONTH_NAME2[tomorrow.month]} #{tomorrow.year} года", align: :center
     text "в Донецкой Народной Республике", align: :center
     font "OpenSans"
     move_down 10
