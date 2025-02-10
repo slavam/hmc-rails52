@@ -1343,8 +1343,8 @@ class SynopticObservationsController < ApplicationController
   def avg_temps(curr_date)
     prev_date = curr_date.to_date - 1.day
     rows = SynopticObservation.select("station_id, avg(temperature) temperature").
-      where("observed_at > ? AND observed_at < ? AND station_id NOT IN (6,9)", prev_date.strftime("%Y-%m-%d")+' 21', curr_date+' 21').group(:station_id)
-      # where("observed_at > ? AND observed_at < ? AND station_id NOT IN (6,9)", prev_date.strftime("%Y-%m-%d")+' 20', curr_date+' 19').group(:station_id)
+      # where("observed_at > ? AND observed_at < ? AND station_id NOT IN (6,9)", prev_date.strftime("%Y-%m-%d")+' 21', curr_date+' 21').group(:station_id)
+      where("observed_at > ? AND observed_at < ? AND station_id IN (1,2,3,4,5,7,8,10)", prev_date.strftime("%Y-%m-%d")+' 18', curr_date+' 18').group(:station_id)
     ret = []
     rows.each {|r| ret[r.station_id] = r.temperature}
     ret
