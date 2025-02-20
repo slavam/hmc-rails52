@@ -9,14 +9,15 @@ class Radio2 < Prawn::Document
         :bold_italic => Rails.root.join("app/assets/fonts/OpenSans/OpenSans-BoldItalic.ttf")
       })
       y_pos = cursor
+      # font "OpenSans"
+      # bounding_box([300, y_pos], width: bounds.width-290) do
+      #   text "Приложение
+      #         к Плану передачи информации", leading: 3
+      # end
+      # move_down 10
+      image "./app/assets/images/logo2015_2.png", :scale => 0.2, position: :center
+      move_down 5
       font "OpenSans"
-      bounding_box([300, y_pos], width: bounds.width-290) do
-        text "Приложение
-              к Плану передачи информации", leading: 3
-      end
-      move_down 10
-      font "OpenSans"
-      # text 'ГБУ "ГИДРОМЕТЕОРОЛОГИЧЕСКИЙ ЦЕНТР МЧС ДНР"', align: :center, size: 14
       bounding_box([0, cursor], width: bounds.width) do
         text Bulletin::HEAD1, align: :center, size: 10
         text Bulletin::HEAD2, align: :center, size: 10, style: :bold
@@ -27,27 +28,29 @@ class Radio2 < Prawn::Document
       font "OpenSans"
       bounding_box([0, cursor], width: bounds.width) do
         text Bulletin::ADDRESS, align: :center, size: 10
-        text 'ОГРН 1239300003909 ИНН 9303033080 КПП 930301001', align: :center, size: 10  
+        # text 'ОГРН 1239300003909 ИНН 9303033080 КПП 930301001', align: :center, size: 10  
       end
       stroke do
         horizontal_line 0, bounds.width, :at => cursor
       end
       move_down 10
-      text @bulletin.report_date.strftime("%d.%m.%Y")+'г.  № '+@bulletin.curr_number+"-РС"
+      text @bulletin.report_date.strftime("%d.%m.%Y")+'г.  № '+@bulletin.curr_number #+"-РС"
       move_down 20
       font "OpenSans", style: :bold
       text "ПРОГНОЗ ПОГОДЫ", align: :center
-      font "OpenSans"
-      text @bulletin.header_daily, align: :center
+      # font "OpenSans"
+      # text @bulletin.header_daily, align: :center
+      text "на #{'%02d' % @bulletin.report_date.day} #{Bulletin::MONTH_NAME2[@bulletin.report_date.month]} #{@bulletin.report_date.year} года", align: :center
       text "в Донецкой Народной Республике", align: :center
+      font "OpenSans"
       move_down 10
       text @bulletin.forecast_day, leading: 3
       text @bulletin.forecast_period, leading: 3
       move_down 10
-      table temps, width: bounds.width,:cell_style => { :align => :center, :inline_format => true, :padding => [2, 2, 2, 2], :size => 11} do |t|
-        t.column(0).align = :left
-        t.row(0).column(0).align = :center
-      end
+      # table temps, width: bounds.width,:cell_style => { :align => :center, :inline_format => true, :padding => [2, 2, 2, 2], :size => 11} do |t|
+      #   t.column(0).align = :left
+      #   t.row(0).column(0).align = :center
+      # end
       if @bulletin.chief.present?
         chief_descr = @bulletin.chief_2_pdf
         move_down 10
