@@ -40,7 +40,8 @@ class Radio2 < Prawn::Document
       text "ПРОГНОЗ ПОГОДЫ", align: :center
       # font "OpenSans"
       # text @bulletin.header_daily, align: :center
-      text "на #{'%02d' % @bulletin.report_date.day} #{Bulletin::MONTH_NAME2[@bulletin.report_date.month]} #{@bulletin.report_date.year} года", align: :center
+      report_date_next = @bulletin.report_date+1.day
+      text "на #{'%02d' % report_date_next.day} #{Bulletin::MONTH_NAME2[report_date_next.month]} #{report_date_next.year} года", align: :center
       text "в Донецкой Народной Республике", align: :center
       font "OpenSans"
       move_down 10
