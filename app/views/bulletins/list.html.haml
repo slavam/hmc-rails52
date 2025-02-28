@@ -75,8 +75,11 @@
               "#{b.id}/bulletin_show.pdf?variant=warning"
           - elsif @bulletin_type == 'fire'
             %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf?variant=full"
-            %td= link_to 'Просмотреть',
-              "#{b.id}/bulletin_show.pdf?variant=short"
+            %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf?variant=short"
+          - elsif @bulletin_type == 'autodor'
+            %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf"
+            - if current_user.role == 'technicist'
+              %td= link_to 'Отправить письмо', "#{b.id}/bulletin_via_email"
           - else
             %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf"
           - if %w[vip].index(current_user.role) || (current_user.role == 'hydro' && %w[hydro hydro2 warning].index(@bulletin_type))

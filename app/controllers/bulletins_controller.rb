@@ -1,15 +1,20 @@
 class BulletinsController < ApplicationController
 #  before_action :cors_preflight_check
 #  before_action :logged_in_user, only: [:list] # 20190819
-  before_action :find_bulletin, :only => [:bulletin_show, :show, :destroy, :print_bulletin, :edit, :update]
+  before_action :find_bulletin, :only => [:bulletin_show, :show, :destroy, :print_bulletin, :edit, :update, :bulletin_via_email]
 
- skip_before_action :verify_authenticity_token, :only => [:create]
- def cors_preflight_check
-   headers['Access-Control-Allow-Origin'] = '*'
-   headers['Access-Control-Allow-Methods'] = 'POST, PUT, DELETE, GET, OPTIONS'
-   headers['Access-Control-Request-Method'] = '*'
-   headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
- end
+  skip_before_action :verify_authenticity_token, :only => [:create]
+#  def cors_preflight_check
+#    headers['Access-Control-Allow-Origin'] = '*'
+#    headers['Access-Control-Allow-Methods'] = 'POST, PUT, DELETE, GET, OPTIONS'
+#    headers['Access-Control-Request-Method'] = '*'
+#    headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+#  end
+  def bulletin_via_email
+    BulletinMailer.with(bulletin: @bulletin).autodor_email.deliver_now
+    flash[:success] = "Письмо отправлено"
+    redirect_to "/bulletins/list?bulletin_type=#{@bulletin.bulletin_type}"
+  end
 
   def latest_bulletins
     bulletins = Bulletin.all.limit(50).order(:id).reverse_order
