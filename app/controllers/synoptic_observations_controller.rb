@@ -1094,28 +1094,8 @@ class SynopticObservationsController < ApplicationController
       telegram.term = term
       if telegram.save
         if telegram.term == 12
-          make_fire_danger(telegram)
-          # observation6 = SynopticObservation.find_by(date: date, term: 6, station_id: station_id)
-          # precipitation_night_morning = (telegram.precipitation_2.present? ? precipitation(telegram.precipitation_2) : 0) + 
-          #   ((observation6.present? && observation6.precipitation_1.present?) ? precipitation(observation6.precipitation_1) : 0)
-          # observation_prev18 = SynopticObservation.find_by(date: date.to_date-1.day, term: 18, station_id: station_id)
-          # precipitation_prev_day = observation_prev18.present? ? observation_prev18.precipitation_1 : 0
-          # observation_prev12 = SynopticObservation.find_by(date: date.to_date-1.day, term: 12, station_id: station_id)
-          # precipitation_prev_morning = (observation_prev12.present? and observation_prev12.precipitation_2.present?) ? observation_prev12.precipitation_2 : 0
-          # precipitation_evening = (precipitation_prev_day.present? ? precipitation(precipitation_prev_day) : 0) -
-          #   (precipitation_prev_morning.present? ? precipitation(precipitation_prev_morning) : 0)
-          # prev_fd_value = FireDanger.fire_danger_value(station_id, date.to_date-1.day)
-          # temp = telegram.temperature.round
-          # temp_d_p = telegram.temperature_dew_point.round
-          # f_d = (temp*(temp-temp_d_p))+prev_fd_value*((precipitation_evening+precipitation_night_morning).to_f>=3 ? 0:1)
-          # fire_danger = FireDanger.new(observation_date: date, 
-          #     station_id: station_id, 
-          #     temperature: temp, 
-          #     temperature_dew_point: temp_d_p, 
-          #     fire_danger: f_d, 
-          #     precipitation_night: precipitation_night_morning,
-          #     precipitation_day: precipitation_evening)
-          # fire_danger.save
+          # make_fire_danger(telegram)
+          make_fire_danger_rf(telegram)
         end
         new_telegram = {id: telegram.id, date: telegram.observed_at, term: term, station_name: telegram.station.name, telegram: telegram.telegram}
         ActionCable.server.broadcast("synoptic_telegram_channel", {telegram: new_telegram, tlgType: 'synoptic'})
@@ -1125,6 +1105,26 @@ class SynopticObservationsController < ApplicationController
         render json: {errors: telegram.errors.messages}, status: :unprocessable_entity
       end
     end
+  end
+
+  def make_fire_danger_rf(telegram)
+    telegram3 = SynopticObservation.find_by(date: telegram.date, term: 3, station_id: telegram.station_id)
+    precipitation_night = (telegram3.present? && telegram3.precipitation_1.present?) ? precipitation(telegram3.precipitation_1):0
+    telegram_prev15 = SynopticObservation.find_by(date: telegram.date.to_date-1.day, term: 15, station_id: telegram.station_id)
+    precipitation_prev_day = telegram_prev15.present? ? precipitation(telegram_prev15.precipitation_1) : 0
+    prev_fdv = FireDanger.fire_danger_value(telegram.station_id, telegram.date.to_date-1.day)
+    prev_fd_value = prev_fdv.present? ? prev_fdv : 0
+    temp = telegram.temperature.round
+    temp_d_p = telegram.temperature_dew_point.round
+    f_d = (temp*(temp-temp_d_p))+prev_fd_value*((precipitation_prev_day+precipitation_night).to_f>=3 ? 0:1)
+    fire_danger = FireDanger.new(observation_date: telegram.date, 
+      station_id: telegram.station_id, 
+      temperature: temp, 
+      temperature_dew_point: temp_d_p, 
+      fire_danger: f_d, 
+      precipitation_night: precipitation_night,
+      precipitation_day: precipitation_prev_day)
+    fire_danger.save
   end
 
   def make_fire_danger(telegram)
