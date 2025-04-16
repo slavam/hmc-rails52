@@ -46,6 +46,9 @@
   - when 'sea'
   %h3{ align: :center } Создать морской бюллетень
   = render partial: 'sea_form'
+  - when 'daily2'
+  %h3{ align: :center } Создать ежедневный гидрометеорологический бюллетень
+  = render partial: 'daily2_form'
   - when 'daily'
   %h3{ align: :center } Создать ежедневный бюллетень
   = render partial: 'form'

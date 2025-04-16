@@ -10,6 +10,19 @@ class BulletinsController < ApplicationController
 #    headers['Access-Control-Request-Method'] = '*'
 #    headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
 #  end
+  def get_day_forecast
+    bulletin = Bulletin.find_by(report_date: params[:report_date])
+    respond_to do |format|
+      format.json do
+        if bulletin.present?
+          render json: {forecast: bulletin.forecast_day, forecast_city: bulletin.forecast_day_city}, status: :ok
+        else
+          render json: {error: "Данные не найдены"}, :status => 422
+        end
+      end
+    end
+  end
+
   def bulletin_via_email
     BulletinMailer.with(bulletin: @bulletin).autodor_email.deliver_now
     flash[:success] = "Письмо отправлено"
@@ -167,6 +180,21 @@ class BulletinsController < ApplicationController
           @bulletin.meteo_data += v.present? ? "#{v};" : ';'
         end
         @bulletin.forecast_day_city = bulletin.forecast_day_city
+      when 'daily2'
+        @bulletin.storm = bulletin.present? ? bulletin.storm : ''
+        # @bulletin.forecast_day = bulletin.forecast_day
+        # @bulletin.forecast_period = bulletin.forecast_period
+        # @bulletin.forecast_advice = bulletin.forecast_advice
+        # @bulletin.forecast_orientation = bulletin.forecast_orientation
+        # @bulletin.agro_day_review = bulletin.agro_day_review
+        # @bulletin.forecast_day_city = bulletin.forecast_day_city
+        prev_date = @bulletin.report_date-1.day
+        prev_set = DonetskClimateSet.find_by(mm: prev_date.month, dd: prev_date.day)
+        curr_set = DonetskClimateSet.find_by(mm: @bulletin.report_date.month, dd: @bulletin.report_date.day)
+        @bulletin.climate_data = (prev_set.present? ? prev_set.t_avg.to_s : '') + '; ' +
+          (prev_set.present? ? prev_set.t_max.to_s : '') + '; ' + (prev_set.present? ? prev_set.year_max.to_s : '') + '; '+
+          (curr_set.present? ? curr_set.t_min.to_s : '') + '; ' + (curr_set.present? ? curr_set.year_min.to_s : '') + ';'
+        
       when 'daily'
         @bulletin.review_start_date = Date.yesterday
         @bulletin.summer = (params[:variant] == 'summer')
@@ -295,6 +323,8 @@ class BulletinsController < ApplicationController
         @m_d = fill_hydro_data(@bulletin.report_date)
       when 'hydro2'
         @m_d =fill_hydro2_data(@bulletin.report_date, @bulletin.review_start_date)
+      when 'daily2'
+        return
       when 'fire'
         return
       when 'radio', 'radio2'
@@ -398,7 +428,6 @@ class BulletinsController < ApplicationController
               pdf = Daily.new(@bulletin)
             when 'one_page'
               pdf = DailyOnePage.new(@bulletin)
-            # when 'short'
             else
               pdf = DailyShort.new(@bulletin)
           end
@@ -408,9 +437,10 @@ class BulletinsController < ApplicationController
           pdf = Sea.new(@bulletin)
           # @png_filename_page1 = @bulletin.png_page_filename(current_user.id, 0)
           # @png_filename_page2 = @bulletin.png_page_filename(current_user.id, 1)
+        when 'daily2'
+          pdf = Daily2.new(@bulletin)
         when 'holiday'
           pdf = Holiday.new(@bulletin)
-          # @png_filename = @bulletin.png_filename(current_user.id)
         when 'storm', 'sea_storm', 'rw_storm', 'fire_storm'
           variant = params[:variant].present? ? params[:variant] : ''
           pdf = Storm.new(@bulletin, variant)
@@ -420,7 +450,6 @@ class BulletinsController < ApplicationController
           pdf = Radiation2.new(@bulletin)
         when 'tv'
           pdf = Tv.new(@bulletin)
-          # @png_filename = @bulletin.png_filename(current_user.id)
         when 'avtodor'
           pdf = Avtodor.new(@bulletin)
         when 'bus_station'

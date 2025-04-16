@@ -59,6 +59,7 @@ class Bulletin < ActiveRecord::Base
     "Новоазовск"]
   BULLETIN_TYPES = {
     'daily' => "Бюллетени ежедневные",
+    'daily2' => "Бюллетени ежедневные гидрометеорологические",
     'sea' => "Бюллетени морские",
     'holiday' => "Бюллетени выходного дня",
     'storm' => "Штормовые предупреждения",
@@ -87,7 +88,6 @@ class Bulletin < ActiveRecord::Base
     'rw_storm' => 'Шторма для Железной дороги',
     'fire_storm' => 'Шторма (пожары)'
   }
-  # CHIEFS = {"Лукьяненко" => "М.Б. Лукьяненко", "Стец" => "Н.В. Стец", "Арамелева" => "О.В. Арамелева"}
   CHIEFS = {"Кияненко" => "М.А. Кияненко", "Лукьяненко" => "М.Б. Лукьяненко", "Стец" => "Н.В. Стец", "Арамелева" => "О.В. Арамелева"}
   RESPONSIBLES = {"Бойко" => "Л.Н. Бойко", "Кияненко" => "М.А. Кияненко"}
   REGIONS = ["Донецк",
@@ -186,7 +186,7 @@ class Bulletin < ActiveRecord::Base
   def header_daily
     curr_year = ((report_date.month == 12) and (report_date.day == 31)) ? " #{report_date.year} года" : ''
     report_date_next = report_date+1.day
-    return "на сутки с 21 часа #{'%02d' % report_date.day} #{MONTH_NAME2[report_date.month]}#{curr_year} до 21 часа #{'%02d' % report_date_next.day} #{MONTH_NAME2[report_date_next.month]} #{report_date_next.year} года"
+    return "на сутки с 18 часов #{'%02d' % report_date.day} #{MONTH_NAME2[report_date.month]}#{curr_year} до 18 часов #{'%02d' % report_date_next.day} #{MONTH_NAME2[report_date_next.month]} #{report_date_next.year} года"
   end
   def header_period
     rd_2 = report_date+2

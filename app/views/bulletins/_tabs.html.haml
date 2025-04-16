@@ -3,6 +3,7 @@
     - case current_user.role
       - when 'chemist'
         %li= link_to 'Ежедневные', '/bulletins/list?bulletin_type=daily'
+        %li= link_to 'Ежедневные 2', '/bulletins/list?bulletin_type=daily2'
         %li= link_to 'Шторма', '/bulletins/list?bulletin_type=storm'
       - when 'spasatel'
         %li= link_to 'Морские', '/bulletins/list?bulletin_type=sea'
