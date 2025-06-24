@@ -508,19 +508,21 @@ class MeasurementsController < ApplicationController
     @chem_term = ((Time.now.utc + 3.hours).hour / 6) * 6 + 1
     @materials = Material.actual_materials
     @posts = Post.actual.order(:id)
-
+    # syn_term = @chem_term == 1 ? 21 : @chem_term - 4
+    # date_utc = Time.now.utc.strftime("%Y-%m-%d")
+    @weather = get_csdn_weather(@post_id, @date_loc, @chem_term)
     measurement = Measurement.find_by(date: @date_loc, term: @chem_term, post_id: @post_id)
 
     if measurement.present?
       @concentrations = measurement.get_density_and_concentration
-      @weather = measurement.get_weather
+      # @weather = measurement.get_weather
       @error = ''
+      # Rails.logger.debug("My object===========================: #{measurement}")
     else
       @concentrations = []
-      syn_term = @chem_term == 1 ? 21 : @chem_term - 4
-      date_utc = Time.now.utc.strftime("%Y-%m-%d")
       post_name = Post.find(@post_id).name
-      @weather = get_weather_from_synoptic_observatios(@post_id, date_utc, syn_term)
+      # @weather = get_weather_from_synoptic_observatios(@post_id, date_utc, syn_term)
+      # @weather = get_csdn_weather(@post_id, date_utc, syn_term)
       @error = @weather.nil? ? "В базе не найдена погода (или нет давления воздуха) для поста: #{post_name}, дата: #{@date_loc}, срок: #{@chem_term}" : ''
     end
   end
@@ -608,16 +610,20 @@ class MeasurementsController < ApplicationController
   end
 
   def get_weather_and_concentrations
+    # synoptic_term = params[:term].to_i == 1 ? 21 : params[:term].to_i-4
+    # synoptic_date = params[:term].to_i == 1 ? (params[:date].to_date-1.day).strftime("%Y-%m-%d") : params[:date]
+    weather = get_csdn_weather(params[:post_id], params[:date], params[:term])
+    # weather = get_csdn_weather(params[:post_id], synoptic_date, synoptic_term)
     measurement = Measurement.find_by(date: params[:date], term: params[:term].to_i, post_id: params[:post_id].to_i)
     err = ''
     if measurement.present?
       concentrations = measurement.get_density_and_concentration
-      weather = measurement.get_weather
+      # weather = measurement.get_weather
     else
       concentrations = {}
-      synoptic_term = params[:term].to_i == 1 ? 21 : params[:term].to_i-4
-      synoptic_date = params[:term].to_i == 1 ? (params[:date].to_date-1.day).strftime("%Y-%m-%d") : params[:date]
-      weather = get_weather_from_synoptic_observatios(params[:post_id].to_i, synoptic_date, synoptic_term)
+      # synoptic_term = params[:term].to_i == 1 ? 21 : params[:term].to_i-4
+      # synoptic_date = params[:term].to_i == 1 ? (params[:date].to_date-1.day).strftime("%Y-%m-%d") : params[:date]
+      # weather = get_weather_from_synoptic_observatios(params[:post_id].to_i, synoptic_date, synoptic_term)
       post = Post.find(params[:post_id])
       err = "В базе не найдена погода (или нет давления воздуха) для поста: #{post.name}, дата: #{params[:date]}, срок: #{params[:term]}" if weather.nil?
     end
@@ -752,6 +758,39 @@ class MeasurementsController < ApplicationController
       weather[:wind_direction] = observation.wind_direction
       weather[:temperature] = observation.temperature
       weather[:atmosphere_pressure] = observation.pressure_at_station_level
+      weather
+    end
+
+    def get_csdn_weather(post_id, date, term)
+      # synoptic_term = term.to_i == 1 ? 21 : term.to_i-4
+      utc_date = term.to_i == 1 ? (date.to_date-1.day).strftime("%Y-%m-%d") : date
+      # hours = {1=>'00:00', 7=>'06:00', 13=>'12:00',19=>'18:00'}
+      # hours = {1=>'00:00', 7=>'06:00', 13=>'12:00',19=>'18:00'}
+      hours = {1=>'21:00', 7=>'03:00', 13=>'09:00',19=>'15:00'}
+      od = "#{utc_date} #{hours[term.to_i]}"
+      # Rails.logger.debug("date=>#{od}; term=>#{term}; hour=>#{hours[term.to_i]}")
+      date_seconds = od.to_datetime.strftime('%s')
+      station = post_id.to_i<27? 34519:34712
+      query = "http://10.54.1.30:8640/get?limit=10&stations=#{station}&quality=1&source=100&streams=0&hashes=-789901366,1345858116,795976906,1223041370&notbefore=#{date_seconds}&notafter=#{date_seconds}"
+      data = Net::HTTP.get_response(URI(query))
+      rows = JSON.parse(data.body)
+      weather = {}
+      
+      if rows && rows.size>0
+        # Rails.logger.debug("data =>: #{rows.inspect};")
+        rows.each do |w|
+          case w['unit']
+            when 'k'
+              weather['temperature'] = (w['value'].to_f-273.15).round(2)
+            when 'pa'
+              weather['atmosphere_pressure'] = (w['value'].to_i/100).round(2)
+            when "m/s"
+              weather['wind_speed'] = w['value']
+            else
+              weather['wind_direction'] = (w['value'].to_i/10).round(1)
+          end
+        end
+      end
       weather
     end
 

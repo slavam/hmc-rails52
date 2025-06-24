@@ -189,10 +189,12 @@ class Bulletin < ActiveRecord::Base
     return "на сутки с 18 часов #{'%02d' % report_date.day} #{MONTH_NAME2[report_date.month]}#{curr_year} до 18 часов #{'%02d' % report_date_next.day} #{MONTH_NAME2[report_date_next.month]} #{report_date_next.year} года"
   end
   def header_period
-    rd_2 = report_date+2
+    # rd_2 = report_date+2
+    rd_2 = report_date+1
     rd_3 = report_date+3
     curr_year = rd_2.year == rd_3.year ? '' : " #{rd_2.year} года"
-    return "Периодный прогноз погоды на #{'%02d' % rd_2.day}#{start_month(2,3)}#{curr_year} - #{'%02d' % rd_3.day} #{MONTH_NAME2[rd_3.month]} #{rd_3.year} года"
+    return "с 18 часов #{'%02d' % rd_2.day} #{MONTH_NAME2[rd_2.month]}#{curr_year} до 18 часов #{'%02d' % rd_3.day} #{MONTH_NAME2[rd_3.month]} #{rd_3.year} года"
+    # return "Периодный прогноз погоды на #{'%02d' % rd_2.day}#{start_month(2,3)}#{curr_year} - #{'%02d' % rd_3.day} #{MONTH_NAME2[rd_3.month]} #{rd_3.year} года"
   end
   def header_advice
     rd_4 = report_date + 4.day

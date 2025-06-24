@@ -87,7 +87,7 @@ export default class InputMeasurements extends React.Component{
         });
       }.bind(this))
       .fail(function(res) {
-        this.setState({weather: null, error: "Погода не найдена"});
+        this.setState({weather: null, error: "Погода не найдена", concentrations: {}, values: {}, concs: {}});
       }.bind(this));
   }
   handleSubmit(e) {
