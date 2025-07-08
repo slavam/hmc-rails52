@@ -8,6 +8,11 @@ class OtherObservationsController < ApplicationController
     headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   end
 
+  def post_precipitation
+    data = OtherObservation.where("data_type='perc' AND source=?", params[:source]).order(:obs_date, :period).reverse_order.limit(30)
+    render json: {precipitation: data.to_json}
+  end
+
   def new_precipitation
     period = params[:period]
     obs_date = period == 'day'? (Time.now-1.day).strftime("%Y-%m-%d") : Time.now.strftime("%Y-%m-%d")
