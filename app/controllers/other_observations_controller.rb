@@ -10,7 +10,7 @@ class OtherObservationsController < ApplicationController
 
   def post_precipitation
     data = OtherObservation.where("data_type='perc' AND source=?", params[:source]).order(:obs_date, :period).reverse_order.limit(30)
-    render json: {precipitation: data.to_json}
+    render json: {precipitation: data}
   end
 
   def new_precipitation
