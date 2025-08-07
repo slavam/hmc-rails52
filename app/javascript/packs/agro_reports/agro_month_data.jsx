@@ -4,11 +4,11 @@ import AgroDataForm from './agro_data_form';
 import {Line} from 'react-chartjs-2';
 
 const AgroMonthTable = ({observations}) => {
-  let rows = [<tr key="0"><td>Число</td><td>Донецк</td><td>Амвросиевка</td><td>Дебальцево</td><td>Волноваха</td><td>Красноармейск</td><td>Артемовск</td></tr>];
+  let rows = [<tr key="0"><td>Число</td><td>Донецк</td><td>Амвросиевка</td><td>Дебальцево</td><td>Волноваха</td><td>Мариуполь</td></tr>];
   let maxDay = observations.length-1;
   for(var i=1; i<=maxDay; ++i){
     let values = [];
-    [1,2,3,4,8,7].forEach((j) => { // коды станций 
+    [1,2,3,4,5].forEach((j) => { // коды станций 
       let val = observations[i][j] ; //== null ? '': observations[i][j];
       values.push(<td key={j}>{val}</td>);
     });
@@ -87,16 +87,16 @@ export default class AgroMonthData extends React.Component{
     let dataDebaltsevo = [];
     let dataAmvrosievka = [];
     let dataVolnovaha = [];
-    let dataPokrovsk = [];
-    let dataArtmovsk = [];
+    // let dataPokrovsk = [];
+    let dataMariupol = [];
     let daysInMonth = this.state.observations.length-1;
     for(var i=1; i<=daysInMonth; ++i){
       dataDonetsk[i-1] = this.state.observations[i][1];
       dataDebaltsevo[i-1] = this.state.observations[i][3];
       dataAmvrosievka[i-1] = this.state.observations[i][2];
-      dataPokrovsk[i-1] = this.state.observations[i][8];
+      // dataPokrovsk[i-1] = this.state.observations[i][8];
       dataVolnovaha[i-1] = this.state.observations[i][4];
-      dataArtmovsk[i-1] = this.state.observations[i][7];
+      dataMariupol[i-1] = this.state.observations[i][5];
     }
     const lineChartData = {
       labels: Array.from({length: daysInMonth}, (v, k) => k+1),
@@ -122,13 +122,13 @@ export default class AgroMonthData extends React.Component{
           fill: false,
           data: dataAmvrosievka
         },
-        {
-          label: "Красноармейск",
-          backgroundColor: 'rgba(55,209,132,0.2)',
-          borderColor: 'rgba(155,209,132,1)',
-          fill: false,
-          data: dataPokrovsk
-        },
+        // {
+        //   label: "Красноармейск",
+        //   backgroundColor: 'rgba(55,209,132,0.2)',
+        //   borderColor: 'rgba(155,209,132,1)',
+        //   fill: false,
+        //   data: dataPokrovsk
+        // },
         {
           label: "Волноваха",
           backgroundColor: 'rgba(155,99,132,0.2)',
@@ -137,11 +137,11 @@ export default class AgroMonthData extends React.Component{
           data: dataVolnovaha
         },
         {
-          label: "Артемовск",
+          label: "Мариуполь",
           backgroundColor: 'rgba(55,99,32,0.2)',
           borderColor: 'rgba(155,99,32,1)',
           fill: false,
-          data: dataArtmovsk
+          data: dataMariupol
         },
       ]
     };

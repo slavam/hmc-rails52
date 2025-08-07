@@ -35,8 +35,9 @@ class AgroDecObservationsController < ApplicationController
     @stations = []
     Station.all.order(:id).each {|s| @stations[s.id] = s.name}
     
-    observations = AgroDecObservation.where("station_id not in (6, 9) and telegram_num=1 and date_dev like '#{@year}%' and month_obs = ? and day_obs #{dec}", @month.to_i).order(:station_id)
+    observations = AgroDecObservation.where("station_id in (1,2,3,4,5) and telegram_num=1 and date_dev like '#{@year}%' and month_obs = ? and day_obs #{dec}", @month.to_i).order(:station_id)
     telegrams = observations.as_json
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>> #{telegrams.inspect}") 
     @telegrams = []
     telegrams.each do |t|
       t['precipitation_dec'] = precipitation_to_s(t['precipitation_dec'])
@@ -57,6 +58,11 @@ class AgroDecObservationsController < ApplicationController
         t["temperature_dec_min_soil3"] = crop_dec_condition.temperature_dec_min_soil3
         t["height_snow_cover_rail"] = crop_dec_condition.height_snow_cover_rail
       else
+        if t['telegram'].match(/ 111 90.+ 7.... .+91/)
+          index_g7 = t['telegram'].index(' 7')
+          t['percipitation_dec_max'] = t['telegram'][index_g7+2,3].to_i
+          t['percipitation5_dec_day_num'] = t['telegram'][index_g7+5]
+        end
         if t['freezing_dec_day_num'] == 0
           if @decade == 3
             fd = (@year.to_s+'-'+@month.to_s+'-1').to_date

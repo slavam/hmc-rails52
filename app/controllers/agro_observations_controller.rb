@@ -267,7 +267,7 @@ class AgroObservationsController < ApplicationController
     def get_agro_month_data(year, month, factor)
       start_date = (year.to_s+'-'+month.to_s+'-1 00:00:00').to_date
       end_date = start_date+1.month+1.day
-      sql = "SELECT * FROM agro_observations WHERE station_id in (1,2,3,4,7,8) AND telegram_num=1 AND date_dev>'#{start_date} 00:00:00' AND date_dev<'#{end_date} 00:00:00'"
+      sql = "SELECT * FROM agro_observations WHERE station_id in (1,2,3,4,5) AND telegram_num=1 AND date_dev>'#{start_date} 00:00:00' AND date_dev<'#{end_date} 00:00:00'"
       observations = AgroObservation.find_by_sql(sql)
       
       ret = []
