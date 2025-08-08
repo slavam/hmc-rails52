@@ -35,7 +35,7 @@ class AgroDecObservationsController < ApplicationController
     @stations = []
     Station.all.order(:id).each {|s| @stations[s.id] = s.name}
     
-    observations = AgroDecObservation.where("station_id in (1,2,3,4,5) and telegram_num=1 and date_dev like '#{@year}%' and month_obs = ? and day_obs #{dec}", @month.to_i).order(:station_id)
+    observations = AgroDecObservation.where("station_id not in (7,8,10) and telegram_num=1 and date_dev like '#{@year}%' and month_obs = ? and day_obs #{dec}", @month.to_i).order(:station_id)
     telegrams = observations.as_json
     # Rails.logger.debug("My object>>>>>>>>>>>>>>> #{telegrams.inspect}") 
     @telegrams = []
@@ -60,7 +60,8 @@ class AgroDecObservationsController < ApplicationController
       else
         if t['telegram'].match(/ 111 90.+ 7.... .+91/)
           index_g7 = t['telegram'].index(' 7')
-          t['percipitation_dec_max'] = t['telegram'][index_g7+2,3].to_i
+          p_max = t['telegram'][index_g7+2,3].to_i
+          t['percipitation_dec_max'] = p_max>989? ((p_max-990)*0.1).round(1) : p_max
           t['percipitation5_dec_day_num'] = t['telegram'][index_g7+5]
         end
         if t['freezing_dec_day_num'] == 0
@@ -87,14 +88,14 @@ class AgroDecObservationsController < ApplicationController
       finish = ((@year.to_s+'-'+@month.to_s+'-2').to_date+1.month).strftime("%Y-%m-%d")
       sql = " SELECT station_id, avg(temperature_avg_24) temperature_avg_24 
               FROM agro_observations 
-              WHERE station_id not in (6, 9) AND telegram_num=1
+              WHERE station_id not in (7,8,10) AND telegram_num=1
               AND date_dev > '#{start}' AND date_dev < '#{finish}'
               GROUP BY station_id;"
       AgroObservation.find_by_sql(sql).each {|t| @temperature_avg_month[t.station_id] = t.temperature_avg_24}
       
       sql = " SELECT station_id, sum(precipitation_dec) precipitation_dec 
               FROM agro_dec_observations 
-              WHERE station_id not in (6, 9) AND date_dev like '#{@year}%' AND  month_obs=#{@month} AND telegram_num=1 AND precipitation_dec < 990 group by station_id;"
+              WHERE station_id not in (7,8,10) AND date_dev like '#{@year}%' AND  month_obs=#{@month} AND telegram_num=1 AND precipitation_dec < 990 group by station_id;"
       AgroDecObservation.find_by_sql(sql).each {|p| @precipitation_month[p.station_id] = p.precipitation_dec}
     end
 

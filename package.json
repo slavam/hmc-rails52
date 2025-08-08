@@ -19,6 +19,7 @@
     "webpack-cli": "^3.3.12"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object":"^7.21.11",
     "@babel/preset-react": "^7.16.7",
     "postcss-cssnext": "^3.1.1",
     "webpack-dev-server": "^3"
