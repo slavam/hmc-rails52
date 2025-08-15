@@ -58,11 +58,6 @@ class BulletinsController < ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        # if !logged_in?
-        #   user = User.find_by(id: params[:user_id])
-        #   log_in user
-        #   current_user
-        # end
         total = Bulletin.where(bulletin_type: @bulletin_type).count
         render json: {pageSize: page_size, totalCount: total, bulletins: @bulletins}
       end
@@ -181,21 +176,33 @@ class BulletinsController < ApplicationController
         end
         @bulletin.forecast_day_city = bulletin.forecast_day_city
       when 'daily2'
+        radiation = get_radiation_min_max(@bulletin.report_date)
+        @bulletin.storm_hour = radiation[0]
+        @bulletin.storm_minute = radiation[1]
+        @bulletin.summer = (params[:variant] == 'summer')
         @bulletin.storm = bulletin.present? ? bulletin.storm : ''
-        # @bulletin.forecast_day = bulletin.forecast_day
-        # @bulletin.forecast_period = bulletin.forecast_period
-        # @bulletin.forecast_advice = bulletin.forecast_advice
-        # @bulletin.forecast_orientation = bulletin.forecast_orientation
-        # @bulletin.agro_day_review = bulletin.agro_day_review
-        # @bulletin.forecast_day_city = bulletin.forecast_day_city
+        @bulletin.forecast_day = bulletin.forecast_day
+        @bulletin.forecast_period = bulletin.forecast_period
+        @bulletin.forecast_advice = bulletin.forecast_advice
+        @bulletin.forecast_orientation = bulletin.forecast_orientation
+        @bulletin.forecast_sea_period = bulletin.forecast_sea_period
+        @bulletin.forecast_sea_day = bulletin.forecast_sea_day
         prev_date = @bulletin.report_date-1.day
         prev_set = DonetskClimateSet.find_by(mm: prev_date.month, dd: prev_date.day)
         curr_set = DonetskClimateSet.find_by(mm: @bulletin.report_date.month, dd: @bulletin.report_date.day)
         @bulletin.climate_data = (prev_set.present? ? prev_set.t_avg.to_s : '') + '; ' +
           (prev_set.present? ? prev_set.t_max.to_s : '') + '; ' + (prev_set.present? ? prev_set.year_max.to_s : '') + '; '+
           (curr_set.present? ? curr_set.t_min.to_s : '') + '; ' + (curr_set.present? ? curr_set.year_min.to_s : '') + ';'
-        
-      when 'daily'
+        @bulletin.forecast_day_city = bulletin.forecast_day_city
+        @precipitation_day_night = []
+        # @m_d = fill_meteo_data(@bulletin.report_date)
+        @m_d = get_csdn_meteo_data(@bulletin.report_date)
+        @bulletin.meteo_data = ''
+        @m_d.each do |v|
+          @bulletin.meteo_data += v.present? ? "#{v};" : ';'
+        end
+        # Rails.logger.debug("My object+++++++++++++++++: #{params.inspect}")
+      when 'daily' #, 'daily_rf'
         @bulletin.review_start_date = Date.yesterday
         @bulletin.summer = (params[:variant] == 'summer')
         @bulletin.storm = bulletin.storm
@@ -203,7 +210,6 @@ class BulletinsController < ApplicationController
         @bulletin.forecast_period = bulletin.forecast_period
         @bulletin.forecast_advice = bulletin.forecast_advice
         @bulletin.forecast_orientation = bulletin.forecast_orientation
-        @bulletin.meteo_data = '' #[] #bulletin.meteo_data # 20190212 согласовано с синоптиками
         @bulletin.agro_day_review = bulletin.agro_day_review
         prev_date = @bulletin.report_date-1.day
         prev_set = DonetskClimateSet.find_by(mm: prev_date.month, dd: prev_date.day)
@@ -262,14 +268,16 @@ class BulletinsController < ApplicationController
 
   def create
     @bulletin = Bulletin.new(bulletin_params)
+    # Rails.logger.debug("My object+++++++++++++++++>>>>>>>>>>: #{@bulletin.inspect}")
     @bulletin.summer = params[:summer] if params[:summer].present?
+    # params["bulletin"]["summer"] = @bulletin.summer
     if !params[:val_1].nil?
       @bulletin.meteo_data = ''
       (1..n).each do |i|
         @bulletin.meteo_data += params["val_#{i}"].present? ? params["val_#{i}"]+'; ' : ';'
       end
     end
-    if @bulletin.bulletin_type == 'daily'
+    if (@bulletin.bulletin_type == 'daily') or (@bulletin.bulletin_type == 'daily2')
       @bulletin.climate_data = params[:avg_day_temp] + '; ' + params[:max_temp] + '; '+ params[:max_temp_year] + '; ' + params[:min_temp] + '; '+ params[:min_temp_year] + '; '
     end
     @bulletin.curr_number ||= Date.today.yday().to_s+'-tv' if @bulletin.bulletin_type == 'tv'
@@ -290,7 +298,7 @@ class BulletinsController < ApplicationController
       # MeteoMailer.welcome_email(current_user).deliver_now
       respond_to do |format|
         format.html do
-          flash[:success] = "Бюллетень создан"
+          flash[:success] = "Бюллетень создан  #{@bulletin.summer.to_s}"
           redirect_to "/bulletins/list?bulletin_type=#{@bulletin.bulletin_type}"
         end
         format.json do
@@ -310,7 +318,7 @@ class BulletinsController < ApplicationController
     #   end
     # end 20190820
     case @bulletin.bulletin_type
-      when 'daily'
+      when 'daily' #, 'daily_rf'
         # ОН 20190307 выбирать данные из базы каждый раз
         @m_d = fill_meteo_data(@bulletin.report_date)
       when 'sea'
@@ -324,7 +332,7 @@ class BulletinsController < ApplicationController
       when 'hydro2'
         @m_d =fill_hydro2_data(@bulletin.report_date, @bulletin.review_start_date)
       when 'daily2'
-        return
+        @m_d = fill_meteo_data(@bulletin.report_date)
       when 'fire'
         return
       when 'radio', 'radio2'
@@ -437,8 +445,10 @@ class BulletinsController < ApplicationController
           pdf = Sea.new(@bulletin)
           # @png_filename_page1 = @bulletin.png_page_filename(current_user.id, 0)
           # @png_filename_page2 = @bulletin.png_page_filename(current_user.id, 1)
-        when 'daily2'
-          pdf = Daily2.new(@bulletin)
+        when 'daily2' #, 'daily_rf'
+          pdf = Daily2.new(@bulletin,params[:variant])
+        # when 'daily_rf'
+        #   pdf = DailyRf.new(@bulletin)
         when 'holiday'
           pdf = Holiday.new(@bulletin)
         when 'storm', 'sea_storm', 'rw_storm', 'fire_storm'
@@ -525,7 +535,7 @@ class BulletinsController < ApplicationController
         :storm,
         :forecast_day,
         :forecast_day_city,
-        :forecast_period,
+        :forecast_period, 
         :forecast_advice,
         :forecast_orientation,
         :forecast_sea_day,
@@ -567,6 +577,8 @@ class BulletinsController < ApplicationController
           48 #40
         when 'hydro'
           56
+        when 'dayly2'
+          54
         else
           72
       end
@@ -714,8 +726,57 @@ class BulletinsController < ApplicationController
       m_d
     end
 
-    def fill_meteo_data(report_date)
+    def get_csdn_meteo_data(report_date)
       m_d = []
+      stations = '34524,34519,34622,34615,34712,34721'
+      yesterday = report_date-1.day
+      date_seconds = yesterday.to_datetime.strftime('%s').to_i+15*3600
+      query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=100&streams=0&hashes=338158041&notbefore=#{date_seconds}&notafter=#{date_seconds}"
+      data = Net::HTTP.get_response(URI(query))
+      rows = data.body.present? ? JSON.parse(data.body):[]
+      s = stations.split(',')
+      rows.map do |rec|
+        i = s.index(rec['station'].to_s)
+        m_d[i*9] = (rec['value'].to_f-273.15).round() # Макс. вчера днем
+      end
+      date_seconds = report_date.to_datetime.strftime('%s').to_i+3*3600
+      query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=100&streams=0&hashes=1897560571&notbefore=#{date_seconds}&notafter=#{date_seconds}"
+      data = Net::HTTP.get_response(URI(query))
+      rows = data.body.present? ? JSON.parse(data.body):[]
+      rows.map do |rec|
+        i = s.index(rec['station'].to_s)
+        m_d[i*9+1] = (rec['value'].to_f-273.15).round() # Мин. сегодня ночью
+      end
+      date_seconds = yesterday.to_datetime.strftime('%s').to_i+15*3600
+      query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=100&streams=0&hashes=-1152096796&notbefore=#{date_seconds}&notafter=#{date_seconds}"
+      data = Net::HTTP.get_response(URI(query))
+      rows = data.body.present? ? JSON.parse(data.body):[]
+      rows.map do |rec|
+        i = s.index(rec['station'].to_s)
+        m_d[i*9+2] = (rec['value'].to_f-273.15).round(1) # Средняя за вчера
+      end
+      date_seconds = yesterday.to_datetime.strftime('%s').to_i+15*3600
+      query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=100&streams=0&hashes=870717212&notbefore=#{date_seconds}&notafter=#{date_seconds}"
+      data = Net::HTTP.get_response(URI(query))
+      rows = data.body.present? ? JSON.parse(data.body):[]
+      rows.map do |rec|
+        i = s.index(rec['station'].to_s)
+        m_d[i*9+3] = (rec['value'].to_f).round(1) # Осадки за вчерашний день
+      end
+      date_seconds = report_date.to_datetime.strftime('%s').to_i+3*3600
+      query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=100&streams=0&hashes=870717212&notbefore=#{date_seconds}&notafter=#{date_seconds}"
+      data = Net::HTTP.get_response(URI(query))
+      rows = data.body.present? ? JSON.parse(data.body):[]
+      rows.map do |rec|
+        i = s.index(rec['station'].to_s)
+        m_d[i*9+4] = (rec['value'].to_f).round(1) # Осадки за сегодняшнюю ночь
+      end
+      # Rails.logger.debug("My object+++++++++++++++++: #{vals.inspect}")
+      @precipitation_day_night = precipitation_day_night(report_date)
+      m_d
+    end
+
+    def fill_meteo_data(report_date)
       m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
       max_day = SynopticObservation.max_day_temperatures(report_date-1.day)
       push_in_m_d(m_d, max_day,0)
@@ -791,5 +852,19 @@ class BulletinsController < ApplicationController
         end
       end
       precipitation
+    end
+    def get_radiation_min_max(report_date)
+      date_seconds = report_date.to_datetime.strftime('%s').to_i+3600*6
+      stations = '34519,34524,34615,34622,34712,34721'
+      query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=1300&streams=0&hashes=-1881179977&notbefore=#{date_seconds}&notafter=#{date_seconds}"
+      data = Net::HTTP.get_response(URI(query))
+      rows = data.body.present? ? JSON.parse(data.body):[]
+      vals =[]
+      rows.map do |rec|
+        vals << (rec['value'].to_f*100).to_i
+      end
+      # rows.  map{|r| return vals << r['value']}
+      # Rails.logger.debug("My object+++++++++++++++++: #{vals.inspect}")
+      [vals.min, vals.max]
     end
 end

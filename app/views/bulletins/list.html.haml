@@ -4,7 +4,7 @@
   %h3= Bulletin::BULLETIN_TYPES[@bulletin_type]
   - if %w[vip].index(current_user.role)
     - case @bulletin_type
-      - when 'sea', 'daily'
+      - when 'sea', 'daily', 'daily2'
         = link_to 'Создать (Лето)',
           "new_bulletin?variant=summer&bulletin_type=#{@bulletin_type}"
         = link_to '  Создать (Зима)',
@@ -28,6 +28,9 @@
             %th Две страницы
             %th Одна страница
             %th Без метеоданных
+        - elsif @bulletin_type == 'daily2'
+          %th Весь
+          %th Без метеоданных
         - elsif @bulletin_type == 'sea_storm'
           %th Предупреждение
           - if current_user.role != 'guest'
@@ -45,7 +48,7 @@
     %tbody
       - @bulletins.each do |b|
         - variant = ''
-        - if (b.bulletin_type == 'sea') || (b.bulletin_type == 'daily')
+        - if (b.bulletin_type == 'sea') || (b.bulletin_type == 'daily') || (b.bulletin_type == 'daily2')
           - variant = b.summer ? ' (Лето)' : ' (Зима)'
         %tr
           %td= b.report_date.strftime('%d-%m-%Y')
@@ -64,6 +67,11 @@
                 "#{b.id}/bulletin_show.pdf?variant=one_page"
               %td= link_to 'Просмотреть',
                 "#{b.id}/bulletin_show.pdf?variant=short"
+          - elsif @bulletin_type == 'daily2'
+            %td= link_to 'Просмотреть',
+              "#{b.id}/bulletin_show.pdf?variant=all_pages"
+            %td= link_to 'Просмотреть',
+              "#{b.id}/bulletin_show.pdf?variant=short"
           - elsif @bulletin_type == 'sea_storm'
             %td= link_to 'Просмотреть',
               "#{b.id}/bulletin_show.pdf?variant=warning"
