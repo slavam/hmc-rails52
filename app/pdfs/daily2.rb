@@ -105,7 +105,6 @@ class Daily2 < Prawn::Document
       move_down 5
       text "МЕТЕОРОЛОГИЧЕСКИЕ ДАННЫЕ", align: :center, :color => "0000FF"
       text @bulletin.header_mdata, align: :center, :color => "0000FF"
-      # text "за период с 9.00 часов #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]} до 9.00 часов #{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]} #{report_date[0,4]} года", align: :center, :color => "0000FF"
     
       move_down 5
       m_d = []
@@ -123,8 +122,9 @@ class Daily2 < Prawn::Document
       [
         [
           {content: "Название метеостанции", valign: :center, rowspan: 2}, 
-          {content: "Температура воздуха (°C)", colspan:4},
-          {content: "Количество осадков за сутки (мм)", rowspan: 2}, 
+          {content: "Температура воздуха (°C)", colspan:3},
+          {content: "Количество осадков за день (мм)", rowspan: 2}, 
+          {content: "Количество осадков за ночь (мм)", rowspan: 2}, 
           h7, 
           h8, 
           {content: "Максимальная скорость ветра (м/с)", rowspan: 2},
@@ -134,68 +134,66 @@ class Daily2 < Prawn::Document
           "<color rgb='ff0000'>Максимальная вчера днем</color>", 
           "<color rgb='0000ff'>Минимальная сегодня ночью</color>", 
           "Средняя за сутки  #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", 
-          "В 9.00 часов сегодня", 
+          # "В 9.00 часов сегодня", 
 
         ]
       ]
       table_data = []
       # num_row = [3,1,4,7,2,5,0,6]
       num_row = [3,1,4,7,2,5,0,6]
-      is_dnr = false #@bulletin.report_date > Time.parse("2022-05-17")
+      is_dnr = true #false #@bulletin.report_date > Time.parse("2022-05-17")
       stations = is_dnr ? ["Дебальцево", "Донецк", "Амвросиевка", "Волноваха", "Мариуполь", "Седово"] :
         ["Донецк", "Дебальцево", "Амвросиевка", "Седово", "Красноармейск", "Волноваха", "Артемовск", "Мариуполь"]
 
       stations.each.with_index do |s, j|
         a = [s]
-        row = is_dnr ? num_row.index(j) : j
-        m_d[row*9+2] = m_d[row*9+2].gsub('.',',') if m_d[row*9+2].present?
-        if m_d[row*9+4].present?
-          m_d[row*9+4] = m_d[row*9+4].to_f>1 ? m_d[row*9+4].to_f.round : m_d[row*9+4].to_s.tr(".",",")
-        end
+        row = j #is_dnr ? num_row.index(j) : j
+        # m_d[row*9+2] = m_d[row*9+2].gsub('.',',') if m_d[row*9+2].present?
+        # if m_d[row*9+4].present?
+        #   m_d[row*9+4] = m_d[row*9+4].to_f>1 ? m_d[row*9+4].to_f.round : m_d[row*9+4].to_s.tr(".",",")
+        # end
         (0..8).each do |i|
-          a << ((i!=2 and i!=4 and i!=5 and i!=8 and m_d[row*9+i].present?) ? 
+          a << ((i!=2 and i!=5 and i!=8 and m_d[row*9+i].present?) ? 
             ((m_d[row*9+i].to_f<0 and m_d[row*9+i].to_f>-0.5) ? '-0' : m_d[row*9+i].to_f.round) : 
             m_d[row*9+i])
         end
         table_data << a
       end
-      stations.each.with_index do |s, j|
-        # if (j != 4) and (j != 5)
-          a = [s]
-          (0..8).each do |i| 
-            if i==4 and m_d[j*9+4].present? # 20190801 KMA
-              if m_d[j*9+4].to_f>1
-                m_d[j*9+4] = m_d[j*9+4].to_f.round
-              else
-                m_d[j*9+4] = m_d[j*9+4].to_s.tr(".",",")
-              end
-            end
-            m_d[i*9+2] = m_d[i*9+2].gsub('.',',') if m_d[i*9+2].present?
-            a << ((i!=2 and i!=4 and i!=5 and i!=8 and m_d[j*9+i].present?) ? ((m_d[j*9+i].to_f<0 and m_d[j*9+i].to_f>-0.5) ? '-0' : m_d[j*9+i].to_f.round) : m_d[j*9+i])
-          end
-          table_data << a
-        # end
-      end
+      # stations.each.with_index do |s, j|
+      #     a = [s]
+      #     (0..8).each do |i| 
+      #       if i==4 and m_d[j*9+4].present? # 20190801 KMA
+      #         if m_d[j*9+4].to_f>1
+      #           m_d[j*9+4] = m_d[j*9+4].to_f.round
+      #         else
+      #           m_d[j*9+4] = m_d[j*9+4].to_s.tr(".",",")
+      #         end
+      #       end
+      #       m_d[i*9+2] = m_d[i*9+2].gsub('.',',') if m_d[i*9+2].present?
+      #       a << ((i!=2 and i!=4 and i!=5 and i!=8 and m_d[j*9+i].present?) ? ((m_d[j*9+i].to_f<0 and m_d[j*9+i].to_f>-0.5) ? '-0' : m_d[j*9+i].to_f.round) : m_d[j*9+i])
+      #     end
+      #     table_data << a
+      # end
     
       font "OpenSans"
-      table table_content, width: bounds.width, :column_widths => [95, 40, 40, 40, 40, 40, 40, 55, 40],:cell_style => { :inline_format => true } do |t|
+      table table_content, width: bounds.width, :column_widths => [95, 40, 40, 40, 40, 40, 40, 40, 40],:cell_style => { :inline_format => true } do |t|
         t.cells.padding = [1, 1]
         t.cells.align = :center
         t.row(1).column(3).background_color = "FFCCCC"
-        t.row(0).columns(5..8).rotate = 90
+        t.row(0).columns(4..8).rotate = 90
         t.row(1).rotate = 90
         t.before_rendering_page do |p|
           p.row(1).height = 110
         end
       end
-      table table_data, width: bounds.width, :column_widths => [95, 40, 40, 40, 40, 40, 40, 55, 40],:cell_style => { :inline_format => true } do |t|
+      table table_data, width: bounds.width, :column_widths => [95, 40, 40, 40, 40, 40, 40, 40, 40],:cell_style => { :inline_format => true } do |t|
         t.cells.padding = [1, 1]
         t.cells.align = :center
         t.column(0).align = :left
         t.column(3).background_color = "FFCCCC"
         t.column(9).align = :left
         t.column(9).overflow = :shrink_to_fit
-        t.row(3).background_color = "CCCCCC"
+        # t.row(3).background_color = "CCCCCC"
         # t.column(9).size = 8 20190620 Boyko
         # t.column(9).size = 9
         # (0..8).each {|i| 

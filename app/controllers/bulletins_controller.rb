@@ -194,7 +194,7 @@ class BulletinsController < ApplicationController
           (prev_set.present? ? prev_set.t_max.to_s : '') + '; ' + (prev_set.present? ? prev_set.year_max.to_s : '') + '; '+
           (curr_set.present? ? curr_set.t_min.to_s : '') + '; ' + (curr_set.present? ? curr_set.year_min.to_s : '') + ';'
         @bulletin.forecast_day_city = bulletin.forecast_day_city
-        @precipitation_day_night = []
+        # @precipitation_day_night = []
         # @m_d = fill_meteo_data(@bulletin.report_date)
         @m_d = get_csdn_meteo_data(@bulletin.report_date)
         @bulletin.meteo_data = ''
@@ -270,6 +270,8 @@ class BulletinsController < ApplicationController
     @bulletin = Bulletin.new(bulletin_params)
     # Rails.logger.debug("My object+++++++++++++++++>>>>>>>>>>: #{@bulletin.inspect}")
     @bulletin.summer = params[:summer] if params[:summer].present?
+    @bulletin.storm_hour = (params[:storm_hour].to_f*100).to_i
+    @bulletin.storm_minute = (params[:storm_minute].to_f*100).to_i
     # params["bulletin"]["summer"] = @bulletin.summer
     if !params[:val_1].nil?
       @bulletin.meteo_data = ''
@@ -332,7 +334,8 @@ class BulletinsController < ApplicationController
       when 'hydro2'
         @m_d =fill_hydro2_data(@bulletin.report_date, @bulletin.review_start_date)
       when 'daily2'
-        @m_d = fill_meteo_data(@bulletin.report_date)
+        @m_d = get_csdn_meteo_data(@bulletin.report_date)
+        # @m_d = fill_meteo_data(@bulletin.report_date)
       when 'fire'
         return
       when 'radio', 'radio2'
@@ -354,7 +357,7 @@ class BulletinsController < ApplicationController
       end
     end
 
-    if @bulletin.bulletin_type == 'daily'
+    if (@bulletin.bulletin_type == 'daily') || (@bulletin.bulletin_type == 'daily2')
       @bulletin.climate_data = params[:avg_day_temp] + '; ' + params[:max_temp] + '; '+ params[:max_temp_year] + '; ' + params[:min_temp] + '; '+ params[:min_temp_year] + '; '
     end
     if not @bulletin.update bulletin_params
@@ -771,7 +774,42 @@ class BulletinsController < ApplicationController
         i = s.index(rec['station'].to_s)
         m_d[i*9+4] = (rec['value'].to_f).round(1) # Осадки за сегодняшнюю ночь
       end
-      # Rails.logger.debug("My object+++++++++++++++++: #{vals.inspect}")
+      if !@bulletin.summer
+        query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=100&streams=0&hashes=-1660573570&notbefore=#{date_seconds}&notafter=#{date_seconds}"
+        data = Net::HTTP.get_response(URI(query))
+        rows = data.body.present? ? JSON.parse(data.body):[]
+        rows.map do |rec|
+          i = s.index(rec['station'].to_s)
+          m_d[i*9+5] = (rec['value'].to_f).round(1) # Высота снежного покрова
+        end
+      end
+      date_seconds = report_date.to_datetime.strftime('%s').to_i+5*3600
+      query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=2100&streams=0&hashes=-726114236&notbefore=#{date_seconds}&notafter=#{date_seconds}"
+      data = Net::HTTP.get_response(URI(query))
+      rows = data.body.present? ? JSON.parse(data.body):[]
+      rows.map do |rec|
+        t = rec['value']
+        i = s.index(rec['station'].to_s)
+        g7_start = t.index(' 7')
+        m_d[i*9+7] = "#{t[g7_start+2,2].to_i}" # Макс. скорость ветра почвы за сутки
+        if @bulletin.summer
+          g4_start = t.index(' 4')
+          sign = t[g4_start+2]=='0'? '+':'-'
+          val = t[g4_start+3,2].to_i
+          m_d[i*9+5] = "#{sign}#{val}" # Мин темп. почвы за сутки
+          zone91_start = t.index(' 91')
+          zone91 = t[zone91_start,99]
+          z91g3_start = zone91.index(' 3')
+          m_d[i*9+6] = "#{zone91[z91g3_start+4,2]}" # Мин влажность за сутки
+        else
+          k = t =~ / 924\d\d 95\d{3} 4/
+          if k.present?
+            val = t[k+14,3].to_i
+            m_d[i*9+6] = "#{val}" # Глубина промерзания
+          end
+        end
+      end
+      # Rails.logger.debug("My object+++++++++++++++++: #{rows[0].inspect}")
       @precipitation_day_night = precipitation_day_night(report_date)
       m_d
     end

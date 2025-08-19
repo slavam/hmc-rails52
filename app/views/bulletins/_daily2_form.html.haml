@@ -45,6 +45,8 @@
       %tr
         %th Информация по мониторингу загрязнения окружающей среды
         %td= "МАЭД на 09:00 #{@bulletin.report_date.strftime("%Y-%m-%d")} составляет #{(@bulletin.storm_hour.to_f/100).to_f.round(2)}-#{(@bulletin.storm_minute.to_f/100).round(2)} мкЗв/ч"
+        %td= hidden_field_tag :storm_hour, (@bulletin.storm_hour.to_f/100).to_f.round(2)
+        %td= hidden_field_tag :storm_minute, (@bulletin.storm_minute.to_f/100).to_f.round(2)
       
     - report_date_prev = (@bulletin.report_date - 1.day)
     %h3= "Метеорологические данные"

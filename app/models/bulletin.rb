@@ -222,7 +222,8 @@ class Bulletin < ActiveRecord::Base
   def header_mdata
     rd_prev = report_date - 1.day
     curr_year = rd_prev.year == report_date.year ? '' : " #{rd_prev.year} года"
-    return "за период с 9.00 часов #{'%02d' % rd_prev.day} #{MONTH_NAME2[rd_prev.month]}#{curr_year} до 9.00 часов #{'%02d' % report_date.day} #{MONTH_NAME2[report_date.month]} #{report_date.year} года"
+    return "за период с 6.00 часов #{'%02d' % rd_prev.day} #{MONTH_NAME2[rd_prev.month]}#{curr_year} до 6.00 часов #{'%02d' % report_date.day} #{MONTH_NAME2[report_date.month]} #{report_date.year} года"
+    # return "за период с 9.00 часов #{'%02d' % rd_prev.day} #{MONTH_NAME2[rd_prev.month]}#{curr_year} до 9.00 часов #{'%02d' % report_date.day} #{MONTH_NAME2[report_date.month]} #{report_date.year} года"
   end
   def header_review
     rs_date = (review_start_date.present? ? review_start_date : report_date-1.day)
