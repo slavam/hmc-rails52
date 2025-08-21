@@ -75,12 +75,12 @@ class BulletinsController < ApplicationController
     end
     last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307
     case params[:bulletin_type]
-      when 'rw_storm'
-        last_storm = Bulletin.last_this_type 'storm'
-        @bulletin.curr_number = ''
-        if last_storm.present?
-          @bulletin.storm = last_storm.storm
-        end
+      # when 'rw_storm'
+      #   last_storm = Bulletin.last_this_type 'storm'
+      #   @bulletin.curr_number = ''
+      #   if last_storm.present?
+      #     @bulletin.storm = last_storm.storm
+      #   end
       when 'railway'
         if last_daily_bulletin.present?
           @bulletin.storm = last_daily_bulletin.storm
@@ -241,22 +241,22 @@ class BulletinsController < ApplicationController
         @m_d.each do |v|
           @bulletin.meteo_data += v.present? ? "#{v};" : ';'
         end
-      when 'hydro2'
-        last_hydro = Bulletin.last_this_type 'hydro' # have base date
-        @bulletin.review_start_date = (last_hydro.present? && last_hydro.review_start_date.present?) ? last_hydro.review_start_date : Date.today
-        if bulletin.present?
-          @bulletin.curr_number = bulletin.curr_number.to_i + 1
-          @bulletin.meteo_data = bulletin.meteo_data
-          @bulletin.forecast_day = bulletin.forecast_day
-          @bulletin.forecast_period = last_hydro.forecast_period #bulletin.forecast_period if bulletin.forecast_period.present?
-        else
-          @bulletin.curr_number = 1
-        end
-        @m_d = fill_hydro2_data(@bulletin.report_date, @bulletin.review_start_date)
-        @bulletin.meteo_data = ''
-        @m_d.each do |v|
-          @bulletin.meteo_data += v.present? ? "#{v};" : ';'
-        end
+      # when 'hydro2'
+      #   last_hydro = Bulletin.last_this_type 'hydro' # have base date
+      #   @bulletin.review_start_date = (last_hydro.present? && last_hydro.review_start_date.present?) ? last_hydro.review_start_date : Date.today
+      #   if bulletin.present?
+      #     @bulletin.curr_number = bulletin.curr_number.to_i + 1
+      #     @bulletin.meteo_data = bulletin.meteo_data
+      #     @bulletin.forecast_day = bulletin.forecast_day
+      #     @bulletin.forecast_period = last_hydro.forecast_period #bulletin.forecast_period if bulletin.forecast_period.present?
+      #   else
+      #     @bulletin.curr_number = 1
+      #   end
+      #   @m_d = fill_hydro2_data(@bulletin.report_date, @bulletin.review_start_date)
+      #   @bulletin.meteo_data = ''
+      #   @m_d.each do |v|
+      #     @bulletin.meteo_data += v.present? ? "#{v};" : ';'
+      #   end
       when 'alert', 'warning'
         @bulletin.curr_number = 1
         if bulletin.present?
@@ -331,8 +331,8 @@ class BulletinsController < ApplicationController
         @m_d = fill_avtodor_meteo_data(@bulletin.report_date)
       when 'hydro'
         @m_d = fill_hydro_data(@bulletin.report_date)
-      when 'hydro2'
-        @m_d =fill_hydro2_data(@bulletin.report_date, @bulletin.review_start_date)
+      # when 'hydro2'
+      #   @m_d =fill_hydro2_data(@bulletin.report_date, @bulletin.review_start_date)
       when 'daily2'
         @m_d = get_csdn_meteo_data(@bulletin.report_date)
         # @m_d = fill_meteo_data(@bulletin.report_date)
@@ -454,7 +454,7 @@ class BulletinsController < ApplicationController
         #   pdf = DailyRf.new(@bulletin)
         when 'holiday'
           pdf = Holiday.new(@bulletin)
-        when 'storm', 'sea_storm', 'rw_storm', 'fire_storm'
+        when 'storm', 'sea_storm', 'fire_storm'
           variant = params[:variant].present? ? params[:variant] : ''
           pdf = Storm.new(@bulletin, variant)
         when 'radiation'
@@ -495,8 +495,8 @@ class BulletinsController < ApplicationController
           pdf = Clarification.new(@bulletin)
         when 'hydro'
           pdf = Hydro.new(@bulletin)
-        when 'hydro2'
-          pdf = Hydro2.new(@bulletin)
+        # when 'hydro2'
+        #   pdf = Hydro2.new(@bulletin)
         when 'alert', 'warning'
           pdf = Alert.new(@bulletin)
         when 'railway'
@@ -683,28 +683,28 @@ class BulletinsController < ApplicationController
       # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{m_d.inspect}")
     end
 
-    def fill_hydro2_data(report_date, base_date)
-      j = Date.today.month()
-      m_d = []
-      m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
-      base_level = HydroObservation.water_level(base_date)
-      rows = HydroObservation.select(:date_observation, :hydro_post_id, :telegram).
-        where("hydro_type IN ('ЩЭРЕИ','ЩЭРЕХ','ЩЭРЕА') AND date_observation='#{report_date}' AND hour_obs=8 AND hydro_post_id <= 7").order(:hydro_post_id)
-      rows.each do |h|
-        i = (h.hydro_post_id.to_i-1)*8
-        m_d[i] = h.hydro_post.river
-        m_d[i+1] = h.hydro_post.town
-        m_d[i+2] = h.telegram[19,4].to_i # water level
-        m_d[i+3] = h.telegram[28] == '0' ? '0' : (h.telegram[28] == '1' ? "+#{h.telegram[25,3].to_i}": "-#{h.telegram[25,3].to_i}")
-        b_l = base_level[h.hydro_post_id.to_i].present? ? (h.telegram[19,4].to_i-base_level[h.hydro_post_id.to_i]):nil
-        m_d[i+4] = b_l.present? ? (b_l <= 0 ? b_l.to_s : "+#{b_l}"):'' # water level change on base date
-        # m_d[i+5] постоянное значение берется из предыдущего бюллетеня
-        # m_d[i+6] = (m_d[i+2]-m_d[i+5].to_i)>0 ? (m_d[i+2]-m_d[i+5].to_i) : '-' if m_d[i+5].present?
-        # m_d[i+7] постоянное значение берется из предыдущего бюллетеня
-        m_d[i+7] = HydroObservation::LONGTERM_LEVEL_AVG[h.hydro_post_id][j]
-      end
-      m_d
-    end
+    # def fill_hydro2_data(report_date, base_date)
+    #   j = Date.today.month()
+    #   m_d = []
+    #   m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
+    #   base_level = HydroObservation.water_level(base_date)
+    #   rows = HydroObservation.select(:date_observation, :hydro_post_id, :telegram).
+    #     where("hydro_type IN ('ЩЭРЕИ','ЩЭРЕХ','ЩЭРЕА') AND date_observation='#{report_date}' AND hour_obs=8 AND hydro_post_id <= 7").order(:hydro_post_id)
+    #   rows.each do |h|
+    #     i = (h.hydro_post_id.to_i-1)*8
+    #     m_d[i] = h.hydro_post.river
+    #     m_d[i+1] = h.hydro_post.town
+    #     m_d[i+2] = h.telegram[19,4].to_i # water level
+    #     m_d[i+3] = h.telegram[28] == '0' ? '0' : (h.telegram[28] == '1' ? "+#{h.telegram[25,3].to_i}": "-#{h.telegram[25,3].to_i}")
+    #     b_l = base_level[h.hydro_post_id.to_i].present? ? (h.telegram[19,4].to_i-base_level[h.hydro_post_id.to_i]):nil
+    #     m_d[i+4] = b_l.present? ? (b_l <= 0 ? b_l.to_s : "+#{b_l}"):'' # water level change on base date
+    #     # m_d[i+5] постоянное значение берется из предыдущего бюллетеня
+    #     # m_d[i+6] = (m_d[i+2]-m_d[i+5].to_i)>0 ? (m_d[i+2]-m_d[i+5].to_i) : '-' if m_d[i+5].present?
+    #     # m_d[i+7] постоянное значение берется из предыдущего бюллетеня
+    #     m_d[i+7] = HydroObservation::LONGTERM_LEVEL_AVG[h.hydro_post_id][j]
+    #   end
+    #   m_d
+    # end
 
     def fill_hydro_data(report_date)
       j = Date.today.month()

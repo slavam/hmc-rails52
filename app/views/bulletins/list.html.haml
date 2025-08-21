@@ -12,7 +12,7 @@
       - else
         = link_to 'Создать', "new_bulletin?bulletin_type=#{@bulletin_type}"
   - elsif %w[hydro].index(current_user.role)
-    - if %w[hydro hydro2 warning alert].index(@bulletin_type)
+    - if %w[hydro warning alert].index(@bulletin_type)
       = link_to 'Создать', "new_bulletin?bulletin_type=#{@bulletin_type}"
   %br
   = will_paginate
@@ -90,7 +90,7 @@
               %td= link_to 'Отправить письмо', "#{b.id}/bulletin_via_email"
           - else
             %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf"
-          - if %w[vip].index(current_user.role) || (current_user.role == 'hydro' && %w[hydro hydro2 warning].index(@bulletin_type))
+          - if %w[vip].index(current_user.role) || (current_user.role == 'hydro' && %w[hydro warning].index(@bulletin_type))
             %td= link_to 'Изменить', edit_bulletin_path(b.id)
             %td= link_to 'Удалить', b, method: :delete,
               data: { confirm: 'Вы уверены?' }

@@ -34,7 +34,6 @@ class Daily2 < Prawn::Document
         font "OpenSans"
         move_down 10
         text @bulletin.storm
-        # text @bulletin.summer.to_s
       end
     end
     move_down 10
@@ -116,7 +115,6 @@ class Daily2 < Prawn::Document
         h7 = {content: "Высота снежного покрова (см)", rowspan: 2} 
         h8 = {content: "Глубина промерзания (см)", rowspan: 2} 
       end
-          # stations = ["Донецк", "Дебальцево", "Амвросиевка", "Седово", "Артемовск", "Мариуполь"]
       report_date_prev = (@bulletin.report_date - 1.day).to_s(:custom_datetime)
       table_content = 
       [
@@ -134,13 +132,9 @@ class Daily2 < Prawn::Document
           "<color rgb='ff0000'>Максимальная вчера днем</color>", 
           "<color rgb='0000ff'>Минимальная сегодня ночью</color>", 
           "Средняя за сутки  #{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", 
-          # "В 9.00 часов сегодня", 
-
         ]
       ]
       table_data = []
-      # num_row = [3,1,4,7,2,5,0,6]
-      num_row = [3,1,4,7,2,5,0,6]
       is_dnr = true #false #@bulletin.report_date > Time.parse("2022-05-17")
       stations = is_dnr ? ["Дебальцево", "Донецк", "Амвросиевка", "Волноваха", "Мариуполь", "Седово"] :
         ["Донецк", "Дебальцево", "Амвросиевка", "Седово", "Красноармейск", "Волноваха", "Артемовск", "Мариуполь"]
@@ -148,10 +142,6 @@ class Daily2 < Prawn::Document
       stations.each.with_index do |s, j|
         a = [s]
         row = j #is_dnr ? num_row.index(j) : j
-        # m_d[row*9+2] = m_d[row*9+2].gsub('.',',') if m_d[row*9+2].present?
-        # if m_d[row*9+4].present?
-        #   m_d[row*9+4] = m_d[row*9+4].to_f>1 ? m_d[row*9+4].to_f.round : m_d[row*9+4].to_s.tr(".",",")
-        # end
         (0..8).each do |i|
           a << ((i!=2 and i!=5 and i!=8 and m_d[row*9+i].present?) ? 
             ((m_d[row*9+i].to_f<0 and m_d[row*9+i].to_f>-0.5) ? '-0' : m_d[row*9+i].to_f.round) : 
@@ -159,22 +149,7 @@ class Daily2 < Prawn::Document
         end
         table_data << a
       end
-      # stations.each.with_index do |s, j|
-      #     a = [s]
-      #     (0..8).each do |i| 
-      #       if i==4 and m_d[j*9+4].present? # 20190801 KMA
-      #         if m_d[j*9+4].to_f>1
-      #           m_d[j*9+4] = m_d[j*9+4].to_f.round
-      #         else
-      #           m_d[j*9+4] = m_d[j*9+4].to_s.tr(".",",")
-      #         end
-      #       end
-      #       m_d[i*9+2] = m_d[i*9+2].gsub('.',',') if m_d[i*9+2].present?
-      #       a << ((i!=2 and i!=4 and i!=5 and i!=8 and m_d[j*9+i].present?) ? ((m_d[j*9+i].to_f<0 and m_d[j*9+i].to_f>-0.5) ? '-0' : m_d[j*9+i].to_f.round) : m_d[j*9+i])
-      #     end
-      #     table_data << a
-      # end
-    
+      
       font "OpenSans"
       table table_content, width: bounds.width, :column_widths => [95, 40, 40, 40, 40, 40, 40, 40, 40],:cell_style => { :inline_format => true } do |t|
         t.cells.padding = [1, 1]
@@ -193,10 +168,6 @@ class Daily2 < Prawn::Document
         t.column(3).background_color = "FFCCCC"
         t.column(9).align = :left
         t.column(9).overflow = :shrink_to_fit
-        # t.row(3).background_color = "CCCCCC"
-        # t.column(9).size = 8 20190620 Boyko
-        # t.column(9).size = 9
-        # (0..8).each {|i| 
         (0..7).each {|i| 
           if (m_d[i*9+8].present? && width_of(m_d[i*9+8], size: 10)>65) # Boyko, KMA 20190628
             if t.row(i).present? && t.row(i).column(9).present?
@@ -207,13 +178,6 @@ class Daily2 < Prawn::Document
       end
     end
     
-    # move_down 10
-    # font "OpenSans", style: :bold
-    # text "ОБЗОР ПОГОДЫ И АГРОМЕТЕОРОЛОГИЧЕСКИХ УСЛОВИЙ", align: :center, :color => "0000FF"
-    # text "в Донецкой Народной Республике", align: :center, :color => "0000FF"
-    # text @bulletin.header_review, align: :center, :color => "0000FF"
-    # font "OpenSans"
-    # text @bulletin.agro_day_review  
     report_date_prev = (@bulletin.report_date - 1.day).to_s(:custom_datetime)
     
     move_down 5
@@ -233,14 +197,10 @@ class Daily2 < Prawn::Document
     end
     move_down 5
 
-    # bounding_box([5, cursor], :width => bounds.width) do
-    #   text "Время выпуска 13:00", size: 9
-    # end
     table signatures, width: bounds.width, :column_widths => [220,170], cell_style: {:overflow => :shrink_to_fit, size: 10, :inline_format => true } do |t|
       t.cells.border_width = 0
       t.row(2).size = 11
       t.column(1).position = :center
-      # t.row(2).valign = :center
     end
   end  
   def signatures

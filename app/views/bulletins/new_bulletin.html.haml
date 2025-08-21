@@ -64,9 +64,9 @@
   - when 'hydro'
   %h3{ align: :center } Создать гидрологический бюллетень (первичный)
   = render partial: 'hydro_form'
-  - when 'hydro2'
-  %h3{ align: :center } Создать гидрологический бюллетень (вторичный)
-  = render partial: 'hydro2_form'
+  -# - when 'hydro2'
+  -# %h3{ align: :center } Создать гидрологический бюллетень (вторичный)
+  -# = render partial: 'hydro2_form'
   - when 'alert'
   %h3{ align: :center } Создать штормовое оповещение (гидро)
   = render partial: 'alert_form'
@@ -76,9 +76,9 @@
   - when 'railway'
   %h3{ align: :center } Создать прогноз для Железной дороги
   = render partial: 'railway_form'
-  - when 'rw_storm'
-  %h3{ align: :center } Создать штормовое предупреждение для Железной дороги
-  = render partial: 'storm_form'
+  -# - when 'rw_storm'
+  -# %h3{ align: :center } Создать штормовое предупреждение для Железной дороги
+  -# = render partial: 'storm_form'
   - when 'fire_storm'
   %h3{ align: :center } Создать штормовое предупреждение о пожаре
   = render partial: 'storm_form'
