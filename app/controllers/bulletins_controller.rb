@@ -180,22 +180,22 @@ class BulletinsController < ApplicationController
         @bulletin.storm_hour = radiation[0]
         @bulletin.storm_minute = radiation[1]
         @bulletin.summer = (params[:variant] == 'summer')
-        @bulletin.storm = bulletin.present? ? bulletin.storm : ''
-        @bulletin.forecast_day = bulletin.forecast_day
-        @bulletin.forecast_period = bulletin.forecast_period
-        @bulletin.forecast_advice = bulletin.forecast_advice
-        @bulletin.forecast_orientation = bulletin.forecast_orientation
-        @bulletin.forecast_sea_period = bulletin.forecast_sea_period
-        @bulletin.forecast_sea_day = bulletin.forecast_sea_day
+        if bulletin.present?
+          @bulletin.storm = bulletin.storm
+          @bulletin.forecast_day = bulletin.forecast_day
+          @bulletin.forecast_period = bulletin.forecast_period
+          @bulletin.forecast_advice = bulletin.forecast_advice
+          @bulletin.forecast_orientation = bulletin.forecast_orientation
+          @bulletin.forecast_sea_period = bulletin.forecast_sea_period
+          @bulletin.forecast_sea_day = bulletin.forecast_sea_day
+          @bulletin.forecast_day_city = bulletin.forecast_day_city
+        end
         prev_date = @bulletin.report_date-1.day
         prev_set = DonetskClimateSet.find_by(mm: prev_date.month, dd: prev_date.day)
         curr_set = DonetskClimateSet.find_by(mm: @bulletin.report_date.month, dd: @bulletin.report_date.day)
         @bulletin.climate_data = (prev_set.present? ? prev_set.t_avg.to_s : '') + '; ' +
           (prev_set.present? ? prev_set.t_max.to_s : '') + '; ' + (prev_set.present? ? prev_set.year_max.to_s : '') + '; '+
           (curr_set.present? ? curr_set.t_min.to_s : '') + '; ' + (curr_set.present? ? curr_set.year_min.to_s : '') + ';'
-        @bulletin.forecast_day_city = bulletin.forecast_day_city
-        # @precipitation_day_night = []
-        # @m_d = fill_meteo_data(@bulletin.report_date)
         @m_d = get_csdn_meteo_data(@bulletin.report_date)
         @bulletin.meteo_data = ''
         @m_d.each do |v|
@@ -300,7 +300,7 @@ class BulletinsController < ApplicationController
       # MeteoMailer.welcome_email(current_user).deliver_now
       respond_to do |format|
         format.html do
-          flash[:success] = "Бюллетень создан  #{@bulletin.summer.to_s}"
+          flash[:success] = "Бюллетень создан"
           redirect_to "/bulletins/list?bulletin_type=#{@bulletin.bulletin_type}"
         end
         format.json do
@@ -335,7 +335,6 @@ class BulletinsController < ApplicationController
       #   @m_d =fill_hydro2_data(@bulletin.report_date, @bulletin.review_start_date)
       when 'daily2'
         @m_d = get_csdn_meteo_data(@bulletin.report_date)
-        # @m_d = fill_meteo_data(@bulletin.report_date)
       when 'fire'
         return
       when 'radio', 'radio2'
@@ -815,7 +814,7 @@ class BulletinsController < ApplicationController
     end
 
     def fill_meteo_data(report_date)
-      m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
+      m_d = @bulletin.meteo_data.present? ? @bulletin.meteo_data.split(";") : [] # if @bulletin.meteo_data.present?
       max_day = SynopticObservation.max_day_temperatures(report_date-1.day)
       push_in_m_d(m_d, max_day,0)
       min_night = SynopticObservation.min_night_temperatures(@bulletin.report_date)
