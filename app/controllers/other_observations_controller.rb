@@ -13,6 +13,11 @@ class OtherObservationsController < ApplicationController
     render json: {precipitation: data}
   end
 
+  def hydropost_precipitation
+    data = OtherObservation.where("data_type='perc' AND source=?", params[:source]).order(:obs_date, :period).reverse_order.limit(10)
+    render json: data
+  end
+
   def new_precipitation
     period = params[:period]
     obs_date = period == 'day'? (Time.now-1.day).strftime("%Y-%m-%d") : Time.now.strftime("%Y-%m-%d")

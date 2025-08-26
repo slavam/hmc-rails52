@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   get 'other_observations/new_precipitation', to: 'other_observations#new_precipitation'
   post 'other_observations/create_precipitation', to: 'other_observations#create_precipitation'
   get 'other_observations/post_precipitation', to: 'other_observations#post_precipitation'
+  get 'other_observations/hydropost_precipitation', to: 'other_observations#hydropost_precipitation'
   resources :other_observations
   resources :donetsk_climate_sets
   get 'snow_observations/input_snow_telegrams', to: 'snow_observations#input_snow_telegrams'
