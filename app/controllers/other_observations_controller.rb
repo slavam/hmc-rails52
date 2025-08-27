@@ -274,6 +274,17 @@ class OtherObservationsController < ApplicationController
     stations_data
   end
 
+  def monthly_precipitation_data
+    year = params[:year].present? ? params[:year] : Time.now.year.to_s
+    month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
+    last_day = Time.days_in_month(month.to_i, year.to_i).to_s
+    start_date = year+'-'+month+'-01'
+    end_date = year+'-'+month+'-'+last_day
+    rows = OtherObservation.select("id, obs_date, source, period, value, description").
+      where("obs_date >= ? AND obs_date <= ? AND data_type='perc'", start_date, end_date).order(:obs_date, :source, :period)
+    render json: rows
+  end
+
   def monthly_precipitation
     @year = params[:year].present? ? params[:year] : Time.now.year.to_s
     @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
