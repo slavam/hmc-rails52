@@ -11,8 +11,8 @@ class Daily2 < Prawn::Document
     })
     y_pos = cursor
     font "OpenSans"
-    # ugms_header
-    bulletin_header(y_pos)
+    ugms_header_gmc
+    # bulletin_header(y_pos)
     # image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.23
     # image "./app/assets/images/roshydromet.png", :scale => 0.085 #, at: [0, y_pos-50]
     # bounding_box([85, y_pos], width: bounds.width-85) do
@@ -71,7 +71,7 @@ class Daily2 < Prawn::Document
     move_down 10
     text "Дежурный синоптик #{@bulletin.synoptic1}", align: :right
 
-    start_new_page(right_margin: 80, left_margin: 30)
+    start_new_page(right_margin: 50, left_margin: 80)
     yesterday = @bulletin.report_date-1
     move_down 20
     font "OpenSans", style: :bold
@@ -96,7 +96,7 @@ class Daily2 < Prawn::Document
     font "OpenSans"
     text "По данным измерений метеостанций на территории Донецкой Народной Республики мощность амбиентного эквивалента дозы гамма-излучения (МАЭД) на 09:00 часов #{'%02d' % @bulletin.report_date.day} #{Bulletin::MONTH_NAME2[@bulletin.report_date.month]} #{@bulletin.report_date.year} года составляет #{@bulletin.storm_hour}-#{@bulletin.storm_minute} мкЗв/ч, что не превышает естественный радиационный фон данной местности."
     if num_pages == 'all_pages'
-      start_new_page(right_margin: 80, left_margin: 30)
+      start_new_page(right_margin: 50, left_margin: 80)
       font "OpenSans", style: :bold
       text "Приложение к Гидрометеорологическому Бюллетеню", align: :center, :color => "0000FF"
       text "от #{@bulletin.report_date_as_str} № #{@bulletin.curr_number}", align: :center, :color => "0000FF"
@@ -180,12 +180,13 @@ class Daily2 < Prawn::Document
     
     report_date_prev = (@bulletin.report_date - 1.day).to_s(:custom_datetime)
     
-    move_down 5
+    # move_down 5
     font "OpenSans", style: :bold
     # c_d = []
     c_d = ['1','2','3','4','5','6','7']
     c_d = @bulletin.climate_data.split(";") if @bulletin.climate_data.present?
     month_d = @bulletin.start_month(-1,0)
+    move_down 20
     text "Климатические данные по г. Донецку за #{report_date_prev[8,2]}#{month_d}-#{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]}", align: :center, :color => "0000FF"
     text "С 1945 по #{report_date[0,4]} гг. по данным Гидрометеорологического центра", align: :center, :color => "0000FF"
     table_content = [["Средняя за сутки температура воздуха (норма)", "#{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", c_d[0].present? ? c_d[0].strip.gsub('.',',')+'°' : '', ""],
@@ -206,6 +207,7 @@ class Daily2 < Prawn::Document
   def signatures
 	  chief_descr = @bulletin.chief_2_pdf
     responsible_descr = @bulletin.responsible_2_pdf
+    move_down 10
     [ ["Ответственный за выпуск:","",""],
       [responsible_descr[:position], {:image => responsible_descr[:image_name], scale: 0.6, :vposition => :center}, {:padding => [16,5],:content => responsible_descr[:name]}],
       [{:padding => [10,5],:content => chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]

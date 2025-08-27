@@ -19,4 +19,15 @@ module HeadersDoc
     text Bulletin::ADDRESS, align: :center, size: 9
     text 'ОГРН 1239300003909 ИНН 9303033080 КПП 930301001', align: :center, size: 10
   end
+
+  def ugms_header_gmc
+    image "./app/assets/images/logo2015_2.png", :scale => 0.15, position: :center
+    move_down 5
+    text Bulletin::HEAD1, align: :center, size: 10
+    text Bulletin::HEAD2, align: :center, size: 10, style: :bold
+    text Bulletin::HEAD3, align: :center, size: 10
+    text Bulletin::HEAD4, align: :center, size: 10, style: :bold
+    text Bulletin::ADDRESS3, align: :center, size: 9
+    # text 'ОГРН 1239300003909 ИНН 9303033080 КПП 930301001', align: :center, size: 10
+  end
 end
