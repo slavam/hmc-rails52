@@ -143,9 +143,10 @@ class Daily2 < Prawn::Document
         a = [s]
         row = j #is_dnr ? num_row.index(j) : j
         (0..8).each do |i|
-          a << ((i!=2 and i!=5 and i!=8 and m_d[row*9+i].present?) ? 
-            ((m_d[row*9+i].to_f<0 and m_d[row*9+i].to_f>-0.5) ? '-0' : m_d[row*9+i].to_f.round) : 
-            m_d[row*9+i])
+          a << m_d[row*9+i]
+          # a << ((i==3 or i==4) and m_d[row*9+i].present? and m_d[row*9+i]=='0.0') ? '': m_d[row*9+i]
+          #   ((m_d[row*9+i].to_f<0 and m_d[row*9+i].to_f>-0.5) ? '-0' : m_d[row*9+i].to_f.round) : 
+          #   m_d[row*9+i])
         end
         table_data << a
       end

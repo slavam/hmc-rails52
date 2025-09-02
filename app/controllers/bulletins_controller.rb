@@ -739,15 +739,25 @@ class BulletinsController < ApplicationController
       s = stations.split(',')
       rows.map do |rec|
         i = s.index(rec['station'].to_s)
-        m_d[i*9] = (rec['value'].to_f-273.15).round() # Макс. вчера днем
+        m_d[i*9] = (rec['value'].to_f-273.15).round(1) # Макс. вчера днем
       end
       date_seconds = report_date.to_datetime.strftime('%s').to_i+3*3600
       query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=100&streams=0&hashes=1897560571&notbefore=#{date_seconds}&notafter=#{date_seconds}"
       data = Net::HTTP.get_response(URI(query))
       rows = data.body.present? ? JSON.parse(data.body):[]
+
+      date_seconds = report_date.to_datetime.strftime('%s').to_i+6*3600
+      query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=100&streams=0&hashes=1897560571&notbefore=#{date_seconds}&notafter=#{date_seconds}"
+      data = Net::HTTP.get_response(URI(query))
+      rows6 = data.body.present? ? JSON.parse(data.body):[]
       rows.map do |rec|
         i = s.index(rec['station'].to_s)
-        m_d[i*9+1] = (rec['value'].to_f-273.15).round() # Мин. сегодня ночью
+        rows6.select{|r| r['station']==rec['station']}
+        if rows6[0].present? and (rows6[0]['value'].to_f<rec['value'].to_f)
+          m_d[i*9+1] = (rows6[0]['value'].to_f-273.15).round(1)
+        else
+          m_d[i*9+1] = (rec['value'].to_f-273.15).round(1) # Мин. сегодня ночью
+        end
       end
       date_seconds = yesterday.to_datetime.strftime('%s').to_i+15*3600
       query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=100&streams=0&hashes=-1152096796&notbefore=#{date_seconds}&notafter=#{date_seconds}"
@@ -763,7 +773,9 @@ class BulletinsController < ApplicationController
       rows = data.body.present? ? JSON.parse(data.body):[]
       rows.map do |rec|
         i = s.index(rec['station'].to_s)
-        m_d[i*9+3] = (rec['value'].to_f).round(1) # Осадки за вчерашний день
+        value = (rec['value']=='-0.1'? '0.0':(rec['value']=='0'? '':rec['value'].to_f.round(1)))
+        m_d[i*9+3] = value
+        # m_d[i*9+3] = (rec['value'].to_f).round(1) # Осадки за вчерашний день
       end
       date_seconds = report_date.to_datetime.strftime('%s').to_i+3*3600
       query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=100&streams=0&hashes=870717212&notbefore=#{date_seconds}&notafter=#{date_seconds}"
@@ -771,7 +783,9 @@ class BulletinsController < ApplicationController
       rows = data.body.present? ? JSON.parse(data.body):[]
       rows.map do |rec|
         i = s.index(rec['station'].to_s)
-        m_d[i*9+4] = (rec['value'].to_f).round(1) # Осадки за сегодняшнюю ночь
+        value = (rec['value']=='-0.1'? '0.0':(rec['value']=='0'? '':rec['value'].to_f.round(1)))
+        m_d[i*9+4] = value
+        # m_d[i*9+4] = (rec['value'].to_f).round(1) # Осадки за сегодняшнюю ночь
       end
       if !@bulletin.summer
         query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=100&streams=0&hashes=-1660573570&notbefore=#{date_seconds}&notafter=#{date_seconds}"
@@ -790,10 +804,10 @@ class BulletinsController < ApplicationController
         t = rec['value']
         i = s.index(rec['station'].to_s)
         g7_start = t.index(' 7')
-        m_d[i*9+7] = "#{t[g7_start+2,2].to_i}" # Макс. скорость ветра почвы за сутки
+        m_d[i*9+7] = "#{t[g7_start+2,2].to_i}" # Макс. скорость ветра
         if @bulletin.summer
           g4_start = t.index(' 4')
-          sign = t[g4_start+2]=='0'? '+':'-'
+          sign = t[g4_start+2]=='0'? '':'-'
           val = t[g4_start+3,2].to_i
           m_d[i*9+5] = "#{sign}#{val}" # Мин темп. почвы за сутки
           zone91_start = t.index(' 91')
