@@ -94,7 +94,9 @@ class Daily2 < Prawn::Document
     font "OpenSans", style: :bold
     text "ИНФОРМАЦИЯ ПО МОНИТОРИНГУ ЗАГРЯЗНЕНИЯ ОКРУЖАЮЩЕЙ СРЕДЫ", align: :center
     font "OpenSans"
-    text "По данным измерений метеостанций на территории Донецкой Народной Республики мощность амбиентного эквивалента дозы гамма-излучения (МАЭД) на 09:00 часов #{'%02d' % @bulletin.report_date.day} #{Bulletin::MONTH_NAME2[@bulletin.report_date.month]} #{@bulletin.report_date.year} года составляет #{@bulletin.storm_hour}-#{@bulletin.storm_minute} мкЗв/ч, что не превышает естественный радиационный фон данной местности."
+    text "По данным измерений метеостанций на территории Донецкой Народной Республики мощность амбиентного эквивалента дозы гамма-излучения (МАЭД) на 09:00 часов "+
+      "<b>#{'%02d' % @bulletin.report_date.day} #{Bulletin::MONTH_NAME2[@bulletin.report_date.month]} #{@bulletin.report_date.year}</b>"+
+      " года составляет <b>#{@bulletin.storm_hour}-#{@bulletin.storm_minute} мкЗв/ч</b>, что не превышает естественный радиационный фон данной местности.", inline_format: true
     if num_pages == 'all_pages'
       start_new_page(right_margin: 50, left_margin: 80)
       font "OpenSans", style: :bold
