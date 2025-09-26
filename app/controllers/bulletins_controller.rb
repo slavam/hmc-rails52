@@ -1,7 +1,7 @@
 class BulletinsController < ApplicationController
 #  before_action :cors_preflight_check
 #  before_action :logged_in_user, only: [:list] # 20190819
-  before_action :find_bulletin, :only => [:bulletin_show, :show, :destroy, :print_bulletin, :edit, :update, :bulletin_via_email]
+  before_action :find_bulletin, :only => [:qr_check, :bulletin_show, :show, :destroy, :print_bulletin, :edit, :update, :bulletin_via_email]
 
   skip_before_action :verify_authenticity_token, :only => [:create]
 #  def cors_preflight_check
@@ -10,6 +10,16 @@ class BulletinsController < ApplicationController
 #    headers['Access-Control-Request-Method'] = '*'
 #    headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
 #  end
+
+  def qr_check
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {bulletin: @bulletin}
+      end
+    end
+  end
+
   def get_day_forecast
     bulletin = Bulletin.find_by(report_date: params[:report_date])
     respond_to do |format|

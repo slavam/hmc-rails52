@@ -117,6 +117,43 @@ class Bulletin < ActiveRecord::Base
             "Володарский, Новоазовский",
             "Мариуполь, Мангуш"]
 
+def self.generate_qr_code(data, size: 200)
+    qrcode = RQRCode::QRCode.new(data)
+
+    # SVG QR-code
+    qrcode.as_svg(
+      offset: 0,
+      color: '000',
+      shape_rendering: 'crispEdges',
+      module_size: 6,
+      standalone: true,
+      use_path: true
+    )
+  end
+
+  def self.generate_qr_code_png(data, size: 200)
+    qrcode = RQRCode::QRCode.new(data)
+    png = qrcode.as_png(
+      bit_depth: 1,
+      border_modules: 4,
+      color_mode: ChunkyPNG::COLOR_GRAYSCALE,
+      color: 'black',
+      file: nil,
+      fill: 'white',
+      moduule_px_size: 6,
+      resize_exactly_to: false,
+      resize_gte_to: false,
+      size: size
+    )
+
+    #save to file
+    temp_file = Tempfile.new(['qrcode', '.png'])
+    temp_file.binmode
+    temp_file.write(png.to_s)
+    temp_file.close 
+
+    temp_file.path
+  end            
   # mount_uploader :picture, PictureUploader
   def pdf_filename(user_id)
     "Bulletin_#{self.bulletin_type}_#{user_id}.pdf"

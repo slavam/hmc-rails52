@@ -1,0 +1,18 @@
+.container
+  %h3 Проверка подлинности документа
+  %table{class: "table table-bordered"}
+    %tr
+      %th Тип документа
+      %td= Bulletin::BULLETIN_TYPES[@bulletin.bulletin_type] # Бюллетен
+    %tr
+      %th Дата документа
+      %td= @bulletin.report_date.strftime("%Y-%m-%d")
+    %tr
+      %th Номер документа
+      %td= @bulletin.curr_number
+    %tr
+      %th Исполнитель
+      %td= @bulletin.responsible
+    %tr
+      %th Подписал
+      %td= @bulletin.chief

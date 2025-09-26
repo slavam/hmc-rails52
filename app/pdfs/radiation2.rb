@@ -53,6 +53,9 @@ include HeadersDoc
     end
     avg = "%.2f" % (avg / n.to_f).to_f.round(2) if n > 0
     text "Естественный радиационный фон в Донецкой Народной Республике в среднем составил #{avg} мкЗв/ч."
+    ip = Rails.env.production? ? "31.133.32.14" : "10.54.1.6"
+    qr_png_path = Bulletin.generate_qr_code_png("#{ip}:8080/bulletins/#{@bulletin.id}/qr_check")
+    image qr_png_path, at: [0, 230], width: 80, height: 80
     bounding_box([0, 300], width: bounds.width) do
       # text "Ответственный за выпуск:"
       table signatures, width: bounds.width, column_widths:  [250, 150], cell_style: {overflow: :shrink_to_fit, inline_format: true } do |t|

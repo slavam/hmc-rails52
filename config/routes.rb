@@ -169,6 +169,7 @@ Rails.application.routes.draw do
   get 'bulletins/bulletins_select', to: 'bulletins#bulletins_select'
   get 'bulletins/:id/bulletin_via_email', to: 'bulletins#bulletin_via_email'
   get 'bulletins/get_day_forecast', to: 'bulletins#get_day_forecast'
+  get 'bulletins/:id/qr_check', to: 'bulletins#qr_check'
   resources :bulletins
     delete 'pollution_values/delete_value/:id', to: 'pollution_values#delete_value'
   get 'pollution_values/background_concentrations', to: 'pollution_values#background_concentrations'

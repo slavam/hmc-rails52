@@ -22,6 +22,7 @@ gem 'bootstrap-will_paginate', '~> 1.0'
 
 # gem 'mysql2', '~> 0.3.11'
 gem 'mysql2', '~> 0.5.1'
+gem 'rqrcode'
 
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
