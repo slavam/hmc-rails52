@@ -593,7 +593,7 @@ class SynopticObservationsController < ApplicationController
     today = Time.now
     @year = params[:year].present? ? params[:year] : today.year.to_s
     @month = params[:month].present? ? params[:month] : today.month.to_s.rjust(2, '0')
-    if @month.to_i == today.month
+    if (@month.to_i == today.month) && (@year.to_i == today.year)
       if today.hour >= 1
         last_day = (today.day-1).to_s.rjust(2,'0') # не брать текущий день ЛМБ 20191001
       else
@@ -613,7 +613,7 @@ class SynopticObservationsController < ApplicationController
       key = t.date.day.to_s.rjust(2, '0')+'-'+t.station_id.to_s.rjust(2, '0')
       @temperatures[key] = t.temperature
     }
-    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@temperatures.inspect}")
+    
     respond_to do |format|
       format.html
       format.pdf do
@@ -625,6 +625,86 @@ class SynopticObservationsController < ApplicationController
         render json: {temperatures: @temperatures}
       end
     end
+  end
+
+  def teploenergo5_csdn
+    today = Time.now
+    @year = params[:year].present? ? params[:year] : today.year.to_s
+    @month = params[:month].present? ? params[:month] : today.month.to_s.rjust(2, '0')
+    if (@month.to_i == today.month) && (@year.to_i == today.year)
+      if today.hour >= 1
+        last_day = (today.day-1).to_s.rjust(2,'0') # не брать текущий день ЛМБ 20191001
+      else
+        if today.day > 1
+          last_day = (today.day-2).to_s.rjust(2,'0') # до часа ночи берем позавчерашний день 20191010 КМА
+        else
+          last_day = '00'
+        end
+      end
+    else
+      last_day = Time.parse("#{@year}-#{@month}-01").end_of_month.day.to_s
+    end
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@temperatures.inspect}")
+    @csdn_temp = csdn_month_avg_temp @month, @year, last_day
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{@csdn_temp.inspect}")
+    respond_to do |format|
+      format.html
+      format.pdf do
+        variant = params[:variant]
+        pdf = Teploenergo5.new(@csdn_temp, @year, @month, variant)
+        send_data pdf.render, filename: "teploenergo5_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      end
+      format.json do
+        render json: {csdnTemp: @csdn_temp}
+      end
+    end
+  end
+
+  def csdn_month_avg_temp month, year, last_day
+    absolute_zero = 273.15
+    stations = '34519,34524,34622,34615,34712,34721'
+    points = '0,10800,21600,32400,43200,54000,64800,75600'
+    date1 = "#{year}-#{month}-01"
+    date2 = year+'-'+month+'-'+last_day
+    date1_seconds = date1.to_datetime.strftime('%s').to_i
+    date2_seconds = date2.to_datetime.strftime('%s').to_i+22*3600
+    query = "http://10.54.1.30:8640/get?stations=#{stations}&quality=1&source=100,10202&streams=0,1&hashes=795976906,1451382247&point=#{points}&notbefore=#{date1_seconds}&notafter=#{date2_seconds}"
+    data = Net::HTTP.get_response(URI(query))
+    recs = data.body.present? ? JSON.parse(data.body):[]
+    s = stations.split(',')
+    p = points.split(',')
+    row = Array.new(s.size)
+    recs.map do |e|
+      i = s.index(e['station'].to_s)
+      t = p.index(e['point'].to_s)
+      j = Time.at(e['moment']-10800).day
+      row[i] ||= Array.new(last_day.to_i)
+      row[i][j] ||=Array.new(8)
+      val = (e['value'].to_f-absolute_zero).round(1)
+      if e['meas_hash'] == 795976906 # telegram
+        if row[i][j][t].nil? or (row[i][j][t]!=val)
+          row[i][j][t]=val
+        end
+      else # AMK
+        if row[i][j][t].nil?
+          row[i][j][t]=val
+        end
+      end
+    end
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{row.inspect}")
+    avg = Array.new(s.size)
+    for i in 0..s.size-1 do
+      avg[i] ||= Array.new(last_day.to_i+1)
+      avg[i][0] = s[i]
+      for j in 1..last_day.to_i
+        if(row[i].present? && row[i][j].present?)
+          sum = row[i][j].compact.sum
+          n_not_nil = 8-row[i][j].count(nil)
+          avg[i][j]= (sum/n_not_nil).to_f.round(1)
+        end
+      end
+    end
+    avg
   end
 
   def temperatures_12local
