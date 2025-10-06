@@ -59,11 +59,11 @@ export default class Teploenergo5CSDN extends React.Component{
   render(){
     const MONTHS = ['', 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
     let endDate = this.state.daysInMonth+' '+MONTHS[+this.state.month]+' '+this.state.year;
-    let desiredLink = "/synoptic_observations/teploenergo5.pdf?year="+this.state.year+"&month="+this.state.month;
+    let desiredLink = "/synoptic_observations/teploenergo5_csdn.pdf?year="+this.state.year+"&month="+this.state.month;
     return(
       <div>
         <MonthYearForm year={this.state.year} month={this.state.month} onFormSubmit={this.handleFormSubmit} />
-        <h5>Средняя за сутки (00:01-24:00) температура воздуха (°С) с 01 по {endDate} года на метеостанциях Донецкой Народной Республики</h5>
+        <h5>Средняя за сутки (00:01-24:00) температура воздуха (°С) с 01 по {endDate} года на метеостанциях Донецкой Народной Республики (ЦСДН)</h5>
         
         <ResultTableCSDN csdnTemp={this.state.csdnTemp} maxDay={this.state.daysInMonth}/>
         <a href={desiredLink+'&variant=chief'} title='Подписал начальник'>Распечатать</a>
