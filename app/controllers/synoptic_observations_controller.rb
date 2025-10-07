@@ -399,6 +399,63 @@ class SynopticObservationsController < ApplicationController
     end
   end
 
+  def amvrosievka_daily_avg_temp_csdn
+    # @city = params[:city].present? ? 'A':''
+    @year = params[:year].present? ? params[:year] : Time.now.year.to_s
+    @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
+    first_day = '01'
+    last_day = get_last_day(@year, @month)
+    # sql = "select date, ROUND(avg(temperature),1) temperature from synoptic_observations where date >= '#{@year}-#{@month}-#{first_day}' and date <= '#{@year}-#{@month}-#{last_day}' and station_id = 2 group by date;"
+    # db_temperatures = SynopticObservation.find_by_sql(sql)
+    @temperatures = []
+    absolute_zero = 273.15
+    points = '0,10800,21600,32400,43200,54000,64800,75600'
+    date1 = "#{@year}-#{@month}-01"
+    date2 = @year+'-'+@month+'-'+last_day
+    date1_seconds = date1.to_datetime.strftime('%s').to_i
+    date2_seconds = date2.to_datetime.strftime('%s').to_i+22*3600
+    query = "http://10.54.1.30:8640/get?stations=34622&quality=1&source=100,10202&streams=0,1&hashes=795976906,1451382247&point=#{points}&notbefore=#{date1_seconds}&notafter=#{date2_seconds}"
+    data = Net::HTTP.get_response(URI(query))
+    recs = data.body.present? ? JSON.parse(data.body):[]
+    p = points.split(',')
+    row ||= Array.new(last_day.to_i)
+    recs.map do |e|
+      t = p.index(e['point'].to_s)
+      j = Time.at(e['moment']-10800).day
+      row[j] ||=Array.new(8)
+      val = (e['value'].to_f-absolute_zero).round(1)
+      if e['meas_hash'] == 795976906 # telegram
+        if row[j][t].nil? or (row[j][t]!=val)
+          row[j][t]=val
+        end
+      else # AMK
+        if row[j][t].nil?
+          row[j][t]=val
+        end
+      end
+    end
+    @temperatures = Array.new(last_day.to_i+1)
+    for j in 1..last_day.to_i+1
+      if(row[j].present?)
+        sum = row[j].compact.sum
+        n_not_nil = 8-row[j].count(nil)
+        @temperatures[j]= (sum/n_not_nil).to_f.round(1)
+      end
+    end
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{avg.inspect}")
+    
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = AmvrosievkaTemp.new(@temperatures, @year, @month, params[:chief], params[:responsible])
+        send_data pdf.render, filename: "amvrosievka_temp_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      end
+      format.json do
+        render json: {temperatures: @temperatures}
+      end
+    end
+  end
+
   def energy_1510
     today = Time.now
     @year = params[:year].present? ? params[:year] : today.year.to_s
@@ -437,6 +494,91 @@ class SynopticObservationsController < ApplicationController
         render json: {temperatures: @temperatures}
       end
     end
+  end
+
+  def energy_1510_csdn
+    today = Time.now
+    @year = params[:year].present? ? params[:year] : today.year.to_s
+    @month = params[:month].present? ? params[:month] : today.month.to_s.rjust(2, '0')
+    last_day = ''
+    first_day = '01'
+    if (@month.to_i == today.month) and (@year.to_i == today.year)
+      if today.hour >= 1
+        last_day = (today.day-1).to_s.rjust(2,'0') # не брать текущий день ЛМБ 20191001
+      else
+        if today.day > 1
+          last_day = (today.day-2).to_s.rjust(2,'0') # до часа ночи берем позавчерашний день 20191010 КМА
+        else
+          last_day = '00'
+        end
+      end
+    else
+      last_day = Time.parse("#{@year}-#{@month}-01").end_of_month.day.to_s
+    end
+    
+    @temperatures = avg_temp_do_am @year, @month, last_day
+    
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = Energy.new(@temperatures, @year, @month, params[:chief], params[:responsible])
+        send_data pdf.render, filename: "energy2_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      end
+      format.json do
+        render json: {temperatures: @temperatures}
+      end
+    end
+  end
+
+  def avg_temp_do_am year, month, last_day
+    absolute_zero = 273.15
+    points = '0,10800,21600,32400,43200,54000,64800,75600'
+    date1 = "#{year}-#{month}-01"
+    date2 = year+'-'+month+'-'+last_day
+    date1_seconds = date1.to_datetime.strftime('%s').to_i
+    date2_seconds = date2.to_datetime.strftime('%s').to_i+22*3600
+    query = "http://10.54.1.30:8640/get?stations=34519,34622&quality=1&source=100,10202&streams=0,1&hashes=795976906,1451382247&point=#{points}&notbefore=#{date1_seconds}&notafter=#{date2_seconds}"
+    data = Net::HTTP.get_response(URI(query))
+    recs = data.body.present? ? JSON.parse(data.body):[]
+    p = points.split(',')
+    row = Array.new(2)
+    recs.map do |e|
+      i = e['station'] == 34519 ? 0 : 1
+      t = p.index(e['point'].to_s)
+      j = Time.at(e['moment']-10800).day
+      row[i] ||= Array.new(last_day.to_i)
+      row[i][j] ||=Array.new(8)
+      val = (e['value'].to_f-absolute_zero).round(1)
+      if e['meas_hash'] == 795976906 # telegram
+        if row[i][j][t].nil? or (row[i][j][t]!=val)
+          row[i][j][t]=val
+        end
+      else # AMK
+        if row[i][j][t].nil?
+          row[i][j][t]=val
+        end
+      end
+    end
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{row.inspect}")
+    avg = Array.new(2)
+    for i in 0..1 do
+      avg[i] ||= Array.new(last_day.to_i+1)
+      avg[i][0] = i == 0 ? '34519' : '34622'
+      for j in 1..last_day.to_i
+        if(row[i].present? && row[i][j].present?)
+          sum = row[i][j].compact.sum
+          n_not_nil = 8-row[i][j].count(nil)
+          avg[i][j]= (sum/n_not_nil).to_f.round(1)
+        end
+      end
+    end
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{avg.inspect}")
+    res = Array.new(last_day.to_i)
+    for j in 1..last_day.to_i do
+      res[j] = ((avg[0][j]+avg[1][j])/2).round(1)
+    end
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{res.inspect}")
+    res
   end
 
   def energy

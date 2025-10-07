@@ -1,0 +1,4 @@
+.container
+  #root
+  #init-params{ temperatures: @temperatures.to_json, year: @year.to_json, month: @month.to_json, city: @city.to_json}
+  = javascript_pack_tag 'heat_donbass/amvrosievka_daily_avg_temp_csdn'
