@@ -793,7 +793,7 @@ class SynopticObservationsController < ApplicationController
       format.html
       format.pdf do
         variant = params[:variant]
-        pdf = Teploenergo5CSDN.new(@csdn_temp, @year, @month, variant)
+        pdf = Teploenergo5Csdn.new(@csdn_temp, @year, @month, variant)
         send_data pdf.render, filename: "teploenergo5_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
       end
       format.json do

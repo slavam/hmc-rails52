@@ -1,4 +1,4 @@
-class Teploenergo5CSDN < Prawn::Document
+class Teploenergo5Csdn < Prawn::Document
   def initialize(temperatures, year, month, signatory)
     super :page_size => "A4", left_margin: 95 #, :page_layout => :landscape
 		# super(top_margin: 40)	
