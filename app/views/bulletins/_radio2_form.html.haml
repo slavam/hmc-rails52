@@ -1,5 +1,3 @@
-- m_d = []
-- m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
 .container
   <input id="daily-submit" type="submit" value="Сохранить" form="daily-form">
   = form_for @bulletin, html: {id: "daily-form"} do |form|
@@ -22,18 +20,7 @@
       %tr
         %th Синоптик
         %td= form.select :synoptic1, options_for_select(Bulletin.synoptic_list, @bulletin.synoptic1)
-    -# %table{class: "table table-hover"}
-    -#   %tr
-    -#     %th Города
-    -#     %th Температура воздуха ночью
-    -#     %th Температура воздуха днем
-    -#   - i = 0
-    -#   - Bulletin::RADIO2_CITIES.each do |c|
-    -#     %tr
-    -#       %td #{c}
-    -#       %td= text_field_tag "val_#{i*2+1}", m_d[i*2].present? ? m_d[i*2] : '', size: 4
-    -#       %td= text_field_tag "val_#{i*2+2}", m_d[i*2+1].present? ? m_d[i*2+1] : '', size: 4
-    -#       - i += 1
+    
     = render partial: 'chief'
     %br
-= link_to "Список", "/bulletins/list?bulletin_type=radio2"
+= link_to "Список", "/bulletins/list?bulletin_type=#{@bulletin.bulletin_type}"

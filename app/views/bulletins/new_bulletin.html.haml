@@ -1,5 +1,5 @@
 - case @bulletin.bulletin_type
-  - when 'dte'
+  - when 'dte','dte_csdn'
   %h3{ align: :center } Создать прогноз для Донбасстеплоэнерго
   = render partial: 'dte_form'
   - when 'drsu'
@@ -14,9 +14,9 @@
   - when 'empire'
   %h3{ align: :center } Создать прогноз для СК Империя
   = render partial: 'empire_form'
-  - when 'radio'
-  %h3{ align: :center } Создать бюллетень для радио
-  = render partial: 'radio_form'
+  - when 'radio_csdn'
+  %h3{ align: :center } Создать бюллетень для радио ЦСДН
+  = render partial: 'radio2_form'
   - when 'radio2'
   %h3{ align: :center } Создать бюллетень для радио (вариант 2)
   = render partial: 'radio2_form'

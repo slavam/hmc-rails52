@@ -17,4 +17,4 @@
     = render partial: 'chief'
     = render partial: 'responsible'
     %br
-= link_to "Список", "/bulletins/list?bulletin_type=dte"
+= link_to "Список", "/bulletins/list?bulletin_type=#{@bulletin.bulletin_type}"

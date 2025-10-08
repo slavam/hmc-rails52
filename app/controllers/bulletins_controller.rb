@@ -84,6 +84,7 @@ class BulletinsController < ApplicationController
       flash.now[:danger] = "Бюллетень за #{bulletin.report_date.strftime("%Y-%m-%d")} уже существует"
     end
     last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307
+    last_daily_csdn_bulletin = Bulletin.last_this_type 'daily2'
     case params[:bulletin_type]
       # when 'rw_storm'
       #   last_storm = Bulletin.last_this_type 'storm'
@@ -133,10 +134,16 @@ class BulletinsController < ApplicationController
         end
       when 'dte','bus_station','gsr','empire','donbassgaz'
         @bulletin.forecast_day = last_daily_bulletin.forecast_day
+      when 'dte_csdn'
+        @bulletin.forecast_day = last_daily_csdn_bulletin.forecast_day
       when 'drsu'
         @bulletin.forecast_day = last_daily_bulletin.forecast_day_city
-      when 'radio', 'radio2'
-        @bulletin.forecast_day = last_daily_bulletin.forecast_day
+      when 'radio_csdn', 'radio2'
+        if @bulletin.bulletin_type == 'radio2'
+          @bulletin.forecast_day = last_daily_bulletin.forecast_day
+        else
+          @bulletin.forecast_day = last_daily_csdn_bulletin.forecast_day
+        end
         if bulletin.present?
           @bulletin.forecast_period = bulletin.forecast_period
           @bulletin.meteo_data = bulletin.meteo_data
@@ -347,7 +354,7 @@ class BulletinsController < ApplicationController
         @m_d = get_csdn_meteo_data(@bulletin.report_date)
       when 'fire'
         return
-      when 'radio', 'radio2'
+      when 'radio_csdn', 'radio2'
         return
       else
         @m_d = []
@@ -476,11 +483,11 @@ class BulletinsController < ApplicationController
           pdf = Avtodor.new(@bulletin)
         when 'bus_station'
           pdf = BusStation.new(@bulletin)
-        when 'radio'
-          pdf = Radio.new(@bulletin)
+        when 'radio_csdn'
+          pdf = Radio2.new(@bulletin)
         when 'radio2'
           pdf = Radio2.new(@bulletin)
-        when 'dte'
+        when 'dte','dte_csdn'
           pdf = Dte.new(@bulletin)
         when 'autodor'
           pdf = Autodor.new(@bulletin)
@@ -579,8 +586,8 @@ class BulletinsController < ApplicationController
           6 #5
         # when 'tv'
           # 38
-        when 'radio'
-          22
+        when 'radio_csdn'
+          34
         when 'radio2'
           34
         when 'avtodor'
