@@ -23,7 +23,8 @@ class Dte < Prawn::Document
     # end
     y_pos = cursor
     font "OpenSans"
-    bulletin_header(y_pos)
+    # bulletin_header(y_pos)
+    ugms_header_2
     stroke do
       horizontal_line 0, bounds.width, :at => cursor
     end
@@ -32,7 +33,8 @@ class Dte < Prawn::Document
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
       text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № #{Bulletin.ogmo_code}/"+@bulletin.curr_number
-      text "К договору от 12.02.2024 № 05/24/02.01"
+      text "К договору от 29.01.2025 № 18/25/02.01"
+      # text "К договору от 12.02.2024 № 05/24/02.01"
     end
     
     bounding_box([280, y_pos], width: bounds.width-280) do

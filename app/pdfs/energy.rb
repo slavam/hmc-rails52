@@ -10,14 +10,16 @@ class Energy < Prawn::Document
     
     y_pos = cursor
     font "OpenSans"
-    ugms_header
+    # ugms_header
+    ugms_header_2
     
     move_down 10
     font "OpenSans", style: :normal
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
       text "________________ № 325/02.01"
-      text "На № 73/24-25/02.01 от 18.10.2024"
+      text "На № 101/25-26/02.03 от 25.09.2025"
+      # text "На № 73/24-25/02.01 от 18.10.2024"
       # text "На № 20/23/02.01 от 30.10.2023"
     end
     
@@ -25,7 +27,7 @@ class Energy < Prawn::Document
       text "Директору филиала
             АО \"ИНФРАСТРУКТУРНЫЕ ПРОЕКТЫ\"-
             \"Зуевская ТЭС\"
-            Е.В. Железняку", leading: 3
+            А.В. Кошельникову", leading: 3
     end
     # move_down 10
     text "О предоставлении информации"

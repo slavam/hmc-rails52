@@ -70,6 +70,8 @@ include HeadersDoc
     line_to 520, 15
     stroke_color '0000ff'
     stroke
+    # start_new_page
+    # image "./app/assets/images/table1.png", at: [0, cursor], :width => 548, :height=>375 #:scale => 0.9,
   end
   def signatures
     # chief_descr = @bulletin.chief_2_pdf
