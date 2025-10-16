@@ -745,6 +745,10 @@ class BulletinsController < ApplicationController
       m_d
     end
 
+    def temp_cel_round temp_kel
+      (temp_kel.to_f-273.15).round(1)
+    end
+
     def get_csdn_meteo_data(report_date)
       m_d = []
       stations = '34524,34519,34622,34615,34712,34721'
@@ -756,26 +760,36 @@ class BulletinsController < ApplicationController
       s = stations.split(',')
       rows.map do |rec|
         i = s.index(rec['station'].to_s)
-        m_d[i*9] = (rec['value'].to_f-273.15).round(1) # Макс. вчера днем
+        m_d[i*9] = temp_cel_round(rec['value']) # Макс. вчера днем
       end
       date_seconds = report_date.to_datetime.strftime('%s').to_i+3*3600
-      query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=100&streams=0&hashes=1897560571&notbefore=#{date_seconds}&notafter=#{date_seconds}"
+      query = "http://10.54.1.30:8640/get?limit=100&point=10800&stations=#{stations}&quality=1&source=100,10202&streams=0,1&hashes=-984543271,1897560571&notbefore=#{date_seconds}&notafter=#{date_seconds+60}"
       data = Net::HTTP.get_response(URI(query))
       rows = data.body.present? ? JSON.parse(data.body):[]
-
-      date_seconds = report_date.to_datetime.strftime('%s').to_i+6*3600
-      query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=100&streams=0&hashes=1897560571&notbefore=#{date_seconds}&notafter=#{date_seconds}"
-      data = Net::HTTP.get_response(URI(query))
-      rows6 = data.body.present? ? JSON.parse(data.body):[]
       rows.map do |rec|
         i = s.index(rec['station'].to_s)
-        rows6.select{|r| r['station']==rec['station']}
-        if rows6[0].present? and (rows6[0]['value'].to_f<rec['value'].to_f)
-          m_d[i*9+1] = (rows6[0]['value'].to_f-273.15).round(1)
+        temperature = temp_cel_round(rec['value'])
+        if rec['meas_hash']==1897560571
+          m_d[i*9+1] = temperature # Мин. сегодня ночью 1
         else
-          m_d[i*9+1] = (rec['value'].to_f-273.15).round(1) # Мин. сегодня ночью
+          if m_d[i*9+1].nil? 
+            m_d[i*9+1] = temperature
+          end
         end
       end
+
+      date_seconds = report_date.to_datetime.strftime('%s').to_i+6*3600
+      query = "http://10.54.1.30:8640/get?limit=100&point=21600&stations=#{stations}&quality=1&source=100,10202&streams=0,1&hashes=1897560571&notbefore=#{date_seconds}&notafter=#{date_seconds+60}"
+      data = Net::HTTP.get_response(URI(query))
+      rows6 = data.body.present? ? JSON.parse(data.body):[]
+      rows6.map do |rec|
+        i = s.index(rec['station'].to_s)
+        temperature = temp_cel_round(rec['value'])
+        if temperature<m_d[i*9+1]
+          m_d[i*9+1] = temperature # Мин. сегодня ночью
+        end
+      end
+      
       date_seconds = yesterday.to_datetime.strftime('%s').to_i+15*3600
       query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=100&streams=0&hashes=-1152096796&notbefore=#{date_seconds}&notafter=#{date_seconds}"
       data = Net::HTTP.get_response(URI(query))
