@@ -63,14 +63,12 @@ class Bulletin < ActiveRecord::Base
   BULLETIN_TYPES = {
     'daily' => "Бюллетени ежедневные",
     'daily2' => "Бюллетени ежедневные гидрометеорологические",
-    # 'daily_rf' => "Ежедневные гидрометеорологические бюллетени",
     'sea' => "Бюллетени морские",
     'holiday' => "Бюллетени выходного дня",
     'storm' => "Штормовые предупреждения",
     'sea_storm' => "Шторма на море",
     'radiation' => "Радиация",
     'radiation2' => "Радиация 2",
-    # 'tv' => "Телевидение",
     'radio_csdn' => 'Радио ЦСДН',
     'radio2' => 'Радио 2',
     'avtodor' => "АВТОДОР",
@@ -86,11 +84,10 @@ class Bulletin < ActiveRecord::Base
     'clarification' => "Уточнение",
     'bus_station' => "Автовокзалы Донбасса",
     'hydro' => "Бюллетени гидрологические",
-    # 'hydro2' => "Бюллетени гидрологические (вторичные)",
     'alert' => 'Штормовые оповещения (гидро)',
     'warning' => 'Штормовые предупреждения (гидро)',
     'railway' => 'Бюллетени для Железной дороги',
-    # 'rw_storm' => 'Шторма для Железной дороги',
+    'inquiry' => 'Справки',
     'fire_storm' => 'Шторма (пожары)'
   }
   CHIEFS = {"Кияненко" => "М.А. Кияненко", "Лукьяненко" => "М.Б. Лукьяненко", "Стец" => "Н.В. Стец", "Арамелева" => "О.В. Арамелева"}
@@ -146,9 +143,8 @@ def self.generate_qr_code(data, size: 200)
       resize_gte_to: false,
       size: size
     )
-
-    #save to file
-    temp_file = Tempfile.new(['qrcode', '.png'])
+    
+    temp_file = Tempfile.new(["qrcode", '.png'])
     temp_file.binmode
     temp_file.write(png.to_s)
     temp_file.close 

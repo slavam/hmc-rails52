@@ -66,6 +66,8 @@ export default class Teploenergo extends React.Component{
       {value: 'Kijanenko', label: 'Кияненко М.А.'},
     ];
     let desiredLink = "/synoptic_observations/tpp.pdf?year="+this.state.year+"&month="+this.state.month+"&chief="+this.state.chiefR.value+"&responsible="+this.state.responsibleR.value;
+    // let lnk = `/synoptic_observations/tpp.pdf?year=${this.state.year}&month=${this.state.month}`
+    let ref = `/bulletins/new_bulletin?bulletin_type=inquiry&doc_link=synoptic_observations/tpp.pdf&year=${this.state.year}&month=${this.state.month}`
     return(
       <div>
         <TppForm year={this.state.year} month={this.state.month} onFormSubmit={this.handleFormSubmit} />
@@ -85,6 +87,8 @@ export default class Teploenergo extends React.Component{
           </tbody>
         </table>
         <a href={desiredLink} >Распечатать</a>
+        <br/>
+        <a href={ref} >Зарегистрировать</a>
       </div>
     );
   }

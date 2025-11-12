@@ -1,5 +1,5 @@
 class Tpp < Prawn::Document
-  def initialize(temperatures, year, month, chief, responsible)
+  def initialize(temperatures, year, month, chief, responsible, bulletin_id)
 		super(top_margin: 40, left_margin: 95, right_margin: 50, bottom_margin: 0)
 		@temperatures = temperatures
     font_families.update("OpenSans" => {
@@ -64,6 +64,11 @@ class Tpp < Prawn::Document
     end
     move_down 10
     table [[{content: position, align: :left}, {content: name, align: :right}]], width: bounds.width, cell_style: { border_width: 0}
+    ip = Rails.env.production? ? "31.133.32.14" : "10.54.1.6"
+    if bulletin_id.present?
+      qr_png_path = Bulletin.generate_qr_code_png("http://#{ip}:8080/bulletins/#{bulletin_id}/qr_check")
+      image qr_png_path, at: [0, 130], width: 80, height: 80
+    end
     move_cursor_to 20
     if responsible == 'Boyko'
       r = 'Бойко Любовь Николаевна'

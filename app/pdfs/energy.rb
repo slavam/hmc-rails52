@@ -10,7 +10,6 @@ class Energy < Prawn::Document
     
     y_pos = cursor
     font "OpenSans"
-    # ugms_header
     ugms_header_2
     
     move_down 10
@@ -19,17 +18,13 @@ class Energy < Prawn::Document
     bounding_box([0, y_pos], width: 300, leading: 3) do
       text "________________ № 325/02.01"
       text "На № 101/25-26/02.03 от 25.09.2025"
-      # text "На № 73/24-25/02.01 от 18.10.2024"
-      # text "На № 20/23/02.01 от 30.10.2023"
     end
-    
     bounding_box([250, y_pos], width: bounds.width-250) do
       text "Директору филиала
             АО \"ИНФРАСТРУКТУРНЫЕ ПРОЕКТЫ\"-
             \"Зуевская ТЭС\"
             А.В. Кошельникову", leading: 3
     end
-    # move_down 10
     text "О предоставлении информации"
     move_down 20
     @last_day = Time.days_in_month(month.to_i, year.to_i)
@@ -51,7 +46,6 @@ class Energy < Prawn::Document
     elsif chief == 'Arameleva'
       position = "Врио начальника"
       name = "М.А. Кияненко"
-      # name = "О.В. Арамелева"
     elsif chief == 'Kijanenko'
       position = "Врио начальника"
       name = "М.А. Кияненко"
@@ -59,8 +53,11 @@ class Energy < Prawn::Document
       position = "Начальник"
       name = "М.Б. Лукьяненко"
     end
-    move_down 30
+    move_down 10
     table [[{content: position, align: :left}, {content: name, align: :right}]], width: bounds.width, cell_style: { border_width: 0}
+    # ip = Rails.env.production? ? "31.133.32.14" : "10.54.1.6"
+    # qr_png_path = Bulletin.generate_qr_code_png("http://#{ip}:8080/bulletins/#{@bulletin.id}/qr_check")
+    # image qr_png_path, at: [0, 230], width: 80, height: 80
     move_cursor_to 20
     if responsible == 'Boyko'
       r = 'Бойко Любовь Николаевна'
@@ -71,7 +68,6 @@ class Energy < Prawn::Document
   end
   def table_data
     t = [["Число","Температура воздуха (°C)","Число","Температура воздуха (°C)"]]
-    
     for i in (1..@lines)
       day2 = i+@lines <= @last_day ? i+@lines : nil
       val1 = @temperatures[i].present? ? @temperatures[i] : ''

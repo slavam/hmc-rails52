@@ -86,12 +86,6 @@ class BulletinsController < ApplicationController
     last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307
     last_daily_csdn_bulletin = Bulletin.last_this_type 'daily2'
     case params[:bulletin_type]
-      # when 'rw_storm'
-      #   last_storm = Bulletin.last_this_type 'storm'
-      #   @bulletin.curr_number = ''
-      #   if last_storm.present?
-      #     @bulletin.storm = last_storm.storm
-      #   end
       when 'railway'
         if last_daily_bulletin.present?
           @bulletin.storm = last_daily_bulletin.storm
@@ -104,12 +98,6 @@ class BulletinsController < ApplicationController
           @bulletin.forecast_day_city = last_daily_bulletin.forecast_day_city
         end
         @bulletin.forecast_period = bulletin.forecast_period if bulletin.present?
-
-        # if bulletin.present? 20190815 OH
-        #   @bulletin.forecast_day = bulletin.forecast_day
-        #   @bulletin.forecast_day_city = bulletin.forecast_day_city
-        #   @bulletin.forecast_period = bulletin.forecast_period
-        # end
       when 'fire'
         if bulletin.present?
           @bulletin.curr_number = bulletin.curr_number.to_i + 1
@@ -218,8 +206,7 @@ class BulletinsController < ApplicationController
         @m_d.each do |v|
           @bulletin.meteo_data += v.present? ? "#{v};" : ';'
         end
-        # Rails.logger.debug("My object+++++++++++++++++: #{params.inspect}")
-      when 'daily' #, 'daily_rf'
+      when 'daily'
         @bulletin.review_start_date = Date.yesterday
         @bulletin.summer = (params[:variant] == 'summer')
         @bulletin.storm = bulletin.storm
@@ -258,38 +245,29 @@ class BulletinsController < ApplicationController
         @m_d.each do |v|
           @bulletin.meteo_data += v.present? ? "#{v};" : ';'
         end
-      # when 'hydro2'
-      #   last_hydro = Bulletin.last_this_type 'hydro' # have base date
-      #   @bulletin.review_start_date = (last_hydro.present? && last_hydro.review_start_date.present?) ? last_hydro.review_start_date : Date.today
-      #   if bulletin.present?
-      #     @bulletin.curr_number = bulletin.curr_number.to_i + 1
-      #     @bulletin.meteo_data = bulletin.meteo_data
-      #     @bulletin.forecast_day = bulletin.forecast_day
-      #     @bulletin.forecast_period = last_hydro.forecast_period #bulletin.forecast_period if bulletin.forecast_period.present?
-      #   else
-      #     @bulletin.curr_number = 1
-      #   end
-      #   @m_d = fill_hydro2_data(@bulletin.report_date, @bulletin.review_start_date)
-      #   @bulletin.meteo_data = ''
-      #   @m_d.each do |v|
-      #     @bulletin.meteo_data += v.present? ? "#{v};" : ';'
-      #   end
       when 'alert', 'warning'
         @bulletin.curr_number = 1
         if bulletin.present?
           @bulletin.curr_number = bulletin.curr_number.to_i + 1
           @bulletin.storm = bulletin.storm
         end
+      when 'inquiry'
+        @bulletin.curr_number = 1
+        parts = params['doc_link'].gsub('.pdf','').split('/')
+        pattern_name = parts[parts.size-1]
+        case pattern_name
+          when 'tpp'
+            @bulletin.picture = "#{params['doc_link']}?year=#{params['year']}&month=#{params['month']}"
+        end
+        # Rails.logger.debug("My object+++++++++++++++++>>>>>>>>>>: #{@bulletin.inspect} #{pattern_name}")
     end
   end
 
   def create
     @bulletin = Bulletin.new(bulletin_params)
-    # Rails.logger.debug("My object+++++++++++++++++>>>>>>>>>>: #{@bulletin.inspect}")
     @bulletin.summer = params[:summer] if params[:summer].present?
     @bulletin.storm_hour = (params[:storm_hour].to_f*100).to_i
     @bulletin.storm_minute = (params[:storm_minute].to_f*100).to_i
-    # params["bulletin"]["summer"] = @bulletin.summer
     if !params[:val_1].nil?
       @bulletin.meteo_data = ''
       (1..n).each do |i|
@@ -310,11 +288,26 @@ class BulletinsController < ApplicationController
         end
       end
     else
-      # User.where(role: 'synoptic').each do |synoptic|
-      #   ActionCable.server.broadcast "bulletin_editing_channel_user_#{synoptic.id}",
-      #     bulletin: {id: @bulletin.id, created_at: @bulletin.created_at, bulletin_type: @bulletin.bulletin_type, curr_number: @bulletin.curr_number, user_login: '', start_editing: nil}, mode: 'new_bulletin'
-      # end 20190820
       # MeteoMailer.welcome_email(current_user).deliver_now
+      # Rails.logger.debug("My object+++++++++++++++++>>>>>>>>>>: #{params.inspect}")
+      # ip = Rails.env.production? ? "31.133.32.14" : "10.54.1.6"
+      # qr_png_path = Bulletin.generate_qr_code_png("http://#{ip}:8080/bulletins/#{@bulletin.id}/qr_check")
+      # qr = RQRCode::QRCode.new("http://#{ip}:8080/bulletins/#{@bulletin.id}/qr_check")
+      # png = qr.as_png(
+      #   bit_depth: 1,
+      #   border_modules: 4,
+      #   color_mode: ChunkyPNG::COLOR_GRAYSCALE,
+      #   color: 'black',
+      #   file: nil,
+      #   fill: 'white',
+      #   moduule_px_size: 6,
+      #   resize_exactly_to: false,
+      #   resize_gte_to: false,
+      #   size: 100
+      # )
+      @bulletin.picture += "&bulletin_id=#{@bulletin.id}"
+      @bulletin.save
+      # Rails.logger.debug("My object+++++++++++++++++>>>>>>>>>>: #{@bulletin.picture.inspect}")
       respond_to do |format|
         format.html do
           flash[:success] = "Бюллетень создан"
@@ -324,7 +317,6 @@ class BulletinsController < ApplicationController
           render json: {message: "Бюллетень создан"}, status: :ok
         end
       end
-      # redirect_to "/bulletins/#{@bulletin.id}/bulletin_show"
     end
   end
 
@@ -517,6 +509,8 @@ class BulletinsController < ApplicationController
           pdf = Alert.new(@bulletin)
         when 'railway'
           pdf = Railway.new(@bulletin)
+        when 'inquiry'
+          pdf = Inquiry.new(@bulletin)
       end
       format.html do
         save_as_pdf(pdf)

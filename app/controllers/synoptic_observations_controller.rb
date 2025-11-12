@@ -413,7 +413,11 @@ class SynopticObservationsController < ApplicationController
     date1 = "#{@year}-#{@month}-01"
     date2 = @year+'-'+@month+'-'+last_day
     date1_seconds = date1.to_datetime.strftime('%s').to_i
-    date2_seconds = date2.to_datetime.strftime('%s').to_i+22*3600
+    if last_day == '00'
+      date2_seconds = date1_seconds
+    else
+      date2_seconds = date2.to_datetime.strftime('%s').to_i+22*3600
+    end
     query = "http://10.54.1.30:8640/get?stations=34622&quality=1&source=100,10202&streams=0,1&hashes=795976906,1451382247&point=#{points}&notbefore=#{date1_seconds}&notafter=#{date2_seconds}"
     data = Net::HTTP.get_response(URI(query))
     recs = data.body.present? ? JSON.parse(data.body):[]
@@ -536,7 +540,11 @@ class SynopticObservationsController < ApplicationController
     date1 = "#{year}-#{month}-01"
     date2 = year+'-'+month+'-'+last_day
     date1_seconds = date1.to_datetime.strftime('%s').to_i
-    date2_seconds = date2.to_datetime.strftime('%s').to_i+22*3600
+    if last_day == '00'
+      date2_seconds = date1_seconds
+    else
+      date2_seconds = date2.to_datetime.strftime('%s').to_i+22*3600
+    end
     query = "http://10.54.1.30:8640/get?stations=34519,34622&quality=1&source=100,10202&streams=0,1&hashes=795976906,1451382247&point=#{points}&notbefore=#{date1_seconds}&notafter=#{date2_seconds}"
     data = Net::HTTP.get_response(URI(query))
     recs = data.body.present? ? JSON.parse(data.body):[]
@@ -645,7 +653,8 @@ class SynopticObservationsController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = Tpp.new(@temperatures, @year, @month, params[:chief], params[:responsible])
+        bulletin_id = params[:bulletin_id].present? ? params[:bulletin_id] : nil
+        pdf = Tpp.new(@temperatures, @year, @month, params[:chief], params[:responsible], bulletin_id)
         send_data pdf.render, filename: "tpp_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
       end
       format.json do
@@ -809,7 +818,11 @@ class SynopticObservationsController < ApplicationController
     date1 = "#{year}-#{month}-01"
     date2 = year+'-'+month+'-'+last_day
     date1_seconds = date1.to_datetime.strftime('%s').to_i
-    date2_seconds = date2.to_datetime.strftime('%s').to_i+22*3600
+    if last_day == '00'
+      date2_seconds = date1_seconds
+    else
+      date2_seconds = date2.to_datetime.strftime('%s').to_i+22*3600
+    end
     query = "http://10.54.1.30:8640/get?stations=#{stations}&quality=1&source=100,10202&streams=0,1&hashes=795976906,1451382247&point=#{points}&notbefore=#{date1_seconds}&notafter=#{date2_seconds}"
     data = Net::HTTP.get_response(URI(query))
     recs = data.body.present? ? JSON.parse(data.body):[]

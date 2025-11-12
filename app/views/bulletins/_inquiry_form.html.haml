@@ -1,0 +1,36 @@
+.container
+  <input id="daily-submit" type="submit" value="Сохранить" form="daily2-form">
+  = form_for @bulletin, html: { id: 'daily2-form' } do |form|
+    %table{ class: 'table table-hover' }
+      %tr
+        %th Дата создания
+        %td= form.date_field :report_date, value: @bulletin.report_date.strftime("%Y-%m-%d")
+      %tr
+        %th Номер
+        %td= form.text_field :curr_number, size: 8
+      %tr
+        %th Link
+        %td= form.text_field :picture, readonly: true
+      %tr
+        %th Тип справки
+        %td= form.text_field :bulletin_type, readonly: true
+      -# %tr
+      -#   %th Организация получателя
+      -#   %td= form.text_field :storm, size: 100
+      -# %tr
+      -#   %th ФИО получателя
+      -#   %td= form.text_field :forecast_day_city
+      -# %tr
+      -#   %th Номер/дата запроса
+      -#   %td= form.text_field :forecast_day
+      -# %tr
+      -#   %th Ответ
+      -#   %td= form.text_area :forecast_sea_period, cols: "30", rows: "5"
+      -# %tr
+      -#   %th Приложение
+      -#   %td= form.text_area :forecast_period, cols: "30", rows: "5"
+      
+      = render partial: 'chief'
+      = render partial: 'responsible'
+    %br
+= link_to 'Список', '/bulletins/list?bulletin_type=inquiry'

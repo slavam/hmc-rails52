@@ -254,6 +254,12 @@
                   %li= link_to "Пункты снегосъемки", snow_points_path
                   %li= link_to "Метеостанции", stations_path
                   %li= link_to "Гидропосты", hydro_posts_path
+            - when 'clerk'
+              %li
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Справки <b class="caret"></b></a>
+                %ul{class: "dropdown-menu"}
+                  %li= link_to 'Справки', "/bulletins/list?bulletin_type=inquiry"
+                  %li= link_to 'ТПП', "/synoptic_observations/tpp"
             - when 'guest'
               %li
                 = render 'layouts/dynamic_menu'

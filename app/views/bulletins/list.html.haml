@@ -14,6 +14,9 @@
   - elsif %w[hydro].index(current_user.role)
     - if %w[hydro warning alert].index(@bulletin_type)
       = link_to 'Создать', "new_bulletin?bulletin_type=#{@bulletin_type}"
+  -# - elsif %w[clerk].index(current_user.role)
+  -#   - if @bulletin_type == 'inquiry'
+  -#     = link_to 'Создать', "new_bulletin?bulletin_type=#{@bulletin_type}"
   %br
   = will_paginate
   %table{ class: 'table table-hover' }
@@ -40,6 +43,9 @@
         - elsif @bulletin_type == 'fire'
           %th Полный
           %th Сокращенный
+        - elsif @bulletin_type == 'inquiry'
+          %th Документ
+          %th= ''
         - else
           %th= ''
         - if %w[vip].index(current_user.role)
@@ -84,6 +90,10 @@
           - elsif @bulletin_type == 'fire'
             %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf?variant=full"
             %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf?variant=short"
+          - elsif @bulletin_type == 'inquiry'
+            -# %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf"
+            %td= b.picture.present? ? (link_to "Просмотреть", '/'+b.picture): nil
+            %td= link_to 'Удалить', b, method: :delete, data: { confirm: 'Вы уверены?' }
           - elsif @bulletin_type == 'autodor'
             %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf"
             - if current_user.role == 'technicist'

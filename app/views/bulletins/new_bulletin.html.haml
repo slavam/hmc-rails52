@@ -76,9 +76,9 @@
   - when 'railway'
   %h3{ align: :center } Создать прогноз для Железной дороги
   = render partial: 'railway_form'
-  -# - when 'rw_storm'
-  -# %h3{ align: :center } Создать штормовое предупреждение для Железной дороги
-  -# = render partial: 'storm_form'
+  - when 'inquiry'
+  %h3{ align: :center } Создать справку
+  = render partial: 'inquiry_form'
   - when 'fire_storm'
   %h3{ align: :center } Создать штормовое предупреждение о пожаре
   = render partial: 'storm_form'

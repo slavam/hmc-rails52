@@ -3,7 +3,6 @@ class AmvrosievkaTemp < Prawn::Document
   def initialize(temperatures, year, month, chief, responsible)
     super(left_margin: 80, right_margin: 50)
 		@temperatures = temperatures
-    
     font_families.update("OpenSans" => {
       :normal => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Regular.ttf"),
       :bold => Rails.root.join("./app/assets/fonts/OpenSans/OpenSans-Bold.ttf"),
@@ -11,13 +10,14 @@ class AmvrosievkaTemp < Prawn::Document
     
     y_pos = cursor
     font "OpenSans"
-    ugms_header
+    ugms_header_2
+
     move_down 10
     font "OpenSans", style: :normal
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
-      text "________________ № ________________"
-      text "На № 76/24-25/02.01 от 18.10.2024"
+      text "________________ № 325/02.01"
+      text "На № 103/25-26/02.03 от 16.10.2025"
     end
     
     bounding_box([250, y_pos], width: bounds.width-250) do
@@ -25,8 +25,9 @@ class AmvrosievkaTemp < Prawn::Document
             АО \"ИНФРАСТРУКТУРНЫЕ ПРОЕКТЫ\"-
             \"Старобешевская ТЭС\"
 
-            А.Е. Куцыну", leading: 3
+            Кухмистрову С.Д.", leading: 3
     end
+    move_down 20
     text "О предоставлении информации"
     move_down 20
     @last_day = Time.days_in_month(month.to_i, year.to_i)
