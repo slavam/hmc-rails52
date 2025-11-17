@@ -826,10 +826,11 @@ class BulletinsController < ApplicationController
       data = Net::HTTP.get_response(URI(query))
       rows = data.body.present? ? JSON.parse(data.body):[]
       rows.map do |rec|
+        # Rails.logger.debug("My object+++++++++++++++++: #{rec.inspect}")
         t = rec['value']
         i = s.index(rec['station'].to_s)
         g7_start = t.index(' 7')
-        m_d[i*9+7] = "#{t[g7_start+2,2].to_i}" # Макс. скорость ветра
+        m_d[i*9+7] = g7_start.present? ? "#{t[g7_start+2,2].to_i}": 0 # Макс. скорость ветра
         if @bulletin.summer
           g4_start = t.index(' 4')
           sign = t[g4_start+2]=='0'? '':'-'
