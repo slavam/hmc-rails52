@@ -771,7 +771,7 @@ class MeasurementsController < ApplicationController
       # Rails.logger.debug("date=>#{od}; term=>#{term}; hour=>#{hours[term.to_i]}")
       date_seconds = od.to_datetime.strftime('%s')
       station = post_id.to_i<27? 34519:34712
-      query = "http://10.54.1.30:8640/get?limit=10&stations=#{station}&quality=1&source=100&streams=0&hashes=-789901366,1345858116,795976906,1223041370&notbefore=#{date_seconds}&notafter=#{date_seconds}"
+      query = "http://10.54.1.30:8640/get?limit=10&stations=#{station}&quality=1&source=100&streams=0,1&hashes=-789901366,1345858116,795976906,1223041370&notbefore=#{date_seconds}&notafter=#{date_seconds}"
       data = Net::HTTP.get_response(URI(query))
       rows = JSON.parse(data.body)
       weather = {}
