@@ -829,17 +829,25 @@ class BulletinsController < ApplicationController
         t = rec['value']
         i = s.index(rec['station'].to_s)
         g7_start = t.index(' 7')
-        m_d[i*9+7] = g7_start.present? ? "#{t[g7_start+2,2].to_i}": 0 # Макс. скорость ветра
+        if g7_start.present?
+          m_d[i*9+7] = "#{t[g7_start+2,2].to_i}" # Макс. скорость ветра
+        end
         if @bulletin.summer
           # Rails.logger.debug("My object+++++++++++++++++: #{rec.inspect}")
           g4_start = t.index(' 4')
-          sign = t[g4_start+2]=='0'? '':'-'
-          val = t[g4_start+3,2].to_i
-          m_d[i*9+5] = "#{sign}#{val}" # Мин темп. почвы за сутки
+          if g4_start.present?
+            sign = t[g4_start+2]=='0'? '':'-'
+            val = t[g4_start+3,2].to_i
+            m_d[i*9+5] = "#{sign}#{val}" # Мин темп. почвы за сутки
+          end
           zone91_start = t.index(' 91')
-          zone91 = t[zone91_start,99]
-          z91g3_start = zone91.index(' 3')
-          m_d[i*9+6] = "#{zone91[z91g3_start+4,2]}" # Мин влажность за сутки
+          if zone91_start.present?
+            zone91 = t[zone91_start,99]
+            z91g3_start = zone91.index(' 3')
+            if z91g3_start.present?
+              m_d[i*9+6] = "#{zone91[z91g3_start+4,2]}" # Мин влажность за сутки
+            end
+          end
         else
           k = t =~ / 924\d\d 95\d{3} 4/
           if k.present?
@@ -848,7 +856,6 @@ class BulletinsController < ApplicationController
           end
         end
       end
-      # Rails.logger.debug("My object+++++++++++++++++: #{rows[0].inspect}")
       @precipitation_day_night = precipitation_day_night(report_date)
       m_d
     end
