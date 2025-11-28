@@ -21,7 +21,7 @@ class Temp816 < Prawn::Document
     end
     move_down 20
     font "OpenSans", style: :bold
-    text "Температура воздуха (°С) в 08.00 и 16.00 за период", size: 12, align: :center
+    text "Температура воздуха (°С) в 08.00 и 16.00 часов за период", size: 12, align: :center
     text "с 01 по #{@max_day} #{Bulletin::MONTH_NAME2[@month.to_i]} #{@year} года", size: 12, align: :center
     text "по данным репрезентативных метеорологических станций", size: 12, align: :center
     move_down 20
