@@ -10,13 +10,14 @@ class Autodor < Prawn::Document
     })
     y_pos = cursor
     font "OpenSans"
-    ugms_header
+    ugms_header_gmc
     move_down 10
     font "OpenSans", style: :normal
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
       text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № #{Bulletin.ogmo_code}/"+@bulletin.curr_number
-      text "На № 104/24-25/02.01 от 09.12.2024 "
+      # text "На № 104/24-25/02.01 от 09.12.2024 "
+      text "На № _______________ от ___________ "
     end
     bounding_box([280, y_pos], width: bounds.width-280) do
       text "Директору
@@ -39,7 +40,6 @@ class Autodor < Prawn::Document
     text @bulletin.forecast_period
     move_down 20
     chief_descr = @bulletin.chief_2_pdf
-    # responsible_descr = @bulletin.responsible_2_pdf
     synoptic = @bulletin.synoptic1
                     
     table_content =[[{:padding => [10,0],:content => chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]                    

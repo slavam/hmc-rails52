@@ -11,7 +11,8 @@ class AutodorWarning < Prawn::Document
     
     y_pos = cursor
     font "OpenSans"
-    ugms_header
+    ugms_header_gmc
+    # ugms_header
     # bulletin_header(y_pos)
     # stroke do
     #   horizontal_line 0, bounds.width, :at => cursor
@@ -21,7 +22,8 @@ class AutodorWarning < Prawn::Document
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
       text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № #{Bulletin.ogmo_code}/"+@bulletin.curr_number
-      text "На № 104/24-25/02.01 от 09.12.2024 "
+      # text "На № 104/24-25/02.01 от 09.12.2024 "
+      text "На № _______________ от ___________ "
     end
     
     bounding_box([280, y_pos], width: bounds.width-280) do
