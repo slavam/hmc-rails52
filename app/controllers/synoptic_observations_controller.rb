@@ -1,4 +1,5 @@
 class SynopticObservationsController < ApplicationController
+  include ActionView::Helpers::NumberHelper
   require 'csv'
   before_action :logged_user?, except: [:find_term_telegrams] #, except: [:create_synoptic_telegram]
   before_action :find_synoptic_observation, only: [:show, :update_synoptic_telegram, :destroy, :update]
@@ -556,7 +557,7 @@ class SynopticObservationsController < ApplicationController
       j = Time.at(e['moment']-10800).day
       row[i] ||= Array.new(last_day.to_i)
       row[i][j] ||=Array.new(8)
-      val = (e['value'].to_f-absolute_zero).round(1)
+      val = (e['value'].to_f-absolute_zero) #.round(2)
       if e['meas_hash'] == 795976906 # telegram
         if row[i][j][t].nil? or (row[i][j][t]!=val)
           row[i][j][t]=val
@@ -567,7 +568,7 @@ class SynopticObservationsController < ApplicationController
         end
       end
     end
-    # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{row.inspect}")
+    # 
     avg = Array.new(2)
     for i in 0..1 do
       avg[i] ||= Array.new(last_day.to_i+1)
@@ -576,14 +577,15 @@ class SynopticObservationsController < ApplicationController
         if(row[i].present? && row[i][j].present?)
           sum = row[i][j].compact.sum
           n_not_nil = 8-row[i][j].count(nil)
-          avg[i][j]= (sum/n_not_nil).to_f.round(1)
+          avg[i][j]= (sum/n_not_nil).to_f #.round(1)
         end
       end
     end
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{avg.inspect}")
     res = Array.new(last_day.to_i)
     for j in 1..last_day.to_i do
-      res[j] = ((avg[0][j]+avg[1][j])/2).round(1)
+      # res[j] = ((avg[0][j]+avg[1][j])/2).round(2)
+      res[j] = number_with_precision((avg[0][j]+avg[1][j])/2, precision: 1)
     end
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>updated_telegrams: #{res.inspect}")
     res
