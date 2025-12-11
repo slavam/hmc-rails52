@@ -21,11 +21,12 @@ class AmvrosievkaTemp < Prawn::Document
     end
     
     bounding_box([250, y_pos], width: bounds.width-250) do
-      text "Директору филиала
+      text "Заместителю директора -
+            главному инженеру филиала
             АО \"ИНФРАСТРУКТУРНЫЕ ПРОЕКТЫ\"-
             \"Старобешевская ТЭС\"
 
-            Кухмистрову С.Д.", leading: 3
+            Ковтуну А.А.", leading: 3
     end
     move_down 20
     text "О предоставлении информации"
