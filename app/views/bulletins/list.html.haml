@@ -34,6 +34,7 @@
         - elsif @bulletin_type == 'daily2'
           %th Весь
           %th Без метеоданных
+          %th Одна страница
         - elsif @bulletin_type == 'sea_storm'
           %th Предупреждение
           - if current_user.role != 'guest'
@@ -78,6 +79,8 @@
               "#{b.id}/bulletin_show.pdf?variant=all_pages"
             %td= link_to 'Просмотреть',
               "#{b.id}/bulletin_show.pdf?variant=short"
+            %td= link_to 'Просмотреть',
+                "#{b.id}/bulletin_show.pdf?variant=one_page"
           - elsif @bulletin_type == 'sea_storm'
             %td= link_to 'Просмотреть',
               "#{b.id}/bulletin_show.pdf?variant=warning"

@@ -13,16 +13,6 @@ class DailyOnePage < Prawn::Document
     # image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.23
     font "OpenSans"
     bulletin_header(y_pos)
-    # bounding_box([0, y_pos], width: bounds.width) do
-    #   # text Bulletin::HEAD, align: :center, size: 10
-    #   text Bulletin::HEAD1, align: :center, size: 10
-    #   text Bulletin::HEAD2, align: :center, size: 10, style: :bold
-    #   text Bulletin::HEAD3, align: :center, size: 10
-    # end
-    # move_down 15
-    # bounding_box([0, cursor], width: bounds.width) do
-    #   text Bulletin::ADDRESS, align: :center, size: 9
-    # end
     
     font "OpenSans", style: :bold
     move_down 20
@@ -58,7 +48,7 @@ class DailyOnePage < Prawn::Document
       row(1).leading = 2
     end
     move_down 10
-    text "Дежурный синоптик #{bulletin.duty_synoptic}", align: :right
+    # text "Дежурный синоптик #{bulletin.duty_synoptic}", align: :right
   
     move_down 20
     font "OpenSans", style: :bold

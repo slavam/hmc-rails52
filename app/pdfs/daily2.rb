@@ -12,15 +12,7 @@ class Daily2 < Prawn::Document
     y_pos = cursor
     font "OpenSans"
     ugms_header_gmc
-    # bulletin_header(y_pos)
-    # image "./app/assets/images/logo.jpg", at: [0, y_pos], :scale => 0.23
-    # image "./app/assets/images/roshydromet.png", :scale => 0.085 #, at: [0, y_pos-50]
-    # bounding_box([85, y_pos], width: bounds.width-85) do
-    #   text Bulletin::HEAD1, align: :center, size: 10
-    #   text Bulletin::HEAD2, align: :center, size: 10, style: :bold
-    #   text Bulletin::HEAD3, align: :center, size: 10
-    #   text Bulletin::ADDRESS, align: :center, size: 9
-    # end
+    
     report_date = @bulletin.report_date.to_s(:custom_datetime)
     font "OpenSans", style: :bold
     move_down 20
@@ -68,35 +60,37 @@ class Daily2 < Prawn::Document
       text "В Донецкой Народной Республике", style: :bold
       text @bulletin.forecast_period
     end
-    move_down 10
-    text "Дежурный синоптик #{@bulletin.synoptic1}", align: :right
+    if num_pages != 'one_page'
+      move_down 10
+      text "Дежурный синоптик #{@bulletin.synoptic1}", align: :right
 
-    start_new_page(right_margin: 50, left_margin: 80)
-    yesterday = @bulletin.report_date-1
-    move_down 20
-    font "OpenSans", style: :bold
-    text "ОБЗОР НЕБЛАГОПРИЯТНЫХ И ОПАСНЫХ МЕТЕОРОЛОГИЧЕСКИХ ЯВЛЕНИЙ ПРОШЕДШИХ СУТОК", align: :center
-    text "с 06 часов #{'%02d' % yesterday.day} #{Bulletin::MONTH_NAME2[yesterday.month]} #{yesterday.year} до 06 часов #{'%02d' % @bulletin.report_date.day} #{Bulletin::MONTH_NAME2[@bulletin.report_date.month]} #{@bulletin.report_date.year} года", align: :center
-    font "OpenSans"
-    text @bulletin.forecast_advice
-    move_down 20
-    font "OpenSans", style: :bold
-    text "ГИДРОЛОГИЧЕСКИЙ ОБЗОР", align: :center
-    text "с 06 часов #{'%02d' % yesterday.day} #{Bulletin::MONTH_NAME2[yesterday.month]} #{yesterday.year} до 06 часов #{'%02d' % @bulletin.report_date.day} #{Bulletin::MONTH_NAME2[@bulletin.report_date.month]} #{@bulletin.report_date.year} года", align: :center
-    font "OpenSans"
-    text @bulletin.forecast_orientation
-    move_down 20
-    font "OpenSans", style: :bold
-    text "ОБЗОР СЛОЖИВШИХСЯ НЕБЛАГОПРИЯТНЫХ И ОПАСНЫХ АГРОМЕТЕОРОЛОГИЧЕСКИХ ЯВЛЕНИЙ", align: :center
-    font "OpenSans"
-    text @bulletin.forecast_sea_day
-    move_down 20
-    font "OpenSans", style: :bold
-    text "ИНФОРМАЦИЯ ПО МОНИТОРИНГУ ЗАГРЯЗНЕНИЯ ОКРУЖАЮЩЕЙ СРЕДЫ", align: :center
-    font "OpenSans"
-    text "По данным измерений метеостанций на территории Донецкой Народной Республики мощность амбиентного эквивалента дозы гамма-излучения (МАЭД) на 09:00 часов "+
-      "<b>#{'%02d' % @bulletin.report_date.day} #{Bulletin::MONTH_NAME2[@bulletin.report_date.month]} #{@bulletin.report_date.year}</b>"+
-      " года составляет <b>#{format('%.2f',(@bulletin.storm_hour.to_f/100).round(2))}-#{format('%.2f',(@bulletin.storm_minute.to_f/100).round(2))} мкЗв/ч</b>, что не превышает естественный радиационный фон данной местности.", inline_format: true
+      start_new_page(right_margin: 50, left_margin: 80)
+      yesterday = @bulletin.report_date-1
+      move_down 20
+      font "OpenSans", style: :bold
+      text "ОБЗОР НЕБЛАГОПРИЯТНЫХ И ОПАСНЫХ МЕТЕОРОЛОГИЧЕСКИХ ЯВЛЕНИЙ ПРОШЕДШИХ СУТОК", align: :center
+      text "с 06 часов #{'%02d' % yesterday.day} #{Bulletin::MONTH_NAME2[yesterday.month]} #{yesterday.year} до 06 часов #{'%02d' % @bulletin.report_date.day} #{Bulletin::MONTH_NAME2[@bulletin.report_date.month]} #{@bulletin.report_date.year} года", align: :center
+      font "OpenSans"
+      text @bulletin.forecast_advice
+      move_down 20
+      font "OpenSans", style: :bold
+      text "ГИДРОЛОГИЧЕСКИЙ ОБЗОР", align: :center
+      text "с 06 часов #{'%02d' % yesterday.day} #{Bulletin::MONTH_NAME2[yesterday.month]} #{yesterday.year} до 06 часов #{'%02d' % @bulletin.report_date.day} #{Bulletin::MONTH_NAME2[@bulletin.report_date.month]} #{@bulletin.report_date.year} года", align: :center
+      font "OpenSans"
+      text @bulletin.forecast_orientation
+      move_down 20
+      font "OpenSans", style: :bold
+      text "ОБЗОР СЛОЖИВШИХСЯ НЕБЛАГОПРИЯТНЫХ И ОПАСНЫХ АГРОМЕТЕОРОЛОГИЧЕСКИХ ЯВЛЕНИЙ", align: :center
+      font "OpenSans"
+      text @bulletin.forecast_sea_day
+      move_down 20
+      font "OpenSans", style: :bold
+      text "ИНФОРМАЦИЯ ПО МОНИТОРИНГУ ЗАГРЯЗНЕНИЯ ОКРУЖАЮЩЕЙ СРЕДЫ", align: :center
+      font "OpenSans"
+      text "По данным измерений метеостанций на территории Донецкой Народной Республики мощность амбиентного эквивалента дозы гамма-излучения (МАЭД) на 09:00 часов "+
+        "<b>#{'%02d' % @bulletin.report_date.day} #{Bulletin::MONTH_NAME2[@bulletin.report_date.month]} #{@bulletin.report_date.year}</b>"+
+        " года составляет <b>#{format('%.2f',(@bulletin.storm_hour.to_f/100).round(2))}-#{format('%.2f',(@bulletin.storm_minute.to_f/100).round(2))} мкЗв/ч</b>, что не превышает естественный радиационный фон данной местности.", inline_format: true
+    end
     if num_pages == 'all_pages'
       start_new_page(right_margin: 50, left_margin: 80)
       font "OpenSans", style: :bold
@@ -185,26 +179,31 @@ class Daily2 < Prawn::Document
     
     # move_down 5
     font "OpenSans", style: :bold
-    # c_d = []
-    c_d = ['1','2','3','4','5','6','7']
-    c_d = @bulletin.climate_data.split(";") if @bulletin.climate_data.present?
-    month_d = @bulletin.start_month(-1,0)
-    move_down 20
-    text "Климатические данные по г. Донецку за #{report_date_prev[8,2]}#{month_d}-#{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]}", align: :center, :color => "0000FF"
-    text "С 1945 по #{report_date[0,4]} гг. по данным Гидрометеорологического центра", align: :center, :color => "0000FF"
-    table_content = [["Средняя за сутки температура воздуха (норма)", "#{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", c_d[0].present? ? c_d[0].strip.gsub('.',',')+'°' : '', ""],
-                     ["Максимальная температура воздуха", "#{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", c_d[1].present? ? c_d[1].strip.gsub('.',',')+'°' : '', "отмечалась в #{c_d[2].strip} г."],
-                     ["Минимальная температура воздуха", "#{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]}", c_d[3].present? ? c_d[3].strip.gsub('.',',')+'°' : '', "отмечалась в #{c_d[4].strip} г."]]
-    font "OpenSans"
-    table table_content, width: bounds.width , cell_style: {:overflow => :shrink_to_fit, size: 10} do |t|
-      t.cells.padding = [2, 2]
-    end
-    move_down 5
+    if num_pages != 'one_page'
+      c_d = ['1','2','3','4','5','6','7']
+      c_d = @bulletin.climate_data.split(";") if @bulletin.climate_data.present?
+      month_d = @bulletin.start_month(-1,0)
+      move_down 20
+      text "Климатические данные по г. Донецку за #{report_date_prev[8,2]}#{month_d}-#{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]}", align: :center, :color => "0000FF"
+      text "С 1945 по #{report_date[0,4]} гг. по данным Гидрометеорологического центра", align: :center, :color => "0000FF"
+      table_content = [["Средняя за сутки температура воздуха (норма)", "#{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", c_d[0].present? ? c_d[0].strip.gsub('.',',')+'°' : '', ""],
+                      ["Максимальная температура воздуха", "#{report_date_prev[8,2]} #{Bulletin::MONTH_NAME2[report_date_prev[5,2].to_i]}", c_d[1].present? ? c_d[1].strip.gsub('.',',')+'°' : '', "отмечалась в #{c_d[2].strip} г."],
+                      ["Минимальная температура воздуха", "#{report_date[8,2]} #{Bulletin::MONTH_NAME2[report_date[5,2].to_i]}", c_d[3].present? ? c_d[3].strip.gsub('.',',')+'°' : '', "отмечалась в #{c_d[4].strip} г."]]
+      font "OpenSans"
+      table table_content, width: bounds.width , cell_style: {:overflow => :shrink_to_fit, size: 10} do |t|
+        t.cells.padding = [2, 2]
+      end
+      move_down 5
 
-    table signatures, width: bounds.width, :column_widths => [220,170], cell_style: {:overflow => :shrink_to_fit, size: 10, :inline_format => true } do |t|
-      t.cells.border_width = 0
-      t.row(2).size = 11
-      t.column(1).position = :center
+      table signatures, width: bounds.width, :column_widths => [220,170], cell_style: {:overflow => :shrink_to_fit, size: 10, :inline_format => true } do |t|
+        t.cells.border_width = 0
+        t.row(2).size = 11
+        t.column(1).position = :center
+      end
+    else
+      # chief_descr = @bulletin.chief_2_pdf
+      move_down 30
+      text "Начальник Донецкого гидрометцентра" +"                                             "+ "М.А. Кияненко"
     end
   end  
   def signatures
