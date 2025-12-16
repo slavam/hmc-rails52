@@ -813,12 +813,12 @@ class BulletinsController < ApplicationController
         # m_d[i*9+4] = (rec['value'].to_f).round(1) # Осадки за сегодняшнюю ночь
       end
       if !@bulletin.summer
-        query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&source=100&streams=0&hashes=-1660573570&notbefore=#{date_seconds}&notafter=#{date_seconds}"
+        query = "http://10.54.1.30:8640/get?limit=10&stations=#{stations}&quality=1&point=10800&source=100&streams=0&hashes=-1660573570&notbefore=#{date_seconds}&notafter=#{date_seconds}"
         data = Net::HTTP.get_response(URI(query))
         rows = data.body.present? ? JSON.parse(data.body):[]
         rows.map do |rec|
           i = s.index(rec['station'].to_s)
-          m_d[i*9+5] = (rec['value'].to_f).round(1) # Высота снежного покрова
+          m_d[i*9+5] = (rec['value'].to_f*100) #.round(1) # Высота снежного покрова
         end
       end
       date_seconds = report_date.to_datetime.strftime('%s').to_i+5*3600
