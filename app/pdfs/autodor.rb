@@ -17,7 +17,7 @@ class Autodor < Prawn::Document
     bounding_box([0, y_pos], width: 300, leading: 3) do
       text @bulletin.report_date.strftime("%d.%m.%Y")+"#{Prawn::Text::NBSP * 17} № #{Bulletin.ogmo_code}/"+@bulletin.curr_number
       # text "На № 104/24-25/02.01 от 09.12.2024 "
-      text "На № _______________ от ___________ "
+      text "На № 118/25-26/02.03 от 16.12.2025 "
     end
     bounding_box([280, y_pos], width: bounds.width-280) do
       text "Директору
