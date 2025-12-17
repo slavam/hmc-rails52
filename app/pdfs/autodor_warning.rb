@@ -11,7 +11,8 @@ class AutodorWarning < Prawn::Document
     
     y_pos = cursor
     font "OpenSans"
-    ugms_header_gmc
+    ugms_header_2
+    # ugms_header_gmc
     # ugms_header
     # bulletin_header(y_pos)
     # stroke do

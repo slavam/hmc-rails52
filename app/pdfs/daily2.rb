@@ -201,9 +201,13 @@ class Daily2 < Prawn::Document
         t.column(1).position = :center
       end
     else
-      # chief_descr = @bulletin.chief_2_pdf
+      chief_descr = @bulletin.chief_2_pdf
       move_down 30
-      text "Начальник Донецкого гидрометцентра" +"                                             "+ "М.А. Кияненко"
+      table [[{:padding => [10,5],:content => "Начальник Донецкого гидрометцентра"}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]], width: bounds.width, :column_widths => [220,170], cell_style: {:overflow => :shrink_to_fit, size: 10, :inline_format => true } do |t|
+        t.cells.border_width = 0
+        t.row(2).size = 11
+        t.column(1).position = :center
+      end
     end
   end  
   def signatures

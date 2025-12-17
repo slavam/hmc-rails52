@@ -10,7 +10,8 @@ class Autodor < Prawn::Document
     })
     y_pos = cursor
     font "OpenSans"
-    ugms_header_gmc
+    # ugms_header_gmc
+    ugms_header_2
     move_down 10
     font "OpenSans", style: :normal
     y_pos = cursor
