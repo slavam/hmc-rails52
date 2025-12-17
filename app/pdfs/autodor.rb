@@ -35,7 +35,7 @@ class Autodor < Prawn::Document
     text @bulletin.forecast_day, leading: 3
     move_down 10
     font "OpenSans", style: :bold
-    text @bulletin.header_period, align: :center
+    text @bulletin.header_period_no_time, align: :center
     text "в Донецкой Народной Республике", align: :center
     font "OpenSans"
     text @bulletin.forecast_period
