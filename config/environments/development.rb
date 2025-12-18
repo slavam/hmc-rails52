@@ -40,14 +40,50 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp #:sendmail
   config.action_mailer.perform_deliveries = true
   config.action_mailer.smtp_settings = {
+    # это работает в development mode
     address:  'mail.dnr.mecom.ru',
-    port:     587,
-    domain:   'localhost',
-    openssl_verify_mode: 'none'
+    port: 25,
+    domain: 'localhost',  # Используйте реальный домен
+    enable_starttls_auto: false
+
+    # yandex
+    # address: 'smtp.yandex.ru',
+    # port: 465,
+    # domain: 'yandex.ru',
+    # user_name: 'ugms.dnr@yandex.ru',
+    # password: '82468246aA',
+    # authentication: 'plain',
+    # ssl: true,  # включите SSL
+    # tls: false,  # отключите TLS
+    # enable_starttls_auto: false
+
+    # address:  'mail.dnr.mecom.ru',
+    # port:     25, #587,
+    # domain:   'dnr.mecom.ru',
+    # openssl_verify_mode: 'none'
+    # user_name: 'titova@dnr.mecom.ru',
+    # password: 'fDpaD5LB' ,
+    # domain:   'localhost'
+    # authentication: :plain,
+    # enable_starttls_auto: true
+
+
+
+
+    # address:  'mail.dnr.mecom.ru',
+    # port:     587 , #587,
+    #domain:   'dnr.mecom.ru',
+    # user_name: 'dingener@dnr.mecom.ru',
+    # password: '6fy5Fg2z' ,
+    # authentication: 'plain' ,
+    # enable_starttls_auto: false
+    #openssl_verify_mode: 'none'
   }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.perform_deliveries = true
 
   # Raise an error on page load if there are pending migrations.
   config.active_record.migration_error = :page_load

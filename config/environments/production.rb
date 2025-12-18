@@ -82,9 +82,11 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.smtp_settings = {
     address:  'mail.dnr.mecom.ru',
-    port:     587,
-    domain:   'localhost',
-    openssl_verify_mode: 'none'
+    port:     25, #587,
+    domain:   'dnr.mecom.ru',
+    # enable_starttls_auto: false,
+    openssl_verify_mode: 'none',
+    ssl: false
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to

@@ -7,7 +7,7 @@ class BulletinMailer < ApplicationMailer
     pdf.render_file(filename)
     attachments['bulletin.pdf'] = File.read(filename)
     # recivers = Rails.env.production? ? ["dingener@dnr.mecom.ru", "mail@add-ldnr.ru", "avtodordonbassd@mail.ru"]:["morgachev@dnr.mecom.ru"]
-    recivers = Rails.env.production? ? ["dingener@dnr.mecom.ru", "mail@add-ldnr.ru"]:["morgachev@dnr.mecom.ru"]
+    recivers = Rails.env.production? ? ["dingener@dnr.mecom.ru", "mail@add-ldnr.ru"]:["morgachev@dnr.mecom.ru","nzen888@yandex.ru"]
     mail(to: recivers, subject: "Бюллетень  № #{bulletin.curr_number} от #{bulletin.report_date.strftime("%d.%m.%Y")}")
   end
 end
