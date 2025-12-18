@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'dingener@dnr.mecom.ru'
+  default from: 'donetskmeteo@dnr.mecom.ru'
   layout 'mailer'
 end

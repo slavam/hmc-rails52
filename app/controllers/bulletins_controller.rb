@@ -112,8 +112,8 @@ class BulletinsController < ApplicationController
         else
           @bulletin.curr_number = 1
         end
-        @bulletin.forecast_day = last_daily_bulletin.forecast_day
-        @bulletin.forecast_period = last_daily_bulletin.forecast_period
+        @bulletin.forecast_day = last_daily_csdn_bulletin.forecast_day
+        @bulletin.forecast_period = last_daily_csdn_bulletin.forecast_period
       when 'autodor_warning'
         if bulletin.present?
           @bulletin.curr_number = bulletin.curr_number.to_i + 1
