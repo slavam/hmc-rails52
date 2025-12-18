@@ -50,8 +50,6 @@ Rails.application.configure do
     # address: 'smtp.yandex.ru',
     # port: 465,
     # domain: 'yandex.ru',
-    # user_name: 'ugms.dnr@yandex.ru',
-    # password: '82468246aA',
     # authentication: 'plain',
     # ssl: true,  # включите SSL
     # tls: false,  # отключите TLS
@@ -61,8 +59,6 @@ Rails.application.configure do
     # port:     25, #587,
     # domain:   'dnr.mecom.ru',
     # openssl_verify_mode: 'none'
-    # user_name: 'titova@dnr.mecom.ru',
-    # password: 'fDpaD5LB' ,
     # domain:   'localhost'
     # authentication: :plain,
     # enable_starttls_auto: true
@@ -73,8 +69,6 @@ Rails.application.configure do
     # address:  'mail.dnr.mecom.ru',
     # port:     587 , #587,
     #domain:   'dnr.mecom.ru',
-    # user_name: 'dingener@dnr.mecom.ru',
-    # password: '6fy5Fg2z' ,
     # authentication: 'plain' ,
     # enable_starttls_auto: false
     #openssl_verify_mode: 'none'

@@ -8,7 +8,8 @@ class OtherObservation < ApplicationRecord
     'min_hum' => "Минимальная влажность",
     'freezing' => "Критическая температура вымерзания",
     'wind' => 'Порывы ветра',
-    'duty' => 'Дежурные'
+    'duty' => 'Дежурные',
+    'duty_synoptic' => 'Дежурные синоптики'
   }
   POSTS = [
     'Авдотьино',          #83028
