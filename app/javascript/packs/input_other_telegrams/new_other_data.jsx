@@ -57,12 +57,13 @@ export default class NewOtherData extends React.Component{
   handleSubmit(e) {
     e.preventDefault();
     this.state.errors = [];
-    if(!this.state.value && this.state.dataType.value!=='duty') {
+    if(!this.state.value && this.state.dataType.value!=='duty' && this.state.dataType.value!=='duty_synoptic') {
       this.setState({errors: ["Не задано значение"]});
       return;
     }
     switch (this.state.dataType.value) {
       case 'duty':
+      case 'duty_synoptic':
         this.observation = {
           data_type: this.state.dataType.value,
           // value: this.state.value,
@@ -193,7 +194,7 @@ export default class NewOtherData extends React.Component{
               {station}
               <td><input type="number" value={this.state.value} onChange={(event) => this.handleValueChange(event)}/></td>
             </tr>;
-    }else if(this.state.dataType.value==='duty'){
+    }else if(this.state.dataType.value==='duty' || this.state.dataType.value==='duty_synoptic'){
       hdr = <tr><th width="220px">Тип данных</th><th width="140px">Дата дежурства</th><th>Метеостанция</th><th>Дежурный/время</th></tr>;
       dat = <tr>
         <td><Select id='types' options={types} onChange={this.handleTypeSelected} value={this.state.dataType}/></td>

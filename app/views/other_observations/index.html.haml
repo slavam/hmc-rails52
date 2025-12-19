@@ -9,7 +9,7 @@
   %table{ class: 'table table-hover' }
     %thead
       %tr
-        - if @factor == 'duty'
+        - if @factor == 'duty' or @factor == 'duty_synoptic'
           %th Дата дежурства
         - else
           %th Дата наблюдения
@@ -17,7 +17,7 @@
           %th Время
         %th Дата ввода
         %th Станция/пост
-        - if @factor == 'duty'
+        - if @factor == 'duty' or @factor == 'duty_synoptic'
           %th Дежурный/время
         - else
           %th Значение
@@ -33,7 +33,7 @@
           %td= o_o.created_at.localtime.strftime('%d-%m-%Y %H:%M:%S')
           -# %td= o_o.data_type == 'perc' ? o_o.source : Station.find(o_o.station_id).name
           %td= o_o.data_type == 'perc' ? (o_o.source[0] == '8'? @hydro_posts[o_o.source.to_i]: o_o.source) : @stations[o_o.station_id]
-          - if @factor == 'duty'
+          - if @factor == 'duty' or @factor == 'duty_synoptic'
             %td= o_o.description
           - else
             %td= (@factor == 'min_hum' or @factor == 'wind') ? o_o.value.round : o_o.value

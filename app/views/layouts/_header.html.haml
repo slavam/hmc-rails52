@@ -16,6 +16,7 @@
               %li
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Телеграммы <b class="caret"></b></a>
                 %ul{class: "dropdown-menu"}
+                  %li= link_to 'Ввод дежурных', '/other_observations/input_other_telegrams?input_mode=normal'
                   = render 'layouts/list_telegrams'
                   %li{ class: "divider"}
                   = render 'layouts/search_telegrams'
