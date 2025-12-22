@@ -41,29 +41,29 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.smtp_settings = {
     # это работает в development mode
-    address:  'mail.dnr.mecom.ru',
-    port: 25,
-    domain: 'localhost',  # Используйте реальный домен
-    enable_starttls_auto: false
-
-    # yandex
-    # address: 'smtp.yandex.ru',
-    # port: 465,
-    # domain: 'yandex.ru',
-    # authentication: 'plain',
-    # ssl: true,  # включите SSL
-    # tls: false,  # отключите TLS
-    # enable_starttls_auto: false
-
     # address:  'mail.dnr.mecom.ru',
-    # port:     25, #587,
-    # domain:   'dnr.mecom.ru',
-    # openssl_verify_mode: 'none'
-    # domain:   'localhost'
+    # port: 25,
+    # domain: 'localhost',  # Используйте реальный домен
+    # enable_starttls_auto: false
+    # это работает в development mode and production mode
+    address: '10.54.1.20',
+    port: 465, #587,
+    user_name: ENV['SMTP_USERNAME'],
+    password: ENV['SMTP_PASSWORD'],
+    domain: 'dnr.mecom.ru',
+    authentication: :plain,
+    ssl: true,
+    openssl_verify_mode: 'none'
+
+
+    # address: '10.54.1.20',
+    # port: 587,
+    # domain: 'dnr.mecom.ru',
     # authentication: :plain,
-    # enable_starttls_auto: true
-
-
+    # enable_starttls_auto: true,
+    # ssl: true,
+    # tls: true,
+    # openssl_verify_mode: 'none'
 
 
     # address:  'mail.dnr.mecom.ru',
