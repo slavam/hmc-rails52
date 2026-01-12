@@ -43,14 +43,12 @@ class Energy < Prawn::Document
     table table_data, width: bounds.width, cell_style: { border_width: 0.3, :overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true, align: :center } do |t|
       t.cells.padding = [2,2,4,2]
     end
-    if chief == 'Stec'
-      position = "Врио начальника"
-      name = "Н.В. Стец"
-    elsif chief == 'Arameleva'
-      position = "Врио начальника"
-      name = "М.А. Кияненко"
+    
+    if chief == 'Arameleva'
+      position = "Начальник Донецкого гидрометцентра"
+      name = "О.В. Арамелева"
     elsif chief == 'Kijanenko'
-      position = "Врио начальника"
+      position = "Заместитель начальника"
       name = "М.А. Кияненко"
     else
       position = "Начальник"
@@ -65,7 +63,7 @@ class Energy < Prawn::Document
     if responsible == 'Boyko'
       r = 'Бойко Любовь Николаевна'
     else
-      r = 'Кияненко Маргарита Анатольевна'
+      r = 'Арамелева Ольга Викторовна'
     end
     text "#{r} +7(949) 554-78-30", size: 10
   end

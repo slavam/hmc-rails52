@@ -58,14 +58,13 @@ export default class Energy2CSDN extends React.Component{
     const MONTHS = ['', 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
     let endDate = this.state.daysInMonth+' '+MONTHS[+this.state.month]+' '+this.state.year;
     const chiefs = [
-      {value: 'Lukjanenko', label: 'Лукьяненко М.Б.'},
-      {value: 'Stec', label: 'Стец Н.В.'},
-      {value: 'Kijanenko', label: 'Кияненко М.А.'},
       {value: 'Arameleva', label: 'Арамелева О.В.'},
+      {value: 'Lukjanenko', label: 'Лукьяненко М.Б.'},
+      {value: 'Kijanenko', label: 'Кияненко М.А.'},
     ];
     const responsibles = [
       {value: 'Boyko', label: 'Бойко Л.Н.'},
-      {value: 'Kijanenko', label: 'Кияненко М.А.'},
+      {value: 'Arameleva', label: 'Арамелева О.В.'},
     ];
     let desiredLink = "/synoptic_observations/energy_1510_csdn.pdf?year="+this.state.year+"&month="+this.state.month+"&chief="+this.state.chiefR.value+"&responsible="+this.state.responsibleR.value;
     return(

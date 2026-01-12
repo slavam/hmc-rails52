@@ -187,14 +187,14 @@ def self.generate_qr_code(data, size: 200)
       ret[:position] = "Начальник"
       ret[:image_name] = "./app/assets/images/chief.png"
     elsif self.chief == "М.А. Кияненко"
-      ret[:position] = "Заместитель начальника - начальник Донецкого гидрометцентра"
+      ret[:position] = "Заместитель начальника"
       ret[:image_name] = "./app/assets/images/kian.png"
     elsif self.chief == "О.В. Арамелева"
-      ret[:position] = "Заместитель начальника Донецкого гидрометцентра - начальник ОГ"
+      ret[:position] = "Начальник Донецкого гидрометцентра"
       ret[:image_name] = "./app/assets/images/arameleva2.png"
-    else
-      ret[:position] = "Врио начальника"
-      ret[:image_name] = "./app/assets/images/stec.png"
+    # else
+    #   ret[:position] = "Врио начальника"
+    #   ret[:image_name] = "./app/assets/images/stec.png"
     end
     ret[:name] = self.chief
     ret

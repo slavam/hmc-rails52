@@ -58,13 +58,13 @@ export default class Energy extends React.Component{
     const MONTHS = ['', 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
     let endDate = this.state.daysInMonth+' '+MONTHS[+this.state.month]+' '+this.state.year;
     const chiefs = [
+      {value: 'Arameleva', label: 'Арамелева О.В.'},
       {value: 'Lukjanenko', label: 'Лукьяненко М.Б.'},
       {value: 'Kijanenko', label: 'Кияненко М.А.'},
-      {value: 'Stec', label: 'Стец Н.В.'},
     ];
     const responsibles = [
       {value: 'Boyko', label: 'Бойко Л.Н.'},
-      {value: 'Kijanenko', label: 'Кияненко М.А.'},
+      {value: 'Arameleva', label: 'Арамелева О.В.'},
     ];
     let desiredLink = "/synoptic_observations/energy.pdf?year="+this.state.year+"&month="+this.state.month+"&chief="+this.state.chiefR.value+"&responsible="+this.state.responsibleR.value;
     return(
