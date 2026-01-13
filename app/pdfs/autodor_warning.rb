@@ -45,7 +45,8 @@ class AutodorWarning < Prawn::Document
     chief_descr = @bulletin.chief_2_pdf
     synoptic = @bulletin.synoptic1
                     
-    table_content =[[{:padding => [10,0],:content => chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]                    
+    # table_content =[[{:padding => [10,0],:content => chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, {:padding => [10,5],:content => chief_descr[:name]}]]
+    table_content =[[{:padding => [10,0],:content => chief_descr[:position]}, {}, {:padding => [10,5],:content => chief_descr[:name]}]]
     table table_content, width: bounds.width, :column_widths => [200, 150], cell_style: {:overflow => :shrink_to_fit, :font => 'OpenSans', :inline_format => true } do |t|
       t.cells.border_width = 0
     end
