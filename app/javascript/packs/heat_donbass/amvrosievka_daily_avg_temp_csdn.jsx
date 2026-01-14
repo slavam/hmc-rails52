@@ -23,7 +23,7 @@ export default class AmvrosievkaTempCSDN extends React.Component{
     super(props);
     let n = new Date(+this.props.year, +this.props.month, 0).getDate();
     this.state = {
-      chiefR: {value: 'Lukjanenko', label: 'Лукьяненко М.Б.'},
+      chiefR: {value: 'Arameleva', label: 'Арамелева О.В.'},
       responsibleR: {value: 'Boyko', label: 'Бойко Л.Н.'},
       year: this.props.year,
       month: this.props.month,
