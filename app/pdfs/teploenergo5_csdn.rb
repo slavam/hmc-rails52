@@ -35,9 +35,9 @@ class Teploenergo5Csdn < Prawn::Document
       # signature = "./app/assets/images/head_of_dep.png"
       person = "Л.Н. Бойко"
     else
-      position = "Заместитель начальника - начальник Донецкого гидрометцентра"
+      position = "Начальник Донецкого гидрометцентра"
       # signature = "./app/assets/images/kian.png"
-      person = "М.А. Кияненко"
+      person = "О.В. Арамелева"
     end
     table [[position, '', person]], width: bounds.width, :column_widths => [200,150], cell_style: { border_width: 0, align: :left} do |t|
       t.cells.padding = [2,2]

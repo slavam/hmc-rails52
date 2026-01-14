@@ -35,9 +35,9 @@ class Temp816 < Prawn::Document
       # signature = "./app/assets/images/head_of_dep.png"
       person = "Л.Н. Бойко"
     else
-      position = "Заместитель начальника - начальник Донецкого гидрометцентра"
+      position = "Начальник Донецкого гидрометцентра"
       # signature = "./app/assets/images/kian.png"
-      person = "М.А. Кияненко"
+      person = "О.В. Арамелева"
     end
     # table [[position, {image: signature, scale: 0.6, padding: [-5,5], position: :center}, person]], width: bounds.width, cell_style: { border_width: 0, align: :center}
     table [[position, '', person]], width: bounds.width, :column_widths => [200,150], cell_style: { border_width: 0, align: :left} do |t|

@@ -54,7 +54,7 @@ class Energy < Prawn::Document
       position = "Начальник"
       name = "М.Б. Лукьяненко"
     end
-    move_down 10
+    move_down 20
     table [[{content: position, align: :left}, {content: name, align: :right}]], width: bounds.width, cell_style: { border_width: 0}
     # ip = Rails.env.production? ? "31.133.32.14" : "10.54.1.6"
     # qr_png_path = Bulletin.generate_qr_code_png("http://#{ip}:8080/bulletins/#{@bulletin.id}/qr_check")
