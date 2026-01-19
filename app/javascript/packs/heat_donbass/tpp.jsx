@@ -59,7 +59,7 @@ export default class Teploenergo extends React.Component{
     let endDate = this.state.daysInMonth+' '+MONTHS[+this.state.month]+' '+this.state.year;
     const chiefs = [
       {value: 'Lukjanenko', label: 'Лукьяненко М.Б.'},
-      {value: 'Stec', label: 'Стец Н.В.'},
+      {value: 'Arameleva', label: 'Арамелева О.В.'},
     ];
     const responsibles = [
       {value: 'Boyko', label: 'Бойко Л.Н.'},

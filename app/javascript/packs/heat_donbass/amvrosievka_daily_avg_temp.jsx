@@ -59,7 +59,6 @@ export default class AmvrosievkaTemp extends React.Component{
     let endDate = this.state.daysInMonth+' '+MONTHS[+this.state.month]+' '+this.state.year;
     const chiefs = [
       {value: 'Lukjanenko', label: 'Лукьяненко М.Б.'},
-      {value: 'Stec', label: 'Стец Н.В.'},
       {value: 'Arameleva', label: 'Арамелева О.В.'},
       {value: 'Kijanenko', label: 'Кияненко М.А.'},
     ];
