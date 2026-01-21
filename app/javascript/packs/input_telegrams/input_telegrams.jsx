@@ -231,6 +231,7 @@ export default class InputTelegrams extends React.Component{
     App.candidate = App.cable.subscriptions.create({
         channel: "SynopticTelegramChannel", 
       },
+      {disconnected: function(){clearInterval(this.timer)}},
       {received: data => {
         if(data.tlgType == 'storm')
           this.snd.play();

@@ -59,6 +59,7 @@ export default class ApplicantsList extends React.Component{
       connected: function() {
         // Called when the subscription is ready for use on the server
       },
+      // disconnected: function(interval){clearInterval(interval)},
       received: data => {
         // console.log("received");
         // if (data.applicant && data.applicant.id){

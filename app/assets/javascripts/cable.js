@@ -9,5 +9,6 @@
   this.App || (this.App = {});
 
   App.cable = ActionCable.createConsumer();
+  App.cable.connection.reconnectDelay = 5000
 
 }).call(this);
