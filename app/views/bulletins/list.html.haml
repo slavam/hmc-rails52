@@ -46,6 +46,7 @@
           %th Сокращенный
         - elsif @bulletin_type == 'inquiry'
           %th Документ
+          %th Справка
           %th= ''
         - else
           %th= ''
@@ -96,6 +97,7 @@
           - elsif @bulletin_type == 'inquiry'
             -# %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf"
             %td= b.picture.present? ? (link_to "Просмотреть", '/'+b.picture): nil
+            %td= b.picture.present? ? (link_to "Просмотреть", "/bulletins/#{b.id}/qr_check"): nil
             %td= link_to 'Удалить', b, method: :delete, data: { confirm: 'Вы уверены?' }
           - elsif @bulletin_type == 'autodor'
             %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf"
