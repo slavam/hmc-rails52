@@ -274,7 +274,6 @@ class BulletinsController < ApplicationController
         @bulletin.meteo_data += params["val_#{i}"].present? ? params["val_#{i}"]+'; ' : ';'
       end
     end
-    @bulletin.picture += "&bulletin_id=#{@bulletin.id}" if @bulletin.bulletin_type == 'tpp'
     if (@bulletin.bulletin_type == 'daily') or (@bulletin.bulletin_type == 'daily2')
       @bulletin.climate_data = params[:avg_day_temp] + '; ' + params[:max_temp] + '; '+ params[:max_temp_year] + '; ' + params[:min_temp] + '; '+ params[:min_temp_year] + '; '
     end
@@ -306,8 +305,9 @@ class BulletinsController < ApplicationController
       #   resize_gte_to: false,
       #   size: 100
       # )
+      @bulletin.picture += "&bulletin_id=#{@bulletin.id}" if @bulletin.bulletin_type =='inquiry'
       @bulletin.save
-      # Rails.logger.debug("My object+++++++++++++++++>>>>>>>>>>: #{@bulletin.picture.inspect}")
+      Rails.logger.debug("My object+++++++++++++++++>>>>>>>>>>: #{@bulletin.inspect}")
       respond_to do |format|
         format.html do
           flash[:success] = "Бюллетень создан"
