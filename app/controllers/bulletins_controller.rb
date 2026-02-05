@@ -25,7 +25,11 @@ class BulletinsController < ApplicationController
     respond_to do |format|
       format.json do
         if bulletin.present?
-          render json: {forecast: bulletin.forecast_day, forecast_city: bulletin.forecast_day_city}, status: :ok
+          if bulletin.storm.present?
+            render json: {forecast: bulletin.forecast_day, forecast_city: bulletin.forecast_day_city, storm: bulletin.storm}, status: :ok
+          else
+            render json: {forecast: bulletin.forecast_day, forecast_city: bulletin.forecast_day_city}, status: :ok
+          end
         else
           render json: {error: "Данные не найдены"}, :status => 422
         end
@@ -230,17 +234,17 @@ class BulletinsController < ApplicationController
         end
       when 'hydro'
         @bulletin.review_start_date = Date.today
-        @bulletin.forecast_period = 'за февраль'
+        # @bulletin.forecast_period = 'за февраль'
         if bulletin.present?
           @bulletin.curr_number = bulletin.curr_number.to_i + 1
           @bulletin.meteo_data = bulletin.meteo_data
           @bulletin.forecast_day = bulletin.forecast_day
-          @bulletin.forecast_period = bulletin.forecast_period if bulletin.forecast_period.present?
+          # @bulletin.forecast_period = bulletin.forecast_period if bulletin.forecast_period.present?
           @bulletin.review_start_date = bulletin.review_start_date if bulletin.review_start_date.present?
         else
           @bulletin.curr_number = 1
         end
-        @m_d = fill_hydro_data(@bulletin.report_date)
+        @m_d = fill_hydro_rf_data(@bulletin.report_date)
         @bulletin.meteo_data = ''
         @m_d.each do |v|
           @bulletin.meteo_data += v.present? ? "#{v};" : ';'
@@ -339,7 +343,7 @@ class BulletinsController < ApplicationController
       when 'avtodor'
         @m_d = fill_avtodor_meteo_data(@bulletin.report_date)
       when 'hydro'
-        @m_d = fill_hydro_data(@bulletin.report_date)
+        @m_d = fill_hydro_rf_data(@bulletin.report_date)
       # when 'hydro2'
       #   @m_d =fill_hydro2_data(@bulletin.report_date, @bulletin.review_start_date)
       when 'daily2'
@@ -502,7 +506,8 @@ class BulletinsController < ApplicationController
         when 'clarification'
           pdf = Clarification.new(@bulletin)
         when 'hydro'
-          pdf = Hydro.new(@bulletin)
+          pdf = Hydro_rf.new(@bulletin)
+          # pdf = Hydro.new(@bulletin)
         # when 'hydro2'
         #   pdf = Hydro2.new(@bulletin)
         when 'alert', 'warning'
@@ -589,7 +594,7 @@ class BulletinsController < ApplicationController
         when 'fire'
           48 #40
         when 'hydro'
-          56
+          39 #56
         when 'dayly2'
           54
         else
@@ -715,6 +720,32 @@ class BulletinsController < ApplicationController
     #   end
     #   m_d
     # end
+
+    def fill_hydro_rf_data(report_date)
+      # j = report_date.month()
+      m_d = []
+      # m_d = @bulletin.meteo_data.split(";") if @bulletin.meteo_data.present?
+      postsAsStr = '83028,83035,83036,83040,83045,83048,83050,83056,83060,83068,83074,83083,83026'
+      date_seconds = report_date.to_datetime.strftime('%s').to_i #+15*3600
+      query = "http://10.54.1.30:8640/get?stations=#{postsAsStr}&quality=1&source=10100,1500&streams=0&hashes=-521391231,-1334432274,622080813,598401567&notbefore=#{date_seconds}"
+      data = Net::HTTP.get_response(URI(query))
+      rows = data.body.present? ? JSON.parse(data.body):[]
+      
+      posts = postsAsStr.split(',')
+      rows.map do |rec|
+        i = posts.index(rec['station'].to_s)
+        case rec['meas_hash']
+          when -521391231,-1334432274
+            m_d[i*3] = (rec['value'].to_f*100).round
+          when 622080813
+            m_d[i*3+1] = rec['value'].to_f>=0.01? '+'+((rec['value'].to_f*100).round).to_s : ((rec['value'].to_f*100).round).to_s
+          else
+            m_d[i*3+2]=HydroObservation::ICE_PHENOMENA[rec['value'].to_i] if !m_d[i*5+2].present?
+        end
+      end
+      Rails.logger.debug("My object+++++++++++++++++: #{m_d.inspect}")
+      m_d
+    end
 
     def fill_hydro_data(report_date)
       j = Date.today.month()

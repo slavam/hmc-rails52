@@ -21,6 +21,7 @@ class Bulletin < ActiveRecord::Base
         Факт.адрес: Первомайская ул., д. 28-а, г. Донецк, г.о. Донецк, ДНР, 283086
         Телефон: +7 (949) 300-73-59 e-mail: donetskmeteo@dnr.mecom.ru"
   MONTH_NAME2 = %w{nil января февраля марта апреля мая июня июля августа сентября октября ноября декабря}
+  MONTH_NAMES = ['',"январь","февраль","март","апрель","май","июнь","июль","август","сентябрь","октябрь","ноябрь","декабрь"]
   TV_CITIES = ["Артемовск", 
     "Славянск", 
     "Красный Лиман", 
@@ -92,6 +93,7 @@ class Bulletin < ActiveRecord::Base
   }
   CHIEFS = {"Арамелева" => "О.В. Арамелева", "Кияненко" => "М.А. Кияненко", "Лукьяненко" => "М.Б. Лукьяненко"}
   RESPONSIBLES = {"Бойко" => "Л.Н. Бойко", "Кияненко" => "М.А. Кияненко"}
+  HYDRO_RESPONSIBLES = {"Гутовская" => "О.А. Гутовская", "Мельник" => "Е.А. Мельник"}
   REGIONS = ["Донецк",
             "Макеевка, Харцызск, Ясиноватая",
             "Горловка, Енакиево, Дебальцево",
@@ -197,6 +199,19 @@ def self.generate_qr_code(data, size: 200)
     #   ret[:image_name] = "./app/assets/images/stec.png"
     end
     ret[:name] = self.chief
+    ret
+  end
+  def hydro_responsible_2_pdf
+    ret = {}
+    if self.responsible == 'О.А. Гутовская'
+      ret[:position] = "Начальник отдела гидрологии"
+      ret[:image_name] = ""
+      ret[:full_name] = "О.А. Гутовская"
+    else
+      ret[:position] = "Заместитель начальника отдела гидрологии"
+      ret[:image_name] = ""
+      ret[:full_name] = "Е.А. Мельник"
+    end
     ret
   end
   def responsible_2_pdf

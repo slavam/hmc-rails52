@@ -1,0 +1,3 @@
+%tr
+  %th Ответственный
+  %td= select :bulletin, :responsible, options_for_select(Bulletin::HYDRO_RESPONSIBLES, @bulletin.responsible)
