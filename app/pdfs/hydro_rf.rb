@@ -1,4 +1,4 @@
-class Hydro_rf < Prawn::Document
+class HydroRf < Prawn::Document
   include HeadersDoc
   def initialize(bulletin)
 		super(top_margin: 40, right_margin: 40, left_margin: 80)
@@ -23,12 +23,12 @@ class Hydro_rf < Prawn::Document
     font "OpenSans", size: 9
     table_data = [
       [
-        {content: '№ п/п', valign: :center},
+        {content: '', valign: :center},
         {content: 'Река', valign: :center},
         {content: 'Пост', valign: :center},
         {content: 'Уровень воды в 08:00 часов (см)', rotate: 90, height: 125},
         {content: 'Изменение уровня воды за сутки (см)', rotate: 90},
-        {content: "Средний многолетний уровень (за #{month_name}) (см)", rotate: 90},
+        {content: "Средний многолетний уровень (за #{month_name})", rotate: 90},
         {content: 'Уровень начала затопления (см)', rotate: 90},
         {content: 'Ледовые явления', valign: :center}
       ]
@@ -48,8 +48,8 @@ class Hydro_rf < Prawn::Document
       table_data << a
     }
     font "OpenSans", size: 10
-    table table_data, width: bounds.width, :column_widths => [20,60,80,40,40,40,40], cell_style: { inline_format: true} do |t|
-      t.cells.padding = [2,1,2,3]
+    table table_data, width: bounds.width, :column_widths => [20,100,125,30,30,30,30], cell_style: { :overflow => :shrink_to_fit, inline_format: true} do |t|
+      t.cells.padding = [3,1,4,3]
       t.cells.align = :center
       t.column(1).align = :left
       t.column(2).align = :left

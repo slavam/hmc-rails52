@@ -506,7 +506,7 @@ class BulletinsController < ApplicationController
         when 'clarification'
           pdf = Clarification.new(@bulletin)
         when 'hydro'
-          pdf = Hydro_rf.new(@bulletin)
+          pdf = HydroRf.new(@bulletin)
           # pdf = Hydro.new(@bulletin)
         # when 'hydro2'
         #   pdf = Hydro2.new(@bulletin)
