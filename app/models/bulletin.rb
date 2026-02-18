@@ -205,7 +205,7 @@ def self.generate_qr_code(data, size: 200)
     ret = {}
     if self.responsible == 'О.А. Гутовская'
       ret[:position] = "Начальник отдела гидрологии"
-      ret[:image_name] = ""
+      ret[:image_name] = "./app/assets/images/gutovskaia.png"
       ret[:full_name] = "О.А. Гутовская"
     else
       ret[:position] = "Заместитель начальника отдела гидрологии"
@@ -240,6 +240,18 @@ def self.generate_qr_code(data, size: 200)
     curr_year = ((report_date.month == 12) and (report_date.day == 31)) ? " #{report_date.year} года" : ''
     report_date_next = report_date+1.day
     return "на сутки с 18 часов #{'%02d' % report_date.day} #{MONTH_NAME2[report_date.month]}#{curr_year} до 18 часов #{'%02d' % report_date_next.day} #{MONTH_NAME2[report_date_next.month]} #{report_date_next.year} года"
+  end
+  def header_period_plus1
+    rd_plus1 = report_date+1
+    rd_plus2 = report_date+2
+    curr_year = rd_plus1.year == rd_plus2.year ? '' : " #{rd_plus1.year} года"
+    return "с 18 часов #{'%02d' % rd_plus1.day} #{MONTH_NAME2[rd_plus1.month]}#{curr_year} до 18 часов #{'%02d' % rd_plus2.day} #{MONTH_NAME2[rd_plus2.month]} #{rd_plus2.year} года"
+  end
+  def header_period_plus2
+    rd_plus2 = report_date+2
+    rd_plus3 = report_date+3
+    curr_year = rd_plus2.year == rd_plus3.year ? '' : " #{rd_plus2.year} года"
+    return "с 18 часов #{'%02d' % rd_plus2.day} #{MONTH_NAME2[rd_plus2.month]}#{curr_year} до 18 часов #{'%02d' % rd_plus3.day} #{MONTH_NAME2[rd_plus3.month]} #{rd_plus3.year} года"
   end
   def header_period
     # rd_2 = report_date+2

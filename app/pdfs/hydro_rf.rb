@@ -76,7 +76,7 @@ class HydroRf < Prawn::Document
     responsible_descr = @bulletin.hydro_responsible_2_pdf
     # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{responsible_descr.inspect}")
     [ [{padding: [1,0],content: "Ответственный за выпуск:"},"",""],
-      [{padding: [10,0],content: responsible_descr[:position]}, "", {padding: [20,5],content: responsible_descr[:full_name]}],
+      [{padding: [10,0],content: responsible_descr[:position]}, {image: responsible_descr[:image_name], scale: 0.5}, {padding: [20,5],content: responsible_descr[:full_name]}],
       [{padding: [10,0],content: chief_descr[:position]}, {padding: (chief_descr[:position] == "Начальник" ? [3,5]:[-5,5]),image: chief_descr[:image_name], scale: 0.6}, {padding: [10,5], content: chief_descr[:name]}]]
   end
 end

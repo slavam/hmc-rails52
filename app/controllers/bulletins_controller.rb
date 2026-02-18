@@ -20,6 +20,32 @@ class BulletinsController < ApplicationController
     end
   end
 
+  def get_total_forecast
+    bulletin = Bulletin.find_by(report_date: params[:report_date], bulletin_type: 'daily2')
+    respond_to do |format|
+      format.json do
+        if bulletin.present?
+          if bulletin.forecast_sea_period.index('@').present?
+            forecast_plus = {forecast_plus_1: bulletin.forecast_period.split('@')[0],
+              forecast_plus_2: bulletin.forecast_period.split('@')[1],
+              forecast_city_plus_1: bulletin.forecast_sea_period.split('@')[0],
+              forecast_city_plus_2: bulletin.forecast_sea_period.split('@')[1]
+            }
+          else
+            forecast_plus = {}
+          end
+          if bulletin.storm.present?
+            render json: {storm: bulletin.storm, forecast: bulletin.forecast_day, forecast_city: bulletin.forecast_day_city}.merge(forecast_plus), status: :ok
+          else
+            render json: {forecast: bulletin.forecast_day, forecast_city: bulletin.forecast_day_city}.merge(forecast_plus), status: :ok
+          end
+        else
+          render json: {error: "Данные не найдены"}, :status => 422
+        end
+      end
+    end
+  end
+
   def get_day_forecast
     bulletin = Bulletin.find_by(report_date: params[:report_date])
     respond_to do |format|
@@ -280,6 +306,9 @@ class BulletinsController < ApplicationController
     end
     if (@bulletin.bulletin_type == 'daily') or (@bulletin.bulletin_type == 'daily2')
       @bulletin.climate_data = params[:avg_day_temp] + '; ' + params[:max_temp] + '; '+ params[:max_temp_year] + '; ' + params[:min_temp] + '; '+ params[:min_temp_year] + '; '
+      @bulletin.forecast_sea_period = params[:bulletin][:forecast_sea_period][0]+'@'+params[:bulletin][:forecast_sea_period][1]
+      @bulletin.forecast_period = params[:bulletin][:forecast_period][0]+'@'+params[:bulletin][:forecast_period][1]
+      # Rails.logger.debug("My object+++++++++++++++++>>>>>>>>>>: >>>>>> #{@bulletin.forecast_sea_period}")
     end
     @bulletin.curr_number ||= Date.today.yday().to_s+'-tv' if @bulletin.bulletin_type == 'tv'
     if not @bulletin.save
@@ -371,6 +400,8 @@ class BulletinsController < ApplicationController
 
     if (@bulletin.bulletin_type == 'daily') || (@bulletin.bulletin_type == 'daily2')
       @bulletin.climate_data = params[:avg_day_temp] + '; ' + params[:max_temp] + '; '+ params[:max_temp_year] + '; ' + params[:min_temp] + '; '+ params[:min_temp_year] + '; '
+      @bulletin.forecast_sea_period = params[:bulletin][:forecast_sea_period][0]+'@'+params[:bulletin][:forecast_sea_period][1]
+      @bulletin.forecast_period = params[:bulletin][:forecast_period][0]+'@'+params[:bulletin][:forecast_period][1]
     end
     if not @bulletin.update bulletin_params
       render :action => :edit
@@ -460,8 +491,12 @@ class BulletinsController < ApplicationController
           pdf = Sea.new(@bulletin)
           # @png_filename_page1 = @bulletin.png_page_filename(current_user.id, 0)
           # @png_filename_page2 = @bulletin.png_page_filename(current_user.id, 1)
-        when 'daily2' #, 'daily_rf'
-          pdf = Daily2.new(@bulletin,params[:variant])
+        when 'daily2'
+          if @bulletin.forecast_sea_period.index('@').present?
+            pdf = Daily3.new(@bulletin,params[:variant])
+          else
+            pdf = Daily2.new(@bulletin,params[:variant])
+          end
         # when 'daily_rf'
         #   pdf = DailyRf.new(@bulletin)
         when 'holiday'
