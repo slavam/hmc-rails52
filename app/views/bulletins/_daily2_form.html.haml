@@ -3,6 +3,7 @@
   = form_for @bulletin, html: { id: 'daily2-form' } do |form|
     - rd_1 = (@bulletin.report_date+1.day).strftime("%d.%m")
     - rd_2 = (@bulletin.report_date+2.days).strftime("%d.%m")
+    - rd_3 = (@bulletin.report_date+3.days).strftime("%d.%m")
     - fsp1 = @bulletin.forecast_sea_period.split('@')[0]
     - fsp2 = @bulletin.forecast_sea_period.split('@')[1]
     - fp1 = @bulletin.forecast_period.split('@')[0]
@@ -31,16 +32,16 @@
         %th Прогноз погоды на сутки в ДНР
         %td= form.text_area :forecast_day, cols: "30", rows: "5"
       %tr
-        %th "Периодный прогноз в городе Донецке на #{rd_1}"
+        %th Периодный прогноз в городе Донецке на #{rd_2}
         %td= form.text_area :forecast_sea_period, cols: "30", rows: "7", name: "bulletin[forecast_sea_period][]", id: "fsp1", value: fsp1
       %tr
-        %th "Периодный прогноз в городе Донецке на #{rd_2}"
+        %th Периодный прогноз в городе Донецке на #{rd_3}
         %td= form.text_area :forecast_sea_period, cols: "30", rows: "7", name: "bulletin[forecast_sea_period][]", id: "fsp2", value: fsp2
       %tr
-        %th Периодный прогноз в ДНР на #{rd_1}"
+        %th Периодный прогноз в ДНР на #{rd_2}
         %td= form.text_area :forecast_period, cols: "30", rows: "7", name: "bulletin[forecast_period][]", id: "fp1", value: fp1
       %tr
-        %th Периодный прогноз в ДНР на #{rd_2}"
+        %th Периодный прогноз в ДНР на #{rd_3}
         %td= form.text_area :forecast_period, cols: "30", rows: "7", name: "bulletin[forecast_period][]", id: "fp2", value: fp2
       %tr
         %th Синоптик
