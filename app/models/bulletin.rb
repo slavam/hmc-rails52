@@ -209,7 +209,7 @@ def self.generate_qr_code(data, size: 200)
       ret[:full_name] = "О.А. Гутовская"
     else
       ret[:position] = "Заместитель начальника отдела гидрологии"
-      ret[:image_name] = ""
+      ret[:image_name] = "./app/assets/images/stec.png"
       ret[:full_name] = "Е.А. Мельник"
     end
     ret
