@@ -115,6 +115,8 @@ class BulletinsController < ApplicationController
     end
     last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307
     last_daily_csdn_bulletin = Bulletin.last_this_type 'daily2'
+    index_at = last_daily_csdn_bulletin.forecast_period.index('@')
+    last_daily_csdn_bulletin.forecast_period[index_at] = '' if index_at>=0
     case params[:bulletin_type]
       when 'railway'
         if last_daily_bulletin.present?
@@ -260,12 +262,10 @@ class BulletinsController < ApplicationController
         end
       when 'hydro'
         @bulletin.review_start_date = Date.today
-        # @bulletin.forecast_period = 'за февраль'
         if bulletin.present?
           @bulletin.curr_number = bulletin.curr_number.to_i + 1
           @bulletin.meteo_data = bulletin.meteo_data
           @bulletin.forecast_day = bulletin.forecast_day
-          # @bulletin.forecast_period = bulletin.forecast_period if bulletin.forecast_period.present?
           @bulletin.review_start_date = bulletin.review_start_date if bulletin.review_start_date.present?
         else
           @bulletin.curr_number = 1
