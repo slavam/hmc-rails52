@@ -242,7 +242,7 @@ class OtherObservationsController < ApplicationController
     end_date = year+'-'+month+'-'+last_day
     rows = SynopticObservation.select("date, station_id, term, precipitation_1").
       where("date >= ? AND date <= ? AND station_id IN (1,2,3,10) AND term IN (3,15) AND precipitation_1 > 0", start_date, end_date).order(:date, :station_id, :term)
-      num_row = [nil,1,7,6,nil,nil,nil,nil,nil,nil,15]
+      num_row = [nil,1,7,6,nil,nil,nil,nil,nil,nil,16]
     ret = []
     rows.each do |p|
       i = num_row[p.station_id]
@@ -260,10 +260,10 @@ class OtherObservationsController < ApplicationController
 
   def precipitation_fill(posts_data, stations_data, last_day)
   #   ['Авдотьино', 'Кировский', 'Макеевка', 'Старобешево', 'Тельманово', 
-  #     'Раздольное', 'Стрюково', 'Дмитровка', 'Новоселовка', 'Благодатное', 'Алексеево-Орловка']
-    post_num_row = [3,2,4,12,14,13,9,10,5,8,11]
+  #     'Раздольное', 'Стрюково', 'Дмитровка', 'Новоселовка', 'Благодатное', 'Алексеево-Орловка','Николаевка']
+    post_num_row = [3,2,4,12,14,13,9,10,5,8,11,12]
     (1..last_day.to_i).each{|i|
-      (0..10).each{|j|
+      (0..11).each{|j|
       if posts_data[i].present? and posts_data[i][j].present?
         stations_data[post_num_row[j]] ||= []
         stations_data[post_num_row[j]][i] ||= [nil, nil,'','']
@@ -321,6 +321,7 @@ class OtherObservationsController < ApplicationController
         end
       end
     }
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{precipitation.inspect}, #{rows.inspect}")
     precipitation
   end
 
