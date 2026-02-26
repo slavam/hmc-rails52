@@ -4,7 +4,7 @@ import MonthYearForm from './month_year_form';
 
 const TotalMonthlyPrecipitationTable = ({precipitation, maxDay}) => {
   let names = ['','Донецк','Кировский','Авдотьино','Макеевка','Новоселовка','Дебальцево','Амвросиевка','Благодатное',
-    'Стрюково','Дмитровка','Алексеево-Орловка','Старобешево','Раздольное','Тельманово','Седово']
+    'Стрюково','Дмитровка','Алексеево-Орловка','Николаевка','Старобешево','Раздольное','Тельманово','Седово']
   let daysNum = [];
   for(var i=1; i<=maxDay; ++i){ 
     daysNum.push(<td style={{borderWidth:"1px", borderColor:"#555555", borderStyle:'solid'}} key={i}><b>{i}</b></td>);
