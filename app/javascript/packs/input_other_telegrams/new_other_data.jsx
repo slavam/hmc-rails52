@@ -134,6 +134,7 @@ export default class NewOtherData extends React.Component{
       { value: 'Новоселовка',  label: 'Новоселовка' },
       { value: 'Благодатное',  label: 'Благодатное' },
       { value: 'Алексеево-Орловка',  label: 'Алексеево-Орловка' },
+      { value: 'Николаевка', label: 'Николаевка'},
     ];
 // Change OtherObservation::POSTS   !!!!!!!!!!!!!!
 // Aram 20221020
