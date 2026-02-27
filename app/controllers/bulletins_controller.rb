@@ -116,7 +116,7 @@ class BulletinsController < ApplicationController
     last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307
     last_daily_csdn_bulletin = Bulletin.last_this_type 'daily2'
     index_at = last_daily_csdn_bulletin.forecast_period.index('@')
-    last_daily_csdn_bulletin.forecast_period[index_at] = '' if index_at>=0
+    last_daily_csdn_bulletin.forecast_period[index_at] = '' if index_at.present?
     case params[:bulletin_type]
       when 'railway'
         if last_daily_bulletin.present?
