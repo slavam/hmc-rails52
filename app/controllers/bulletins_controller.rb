@@ -116,7 +116,7 @@ class BulletinsController < ApplicationController
     last_daily_bulletin = Bulletin.last_this_type 'daily' # ОН 20190307
     last_daily_csdn_bulletin = Bulletin.last_this_type 'daily2'
     index_at = last_daily_csdn_bulletin.forecast_period.index('@')
-    last_daily_csdn_bulletin.forecast_period[index_at] = '' if index_at.present?
+    # last_daily_csdn_bulletin.forecast_period[index_at] = '' if index_at.present?
     case params[:bulletin_type]
       when 'railway'
         if last_daily_bulletin.present?
@@ -145,7 +145,11 @@ class BulletinsController < ApplicationController
           @bulletin.curr_number = 1
         end
         @bulletin.forecast_day = last_daily_csdn_bulletin.forecast_day
-        @bulletin.forecast_period = last_daily_csdn_bulletin.forecast_period
+        if index_at.present?
+          @bulletin.forecast_period = "#{@bulletin.report_date_plus(2)} #{last_daily_csdn_bulletin.forecast_period.split('@')[0]}\n#{@bulletin.report_date_plus(3)} #{last_daily_csdn_bulletin.forecast_period.split('@')[1]}"
+        else
+          @bulletin.forecast_period = last_daily_csdn_bulletin.forecast_period
+        end
       when 'autodor_warning'
         if bulletin.present?
           @bulletin.curr_number = bulletin.curr_number.to_i + 1

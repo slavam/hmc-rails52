@@ -267,6 +267,10 @@ def self.generate_qr_code(data, size: 200)
     curr_year = rd_2.year == rd_3.year ? '' : " #{rd_2.year} года"
     return "Прогноз погоды с #{'%02d' % rd_2.day} #{MONTH_NAME2[rd_2.month]}#{curr_year} по #{'%02d' % rd_3.day} #{MONTH_NAME2[rd_3.month]} #{rd_3.year} года"
   end
+  def report_date_plus(days)
+    rd_plus = report_date+days
+    return "#{'%02d' % rd_plus.day} #{MONTH_NAME2[rd_plus.month]}"
+  end
   def header_advice
     rd_4 = report_date + 4.day
     rd_5 = report_date + 5.day
