@@ -52,7 +52,7 @@ class MeasurementsController < ApplicationController
     @post = Post.find(post_id)
     @volume_sample_dust = @post.sample_volume_dust # Объем отобраной пробы пыли в дм3
     material_id = params[:material_id] || 1
-    sql = "select me.* from measurements me JOIN pollution_values p_v ON p_v.measurement_id=me.id and p_v.material_id = #{material_id} where term in (7, 19) and post_id = #{post_id} and date >= '#{@date_from}' AND date <= '#{@date_to}';"
+    sql = "select me.* from measurements me JOIN pollution_values p_v ON p_v.measurement_id=me.id and p_v.material_id = #{material_id} where post_id = #{post_id} and date >= '#{@date_from}' AND date <= '#{@date_to}';"
     measurements = Measurement.find_by_sql(sql)
     @volume_total = 0
     @number_measurements = measurements.size
