@@ -778,11 +778,15 @@ class BulletinsController < ApplicationController
             m_d[i*3] = (rec['value'].to_f*100).round
           when 622080813
             m_d[i*3+1] = rec['value'].to_f>=0.01? '+'+((rec['value'].to_f*100).round).to_s : ((rec['value'].to_f*100).round).to_s
-          else
-            m_d[i*3+2]=HydroObservation::ICE_PHENOMENA[rec['value'].to_i] if !m_d[i*5+2].present?
+          when 598401567
+            m_d[i*3+2]=+HydroObservation::ICE_PHENOMENA[rec['value'].to_i] if !m_d[i*3+2].present?
+          # else
+          #   m_d[i*3+2]="Чисто" #if !m_d[i*5+2].present?
         end
+        m_d[i*3+2]="Чисто" if !m_d[i*3+2].present?
+        Rails.logger.debug("My object+++++++++++++++++: #{rec.inspect}") if rec['station'] == 83048
       end
-      Rails.logger.debug("My object+++++++++++++++++: #{m_d.inspect}")
+      # Rails.logger.debug("My object+++++++++++++++++: #{rows.inspect}")
       m_d
     end
 
