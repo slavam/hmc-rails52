@@ -1,3 +1,4 @@
+- ip = Rails.env.production? ? "31.133.32.14" : "10.54.1.6"
 .container
   %h3 Проверка подлинности документа
   %table{class: "table table-bordered"}
@@ -11,9 +12,20 @@
       %th Номер документа
       %td= @bulletin.curr_number
     %tr
+      %th Получатель
+      %td= @bulletin.storm
+    %tr
+      %th Описание
+      %td= @bulletin.forecast_day_city
+    %tr
       %th Исполнитель
       %td= @bulletin.responsible
     %tr
       %th Подписал
       %td= @bulletin.chief
-  =link_to "Список", "/bulletins/list?bulletin_type=inquiry"
+    %tr
+      - qr_png_path = Bulletin.generate_qr_code_png("http://#{ip}:8080/bulletins/#{@bulletin.id}/qr_check")
+      - base64_image = Base64.strict_encode64(File.read(qr_png_path))
+      %th QR-код
+      %td= image_tag("data:image/png;base64,#{base64_image}")
+  =link_to "Список", "/bulletins/list?bulletin_type=response1"

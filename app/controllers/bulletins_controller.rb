@@ -1,6 +1,5 @@
 class BulletinsController < ApplicationController
 #  before_action :cors_preflight_check
-#  before_action :logged_in_user, only: [:list] # 20190819
   before_action :find_bulletin, :only => [:qr_check, :bulletin_show, :show, :destroy, :print_bulletin, :edit, :update, :bulletin_via_email]
 
   skip_before_action :verify_authenticity_token, :only => [:create]
@@ -279,6 +278,11 @@ class BulletinsController < ApplicationController
         @m_d.each do |v|
           @bulletin.meteo_data += v.present? ? "#{v};" : ';'
         end
+      when 'response1'
+        @bulletin.curr_number = 1
+        if bulletin.present?
+          @bulletin.curr_number = bulletin.curr_number.to_i + 1
+        end
       when 'alert', 'warning'
         @bulletin.curr_number = 1
         if bulletin.present?
@@ -344,7 +348,7 @@ class BulletinsController < ApplicationController
       # )
       @bulletin.picture += "&bulletin_id=#{@bulletin.id}" if @bulletin.bulletin_type =='inquiry'
       @bulletin.save
-      Rails.logger.debug("My object+++++++++++++++++>>>>>>>>>>: #{@bulletin.inspect}")
+      # Rails.logger.debug("My object+++++++++++++++++>>>>>>>>>>: #{@bulletin.inspect}")
       respond_to do |format|
         format.html do
           flash[:success] = "Бюллетень создан"
@@ -546,19 +550,17 @@ class BulletinsController < ApplicationController
           pdf = Clarification.new(@bulletin)
         when 'hydro'
           pdf = HydroRf.new(@bulletin)
-          # pdf = Hydro.new(@bulletin)
-        # when 'hydro2'
-        #   pdf = Hydro2.new(@bulletin)
         when 'alert', 'warning'
           pdf = Alert.new(@bulletin)
         when 'railway'
           pdf = Railway.new(@bulletin)
         when 'inquiry'
           pdf = Inquiry.new(@bulletin)
+        when 'response1'
+          pdf = Response1.new(@bulletin)
       end
       format.html do
         save_as_pdf(pdf)
-        # pdf_2_png
       end
       format.pdf do
         if @bulletin.bulletin_type == 'daily'

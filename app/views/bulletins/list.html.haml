@@ -9,10 +9,11 @@
           "new_bulletin?variant=summer&bulletin_type=#{@bulletin_type}"
         = link_to '  Создать (Зима)',
           "new_bulletin?variant=winter&bulletin_type=#{@bulletin_type}"
+      - when 'inquiry'
       - else
         = link_to 'Создать', "new_bulletin?bulletin_type=#{@bulletin_type}"
-  - elsif %w[hydro].index(current_user.role)
-    - if %w[hydro warning alert].index(@bulletin_type)
+  - elsif %w[hydro synoptic].index(current_user.role)
+    - if %w[hydro warning alert response1].index(@bulletin_type)
       = link_to 'Создать', "new_bulletin?bulletin_type=#{@bulletin_type}"
   -# - elsif %w[clerk].index(current_user.role)
   -#   - if @bulletin_type == 'inquiry'
@@ -44,7 +45,7 @@
         - elsif @bulletin_type == 'fire'
           %th Полный
           %th Сокращенный
-        - elsif @bulletin_type == 'inquiry'
+        - elsif (@bulletin_type == 'inquiry') || (@bulletin_type == 'response1')
           %th Документ
           %th Справка
           %th= ''
@@ -95,18 +96,18 @@
             %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf?variant=full"
             %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf?variant=short"
           - elsif @bulletin_type == 'inquiry'
-            -# %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf"
             %td= b.picture.present? ? (link_to "Просмотреть", '/'+b.picture): nil
             %td= b.picture.present? ? (link_to "Просмотреть", "/bulletins/#{b.id}/qr_check"): nil
-            %td= link_to 'Удалить', b, method: :delete, data: { confirm: 'Вы уверены?' }
+          - elsif @bulletin_type == 'response1'
+            %td= link_to "Просмотреть", "#{b.id}/bulletin_show.pdf"
+            %td= link_to "Просмотреть", "/bulletins/#{b.id}/qr_check"
           - elsif @bulletin_type == 'autodor'
             %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf"
             - if current_user.role == 'technicist'
               %td= link_to 'Отправить письмо', "#{b.id}/bulletin_via_email"
           - else
             %td= link_to 'Просмотреть', "#{b.id}/bulletin_show.pdf"
-          - if %w[vip].index(current_user.role) || (current_user.role == 'hydro' && %w[hydro warning].index(@bulletin_type))
+          - if %w[vip].index(current_user.role) || (current_user.role == 'hydro' && %w[hydro warning].index(@bulletin_type)) || (current_user.role == 'synoptic' && %w[response1].index(@bulletin_type))
             %td= link_to 'Изменить', edit_bulletin_path(b.id)
-            %td= link_to 'Удалить', b, method: :delete,
-              data: { confirm: 'Вы уверены?' }
+            %td= link_to 'Удалить', b, method: :delete, data: { confirm: 'Вы уверены?' }
   = will_paginate
