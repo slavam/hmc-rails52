@@ -29,8 +29,11 @@
       %tr
         %th Приложение
         %td= form.text_area :forecast_period, cols: "30", rows: "5"
-      
+      %tr
+        %th Исполнитель
+        %td= form.text_field :responsible
+
       = render partial: 'chief'
-      = render partial: 'responsible'
+      -# = render partial: 'responsible'
     %br
 = link_to 'Список', '/bulletins/list?bulletin_type='+@bulletin.bulletin_type

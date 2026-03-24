@@ -1,6 +1,12 @@
 - ip = Rails.env.production? ? "31.133.32.14" : "10.54.1.6"
 .container
   %h3 Проверка подлинности документа
+  %div{align: :center}= image_tag "logo2015_2.png", height:'50', width:'50'
+  %p{align: :center, style: {font: :bold} } РОСГИДРОМЕТ
+  %p{align: :center} Федеральное государственное бюджетное учреждение
+  %p{align: :center} "Управление по гидрометеорологии и мониторингу окружающей среды по Донецкой Народной Республике"
+  %p{align: :center} (ФГБУ "УГМС по ДНР")'
+  -# %div{align: :center}= image_tag @png_filename_page1, :style => "border: 1px solid black"
   %table{class: "table table-bordered"}
     %tr
       %th Тип документа

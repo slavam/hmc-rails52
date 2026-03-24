@@ -48,7 +48,8 @@ class Response1 < Prawn::Document
     move_down 30
     move_cursor_to 20
     font "OpenSans", style: :normal
-    responsible_descr = @bulletin.responsible_2_pdf
-    text responsible_descr[:full_name]+" +7(949) 554-78-30", size: 10
+    text @bulletin.responsible
+    # responsible_descr = @bulletin.responsible_2_pdf
+    # text responsible_descr[:full_name]+" +7(949) 554-78-30", size: 10
   end  
 end
