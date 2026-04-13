@@ -64,13 +64,13 @@ class Daily3 < Prawn::Document
     end
     font "OpenSans"
     # bounding_box([0, cursor], :width => bounds.width, :height => 100) do
-    span(350) do
+    span(bounds.width) do
       text "в городе Донецке", style: :bold
       text @bulletin.forecast_sea_period.split('@')[1]
     end
     # bounding_box([0, cursor], :width => bounds.width, :height => 100) do
     move_down 10
-    span(350) do
+    span(bounds.width) do
       text "в Донецкой Народной Республике", style: :bold
       text @bulletin.forecast_period.split('@')[1]
     end
