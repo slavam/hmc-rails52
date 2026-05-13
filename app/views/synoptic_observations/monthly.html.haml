@@ -1,0 +1,172 @@
+- months = %w[Метеостанции Январь Февраль Март Апрель Май Июнь Июль Август Сентябрь Октябрь Ноябрь Декабрь]
+- temperatures = @ret[0]
+- pressure = @ret[1]
+- pressure_min = @ret[2]
+- pressure_max = @ret[3]
+- pressure_on_sea = @ret[4]
+- cloud = @ret[5]
+- wind_speed = @ret[6]
+- precipitation_total = @ret[7]
+- humidity = @ret[8]
+.container
+  = link_to "2021", "monthly?year=2021"
+  = link_to "2022", "monthly?year=2022"
+  = link_to "2023", "monthly?year=2023"
+  %h4 Средняя по месяцам температура воздуха (°С) в #{@year} году
+  %table{class: "table table-bordered"}
+    %thead
+      %tr
+        - months.each do |m|
+          %th= m
+    %tbody
+      - (1..6).each do |i|
+        %tr
+          - (0..12).each do |j|
+            - if temperatures[i].present? && temperatures[i][j].present? 
+              %td= temperatures[i][j]==-99? '' : temperatures[i][j]
+              
+  = link_to "Распечатать", "monthly.pdf?year=#{@year}&type=avg_temp"
+  %br
+  %br
+  %h4 Среднее по месяцам атмосферное давление на уровне станции в #{@year} году
+  %table{class: "table table-bordered"}
+    %thead
+      %tr
+        - months.each do |m|
+          %th= m
+    %tbody
+      - (1..6).each do |i|
+        %tr
+          - (0..12).each do |j|
+            - if pressure[i].present? && pressure[i][j].present? 
+              %td= pressure[i][j]==-99? '' : pressure[i][j]
+            - else 
+              %td= ''
+              
+  = link_to "Распечатать", "monthly.pdf?year=#{@year}&type=avg_pressure_station_level"
+  %br
+  %br
+  %h4 Минимальное по месяцам атмосферное давление на уровне станции в #{@year} году
+  %table{class: "table table-bordered"}
+    %thead
+      %tr
+        - months.each do |m|
+          %th= m
+    %tbody
+      - (1..6).each do |i|
+        %tr
+          - (0..12).each do |j|
+            - if pressure_min[i].present? && pressure_min[i][j].present? 
+              %td= pressure_min[i][j]==-99? '' : pressure_min[i][j]
+            - else 
+              %td= ''
+              
+  = link_to "Распечатать", "monthly.pdf?year=#{@year}&type=min_pressure_station_level"
+  %br
+  %br
+  %h4 Максимальное по месяцам атмосферное давление на уровне станции в #{@year} году
+  %table{class: "table table-bordered"}
+    %thead
+      %tr
+        - months.each do |m|
+          %th= m
+    %tbody
+      - (1..6).each do |i|
+        %tr
+          - (0..12).each do |j|
+            - if pressure_max[i].present? && pressure_max[i][j].present? 
+              %td= pressure_max[i][j]==-99? '' : pressure_max[i][j]
+            - else 
+              %td= ''
+              
+  = link_to "Распечатать", "monthly.pdf?year=#{@year}&type=max_pressure_station_level"
+  %br
+  %br
+  %h4 Среднее по месяцам атмосферное давление на уровне моря в #{@year} году
+  %table{class: "table table-bordered"}
+    %thead
+      %tr
+        - months.each do |m|
+          %th= m
+    %tbody
+      - (1..6).each do |i|
+        %tr
+          - (0..12).each do |j|
+            - if pressure_on_sea[i].present? && pressure_on_sea[i][j].present? 
+              %td= pressure_on_sea[i][j]==-99? '' : pressure_on_sea[i][j]
+            - else 
+              %td= ''
+              
+  = link_to "Распечатать", "monthly.pdf?year=#{@year}&type=avg_pressure_sea_level"
+  %br
+  %br
+  %h4 Среднее по месяцам количество общей облачности в #{@year} году
+  %table{class: "table table-bordered"}
+    %thead
+      %tr
+        - months.each do |m|
+          %th= m
+    %tbody
+      - (1..6).each do |i|
+        %tr
+          - (0..12).each do |j|
+            - if cloud[i].present? && cloud[i][j].present? 
+              %td= cloud[i][j]==-99? '' : cloud[i][j]
+            - else 
+              %td= ''
+              
+  = link_to "Распечатать", "monthly.pdf?year=#{@year}&type=avg_cloud"
+  %br
+  %br
+  %h4 Средняя по месяцам скорость ветра в #{@year} году
+  %table{class: "table table-bordered"}
+    %thead
+      %tr
+        - months.each do |m|
+          %th= m
+    %tbody
+      - (1..6).each do |i|
+        %tr
+          - (0..12).each do |j|
+            - if wind_speed[i].present? && wind_speed[i][j].present? 
+              %td= wind_speed[i][j]==-99? '' : wind_speed[i][j]
+            - else 
+              %td= ''
+              
+  = link_to "Распечатать", "monthly.pdf?year=#{@year}&type=avg_wind_speed"
+  %br
+  %br
+  %h4 Количество осадков по месяцам в #{@year} году
+  %table{class: "table table-bordered"}
+    %thead
+      %tr
+        - months.each do |m|
+          %th= m
+    %tbody
+      - (1..6).each do |i|
+        %tr
+          - (0..12).each do |j|
+            - if precipitation_total[i].present? && precipitation_total[i][j].present? 
+              %td= precipitation_total[i][j]==-99? '' : precipitation_total[i][j]
+            - else 
+              %td= ''
+              
+  = link_to "Распечатать", "monthly.pdf?year=#{@year}&type=precipitation"
+  %br
+  %br
+  %h4 Средняя по месяцам относительная влажность воздуха в #{@year} году
+  %table{class: "table table-bordered"}
+    %thead
+      %tr
+        - months.each do |m|
+          %th= m
+    %tbody
+      - (1..6).each do |i|
+        %tr
+          - (0..12).each do |j|
+            - if humidity[i].present? && humidity[i][j].present? 
+              %td= humidity[i][j]==-99? '' : humidity[i][j]
+            - else 
+              %td= ''
+              
+  = link_to "Распечатать", "monthly.pdf?year=#{@year}&type=avg_humidity"

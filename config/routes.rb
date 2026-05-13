@@ -148,6 +148,7 @@ Rails.application.routes.draw do
   # get 'synoptic_observations/from_ogimet', to: 'synoptic_observations#from_ogimet'
   get 'synoptic_observations/wind_per_year', to: 'synoptic_observations#wind_per_year'
   get 'synoptic_observations/temperature30', to: 'synoptic_observations#temperature30'
+  get 'synoptic_observations/monthly', to: 'synoptic_observations#monthly'
   resources :synoptic_observations
   get 'sessions/new'
   get    '/login',   to: 'sessions#new'

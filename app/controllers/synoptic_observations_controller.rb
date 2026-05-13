@@ -1484,6 +1484,110 @@ class SynopticObservationsController < ApplicationController
   #   ret
   # end
 
+  def monthly
+    stations = Station.name_stations_as_array
+    @year = params[:year].present? ? params[:year].to_i : Time.now.year
+    date1 = (@year-1).to_s+"-12-31 21"
+    date2 = @year.to_s+'-12-31 19'
+    rows = SynopticObservation.
+      select("YEAR(date) AS yr, 
+      MONTH(date) AS mo, 
+      station_id,
+      avg(precipitation_1),
+      avg(precipitation_2),
+      SUM(CASE
+        WHEN precipitation_1>=990 THEN (precipitation_1-990)*0.1
+        ELSE precipitation_1
+      END) AS p1,
+      SUM(CASE
+        WHEN precipitation_2>=990 THEN (precipitation_2-990)*0.1
+        ELSE precipitation_2
+      END) AS p2,
+      AVG(temperature) AS temperature, 
+      AVG(wind_speed_avg) AS wind_speed,
+      AVG(pressure_at_station_level) AS pressure,
+      MIN(pressure_at_station_level) AS pressure_min,
+      MAX(pressure_at_station_level) AS pressure_max,
+      AVG(pressure_at_sea_level) AS pressure_on_sea,
+      AVG(cloud_amount_1) AS cloud,
+      AVG(temperature_dew_point) AS dew_point").
+      where("observed_at > ? AND observed_at < ? AND station_id IN (1,2,3,4,5,10)", date1, date2).
+      group(:yr, :mo, :station_id).
+      order(:yr, :mo, :station_id)
+    @ret = []
+    temp = []
+    pressure = []
+    pressure_min = []
+    pressure_max = []
+    pressure_on_sea = []
+    cloud = []
+    wind_speed = []
+    humidity = []
+    precipitation_total = []
+    rows.each {|r| i = r.station_id<6? r.station_id : 6 
+      temp[i] ||= Array.new(13,-99)
+      temp[i][0]= stations[r.station_id] if temp[i][0]==-99
+      temp[i][r.mo] = r.temperature
+
+      pressure[i] ||= Array.new(13,-99)
+      pressure[i][0]= stations[r.station_id] if pressure[i][0]==-99
+      pressure[i][r.mo] = r.pressure.present? ? r.pressure.round(1) : r.pressure
+
+      pressure_min[i] ||= Array.new(13,-99)
+      pressure_min[i][0]= stations[r.station_id] if pressure_min[i][0]==-99
+      pressure_min[i][r.mo] = r.pressure_min.present? ? r.pressure_min.round(1) : '' #r.pressure_min
+
+      pressure_max[i] ||= Array.new(13,-99)
+      pressure_max[i][0]= stations[r.station_id] if pressure_max[i][0]==-99
+      pressure_max[i][r.mo] = r.pressure_max.present? ? r.pressure_max.round(1) : '' #r.pressure_max
+
+      pressure_on_sea[i] ||= Array.new(13,-99)
+      pressure_on_sea[i][0]= stations[r.station_id] if pressure_on_sea[i][0]==-99
+      pressure_on_sea[i][r.mo] = r.pressure_on_sea.present? ? r.pressure_on_sea.round(1) : '' #r.pressure
+
+      cloud[i] ||= Array.new(13,-99)
+      cloud[i][0]= stations[r.station_id] if cloud[i][0]==-99
+      cloud[i][r.mo] = r.cloud.present? ? r.cloud.round(1) : r.cloud
+
+      wind_speed[i] ||= Array.new(13,-99)
+      wind_speed[i][0]= stations[r.station_id] if wind_speed[i][0]==-99
+      wind_speed[i][r.mo] = r.wind_speed.present? ? r.wind_speed.round(1) : r.pressure
+
+      precipitation_total[i] ||= Array.new(13,-99)
+      precipitation_total[i][0]= stations[r.station_id] if precipitation_total[i][0]==-99
+      if r.p1.present? or r.p2.present?
+        precipitation_total[i][r.mo] = (r.p1.to_f+r.p2.to_f).round(1)
+      else
+        precipitation_total[i][r.mo] = ''
+      end
+
+      humidity[i] ||= Array.new(13,-99)
+      humidity[i][0]=stations[r.station_id] if humidity[i][0]==-99
+      humidity[i][r.mo] = (r.temperature.present? and r.dew_point.present?) ?
+        (100*(Math.exp((17.625*r.dew_point)/(243.04+r.dew_point))/Math.exp((17.625*r.temperature)/(243.04+r.temperature)))).round() : ''
+    }
+    @ret[0]= temp # << temp
+    @ret[1]= pressure # << pressure
+    @ret[2]= pressure_min
+    @ret[3]= pressure_max
+    @ret[4]= pressure_on_sea
+    @ret[5]= cloud
+    @ret[6]= wind_speed
+    @ret[7]= precipitation_total
+    @ret[8]= humidity
+    # Rails.logger.debug("My object>>>>>>>>>>>>>>>: #{pressure.inspect}")
+    respond_to do |format|
+      format.html
+      format.pdf do
+        report_type = %w[avg_temp avg_pressure_station_level min_pressure_station_level max_pressure_station_level avg_pressure_sea_level avg_cloud avg_wind_speed precipitation avg_humidity]
+        type = params[:type]
+        data = @ret[report_type.index(type)]
+        pdf = Monthly.new(data, type, @year)
+        send_data pdf.render, filename: "monthly_#{current_user.id}.pdf", type: "application/pdf", disposition: "inline", :force_download=>true, :page_size => "A4"
+      end
+    end
+  end
+
   def month_avg_temp
     @year = params[:year].present? ? params[:year] : Time.now.year.to_s
     @month = params[:month].present? ? params[:month] : Time.now.month.to_s.rjust(2, '0')
