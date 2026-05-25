@@ -4,10 +4,7 @@
 - pressure_min = @ret[2]
 - pressure_max = @ret[3]
 - pressure_on_sea = @ret[4]
-- cloud = @ret[5]
-- wind_speed = @ret[6]
-- precipitation_total = @ret[7]
-- humidity = @ret[8]
+- wind_speed = @ret[5]
 .container
   = link_to "2021", "monthly?year=2021"
   = link_to "2022", "monthly?year=2022"
@@ -100,24 +97,6 @@
   = link_to "Распечатать", "monthly.pdf?year=#{@year}&type=avg_pressure_sea_level"
   %br
   %br
-  %h4 Среднее по месяцам количество общей облачности в #{@year} году
-  %table{class: "table table-bordered"}
-    %thead
-      %tr
-        - months.each do |m|
-          %th= m
-    %tbody
-      - (1..6).each do |i|
-        %tr
-          - (0..12).each do |j|
-            - if cloud[i].present? && cloud[i][j].present? 
-              %td= cloud[i][j]==-99? '' : cloud[i][j]
-            - else 
-              %td= ''
-              
-  = link_to "Распечатать", "monthly.pdf?year=#{@year}&type=avg_cloud"
-  %br
-  %br
   %h4 Средняя по месяцам скорость ветра в #{@year} году
   %table{class: "table table-bordered"}
     %thead
@@ -134,39 +113,4 @@
               %td= ''
               
   = link_to "Распечатать", "monthly.pdf?year=#{@year}&type=avg_wind_speed"
-  %br
-  %br
-  %h4 Количество осадков по месяцам в #{@year} году
-  %table{class: "table table-bordered"}
-    %thead
-      %tr
-        - months.each do |m|
-          %th= m
-    %tbody
-      - (1..6).each do |i|
-        %tr
-          - (0..12).each do |j|
-            - if precipitation_total[i].present? && precipitation_total[i][j].present? 
-              %td= precipitation_total[i][j]==-99? '' : precipitation_total[i][j]
-            - else 
-              %td= ''
-              
-  = link_to "Распечатать", "monthly.pdf?year=#{@year}&type=precipitation"
-  %br
-  %br
-  %h4 Средняя по месяцам относительная влажность воздуха в #{@year} году
-  %table{class: "table table-bordered"}
-    %thead
-      %tr
-        - months.each do |m|
-          %th= m
-    %tbody
-      - (1..6).each do |i|
-        %tr
-          - (0..12).each do |j|
-            - if humidity[i].present? && humidity[i][j].present? 
-              %td= humidity[i][j]==-99? '' : humidity[i][j]
-            - else 
-              %td= ''
-              
-  = link_to "Распечатать", "monthly.pdf?year=#{@year}&type=avg_humidity"
+  
