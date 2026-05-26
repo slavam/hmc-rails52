@@ -1487,8 +1487,8 @@ class SynopticObservationsController < ApplicationController
   def monthly
     stations = Station.name_stations_as_array
     @year = params[:year].present? ? params[:year].to_i : Time.now.year
-    date1 = (@year-1).to_s+"-12-31 21"
-    date2 = @year.to_s+'-12-31 19'
+    date1 = @year.to_s+"-01-01 00" #(@year-1).to_s+"-12-31 21"
+    date2 = @year.to_s+'-12-31 22' #19'
     rows = SynopticObservation.
       select("YEAR(date) AS yr, 
       MONTH(date) AS mo, 
@@ -1509,7 +1509,7 @@ class SynopticObservationsController < ApplicationController
     pressure_max = []
     pressure_on_sea = []
     wind_speed = []
-    rows.each {|r| i = r.station_id<6? r.station_id : 6 
+    rows.each {|r| i = r.station_id<6? r.station_id : 6
       temp[i] ||= Array.new(13,-99)
       temp[i][0]= stations[r.station_id] if temp[i][0]==-99
       temp[i][r.mo] = r.temperature
@@ -1520,15 +1520,15 @@ class SynopticObservationsController < ApplicationController
 
       pressure_min[i] ||= Array.new(13,-99)
       pressure_min[i][0]= stations[r.station_id] if pressure_min[i][0]==-99
-      pressure_min[i][r.mo] = r.pressure_min.present? ? r.pressure_min.round(1) : '' #r.pressure_min
+      pressure_min[i][r.mo] = r.pressure_min.present? ? r.pressure_min.round(1) : ''
 
       pressure_max[i] ||= Array.new(13,-99)
       pressure_max[i][0]= stations[r.station_id] if pressure_max[i][0]==-99
-      pressure_max[i][r.mo] = r.pressure_max.present? ? r.pressure_max.round(1) : '' #r.pressure_max
+      pressure_max[i][r.mo] = r.pressure_max.present? ? r.pressure_max.round(1) : ''
 
       pressure_on_sea[i] ||= Array.new(13,-99)
       pressure_on_sea[i][0]= stations[r.station_id] if pressure_on_sea[i][0]==-99
-      pressure_on_sea[i][r.mo] = r.pressure_on_sea.present? ? r.pressure_on_sea.round(1) : '' #r.pressure
+      pressure_on_sea[i][r.mo] = r.pressure_on_sea.present? ? r.pressure_on_sea.round(1) : ''
 
       wind_speed[i] ||= Array.new(13,-99)
       wind_speed[i][0]= stations[r.station_id] if wind_speed[i][0]==-99
