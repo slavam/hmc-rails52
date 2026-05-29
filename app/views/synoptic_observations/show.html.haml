@@ -126,7 +126,8 @@
     - if @synoptic_observation.temperature_soil_min.present?
       %tr
         %th Минимальная температура поверхности почвы за ночь
-        %td= @synoptic_observation.temperature_soil_min.to_s
+        -# %td= @synoptic_observation.temperature_soil_min.to_s
+        %td= (@synoptic_observation.temperature_soil_min.to_f*10).to_i
     - if @synoptic_observation.temperature_2cm_min.present?
       %tr
         %th Минимальная температура воздуха на высоте 2 см от поверхности почвы
