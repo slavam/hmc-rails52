@@ -855,7 +855,7 @@ class BulletinsController < ApplicationController
       rows6.map do |rec|
         i = s.index(rec['station'].to_s)
         temperature = temp_cel_round(rec['value'])
-        if temperature<m_d[i*9+1]
+        if m_d[i*9+1].present? && (temperature<m_d[i*9+1])
           m_d[i*9+1] = temperature # Мин. сегодня ночью
         end
       end
