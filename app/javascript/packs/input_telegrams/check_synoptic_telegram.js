@@ -69,26 +69,11 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
             errors.push("Для срока 03 группа 6 раздела 1 должна присутствовать")
             return false
           }
-          if(/ 333.* 6\d\d\d2/.test(tlg)){
+          // if(/ 333.* 6\d\d\d2/.test(tlg)){
+          if(/ 333 .*6\d\d\d2/.test(tlg)){
             errors.push("Для срока 03 группа 6 раздела 3 должна отсутствовать")
             return false
           }
-          // if(!/ 333.* 3/.test(tlg)){
-          //   errors.push("Для срока 03 группа 3 раздела 3 должна присутствовать")
-          //   return false
-          // }
-          // if(!/ 333.* 4/.test(tlg)){
-          //   errors.push("Для срока 03 группа 4 раздела 3 должна присутствовать")
-          //   return false
-          // }
-          // if(!/ 333.* 55/.test(tlg)){
-          //   errors.push("Для срока 03 группа 55 раздела 3 должна присутствовать")
-          //   return false
-          // }
-          // if(!/ 555.* 52/.test(tlg)){
-          //   errors.push("Для срока 03 группа 52 раздела 5 должна присутствовать")
-          //   return false
-          // }
           if(!/ 555.* 530/.test(tlg)){
             errors.push("Для срока 03 группа 530 раздела 5 должна присутствовать")
             return false
@@ -136,7 +121,8 @@ export function checkSynopticTelegram(term, tlg, errors, stations, observation){
             errors.push("Для срока 15 группа 6 раздела 1 должна присутствовать")
             return false
           }
-          if(!/ 333.* 1/.test(tlg)){
+          // if(!/ 333.* 1/.test(tlg)){
+          if(!/ 333 1/.test(tlg)){
             errors.push("Для срока 15 группа 1 раздела 3 должна присутствовать")
             return false
           }
