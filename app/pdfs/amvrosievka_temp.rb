@@ -17,16 +17,15 @@ class AmvrosievkaTemp < Prawn::Document
     y_pos = cursor
     bounding_box([0, y_pos], width: 300, leading: 3) do
       text "________________ № 325/02.01"
-      text "На № 103/25-26/02.03 от 16.10.2025"
+      text "На № 75/26-27/02.03 от 01.09.2026"
     end
     
     bounding_box([250, y_pos], width: bounds.width-250) do
-      text "Заместителю директора -
-            главному инженеру филиала
+      text "Директору филиала
             АО \"ИНФРАСТРУКТУРНЫЕ ПРОЕКТЫ\"-
             \"Старобешевская ТЭС\"
 
-            Ковтуну А.А.", leading: 3
+            Кухмистрову С.Д.", leading: 3
     end
     move_down 20
     text "О предоставлении информации"
